@@ -1,6 +1,6 @@
 "use client";
 import React, { MouseEventHandler } from "react";
-import Loading from "./Loading";
+import CustomLoading from "./Loading";
 
 interface IActionButton {
   text: string;
@@ -48,7 +48,7 @@ const ActionButton: React.FC<IActionButton> = (props) => {
         onClick={onclick}
       >
         {icon ? icon : null}
-        {isLoading ? <Loading /> : text}
+        {isLoading ? <CustomLoading /> : text}
       </button>
     </>
   );
