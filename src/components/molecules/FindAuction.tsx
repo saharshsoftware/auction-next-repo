@@ -300,11 +300,13 @@ const FindAuction: React.FC = () => {
       </CustomModal>
       <div className="bg-[#e3e3e3] sticky left-0 right-0 top-0  z-20">
         {renderData()}
-        <div className="common-section bg-white py-4">
-          <div className="flex items-center justify-end">
-            {renderSearchComponent()}
+        {pathname === ROUTE_CONSTANTS.AUCTION ? (
+          <div className="common-section bg-white py-4">
+            <div className="flex items-center justify-end">
+              {renderSearchComponent()}
+            </div>
           </div>
-        </div>
+        ) : null}
       </div>
     </>
   );
