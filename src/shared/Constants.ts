@@ -30,7 +30,7 @@ export const STRING_DATA = {
   AUCTION_START_D_AND_T: "Auction Start Date & Time",
   AUCTION_END_D_AND_T: "Auction End Date & Time",
   SIMILER_PROPERTIES: "Similer Properties",
-  TOP_CITY: "Top City"
+  TOP_CITY: "Top City",
 }
 
 export const INPUT_TYPE = {

@@ -30,6 +30,9 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchCountryData } from "../../services/landingPage";
 import { useRouter } from "next/navigation";
 import { usePathname, useSearchParams } from "next/navigation";
+import { ROUTE_CONSTANTS } from "@/shared/Routes";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 
 const gridElementClass = () => "lg:col-span-3  col-span-full";
 const validationSchema = Yup.object({
@@ -56,6 +59,7 @@ const FindAuction: React.FC = () => {
     },
     staleTime: 5 * 60 * 1000, // 5 min
   });
+  const [loadingUpdate, setLoadingUpdate] = useState(false);
   const [initialValueData, setInitialValueData] = useState<any>(
     structuredClone(
       getDataFromQueryParams(searchParams.get("q") ?? "") ?? {
@@ -73,8 +77,14 @@ const FindAuction: React.FC = () => {
   });
 
   const handleSubmit = (values: any) => {
+    setLoadingUpdate(true);
     const data = setDataInQueryParams(values);
-    router.push(`${pathname}?q=${data}`);
+    setTimeout(() => {
+      setLoadingUpdate(false);
+    }, 500);
+    if (pathname !== ROUTE_CONSTANTS.AUCTION) {
+      router.push(`${ROUTE_CONSTANTS.AUCTION}?q=${data}`);
+    }
     hideModal?.();
   };
   const handleResize = () => {
@@ -104,13 +114,20 @@ const FindAuction: React.FC = () => {
 
   const renderData = () => {
     if (!isMobileView.mobileView) {
-      return <div className="common-section">{renderForm()}</div>;
+      return <div className="common-section p-4">{renderForm()}</div>;
     }
     return (
       <>
-        <div className="flex flex-col gap-4">
-          <p>{initialValueData?.category}</p>
-          <p>{initialValueData?.location}</p>
+        <div className="flex flex-row items-start justify-between gap-4 p-4">
+          <div className="flex items-start justify-start gap-4">
+            <em>
+              <FontAwesomeIcon icon={faArrowLeft} />
+            </em>
+            <div className="flex flex-col gap-2">
+              <p className="line-clamp-1">{initialValueData?.category}</p>
+              <p className="line-clamp-1">{initialValueData?.location}</p>
+            </div>
+          </div>
           <span className="link primary-link" onClick={showModal}>
             Edit
           </span>
@@ -230,6 +247,8 @@ const FindAuction: React.FC = () => {
                     <ActionButton
                       isSubmit={true}
                       text={STRING_DATA.UPDATE.toUpperCase()}
+                      isLoading={loadingUpdate}
+                      customClass={"min-w-[150px]"}
                     />
                     {isMobileView.mobileView ? (
                       <ActionButton
@@ -247,13 +266,45 @@ const FindAuction: React.FC = () => {
       </>
     );
   };
+
+  const renderSearchComponent = () => {
+    return (
+      <CustomFormikForm
+        initialValues={{ search: "" }}
+        wantToUseFormikEvent={true}
+        handleSubmit={(values: any) => console.log(values)}
+      >
+        {({ values, setFieldValue }: any) => (
+          <Form>
+            <div className="flex items-center justify-center gap-2">
+              <div className="flex-1">
+                <TextField
+                  type="text"
+                  name="search"
+                  value={values.search}
+                  placeholder="Location or Property name"
+                  isSearch={true}
+                  customClass={"form-controls-search"}
+                />
+              </div>
+            </div>
+          </Form>
+        )}
+      </CustomFormikForm>
+    );
+  };
   return (
     <>
       <CustomModal openModal={openModal}>
         <div className="w-full flex flex-col gap-4">{renderForm()}</div>
       </CustomModal>
-      <div className="bg-[#e3e3e3] sticky left-0 right-0 top-0 p-4 shadow">
+      <div className="bg-[#e3e3e3] sticky left-0 right-0 top-0  z-20">
         {renderData()}
+        <div className="common-section bg-white py-4">
+          <div className="flex items-center justify-end">
+            {renderSearchComponent()}
+          </div>
+        </div>
       </div>
     </>
   );

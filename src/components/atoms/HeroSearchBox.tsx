@@ -47,6 +47,7 @@ const gridElementClass = () => "lg:col-span-6 col-span-full";
 const HeroSearchBox: React.FC = () => {
   const router = useRouter();
   const [activeBadgeData, setActiveBadgeData] = useState(POPULER_CITIES?.[0]);
+  const [loadingSearch, setLoadingSearch] = useState(false);
   const { data: dataF, isLoading } = useQuery({
     queryKey: [REACT_QUERY.COUNTRIES],
     queryFn: async () => {
@@ -57,6 +58,11 @@ const HeroSearchBox: React.FC = () => {
   });
 
   const handleSubmit = (values: any) => {
+    setLoadingSearch(true);
+
+    setTimeout(() => {
+      setLoadingSearch(false);
+    }, 1000);
     const data = setDataInQueryParams(values);
     router.push(`${ROUTE_CONSTANTS.AUCTION}?q=${data}`);
   };
@@ -147,7 +153,8 @@ const HeroSearchBox: React.FC = () => {
                   <ActionButton
                     isSubmit={true}
                     text={STRING_DATA.SEARCH.toUpperCase()}
-                    customClass={"rounded-full btn-lg px-12 py-4 "}
+                    customClass={"rounded-full btn-lg px-12 py-4 min-w-[150px]"}
+                    isLoading={loadingSearch}
                   />
                 </div>
               </div>

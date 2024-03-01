@@ -19,6 +19,7 @@ interface ICustomInput {
   value?: string;
   min?: string;
   max?: string;
+  isSearch?: boolean;
 }
 
 const TextField: React.FC<FieldHookConfig<string> & ICustomInput> = (props) => {
@@ -39,6 +40,7 @@ const TextField: React.FC<FieldHookConfig<string> & ICustomInput> = (props) => {
     value,
     min,
     max,
+    isSearch = false,
   } = props;
   const [field] = useField(props);
 
@@ -101,7 +103,7 @@ const TextField: React.FC<FieldHookConfig<string> & ICustomInput> = (props) => {
     name === "price" && type === INPUT_TYPE.RANGE && field.value;
 
   return (
-    <div className="flex flex-col gap-2 w-full items-start">
+    <div className="flex flex-col gap-2 w-full items-start relative">
       {label ? (
         <label
           htmlFor={name}
@@ -115,7 +117,23 @@ const TextField: React.FC<FieldHookConfig<string> & ICustomInput> = (props) => {
           ) : null}
         </label>
       ) : null}
-
+      {isSearch ? (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className="absolute left-1 bottom-2 h-6 w-6 mr-2"
+        >
+          <circle cx="11" cy="11" r="8" />
+          <line x1="21" y1="21" x2="16.65" y2="16.65" />
+        </svg>
+      ) : null}
       {renderData()}
 
       <ErrorMessage
