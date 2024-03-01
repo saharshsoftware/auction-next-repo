@@ -57,7 +57,14 @@ const FindAuction: React.FC = () => {
     staleTime: 5 * 60 * 1000, // 5 min
   });
   const [initialValueData, setInitialValueData] = useState<any>(
-    structuredClone(getDataFromQueryParams(searchParams.get("q") ?? ""))
+    structuredClone(
+      getDataFromQueryParams(searchParams.get("q") ?? "") ?? {
+        bank: STRING_DATA.EMPTY,
+        price: STRING_DATA.EMPTY,
+        location: STRING_DATA.EMPTY,
+        category: STRING_DATA.EMPTY,
+      }
+    )
   );
 
   const [isMobileView, setIsMobileView] = useState({
@@ -132,10 +139,10 @@ const FindAuction: React.FC = () => {
       <>
         <CustomFormikForm
           initialValues={{
-            bank: initialValueData?.bank,
-            price: initialValueData?.price,
-            location: initialValueData?.location,
-            category: initialValueData?.category,
+            bank: initialValueData?.bank ?? STRING_DATA.EMPTY,
+            price: initialValueData?.price ?? STRING_DATA.EMPTY,
+            location: initialValueData?.location ?? STRING_DATA.EMPTY,
+            category: initialValueData?.category ?? STRING_DATA.EMPTY,
           }}
           handleSubmit={handleSubmit}
           validationSchema={validationSchema}

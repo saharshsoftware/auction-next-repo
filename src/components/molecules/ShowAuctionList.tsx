@@ -20,11 +20,9 @@ const ShowAuctionList: React.FC = () => {
       <div className="flex flex-col gap-4 w-full">
         {SAMPLE_PLOT.map((item, index) => {
           return (
-            <>
-              <div className="w-full" key={index}>
-                <AuctionCard item={item} handleClick={handleClick} />
-              </div>
-            </>
+            <div className="w-full" key={index}>
+              <AuctionCard item={item} handleClick={handleClick} />
+            </div>
           );
         })}
       </div>

@@ -1,3 +1,9 @@
+import HeroSection from "@/components/atoms/HeroSection";
+
 export default function Home() {
-  return <main className=""></main>;
+  return (
+    <main>
+      <HeroSection />
+    </main>
+  );
 }

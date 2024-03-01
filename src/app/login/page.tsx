@@ -1,3 +1,9 @@
+import LoginComp from "@/components/templates/LoginComp";
+
 export default function Page() {
-  return <div>Login</div>;
+  return (
+    <>
+      <LoginComp />
+    </>
+  );
 }

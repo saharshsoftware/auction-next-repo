@@ -24,7 +24,6 @@ const ShowSimilerProperties = (props: { item: any; index: number }) => {
 
 const RecentData: React.FC = () => {
   const currentRoute = usePathname();
-  console.log(currentRoute);
   const renderChildren = () => {
     if (currentRoute === ROUTE_CONSTANTS.AUCTION) {
       return (

@@ -2,10 +2,10 @@ import { ROUTE_CONSTANTS } from "./Routes"
 
 export const STRING_DATA = {
   EMPTY: "",
-  LOGIN: "Log in",
+  LOGIN: "Login",
   DASHBOARD: "Dashboard",
   BRAND_NAME: "Auction",
-  REGISTER: "Sign up",
+  REGISTER: "Signup",
   CREATE_ACCOUNT: "Create Acount",
   SEARCH: "Search",
   TAG_LINE: "Find Auctions Near You",
