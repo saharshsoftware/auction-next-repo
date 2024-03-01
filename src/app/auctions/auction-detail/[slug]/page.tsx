@@ -2,7 +2,7 @@ import ShowLabelValue from "@/components/atoms/ShowLabelValue";
 import { SAMPLE_PLOT, STRING_DATA } from "@/shared/Constants";
 import { formatPrice, formattedDateAndTime } from "@/shared/Utilies";
 
-export default async function AuctionDetailPage() {
+export default function AuctionDetailPage() {
   return (
     <div className="flex flex-col gap-4 p-4 w-full">
       <div className="flex lg:flex-row flex-col gap-4 justify-between items-start">
