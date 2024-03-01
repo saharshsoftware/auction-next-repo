@@ -6,10 +6,16 @@ export const metadata: Metadata = {
   title: "Find auction with amazing deals",
 };
 
-export default function Page() {
+export default function Page({
+  params,
+  searchParams,
+}: {
+  params: { slug: string };
+  searchParams: { [key: string]: string | string[] | undefined };
+}) {
   return (
     <>
-      <ShowAuctionList />
+      <ShowAuctionList searchParams={searchParams} />
     </>
   );
 }

@@ -1,18 +1,14 @@
-"use client";
 import React from "react";
 import AuctionCard from "../atoms/AuctionCard";
-import { useRouter, useSearchParams } from "next/navigation";
 import { SAMPLE_PLOT } from "@/shared/Constants";
+import { redirect } from "next/navigation";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
 
-const ShowAuctionList: React.FC = () => {
-  const searchParams = useSearchParams();
-  const search = searchParams.get("q");
-
-  const router = useRouter();
-  const handleClick = (data: any) => {
-    router.push(
-      ROUTE_CONSTANTS.AUCTION_DETAIL + "/" + data?.id + "?q=" + search
+const ShowAuctionList = ({ searchParams }: { searchParams: any }) => {
+  const handleClick = async (data: any) => {
+    "use server";
+    redirect(
+      ROUTE_CONSTANTS.AUCTION_DETAIL + "/" + data?.id + "?q=" + searchParams?.q
     );
   };
   return (

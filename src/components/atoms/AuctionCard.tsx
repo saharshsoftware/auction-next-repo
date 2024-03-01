@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import ActionButton from "./ActionButton";
 import { formatPrice, formattedDate } from "../../shared/Utilies";
