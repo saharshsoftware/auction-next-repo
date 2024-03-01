@@ -1,6 +1,6 @@
+import { IRequest } from "@/interfaces/RequestInteface";
+import { API_BASE_URL } from "@/services/api";
 import axios, { AxiosInstance, AxiosResponse } from "axios";
-import { IRequest } from "../interfaces/RequestInteface";
-import { API_BASE_URL } from "../services/api";
 
 export type RequestMethod = "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
 
