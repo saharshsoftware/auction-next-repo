@@ -1,6 +1,11 @@
 import ShowLabelValue from "@/components/atoms/ShowLabelValue";
 import { SAMPLE_PLOT, STRING_DATA } from "@/shared/Constants";
 import { formatPrice, formattedDateAndTime } from "@/shared/Utilies";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Find auction with amazing deals",
+};
 
 export default function AuctionDetailPage() {
   return (
