@@ -4,7 +4,6 @@ import "./globals.css";
 import Footer from "@/components/hoc/Footer";
 import Navbar from "@/components/hoc/Navbar";
 import AppLayout from "@/components/layouts/AppLayout";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Providers from "@/utilies/Providers";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -22,7 +21,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const queryClient = new QueryClient();
   return (
     <html lang="en">
       <body className={inter.className}>
@@ -31,7 +29,7 @@ export default function RootLayout({
             <Navbar />
             <AppLayout>{children}</AppLayout>
             <Footer />
-          </div>
+            </div>
         </Providers>
       </body>
     </html>

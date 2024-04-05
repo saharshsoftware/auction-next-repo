@@ -10,8 +10,13 @@ import {
 } from "../../shared/Constants";
 
 import {
+  getBankOptions,
+  getCategoryOptions,
   getDataFromQueryParams,
   handleQueryResponse,
+  selectedBank,
+  selectedCategory,
+  selectedLocation,
   setDataInQueryParams,
 } from "../../shared/Utilies";
 import useModal from "../../hooks/useModal";
@@ -27,12 +32,18 @@ import {
   NoDataRendererDropdown,
 } from "../atoms/NoDataRendererDropdown";
 import { useQuery } from "@tanstack/react-query";
-import { fetchCountryData } from "../../services/landingPage";
 import { useRouter } from "next/navigation";
 import { usePathname, useSearchParams } from "next/navigation";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { revalidatePath } from "next/cache";
+import {
+  fetchBanks,
+  fetchLocation,
+  getCategoryBoxCollection,
+} from "@/server/actions";
+import { IBanks, ICategoryCollection, ILocations } from "@/types";
 
 const gridElementClass = () => "lg:col-span-3  col-span-full";
 const validationSchema = Yup.object({
@@ -51,15 +62,32 @@ const FindAuction: React.FC = () => {
   const router = useRouter();
   const searchParams = new URLSearchParams(params_search);
   const { showModal, openModal, hideModal } = useModal();
-  const { data: countriesData, isLoading } = useQuery({
-    queryKey: [REACT_QUERY.COUNTRIES],
+
+  const { data: categoryOptions, isLoading: isLoadingCategory } = useQuery({
+    queryKey: [REACT_QUERY.CATEGORY_BOX_COLLECITON],
     queryFn: async () => {
-      const res = await fetchCountryData();
-      return handleQueryResponse(res);
+      const res =
+        (await getCategoryBoxCollection()) as unknown as ICategoryCollection[];
+      return getCategoryOptions(res) ?? [];
     },
-    staleTime: 5 * 60 * 1000, // 5 min
   });
-  const [loadingUpdate, setLoadingUpdate] = useState(false);
+
+  const { data: bankOptions, isLoading: isLoadingBank } = useQuery({
+    queryKey: [REACT_QUERY.AUCTION_BANKS],
+    queryFn: async () => {
+      const res = (await fetchBanks()) as unknown as IBanks[];
+      return getBankOptions(res) ?? [];
+    },
+  });
+
+  const { data: locationOptions, isLoading: isLoadingLocation } = useQuery({
+    queryKey: [REACT_QUERY.AUCTION_LOCATION],
+    queryFn: async () => {
+      const res = (await fetchLocation()) as unknown as ILocations[];
+      return res ?? [];
+    },
+  });
+
   const [initialValueData, setInitialValueData] = useState<any>(
     structuredClone(
       getDataFromQueryParams(searchParams.get("q") ?? "") ?? {
@@ -77,14 +105,18 @@ const FindAuction: React.FC = () => {
   });
 
   const handleSubmit = (values: any) => {
-    setLoadingUpdate(true);
     const data = setDataInQueryParams(values);
-    setTimeout(() => {
-      setLoadingUpdate(false);
-    }, 500);
-    if (pathname !== ROUTE_CONSTANTS.AUCTION) {
-      router.push(`${ROUTE_CONSTANTS.AUCTION}?q=${data}`);
-    }
+    router.push(`${ROUTE_CONSTANTS.AUCTION}?q=${data}`);
+    const path = `${ROUTE_CONSTANTS.AUCTION}?q=${data}`;
+    revalidatePath(path, "page");
+
+    // setLoadingUpdate(true);
+    // setTimeout(() => {
+    //   setLoadingUpdate(false);
+    // }, 500);
+    // if (pathname !== ROUTE_CONSTANTS.AUCTION) {
+    //   router.push(`${ROUTE_CONSTANTS.AUCTION}?q=${data}`);
+    // }
     hideModal?.();
   };
   const handleResize = () => {
@@ -136,21 +168,6 @@ const FindAuction: React.FC = () => {
     );
   };
 
-  const getSelectedCategory = () => {
-    return [
-      CATEGORIES?.find((item) => item?.name === initialValueData?.category),
-    ];
-  };
-
-  const getSelectedLocation = () => {
-    const country = countriesData as any;
-    if (country?.length) {
-      return [
-        country?.find((item: any) => item?.name === initialValueData?.location),
-      ];
-    }
-    return [];
-  };
   const renderForm = () => {
     return (
       <>
@@ -182,10 +199,11 @@ const FindAuction: React.FC = () => {
                       <Field name="category">
                         {() => (
                           <ReactSelectDropdown
-                            defaultValue={getSelectedCategory()}
+                            defaultValue={selectedCategory(categoryOptions ?? [], initialValueData)}
                             noDataRenderer={NoDataRendererDropdown}
                             itemRenderer={ItemRenderer}
-                            options={CATEGORIES}
+                            options={categoryOptions ?? []}
+                            loading={isLoadingCategory}
                             placeholder={"Category"}
                             customClass="w-full "
                             onChange={(e) => {
@@ -207,10 +225,13 @@ const FindAuction: React.FC = () => {
                           <ReactSelectDropdown
                             noDataRenderer={NoDataRendererDropdown}
                             itemRenderer={ItemRenderer}
-                            defaultValue={getSelectedLocation()}
-                            loading={isLoading}
-                            options={countriesData}
-                            placeholder={"Neighborhood, City or State"}
+                            defaultValue={selectedLocation(
+                              locationOptions ?? [],
+                              initialValueData
+                            )}
+                            loading={isLoadingLocation}
+                            options={locationOptions}
+                            placeholder={"Location"}
                             customClass="w-full "
                             onChange={(e) => {
                               setFieldValue("location", e?.[0]?.name);
@@ -221,13 +242,27 @@ const FindAuction: React.FC = () => {
                     </TextField>
                   </div>
                   <div className={gridElementClass()}>
-                    <TextField
-                      type="text"
-                      name="bank"
-                      label="Bank"
-                      value={values.bank}
-                      placeholder="Enter bank"
-                    />
+                    <TextField label="Bank" name="bank" hasChildren={true}>
+                      <Field name="bank">
+                        {() => (
+                          <ReactSelectDropdown
+                            noDataRenderer={NoDataRendererDropdown}
+                            itemRenderer={ItemRenderer}
+                            defaultValue={selectedBank(
+                              bankOptions ?? [],
+                              initialValueData
+                            )}
+                            loading={isLoadingBank}
+                            options={bankOptions}
+                            placeholder={"Banks"}
+                            customClass="w-full "
+                            onChange={(e: any) => {
+                              setFieldValue("bank", e?.[0]?.name);
+                            }}
+                          />
+                        )}
+                      </Field>
+                    </TextField>
                   </div>
                   <div className={gridElementClass()}>
                     <TextField
@@ -247,7 +282,7 @@ const FindAuction: React.FC = () => {
                     <ActionButton
                       isSubmit={true}
                       text={STRING_DATA.UPDATE.toUpperCase()}
-                      isLoading={loadingUpdate}
+                      // isLoading={loadingUpdate}
                       customClass={"min-w-[150px]"}
                     />
                     {isMobileView.mobileView ? (

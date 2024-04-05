@@ -2,9 +2,10 @@
 import React from "react";
 import ActionButton from "./ActionButton";
 import { formatPrice, formattedDate } from "../../shared/Utilies";
+import { IAuction } from "@/types";
 
 interface IAuctionCard {
-  item?: any;
+  item?: IAuction;
   handleClick?: (data: any) => void;
 }
 const AuctionCard: React.FC<IAuctionCard> = (props) => {
@@ -15,25 +16,21 @@ const AuctionCard: React.FC<IAuctionCard> = (props) => {
         <div className="flex lg:flex-row flex-col gap-4 justify-between items-start">
           <h2 className="custom-h2-class line-clamp-1">{item?.title}</h2>
           <span className="custom-prize-color font-bold text-2xl">
-            {formatPrice(item?.price)}
+            {formatPrice(item?.reservePrice)}
           </span>
         </div>
-        <p className="flex-1 line-clamp-4">{item?.bank_name}</p>
+        <p className="flex-1 line-clamp-4">{item?.bankName}</p>
         <div className="flex lg:flex-row flex-col gap-4 justify-between items-start">
           <div className="flex items-center justify-start gap-4 flex-wrap">
-            {item?.date ? (
+            {item?.auctionDate ? (
               <span className="font-bold text-sm">
-                {formattedDate(item?.date)}
+                {formattedDate(item?.auctionDate)}
               </span>
             ) : null}
-            {item?.view_auction_data?.area ? (
+
+            {item?.propertyType ? (
               <span className="font-bold text-sm">
-                | &nbsp;&nbsp;{item?.view_auction_data?.area}
-              </span>
-            ) : null}
-            {item?.view_auction_data?.property ? (
-              <span className="font-bold text-sm">
-                | &nbsp;&nbsp;{item?.view_auction_data?.property}{" "}
+                | &nbsp;&nbsp;{item?.propertyType}{" "}
               </span>
             ) : null}
           </div>

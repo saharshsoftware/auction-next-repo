@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export default function NotFound() {
   return (
-    <div className="flex justify-center items-center flex-col min-h-screen">
+    <div className="flex justify-center items-center flex-col min-h-[60vh]">
       <h2 className="text-lg">Not Found</h2>
       <p className="font-bold">Could not find requested resource</p>
       <Link href={ROUTE_CONSTANTS.DASHBOARD}>Return Home</Link>

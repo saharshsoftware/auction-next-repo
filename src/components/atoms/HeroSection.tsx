@@ -2,6 +2,8 @@ import React from "react";
 import HeroSearchBox from "./HeroSearchBox";
 import waveImage from "@/assets/wave.svg";
 import { STRING_DATA } from "../../shared/Constants";
+import { IBanks, ILocations } from "@/types";
+
 const HeroSection = () => {
   return (
     <div

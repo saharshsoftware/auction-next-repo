@@ -1,10 +1,15 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { STRING_DATA } from "../../shared/Constants";
+import { COOKIES, STRING_DATA } from "../../shared/Constants";
 import ActionButton from "../atoms/ActionButton";
 import { ROUTE_CONSTANTS } from "../../shared/Routes";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { logout } from "@/server/actions";
+import { useMutation } from "@tanstack/react-query";
+import { deleteCookie, getCookie, hasCookie } from "cookies-next";
+import { revalidatePath } from "next/cache";
+import LogoutButton from "../ui/LogoutButton";
 
 const getWaveSvg = () => {
   return (
@@ -21,6 +26,13 @@ const getWaveSvg = () => {
 const Navbar: React.FC = () => {
   const router = useRouter();
   const pathname = usePathname();
+  const token = getCookie(COOKIES.TOKEN_KEY) ?? '';
+  const [myToken, setMyToken] = useState("");
+
+  useEffect(() => {
+    console.log(token);
+    setMyToken(token);
+  }, [token]);
 
   const [isMobileView, setIsMobileView] = useState({
     mobileView: false,
@@ -33,6 +45,7 @@ const Navbar: React.FC = () => {
       mobileView: window.innerWidth < 1024,
     })); // Assuming mobile view below 768px width
   };
+
   useEffect(() => {
     handleResize(); // Initial check on component mount
 
@@ -112,13 +125,19 @@ const Navbar: React.FC = () => {
               {STRING_DATA.BRAND_NAME.toUpperCase()}
             </div>
           </div>
-          <div className="lg:flex hidden items-center gap-8">
-            <Link href={ROUTE_CONSTANTS.LOGIN}>{STRING_DATA.LOGIN}</Link>
-            <ActionButton
-              text={STRING_DATA.REGISTER}
-              onclick={() => router.push(ROUTE_CONSTANTS.REGISTER)}
-            />
-          </div>
+          {myToken ? (
+            <div>
+              <LogoutButton  />
+            </div>
+          ) : (
+            <div className="lg:flex hidden items-center gap-8">
+              <Link href={ROUTE_CONSTANTS.LOGIN}>{STRING_DATA.LOGIN}</Link>
+              <ActionButton
+                text={STRING_DATA.REGISTER}
+                onclick={() => router.push(ROUTE_CONSTANTS.REGISTER)}
+              />
+            </div>
+          )}
 
           <div className="lg:hidden cursor-pointer" onClick={toggleTopBar}>
             <svg
@@ -144,3 +163,5 @@ const Navbar: React.FC = () => {
 };
 
 export default Navbar;
+
+export const revalidate = 0

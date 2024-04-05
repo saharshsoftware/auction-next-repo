@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ActionButton from "./ActionButton";
 import CustomBadge from "./CustomBadge";
 import ReactSelectDropdown from "./ReactSelectDropdown";
@@ -18,12 +18,16 @@ import * as Yup from "yup";
 import { ROUTE_CONSTANTS } from "../../shared/Routes";
 import { ItemRenderer, NoDataRendererDropdown } from "./NoDataRendererDropdown";
 import {
+  getBankOptions,
+  getCategoryOptions,
   handleQueryResponse,
   setDataInQueryParams,
 } from "../../shared/Utilies";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { fetchCountryData } from "@/services/landingPage";
+import { fetchBanks, fetchLocation, getAuctionData, getCategoryBoxCollection } from "@/server/actions";
+import { IBanks, ICategoryCollection, ILocations } from "@/types";
 
 const validationSchema = Yup.object({
   category: Yup.string().trim().required(ERROR_MESSAGE.CATEGORY_REQUIRED),
@@ -44,27 +48,62 @@ const initialValues = {
 
 const gridElementClass = () => "lg:col-span-6 col-span-full";
 
-const HeroSearchBox: React.FC = () => {
+const HeroSearchBox = () => {
   const router = useRouter();
   const [activeBadgeData, setActiveBadgeData] = useState(POPULER_CITIES?.[0]);
   const [loadingSearch, setLoadingSearch] = useState(false);
-  const { data: dataF, isLoading } = useQuery({
-    queryKey: [REACT_QUERY.COUNTRIES],
+
+  const { data: categoryOptions, isLoading: isLoadingCategory } = useQuery({
+    queryKey: [REACT_QUERY.CATEGORY_BOX_COLLECITON],
     queryFn: async () => {
-      const res = await fetchCountryData();
-      return handleQueryResponse(res);
+      const res =
+        (await getCategoryBoxCollection()) as unknown as ICategoryCollection[];
+      return getCategoryOptions(res) ?? [];
     },
-    staleTime: 5 * 60 * 1000, // 5 min
   });
 
-  const handleSubmit = (values: any) => {
+  const { data: bankOptions, isLoading: isLoadingBank } = useQuery({
+    queryKey: [REACT_QUERY.AUCTION_BANKS],
+    queryFn: async () => {
+      const res = (await fetchBanks()) as unknown as IBanks[];
+      return getBankOptions(res) ?? [];
+    },
+  });
+
+  const { data: locationOptions, isLoading: isLoadingLocation } = useQuery({
+    queryKey: [REACT_QUERY.AUCTION_LOCATION],
+    queryFn: async () => {
+      const res = (await fetchLocation()) as unknown as ILocations[];
+      return res ?? [];
+    },
+  });
+
+  const fetchAuctionRequest = async (values: {
+    category: string;
+    price: string;
+    bank: string;
+  }) => {
+    const { category, price, bank } = values;
+    const response = await getAuctionData({
+      category: category,
+      bankName: bank,
+      reservePrice: price,
+    });
+    console.log("response> ", response);
+    if (response) {
+      const data = setDataInQueryParams(values);
+      router.push(`${ROUTE_CONSTANTS.AUCTION}?q=${data}`);
+    }
+  };
+
+  const handleSubmit = async (values: any) => {
     setLoadingSearch(true);
 
     setTimeout(() => {
       setLoadingSearch(false);
     }, 1000);
-    const data = setDataInQueryParams(values);
-    router.push(`${ROUTE_CONSTANTS.AUCTION}?q=${data}`);
+    console.log(values);
+    fetchAuctionRequest(values);
   };
 
   const handleBadgeClick = (data: any) => {
@@ -94,8 +133,9 @@ const HeroSearchBox: React.FC = () => {
                         <ReactSelectDropdown
                           noDataRenderer={NoDataRendererDropdown}
                           itemRenderer={ItemRenderer}
-                          options={CATEGORIES}
+                          options={categoryOptions ?? []}
                           placeholder={"Category"}
+                          loading={isLoadingCategory}
                           customClass="w-full "
                           onChange={(e: any) => {
                             setFieldValue("category", e?.[0]?.name);
@@ -116,8 +156,8 @@ const HeroSearchBox: React.FC = () => {
                         <ReactSelectDropdown
                           noDataRenderer={NoDataRendererDropdown}
                           itemRenderer={ItemRenderer}
-                          loading={isLoading}
-                          options={dataF}
+                          loading={isLoadingLocation}
+                          options={locationOptions}
                           placeholder={"Neighborhood, City or State"}
                           customClass="w-full "
                           onChange={(e: any) => {
@@ -129,12 +169,23 @@ const HeroSearchBox: React.FC = () => {
                   </TextField>
                 </div>
                 <div className={"col-span-full"}>
-                  <TextField
-                    type="text"
-                    name="bank"
-                    label="Bank"
-                    placeholder="Enter bank"
-                  />
+                  <TextField label="Bank" name="bank" hasChildren={true}>
+                    <Field name="bank">
+                      {() => (
+                        <ReactSelectDropdown
+                          noDataRenderer={NoDataRendererDropdown}
+                          itemRenderer={ItemRenderer}
+                          options={bankOptions}
+                          loading={isLoadingBank}
+                          placeholder={"Banks"}
+                          customClass="w-full "
+                          onChange={(e: any) => {
+                            setFieldValue("bank", e?.[0]?.name);
+                          }}
+                        />
+                      )}
+                    </Field>
+                  </TextField>
                 </div>
                 <div className={"col-span-full"}>
                   <TextField
