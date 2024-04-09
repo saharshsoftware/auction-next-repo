@@ -40,7 +40,7 @@ const initialValues = {
   category: STRING_DATA.EMPTY,
   location: STRING_DATA.EMPTY,
   bank: STRING_DATA.EMPTY,
-  price: '25000000' ?? STRING_DATA.EMPTY,
+  price: '250000000' ?? STRING_DATA.EMPTY,
 };
 
 const gridElementClass = () => "lg:col-span-6 col-span-full";

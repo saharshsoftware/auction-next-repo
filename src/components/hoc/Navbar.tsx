@@ -23,6 +23,34 @@ const getWaveSvg = () => {
   );
 };
 
+const downSvg = () => {
+  return (
+    <svg
+      fill="#000000"
+      width="12px"
+      height="12px"
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path d="M11.178 19.569a.998.998 0 0 0 1.644 0l9-13A.999.999 0 0 0 21 5H3a1.002 1.002 0 0 0-.822 1.569l9 13z" />
+    </svg>
+  );
+}
+
+const upSvg = () => {
+  return (
+    <svg
+      fill="#000000"
+      width="12px"
+      height="12px"
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path d="M3 19h18a1.002 1.002 0 0 0 .823-1.569l-9-13c-.373-.539-1.271-.539-1.645 0l-9 13A.999.999 0 0 0 3 19z" />
+    </svg>
+  );
+}
+
 const Navbar: React.FC = () => {
   const router = useRouter();
   const pathname = usePathname();
@@ -113,17 +141,26 @@ const Navbar: React.FC = () => {
   const renderAuthComponent = () => {
     if (myToken) {
       return (
-        <Tooltip
-          content={<TooltipContent />}
-          isOpen={isOpen}
-          onOpenChange={(open) => setIsOpen(open)}
-        >
-          <div className="avatar placeholder">
-            <div className="bg-neutral text-neutral-content rounded-full w-12">
-              <span className="text-xl">{getInitials(userData?.name)}</span>
-            </div>
+        <>
+          <div className="relative">
+            <Tooltip
+              shadow="lg"
+              content={<TooltipContent />}
+              isOpen={isOpen}
+              onOpenChange={(open) => setIsOpen(open)}
+            >
+              <div
+                className="avatar placeholder"
+                onClick={() => setIsOpen(prev => !prev)}
+              >
+                <div className="bg-neutral text-neutral-content rounded-full w-12">
+                  <span className="text-xl">{getInitials(userData?.name)}</span>
+                </div>
+              </div>
+            </Tooltip>
+            <em className="absolute bottom-[1.2rem] -right-5">{isOpen? downSvg(): upSvg()}</em>
           </div>
-        </Tooltip>
+        </>
       );
     }
     return (

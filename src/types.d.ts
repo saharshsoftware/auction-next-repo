@@ -1,3 +1,5 @@
+declare module 'react-slick'
+
 export interface IAuction {
   [x: string]: any;
   id: string;

@@ -1,7 +1,6 @@
 import React from "react";
 import { STRING_DATA } from "@/shared/Constants";
 import { logout } from "@/server/actions";
-import ActionButton from "../atoms/ActionButton";
 
 const LogoutButton = () => {
   const handleLogout = () => {
@@ -9,11 +8,7 @@ const LogoutButton = () => {
   };
   return (
     <>
-      <ActionButton
-        text={STRING_DATA.LOGOUT}
-        isDeleteButton={true}
-        onclick={handleLogout}
-      />
+      <div className="text-sm cursor-pointer" onClick={handleLogout}>{STRING_DATA.LOGOUT}</div>
     </>
   );
 };

@@ -1,7 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 import { sanitizeStrapiImageUrl } from "@/shared/Utilies";
-import Image from "next/image";
 import React from "react";
 interface ICategroyCollection {
   item: any;
@@ -14,13 +13,12 @@ const CategoryCollection = (props: ICategroyCollection) => {
   const imageUrl = sanitizeStrapiImageUrl(item);
   return (
     <>
-      <div className="w-full">
+      <div className="w-full border border-gray-400 rounded-lg shadow p-4">
         <div className="flex flex-col items-center justify-center gap-2">
           <div className="relative w-12 h-12">
             <img
               src={imageUrl}
               alt="category_image"
-              // fill={true}
               className="object-contain bg-contain "
             />
           </div>

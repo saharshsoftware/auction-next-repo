@@ -65,7 +65,7 @@ export const INPUT_TYPE = {
 
 export const RANGE_PRICE = {
   MIN: "0",
-  MAX: "50000000",
+  MAX: "500000000",
   STEPS: "100000"
 };
 

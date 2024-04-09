@@ -152,3 +152,7 @@ body :focus-within {
 .custom-drawer-class {
   @apply fixed left-0 top-12 p-4 right-0 bg-white z-50 w-full transform duration-300 items-start bottom-0;
 }
+
+.slick-slide {
+  padding:10px;
+}
