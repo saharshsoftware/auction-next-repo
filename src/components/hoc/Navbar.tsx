@@ -148,17 +148,17 @@ const Navbar: React.FC = () => {
               content={<TooltipContent />}
               isOpen={isOpen}
               onOpenChange={(open) => setIsOpen(open)}
+              onClose={() => setIsOpen(false)}
             >
-              <div
-                className="avatar placeholder"
-                onClick={() => setIsOpen(prev => !prev)}
-              >
+              <div className="avatar placeholder">
                 <div className="bg-neutral text-neutral-content rounded-full w-12">
-                  <span className="text-xl">{getInitials(userData?.name)}</span>
+                  <span>{getInitials(userData?.name)}</span>
                 </div>
               </div>
             </Tooltip>
-            <em className="absolute bottom-[1.2rem] -right-5">{isOpen? downSvg(): upSvg()}</em>
+            <em className="absolute bottom-[1.2rem] -right-5">
+              {isOpen ? downSvg() : upSvg()}
+            </em>
           </div>
         </>
       );
