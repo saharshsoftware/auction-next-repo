@@ -1,10 +1,17 @@
 import HeroSection from "@/components/atoms/HeroSection";
+import CategoryCollection from "@/components/molecules/CategoryCollection";
+import HomeCollections from "@/components/molecules/HomeCollections";
 
 export default async function Home() {
-
-    return (
-      <main>
+  return (
+    <main className="mb-4">
+      <section>
         <HeroSection />
-      </main>
-    );
+      </section>
+      <section className="common-section">
+        {/* <CategoryCollection /> */}
+        <HomeCollections />
+      </section>
+    </main>
+  );
 }

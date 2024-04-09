@@ -10,6 +10,7 @@ import { SAMPLE_PLOT2, STRING_DATA } from "@/shared/Constants";
 import { IAuction } from "@/types";
 import NotFound from "@/app/not-found";
 import Link from "next/link";
+import BackButton from "@/components/ui/BackButton";
 
 export const metadata: Metadata = {
   title: "Find auction with amazing deals",
@@ -23,14 +24,17 @@ export default async function Page({
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
   const { slug } = params;
-  // const auctionDetail = (await getAuctionDetail({ slug })) as IAuction;
-  const auctionDetail = sanitizedAuctionDetail(SAMPLE_PLOT2?.[0]) as IAuction;
+  const auctionDetail = (await getAuctionDetail({ slug })) as IAuction;
+  // const auctionDetail = sanitizedAuctionDetail(SAMPLE_PLOT2?.[0]) as IAuction;
   if (auctionDetail) {
     return (
       <div className="flex flex-col gap-4 p-4 w-full">
         {/* {JSON.stringify(auctionDetail)} */}
+        <div className="flex justify-start items-center">
+          <BackButton />
+        </div>
         <div className="flex lg:flex-row flex-col gap-4 justify-between items-start">
-          <h2 className="custom-h2-class">{auctionDetail?.title}</h2>
+          <h2 className="custom-h2-class lg:w-3/5 break-words">{auctionDetail?.title}</h2>
           <span className="custom-prize-color font-bold text-2xl">
             {formatPrice(auctionDetail?.reservePrice)}
           </span>
@@ -87,10 +91,7 @@ export default async function Page({
             heading={STRING_DATA.AUCTION_END_D_AND_T}
             value={formattedDateAndTime(auctionDetail?.auctionEndDate ?? "")}
           />
-          <ShowLabelValue
-            heading={STRING_DATA.NOTICE}
-            hasChildren={true}
-          >
+          <ShowLabelValue heading={STRING_DATA.NOTICE} hasChildren={true}>
             <Link
               className="link primary-link"
               href={`${auctionDetail.noticeLink}`}

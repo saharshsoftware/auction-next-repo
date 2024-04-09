@@ -44,7 +44,7 @@ export interface User {
 }
 
 export interface IBanks {
-  id?: string;
+  id?: string | number;
   bankName?: string;
   createdAt?: string;
   updatedAt?: string;
@@ -52,7 +52,7 @@ export interface IBanks {
 }
 
 export interface ILocations {
-  id?: string;
+  id?: string | number;
   name?: string;
   type?: string;
   state?: string;
@@ -62,12 +62,24 @@ export interface ILocations {
 }
 
 export interface ICategoryCollection {
-  id: string;
-  categoryName?: string;
+  id: string | number; 
+  name?: string;
   collectionIcon?: string;
   totalAuctions?: number;
   createdAt?: Date;
   updatedAt?: Date;
   publishedAt?: Date;
   slug?: string;
+  categoryName?: string;
+}
+
+export interface IHomeBoxCollection {
+  id: number;
+  name: string;
+  strapiAPIQuery: string;
+  componentName: string;
+  createdAt: Date;
+  updatedAt: Date;
+  publishedAt: Date;
+  active: boolean;
 }

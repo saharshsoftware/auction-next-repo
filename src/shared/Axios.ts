@@ -1,15 +1,10 @@
+"use server"
 import { IRequest } from "@/interfaces/RequestInteface";
 import { API_BASE_URL } from "@/services/api";
 import axios, { AxiosInstance, AxiosResponse } from "axios";
 import { cookies } from "next/headers";
 
 export type RequestMethod = "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
-const cookieStore = cookies();
-
-const getToken = () => {
-  const token = cookieStore.get("auction-token")?.value;
-  return token
-}
 
 const instance: AxiosInstance = axios.create({
   baseURL: API_BASE_URL,
@@ -18,7 +13,7 @@ const instance: AxiosInstance = axios.create({
 
 instance.interceptors.request.use(
   (config: any) => {
-    const token = getToken();
+    const token = cookies()?.get("auction-token")?.value;
     if (!!token) {
       config.headers.authorization = `Bearer ${token}`;
     }

@@ -1,0 +1,25 @@
+import React from "react";
+import LogoutButton from "../ui/LogoutButton";
+import { NAVBAR_NAV_LINKS } from "@/shared/Constants";
+import Link from "next/link";
+
+const TooltipContent = () => {
+  return (
+    <>
+      <div className=" flex flex-col gap-4 p-4 bg-white rounded-lg shadow border border-gray-400 min-w-48">
+        <ul className="flex flex-col gap-4">
+          {NAVBAR_NAV_LINKS.map((nav, index) => {
+            return (
+              <li key={index}>
+                <Link href={nav?.path}>{nav?.label}</Link>
+              </li>
+            );
+          })}
+        </ul>
+        <LogoutButton />
+      </div>
+    </>
+  );
+};
+
+export default TooltipContent;

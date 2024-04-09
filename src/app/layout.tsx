@@ -10,10 +10,10 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: {
-    default: "Auction Deals",
-    template: "%s - Auction Deals",
+    default: "eauctiondekho",
+    template: "%s - eauctiondekho",
   },
-  description: "Trending Auction Deals",
+  description: "Trending eauctiondekho",
 };
 
 export default function RootLayout({

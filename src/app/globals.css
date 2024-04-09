@@ -1,11 +1,13 @@
+@import "@fortawesome/fontawesome-svg-core/styles.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --brand-color: #0099FF;
+  --brand-color: #5356FF;
   --btn-red: #DC3545;
-  --action-btn-color: #18535f;
+  --action-btn-color: #5356FF;
   --secondary-color: #18535f;
   --badge-color: #d7dbe9;
   --button-hover-color: #667085;
@@ -136,9 +138,17 @@ body :focus-within {
 }
 
 .custom-common-header-class {
-  @apply bg-[var(--secondary-color)] text-white px-4 py-2 rounded-t-md
+  @apply bg-[var(--brand-color)] text-white px-4 py-2 rounded-t-md
 }
 
 .custom-common-header-detail-class {
   @apply w-full bg-gray-100 border border-t-2 shadow
+}
+
+.collection-icon svg {
+  @apply w-12 h-12 min-w-full
+}
+
+.custom-drawer-class {
+  @apply fixed left-0 top-12 p-4 right-0 bg-white z-50 w-full transform duration-300 items-start bottom-0;
 }

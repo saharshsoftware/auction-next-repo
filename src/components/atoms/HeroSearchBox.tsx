@@ -21,29 +21,26 @@ import {
   getBankOptions,
   getCategoryOptions,
   handleQueryResponse,
+  hasNonEmptyOrNullValue,
   setDataInQueryParams,
 } from "../../shared/Utilies";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { fetchCountryData } from "@/services/landingPage";
 import { fetchBanks, fetchLocation, getAuctionData, getCategoryBoxCollection } from "@/server/actions";
 import { IBanks, ICategoryCollection, ILocations } from "@/types";
 
 const validationSchema = Yup.object({
-  category: Yup.string().trim().required(ERROR_MESSAGE.CATEGORY_REQUIRED),
-  location: Yup.string().trim().required(ERROR_MESSAGE.LOCATION_REQUIRED),
-  bank: Yup.string().trim().required(ERROR_MESSAGE.BANK_REQUIRED),
+  category: Yup.string().trim(),
+  location: Yup.string().trim(),
+  bank: Yup.string().trim(),
   price: Yup.number()
-    .required(ERROR_MESSAGE.PRICE_REQUIRED)
-    .integer(ERROR_MESSAGE.PRICE_INTEGER)
-    .positive(ERROR_MESSAGE.PRICE_POSITIVE),
 });
 
 const initialValues = {
   category: STRING_DATA.EMPTY,
   location: STRING_DATA.EMPTY,
   bank: STRING_DATA.EMPTY,
-  price: "5000" || STRING_DATA.EMPTY,
+  price: '25000000' ?? STRING_DATA.EMPTY,
 };
 
 const gridElementClass = () => "lg:col-span-6 col-span-full";
@@ -54,12 +51,13 @@ const HeroSearchBox = () => {
   const [loadingSearch, setLoadingSearch] = useState(false);
 
   const { data: categoryOptions, isLoading: isLoadingCategory } = useQuery({
-    queryKey: [REACT_QUERY.CATEGORY_BOX_COLLECITON],
+    queryKey: [REACT_QUERY.CATEGORY_BOX_COLLECITON_OPTIONS],
     queryFn: async () => {
       const res =
         (await getCategoryBoxCollection()) as unknown as ICategoryCollection[];
-      return getCategoryOptions(res) ?? [];
+      return (res) ?? [];
     },
+    staleTime: 0,
   });
 
   const { data: bankOptions, isLoading: isLoadingBank } = useQuery({
@@ -97,6 +95,7 @@ const HeroSearchBox = () => {
   };
 
   const handleSubmit = async (values: any) => {
+ 
     setLoadingSearch(true);
 
     setTimeout(() => {
@@ -196,6 +195,7 @@ const HeroSearchBox = () => {
                     value={values.price}
                     min={RANGE_PRICE.MIN}
                     max={RANGE_PRICE.MAX}
+                    step={RANGE_PRICE.STEPS}
                     customClass={"custom-range-class"}
                   />
                 </div>

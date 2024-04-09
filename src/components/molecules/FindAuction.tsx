@@ -11,9 +11,7 @@ import {
 
 import {
   getBankOptions,
-  getCategoryOptions,
   getDataFromQueryParams,
-  handleQueryResponse,
   selectedBank,
   selectedCategory,
   selectedLocation,
@@ -47,11 +45,11 @@ import { IBanks, ICategoryCollection, ILocations } from "@/types";
 
 const gridElementClass = () => "lg:col-span-3  col-span-full";
 const validationSchema = Yup.object({
-  category: Yup.string().trim().required(ERROR_MESSAGE.CATEGORY_REQUIRED),
-  location: Yup.string().trim().required(ERROR_MESSAGE.LOCATION_REQUIRED),
-  bank: Yup.string().trim().required(ERROR_MESSAGE.BANK_REQUIRED),
+  category: Yup.string().trim(),
+  location: Yup.string().trim(),
+  bank: Yup.string().trim(),
   price: Yup.number()
-    .required(ERROR_MESSAGE.PRICE_REQUIRED)
+    
     .positive(ERROR_MESSAGE.PRICE_POSITIVE)
     .integer(ERROR_MESSAGE.PRICE_INTEGER),
 });
@@ -64,11 +62,13 @@ const FindAuction: React.FC = () => {
   const { showModal, openModal, hideModal } = useModal();
 
   const { data: categoryOptions, isLoading: isLoadingCategory } = useQuery({
-    queryKey: [REACT_QUERY.CATEGORY_BOX_COLLECITON],
+    queryKey: [REACT_QUERY.CATEGORY_BOX_COLLECITON_OPTIONS],
     queryFn: async () => {
       const res =
         (await getCategoryBoxCollection()) as unknown as ICategoryCollection[];
-      return getCategoryOptions(res) ?? [];
+        console.log(res, '<><>><')
+      const updatedData = [{ id: 0, name: STRING_DATA.ALL }, ...res];
+      return updatedData ?? [];
     },
   });
 
@@ -76,7 +76,9 @@ const FindAuction: React.FC = () => {
     queryKey: [REACT_QUERY.AUCTION_BANKS],
     queryFn: async () => {
       const res = (await fetchBanks()) as unknown as IBanks[];
-      return getBankOptions(res) ?? [];
+      const responseData =  getBankOptions(res) ?? [];
+      const updatedData = [{ id: 0, name: STRING_DATA.ALL }, ...responseData];
+      return updatedData ?? [];
     },
   });
 
@@ -84,13 +86,15 @@ const FindAuction: React.FC = () => {
     queryKey: [REACT_QUERY.AUCTION_LOCATION],
     queryFn: async () => {
       const res = (await fetchLocation()) as unknown as ILocations[];
-      return res ?? [];
+      const responseData = res ?? [];
+      const updatedData = [{ id: 0, name: STRING_DATA.ALL }, ...responseData];
+      return updatedData ?? [];
     },
   });
 
   const [initialValueData, setInitialValueData] = useState<any>(
     structuredClone(
-      getDataFromQueryParams(searchParams.get("q") ?? "") ?? {
+      getDataFromQueryParams(params_search.get("q") ?? "") ?? {
         bank: STRING_DATA.EMPTY,
         price: STRING_DATA.EMPTY,
         location: STRING_DATA.EMPTY,
@@ -127,13 +131,13 @@ const FindAuction: React.FC = () => {
   };
 
   useEffect(() => {
-    if (searchParams?.get("q")) {
+    if (params_search?.get("q")) {
       const updateFormData = structuredClone(
-        getDataFromQueryParams(searchParams.get("q") ?? "")
+        getDataFromQueryParams(params_search.get("q") ?? "")
       );
       setInitialValueData(updateFormData);
     }
-  }, [searchParams?.get("q")]);
+  }, [params_search?.get("q")]);
 
   useEffect(() => {
     handleResize();
@@ -190,6 +194,7 @@ const FindAuction: React.FC = () => {
                 } items-end justify-between gap-4 `}
               >
                 <div className="grid gap-4 grid-cols-12 w-full ">
+                  {/* {JSON.stringify(values.category)} */}
                   <div className={gridElementClass()}>
                     <TextField
                       label={"Categories"}
@@ -199,7 +204,12 @@ const FindAuction: React.FC = () => {
                       <Field name="category">
                         {() => (
                           <ReactSelectDropdown
-                            defaultValue={selectedCategory(categoryOptions ?? [], initialValueData)}
+                            defaultValue={selectedCategory(
+                              categoryOptions ?? [],
+                              initialValueData?.category
+                                ? initialValueData
+                                : { category: STRING_DATA.ALL }
+                            )}
                             noDataRenderer={NoDataRendererDropdown}
                             itemRenderer={ItemRenderer}
                             options={categoryOptions ?? []}
@@ -207,7 +217,11 @@ const FindAuction: React.FC = () => {
                             placeholder={"Category"}
                             customClass="w-full "
                             onChange={(e) => {
-                              setFieldValue("category", e?.[0]?.name);
+                              if (e?.[0]?.name !== STRING_DATA.ALL) {
+                                setFieldValue("category", e?.[0]?.name);
+                                return;
+                              }
+                              setFieldValue("category", "");
                             }}
                           />
                         )}
@@ -227,14 +241,20 @@ const FindAuction: React.FC = () => {
                             itemRenderer={ItemRenderer}
                             defaultValue={selectedLocation(
                               locationOptions ?? [],
-                              initialValueData
+                              initialValueData?.location
+                                ? initialValueData
+                                : { location: STRING_DATA.ALL }
                             )}
                             loading={isLoadingLocation}
                             options={locationOptions}
                             placeholder={"Location"}
                             customClass="w-full "
                             onChange={(e) => {
-                              setFieldValue("location", e?.[0]?.name);
+                              if (e?.[0]?.name !== STRING_DATA.ALL) {
+                                setFieldValue("location", e?.[0]?.name);
+                                return;
+                              }
+                              setFieldValue("location", "");
                             }}
                           />
                         )}
@@ -250,14 +270,20 @@ const FindAuction: React.FC = () => {
                             itemRenderer={ItemRenderer}
                             defaultValue={selectedBank(
                               bankOptions ?? [],
-                              initialValueData
+                              initialValueData?.bank
+                                ? initialValueData
+                                : { bank: STRING_DATA.ALL }
                             )}
                             loading={isLoadingBank}
                             options={bankOptions}
                             placeholder={"Banks"}
                             customClass="w-full "
                             onChange={(e: any) => {
-                              setFieldValue("bank", e?.[0]?.name);
+                              if (e?.[0]?.name !== STRING_DATA.ALL) {
+                                setFieldValue("bank", e?.[0]?.name);
+                                return;
+                              }
+                              setFieldValue("bank", "");
                             }}
                           />
                         )}
@@ -302,32 +328,6 @@ const FindAuction: React.FC = () => {
     );
   };
 
-  const renderSearchComponent = () => {
-    return (
-      <CustomFormikForm
-        initialValues={{ search: "" }}
-        wantToUseFormikEvent={true}
-        handleSubmit={(values: any) => console.log(values)}
-      >
-        {({ values, setFieldValue }: any) => (
-          <Form>
-            <div className="flex items-center justify-center gap-2">
-              <div className="flex-1">
-                <TextField
-                  type="text"
-                  name="search"
-                  value={values.search}
-                  placeholder="Location or Property name"
-                  isSearch={true}
-                  customClass={"form-controls-search"}
-                />
-              </div>
-            </div>
-          </Form>
-        )}
-      </CustomFormikForm>
-    );
-  };
   return (
     <>
       <CustomModal openModal={openModal}>
@@ -335,13 +335,6 @@ const FindAuction: React.FC = () => {
       </CustomModal>
       <div className="bg-[#e3e3e3] sticky left-0 right-0 top-0  z-20">
         {renderData()}
-        {pathname === ROUTE_CONSTANTS.AUCTION ? (
-          <div className="common-section bg-white py-4">
-            <div className="flex items-center justify-end">
-              {renderSearchComponent()}
-            </div>
-          </div>
-        ) : null}
       </div>
     </>
   );

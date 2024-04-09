@@ -6,6 +6,9 @@ export const COOKIES = {
 };
 
 export const STRING_DATA = {
+  ALL: "All",
+  BACK: "Back",
+  EAUCTION_DEKHO: "eauctiondekho",
   EMPTY: "",
   LOGOUT: "Logout",
   ALREADY_HAVE_ACCOUNT: "Already have an account?",
@@ -42,7 +45,15 @@ export const STRING_DATA = {
   TOP_CITY: "Top City",
   SERVICE_PROVIDER: "Service provider",
   BRANCH_NAME: "Branch name",
+  MANAGE_LIST: "Manage list",
+  MANAGE_ALERT: "Manage alert",
 };
+
+export const NAVBAR_NAV_LINKS = [
+  { path: ROUTE_CONSTANTS.PROFILE, label: STRING_DATA.PROFILE },
+  { path: ROUTE_CONSTANTS.MANAGE_LIST, label: STRING_DATA.MANAGE_LIST },
+  { path: ROUTE_CONSTANTS.MANAGE_ALERT, label: STRING_DATA.MANAGE_ALERT },
+];
 
 export const INPUT_TYPE = {
   TEXT: "text",
@@ -54,7 +65,8 @@ export const INPUT_TYPE = {
 
 export const RANGE_PRICE = {
   MIN: "0",
-  MAX: "100000",
+  MAX: "50000000",
+  STEPS: "100000"
 };
 
 export const ERROR_MESSAGE = {
@@ -989,9 +1001,11 @@ export const SAMPLE_PLOT2 = [
 
 export const REACT_QUERY = {
   COUNTRIES: "Countries",
+  HOME_BOX_COLLETIONS: "Home-box-collections",
   CATEGORY_BOX_COLLECITON: "Categroy-box-collection",
+  CATEGORY_BOX_COLLECITON_OPTIONS: "Categroy-box-collection-options",
   AUCTION_BANKS: "Auction-bank",
-  AUCTION_LOCATION: "Auction-location"
+  AUCTION_LOCATION: "Auction-location",
 };
 
 export const SAMPLE_CITY = [

@@ -13,7 +13,7 @@ const Footer: React.FC = () => {
               className="footer-title cursor-pointer"
               href={ROUTE_CONSTANTS.DASHBOARD}
             >
-              {STRING_DATA.AUCTION.toUpperCase()}
+              {STRING_DATA.EAUCTION_DEKHO.toUpperCase()}
             </Link>
             {NAV_LINKS.map((item, index) => (
               <Link href={item.path} key={index} className="link link-hover">

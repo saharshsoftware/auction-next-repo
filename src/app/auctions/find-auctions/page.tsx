@@ -16,13 +16,14 @@ export default async function Page({
   params: { slug: string };
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
-  const { category, bank, price } = getDataFromQueryParams(
+  const { category, bank, price, location } = getDataFromQueryParams(
     searchParams?.q ? searchParams?.q.toString() : ""
   );
   const data = await getAuctionData({
     category: category,
     bankName: bank,
     reservePrice: price,
+    location: location
   });
   // console.log(data, "data")
   if (data) {

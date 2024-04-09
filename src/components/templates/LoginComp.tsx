@@ -13,6 +13,9 @@ import { FormikValues } from "formik";
 import { login } from "@/server/actions/auth";
 import ActionCheckbox from "../atoms/ActionCheckbox";
 import Link from "next/link";
+// import { authenticate } from "@/app/lib/actions";
+// import { signIn } from "@/auth";
+import { signIn } from "next-auth/react";
 
 const validationSchema = Yup.object({
   email: Yup.string().trim().required(ERROR_MESSAGE.EMAIL_REQUIRED),
@@ -54,8 +57,18 @@ export default function LoginComp() {
       identifier: values.email,
       password: values.password,
     };
-
+    // debugger;
     mutate({ formData });
+    // const formData = new FormData(values);
+    // await authenticate({identifier: "", password: ""});
+
+  //  const response = await signIn("credentials", {
+  //    email: "email",
+  //    password: "password",
+  //    redirect: false,
+  //  });
+  //  debugger
+  //  console.log(response, "reponse")
   };
   return (
     <>

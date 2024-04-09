@@ -3,6 +3,7 @@ import { IActionResponse } from "../interfaces/RequestInteface";
 import { STORE_KEY } from "../zustandStore/store";
 import { IAuction, IBanks, ICategoryCollection, ILocations } from "@/types";
 import { AxiosError } from "axios";
+import { STRING_DATA } from "./Constants";
 
 export const getDataFromLocalStorage = () => {
   const storedData = localStorage.getItem(STORE_KEY);
@@ -52,15 +53,24 @@ export const formatPrice = (price: any) => {
   if (isNaN(price)) {
     return "Invalid price";
   }
-  const formattedPrice = price.toLocaleString("en-US", {
-    style: "decimal",
-    // minimumFractionDigits: 2
-  });
+  let formattedPrice: string;
+
+  if (price >= 10000000) {
+    // If price is greater than or equal to 1 crore (10,000,000)
+    formattedPrice =
+      (price / 10000000).toLocaleString("en-IN", { style: "decimal" }) + " Cr";
+  } else if (price >= 100000) {
+    // If price is greater than or equal to 1 lakh (100,000)
+    formattedPrice =
+      (price / 100000).toLocaleString("en-IN", { style: "decimal" }) + " Lakh";
+  } else {
+    formattedPrice = price.toLocaleString("en-IN", { style: "decimal" });
+  }
   return `₹ ${formattedPrice}`;
 };
 
 export const formattedDate = (data: string | Date) =>
-  moment(data)?.format("ll");
+  moment(data)?.format("D MMM, YYYY h:mm A");
 export const formattedDateAndTime = (data: string | Date) =>
   moment(data)?.format("MMM Do YYYY, h:mm:ss A");
 
@@ -118,7 +128,7 @@ export const selectedLocation = (
 
 export const selectedCategory = (
   data: ICategoryCollection[],
-  initialValueData: { category?: any }
+  initialValueData: { category?: string }
 ) => {
   console.log(data, "categegory");
   if (data?.length) {
@@ -141,3 +151,27 @@ export const selectedBank = (
   }
   return [];
 };
+
+
+export const sanitizeStrapiImageUrl = (item:any) => {
+  const result =
+    "https://newt-classic-briefly.ngrok-free.app" +
+    item?.image?.data?.attributes?.url;
+  return result
+}
+
+export const hasNonEmptyOrNullValue = (obj: any) => {
+    for (let key in obj) {
+      if (obj.hasOwnProperty(key) && (obj[key] !== "" || obj[key] !== null)) {
+        return false; // Found a non-empty and non-null value
+      }
+    }
+    return true;
+};
+
+export function getInitials(name: string) {
+  return name
+    ?.split(" ")
+    .map((word: string) => word.charAt(0).toUpperCase())
+    .join("");
+}

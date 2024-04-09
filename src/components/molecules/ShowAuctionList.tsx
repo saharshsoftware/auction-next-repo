@@ -5,6 +5,7 @@ import { ROUTE_CONSTANTS } from "@/shared/Routes";
 import { IAuction } from "@/types";
 import { sanitizedAuctionData } from "@/shared/Utilies";
 import { SAMPLE_PLOT2 } from "@/shared/Constants";
+import NoDataImage from "../ui/NoDataImage";
 
 const ShowAuctionList = ({
   searchParams,
@@ -23,9 +24,10 @@ const ShowAuctionList = ({
 
   if (responseData?.length === 0) {
     return (
-      <div className="flex items-center justify-center flex-col h-1/2">
-        <p>No Result found</p>
-        <span>(Try using another filter)</span>
+      <div className="flex items-center justify-center flex-col h-[70vh]">
+        {/* <p>No Result found</p>
+        <span>(Try using another filter)</span> */}
+        <NoDataImage />
       </div>
     );
   }
