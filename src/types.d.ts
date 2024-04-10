@@ -85,3 +85,50 @@ export interface IHomeBoxCollection {
   publishedAt: Date;
   active: boolean;
 }
+
+
+export interface IFavouriteList {
+  id: string;
+  name: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface IFavouriteListProperty {
+  id: string;
+  createdAt: Date;
+  updatedAt: Date;
+  property: IProperty;
+}
+
+export interface IProperty {
+  id: string;
+  propertyType: string;
+  location: string;
+  bankName: string;
+  branchName: string;
+  serviceProvider: string;
+  borrowerName: string;
+  assetCategory: string;
+  auctionType: string;
+  noticeLink: string;
+  authorisedOfficerContactPerson: null;
+  auctionDate: Date;
+  auctionStartTime: Date;
+  auctionEndDate: Date;
+  applicationSubmissionDate: Date;
+  reservePrice: number;
+  emd: number;
+  createdAt: Date;
+  updatedAt: Date;
+  publishedAt: Date;
+  title: string;
+  contactNo: null;
+  auctionId: null;
+  description: string;
+  state: null;
+  city: null;
+  area: null;
+  contact: null;
+  noticeImageURL: null;
+}

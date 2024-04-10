@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import { formatPrice, formattedDate } from "@/shared/Utilies";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
 import { SAMPLE_CITY, SAMPLE_PLOT, STRING_DATA } from "@/shared/Constants";
+import AddToWishlist from "../templates/AddToWishlist";
 
 const ShowSimilerProperties = (props: { item: any; index: number }) => {
   const { item, index } = props;
@@ -54,6 +55,15 @@ const RecentData: React.FC = () => {
             <ShowSimilerProperties item={item} index={index} key={index} />
           );
         })}
+
+        <div className="mt-4">
+          <div className="custom-common-header-class">
+            {STRING_DATA.YOUR_LIST}
+          </div>
+          {/* <div className="custom-common-header-detail-class"> */}
+            <AddToWishlist />
+          {/* </div> */}
+        </div>
       </>
     );
   };

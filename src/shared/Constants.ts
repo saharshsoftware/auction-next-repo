@@ -6,6 +6,10 @@ export const COOKIES = {
 };
 
 export const STRING_DATA = {
+  MESSAGE_PROCEED: "Are you sure you want to proceed?",
+  CONFIRMATION: "Confirmation",
+  ADD: "Add",
+  YOUR_LIST: "Your list",
   ALL: "All",
   BACK: "Back",
   EAUCTION_DEKHO: "eauctiondekho",
@@ -47,6 +51,7 @@ export const STRING_DATA = {
   BRANCH_NAME: "Branch name",
   MANAGE_LIST: "Manage list",
   MANAGE_ALERT: "Manage alert",
+  ADD_TO_LIST: "Add to list"
 };
 
 export const NAVBAR_NAV_LINKS = [
@@ -87,6 +92,7 @@ export const ERROR_MESSAGE = {
   NAME_REQUIRED: "Name is required",
   MAX_NAME_30: "Name should not exceed 30 characters",
   PASSWORDS_MUST_MATCH: "Passwords must match",
+  LIST_REQUIRED: "List is required"
 };
 
 export const NAV_LINKS = [
@@ -1006,6 +1012,8 @@ export const REACT_QUERY = {
   CATEGORY_BOX_COLLECITON_OPTIONS: "Categroy-box-collection-options",
   AUCTION_BANKS: "Auction-bank",
   AUCTION_LOCATION: "Auction-location",
+  FAVOURITE_LIST: "Favourite-list",
+  FAVOURITE_LIST_PROPERTY: "Favourite-list-property",
 };
 
 export const SAMPLE_CITY = [

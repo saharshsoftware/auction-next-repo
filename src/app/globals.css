@@ -36,16 +36,26 @@ body :focus-within {
   outline: none;
 }
 
-::-webkit-scrollbar {
-  width: 1px;
-}
+@layer utilities {
+  .scrollbar::-webkit-scrollbar {
+    width: 1px;
+    height: 1px;
+  }
 
-::-webkit-scrollbar-track {
-  background-color: #f2f2f2;
-}
+  .scrollbar::-webkit-scrollbar-track {
+    border-radius: 100vh;
+    background: #f7f4ed;
+  }
 
-::-webkit-scrollbar-thumb {
-  background-color: #000;
+  .scrollbar::-webkit-scrollbar-thumb {
+    background: #e0cbcb;
+    border-radius: 100vh;
+    border: 3px solid #f6f7ed;
+  }
+
+  .scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #c0a0b9;
+  }
 }
 
 .form-controls {
@@ -66,6 +76,10 @@ body :focus-within {
 
 .common-auth-section-class {
   @apply mx-auto lg:w-2/5 md:w-1/2 sm:w-3/5 w-11/12 border md:p-8 p-4 shadow rounded-lg
+}
+
+.common-list-section-class {
+  @apply mx-auto lg:w-3/5 sm:w-4/5 w-11/12 border md:p-8 p-4 shadow rounded-lg
 }
 
 .custom-action-button-class {
