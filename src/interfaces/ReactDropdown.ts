@@ -8,4 +8,5 @@ export interface IReactSelectDropdown {
   name?: string;
   placeholder?: string;
   defaultValue?: any;
+  resetKey?: boolean
 }

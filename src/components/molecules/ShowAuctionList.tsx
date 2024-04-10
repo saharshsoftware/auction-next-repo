@@ -3,17 +3,41 @@ import AuctionCard from "../atoms/AuctionCard";
 import { redirect } from "next/navigation";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
 import { IAuction } from "@/types";
-import { sanitizedAuctionData } from "@/shared/Utilies";
+import { getDataFromQueryParams, sanitizedAuctionData, setDataInQueryParams } from "@/shared/Utilies";
 import { SAMPLE_PLOT2 } from "@/shared/Constants";
 import NoDataImage from "../ui/NoDataImage";
+import PaginationComp from "../atoms/PaginationComp";
+import { revalidatePath } from "next/cache";
 
 const ShowAuctionList = ({
   searchParams,
   responseData,
+  meta
 }: {
   searchParams: any;
   responseData: IAuction[];
+  meta: any;
 }) => {
+
+  const handlePageChange = async (page: number)=> {
+    "use server"
+    console.log(page, "pagepagination")
+      // const { category, bank, price, location } = getDataFromQueryParams(
+      //   searchParams?.q ? searchParams?.q.toString() : ""
+      // );
+      // const updateParams = {
+      //   category,
+      //   bank,
+      //   price,
+      //   location,
+      //   page
+      // };
+      // console.log(updateParams, "updateParams");
+      // const data = setDataInQueryParams(updateParams);
+      // const path = `${ROUTE_CONSTANTS.AUCTION}?q=${data}`;
+      // revalidatePath(path, "page");
+  }
+
   const handleClick = async (data: any) => {
     "use server";
     redirect(
@@ -31,6 +55,8 @@ const ShowAuctionList = ({
       </div>
     );
   }
+
+  // console.log(meta, "meta");
   return (
     <>
       <div className="flex flex-col gap-4 w-full">
@@ -42,6 +68,7 @@ const ShowAuctionList = ({
           );
         })}
       </div>
+      <PaginationComp totalPage={meta?.total} onChangePage={handlePageChange} />
     </>
   );
 };

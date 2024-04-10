@@ -16,20 +16,21 @@ export default async function Page({
   params: { slug: string };
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
-  const { category, bank, price, location } = getDataFromQueryParams(
+  const { category, bank, price, location, page } = getDataFromQueryParams(
     searchParams?.q ? searchParams?.q.toString() : ""
   );
-  const data = await getAuctionData({
+  const { sendResponse: data, meta } = await getAuctionData({
     category: category,
     bankName: bank,
     reservePrice: price,
-    location: location
-  });
+    location: location,
+    page: page
+  }) as unknown as any;
   // console.log(data, "data")
   if (data) {
     return (
       <>
-        <ShowAuctionList searchParams={searchParams} responseData={data} />
+        <ShowAuctionList searchParams={searchParams} responseData={data} meta={meta}/>
       </>
     );
   }

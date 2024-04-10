@@ -7,7 +7,7 @@ import TextField from "../atoms/TextField";
 import * as Yup from "yup";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { handleOnSettled } from "@/shared/Utilies";
-import { createFavouriteList } from "@/server/actions/favouriteList";
+import { updateFavouriteList } from "@/server/actions/favouriteList";
 import { Form } from "formik";
 
 interface ICreateFavList {
@@ -33,7 +33,7 @@ const EditFavList = (props: ICreateFavList) => {
 
   // Mutations
   const { mutate, isPending } = useMutation({
-    mutationFn: createFavouriteList,
+    mutationFn: updateFavouriteList,
     onSettled: async (data) => {
       console.log(data);
       const response = {
@@ -54,11 +54,16 @@ const EditFavList = (props: ICreateFavList) => {
     },
   });
 
-  const handleFavlist = (values:{name: string}) => {
+  const handleFavlist = (values: { list_name: string }) => {
     const body = {
-      name: values?.name
-    }
-    mutate(body);
+      name: values?.list_name,
+    };
+    const payload = {
+      body,
+      id: fieldata?.id,
+    };
+    console.log(payload);
+    mutate(payload);
   };
   return (
     <>

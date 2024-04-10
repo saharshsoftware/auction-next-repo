@@ -24,48 +24,47 @@ const initialValues = {
 
 const AddToWishlist = () => {
   const params = useParams<{ slug: string; item: string }>();
- 
+
   const { data: favouriteListData, isLoading: isLoadingFavourite } = useQuery({
     queryKey: [REACT_QUERY.FAVOURITE_LIST],
     queryFn: async () => {
       const res = (await fetchFavoriteList()) as unknown as IFavouriteList[];
-      console.log(res, "list111");
-      return res ?? [];
+      return res ?? []
     },
   });
 
-    // const queryClient = useQueryClient();
-    const [respError, setRespError] = useState<string>("");
+  // const queryClient = useQueryClient();
+  const [respError, setRespError] = useState<string>("");
 
-    // Mutations
-    const { mutate, isPending } = useMutation({
-      mutationFn: addPropertyToFavouriteList,
-      onSettled: async (data) => {
-        console.log(data);
-        const response = {
-          data,
-          success: () => {
-            // queryClient.invalidateQueries({
-            //   queryKey: [REACT_QUERY.FAVOURITE_LIST],
-            // });
-          },
-          fail: (error: any) => {
-            const { message } = error;
-            setRespError(message);
-          },
-        };
-        handleOnSettled(response);
-      },
-    });
-
-    const addPropertyToFavourite = (values: { wishlist: string }) => {
-      const body = {
-        listId: values?.wishlist?.toString(),
-        propertyId: params?.slug,
+  // Mutations
+  const { mutate, isPending } = useMutation({
+    mutationFn: addPropertyToFavouriteList,
+    onSettled: async (data) => {
+      const response = {
+        data,
+        success: () => {
+          // queryClient.invalidateQueries({
+          //   queryKey: [REACT_QUERY.FAVOURITE_LIST],
+          // });
+        },
+        fail: (error: any) => {
+          const { message } = error;
+          setRespError(message);
+        },
       };
-      console.log(body)
-      mutate(body);
+      handleOnSettled(response);
+    },
+  });
+
+  const addPropertyToFavourite = (values: any) => {
+    const body = {
+      listId: values?.wishlist?.toString(),
+      propertyId: params?.slug,
     };
+    console.log(body);
+    mutate(body);
+    // resetForm();
+  };
 
   return (
     <>
@@ -74,11 +73,19 @@ const AddToWishlist = () => {
           initialValues={initialValues}
           validationSchema={validationSchema}
           wantToUseFormikEvent={true}
-          handleSubmit={addPropertyToFavourite}
+          enableReinitialize={true}
+          handleSubmit={(values: any, actions: any) => {
+            // actions.resetForm();
+            addPropertyToFavourite({ ...values });
+            // setTimeout(() => {
+            //   actions.setFieldValue("wishlist", "");
+            // }, 1000);
+          }}
         >
           {({ setFieldValue, values }: any) => (
             <Form>
               <div className="flex flex-col gap-4 ">
+                {/* {JSON.stringify(values?.wishlist)} */}
                 <TextField name={"wishlist"} hasChildren={true}>
                   <Field name="wishlist">
                     {() => (
@@ -87,6 +94,7 @@ const AddToWishlist = () => {
                         itemRenderer={ItemRenderer}
                         options={favouriteListData ?? []}
                         placeholder={"Add to list"}
+                        name={"wishlist"}
                         loading={isLoadingFavourite}
                         customClass="w-full "
                         onChange={(e: any) => {
@@ -100,7 +108,8 @@ const AddToWishlist = () => {
                   isSubmit={true}
                   text="Add"
                   isLoading={isPending}
-                  customClass='w-full'
+                  disabled={isLoadingFavourite}
+                  customClass="w-full"
                 />
               </div>
             </Form>

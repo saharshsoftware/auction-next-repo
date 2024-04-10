@@ -80,16 +80,18 @@ const HeroSearchBox = () => {
     category: string;
     price: string;
     bank: string;
+    location: string;
   }) => {
-    const { category, price, bank } = values;
+    const { category, price, bank, location } = values;
     const response = await getAuctionData({
       category: category,
       bankName: bank,
       reservePrice: price,
+      location: location,
     });
     console.log("response> ", response);
     if (response) {
-      const data = setDataInQueryParams(values);
+      const data = setDataInQueryParams({page:1 , ...values});
       router.push(`${ROUTE_CONSTANTS.AUCTION}?q=${data}`);
     }
   };

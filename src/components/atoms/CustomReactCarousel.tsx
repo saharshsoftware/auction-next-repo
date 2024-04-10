@@ -53,7 +53,7 @@ const CustomReactCarousel = (props: ICustomReactCarousel) => {
 
   return (
     <>
-      <div className={"carousel-container"}>
+      <div className={"carousel-container mb-4"}>
         <div className={"carousel-header"}>
           <div className={"ps-[10px] text-lg"}>
             <span>{title ?? "-"}</span>

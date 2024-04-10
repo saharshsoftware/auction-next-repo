@@ -1,7 +1,7 @@
 "use server";
 
 import { API_BASE_URL, API_ENPOINTS } from "@/services/api";
-import { deleteRequest, getRequest, postRequest } from "@/shared/Axios";
+import { deleteRequest, getRequest, postRequest, putRequest } from "@/shared/Axios";
 
 export const fetchFavoriteList = async () => {
   try {
@@ -54,6 +54,7 @@ export const deleteFavoriteList = async (params: { id: string }) => {
 export const addPropertyToFavouriteList = async (body: {
   listId: string;
   propertyId: string;
+  resetForm?: any
 }) => {
   try {
     const URL = API_BASE_URL + API_ENPOINTS.FAVOURITE_LIST_PROPERTY + "/create";
@@ -76,5 +77,19 @@ export const removePropertyFromFavoriteList = async (params: { id: string }) => 
     return data;
   } catch (e) {
     console.log(e, "location error");
+  }
+};
+
+export const updateFavouriteList = async (payload: {id:string ,body: {name: string }}) => {
+  try {
+    const {id, body} = payload
+    const URL = API_BASE_URL + API_ENPOINTS.FAVOURITE_LIST+`/${id}`;
+    const { data } = await putRequest({
+      API: URL,
+      DATA: body,
+    });
+    return data;
+  } catch (error: any) {
+    return error?.response?.data;
   }
 };
