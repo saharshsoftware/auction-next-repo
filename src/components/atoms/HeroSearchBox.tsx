@@ -214,7 +214,7 @@ const HeroSearchBox = () => {
             </Form>
           )}
         </CustomFormikForm>
-        <label className="block text-sm font-medium text-gray-900 text-left">
+        {/* <label className="block text-sm font-medium text-gray-900 text-left">
           {STRING_DATA.POPULER_CITIES}
         </label>
         <div className="flex flex-wrap gap-2">
@@ -226,7 +226,7 @@ const HeroSearchBox = () => {
               onclick={handleBadgeClick}
             />
           ))}
-        </div>
+        </div> */}
       </div>
     </>
   );

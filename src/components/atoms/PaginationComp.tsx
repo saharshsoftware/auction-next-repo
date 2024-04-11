@@ -1,34 +1,40 @@
-"use client"
-import React from 'react'
-import {
-  Pagination,
-  PaginationItem,
-  PaginationCursor,
-} from "@nextui-org/pagination";
+"use client";
+import React from "react";
+import ReactPaginate from "react-paginate";
+import "./style.css";
 
-interface IPaginationComp {
-  onChangePage?: (page: number) => void;
-  totalPage: number
+interface IReactPaginate {
+  rowsPerPage?: number;
+  activePage: number;
+  totalCount?: number;
+  totalPage: number;
+  onPageChange: (selectedItem: { selected: number }) => void;
 }
 
-const PaginationComp = (props: IPaginationComp) => {
-  const { onChangePage, totalPage } = props;
+const ReactPagination = (props: IReactPaginate) => {
+  const {
+    rowsPerPage,
+    activePage=1,
+    totalCount,
+    totalPage,
+    onPageChange = () => {},
+  } = props;
+
   return (
-    <>
-      <Pagination
-        className="overflow-auto"
-        classNames={{
-          wrapper: "gap-0 overflow-visible h-8 rounded border border-divider",
-          item: "w-8 h-8 text-small rounded-none bg-transparent",
-          cursor:
-            "bg-gradient-to-b shadow-lg from-default-500 to-default-800 dark:from-default-300 dark:to-default-100 text-white font-bold",
-        }}
-        total={totalPage}
-        initialPage={1}
-        onChange={onChangePage}
+    <div className="my-4 ">
+      <ReactPaginate
+        previousLabel="< previous"
+        breakLabel="..."
+        nextLabel="next >"
+        pageCount={totalPage}
+        onPageChange={onPageChange}
+        // marginPagesDisplayed={1}
+        // pageRangeDisplayed={3}
+        forcePage={activePage - 1}
+        className="flex justify-center pagination"
       />
-    </>
+    </div>
   );
-}
+};
 
-export default PaginationComp
+export default ReactPagination;

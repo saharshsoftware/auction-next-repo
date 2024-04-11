@@ -87,7 +87,8 @@ body :focus-within {
 }
 
 .custom-badge-class {
-  @apply bg-[var(--badge-color)] px-4 py-2 max-w-fit rounded-full text-black min-w-fit cursor-pointer
+  /* @apply bg-[var(--badge-color)] px-4 py-2 max-w-fit rounded-full text-black min-w-fit cursor-pointer */
+  @apply inline-block p-4 border-b-2 border-transparent rounded-t-lg cursor-pointer 
 }
 
 
@@ -140,7 +141,8 @@ body :focus-within {
 }
 
 .active-badge-class {
-  @apply bg-neutral text-neutral-content
+  /* @apply bg-neutral text-neutral-content */
+  @apply text-blue-600 border-b-2 border-blue-600
 }
 
 .custom-range-class {

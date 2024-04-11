@@ -97,16 +97,7 @@ const EditFavList = (props: ICreateFavList) => {
                         {respError}
                       </span>
                     ) : null}
-                    <div className="flex justify-between items-center gap-4 flex-wrap">
-                      <div>
-                        <ActionButton
-                          text="Delete"
-                          isDeleteButton={true}
-                          onclick={deleteAction}
-                          isActionButton={false}
-                          isLoading={deleteLoading}
-                        />
-                      </div>
+                    
                       <div className="flex justify-end items-center gap-4 flex-wrap">
                         <ActionButton
                           isSubmit={true}
@@ -119,7 +110,7 @@ const EditFavList = (props: ICreateFavList) => {
                           isActionButton={false}
                         />
                       </div>
-                    </div>
+                    
                   </div>
                 </Form>
               )}

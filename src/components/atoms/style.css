@@ -1,0 +1,39 @@
+
+.pagination {
+  @apply m-0 list-none;
+
+  li {
+    @apply mx-1;
+
+    &.previous a,
+    &.next a {
+      @apply bg-center bg-no-repeat;
+
+      /* For background-image, you'll need to set it inline or in a separate class */
+      background-image: url(../../assets/images/right_icon.svg);
+      background-size: 18px;
+      font-size: 0;
+    }
+
+    &.previous {
+      transform: scaleX(-1); /* Use scaleX instead of scale(-1) */
+    }
+
+    a {
+      @apply rounded-md w-10 h-10 flex items-center justify-center p-1 border border-gray-400 font-semibold text-sm;
+    }
+
+    &:hover,
+    &.selected {
+      a {
+        @apply bg-[var(--brand-color)] text-white
+      }
+    }
+
+    &.disabled {
+      a {
+        @apply pointer-events-none opacity-50;
+      }
+    }
+  }
+}

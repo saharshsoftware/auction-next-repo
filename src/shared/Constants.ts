@@ -6,6 +6,7 @@ export const COOKIES = {
 };
 
 export const STRING_DATA = {
+  REMOVE: "Remove",
   MESSAGE_PROCEED: "Are you sure you want to proceed?",
   CONFIRMATION: "Confirmation",
   ADD: "Add",
@@ -51,7 +52,9 @@ export const STRING_DATA = {
   BRANCH_NAME: "Branch name",
   MANAGE_LIST: "Manage list",
   MANAGE_ALERT: "Manage alert",
-  ADD_TO_LIST: "Add to list"
+  ADD_TO_LIST: "Add to list",
+  NO_DATA_FOUND_LIST_PROPERTY: "No property added to the list. Please go to the property detail and add the property in your desired list",
+  NO_DATA_FOUND_LIST: "You can organize your favorite properties by categorizing it into various lists"
 };
 
 export const NAVBAR_NAV_LINKS = [
@@ -1014,6 +1017,7 @@ export const REACT_QUERY = {
   AUCTION_LOCATION: "Auction-location",
   FAVOURITE_LIST: "Favourite-list",
   FAVOURITE_LIST_PROPERTY: "Favourite-list-property",
+  FIND_AUCTION: "Find-auction"
 };
 
 export const SAMPLE_CITY = [

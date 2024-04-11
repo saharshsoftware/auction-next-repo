@@ -89,7 +89,7 @@ const FavouriteListProperty = (props: IFavouriteListPropertyComp) => {
     }
 
     if (favouriteListPropertyData?.length === 0) {
-      return <div className="text-center">No data found </div>;
+      return <div className="text-center">{STRING_DATA.NO_DATA_FOUND_LIST_PROPERTY}</div>;
     }
     return (
       <>

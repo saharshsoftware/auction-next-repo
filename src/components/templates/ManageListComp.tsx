@@ -13,6 +13,10 @@ import FavouriteListProperty from "./FavouriteListProperty";
 import ConfirmationModal from "../ modals/ConfirmationModal";
 import EditFavList from "../ modals/EditFavList";
 import { handleOnSettled } from "@/shared/Utilies";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus } from "@fortawesome/free-solid-svg-icons/faPlus";
+import { faTrash } from "@fortawesome/free-solid-svg-icons/faTrash";
+import { faPencil } from "@fortawesome/free-solid-svg-icons/faPencil";
 
 const ManageListComp = () => {
   const queryClient = useQueryClient();
@@ -63,17 +67,16 @@ const ManageListComp = () => {
     mutationFn: deleteFavoriteList,
     onSettled: async (data) => {
       console.log(data);
+      hideModalDelete();
       const response = {
         data,
         success: () => {
           queryClient.invalidateQueries({
             queryKey: [REACT_QUERY.FAVOURITE_LIST],
           });
-          hideModalEdit()
         },
         fail: (error: any) => {
           const { message } = error;
-          hideModalEdit()
           // setRespError(message);
         },
       };
@@ -101,7 +104,7 @@ const ManageListComp = () => {
   const handleDeleteAction = () => {
     // refetch();
 
-    mutate({ id: selectedBadge?.id });
+    mutate({ id: activeBadgeData?.id ?? '' });
   };
 
   const renderData = () => {
@@ -110,7 +113,7 @@ const ManageListComp = () => {
     }
 
     if (favouriteListData?.length === 0) {
-      return <div className="text-center">No data found</div>;
+      return <div className="text-center">{STRING_DATA.NO_DATA_FOUND_LIST}</div>;
     }
     return (
       <>
@@ -125,6 +128,23 @@ const ManageListComp = () => {
               showSettingIcon={true}
             />
           ))}
+        </div>
+        <hr className="border-[0.25px] border-zinc-400" />
+        <div className="flex items-center justify-between gap-4 mb-4">
+          <div className="custom-h2-class">{activeBadgeData?.name}</div>
+          <div className="flex items-center justify-end gap-4">
+            <ActionButton
+              text="Edit"
+              onclick={showModalEdit}
+              icon={<FontAwesomeIcon icon={faPencil} />}
+            />
+            <ActionButton
+              text="Delete"
+              onclick={showModalDelete}
+              icon={<FontAwesomeIcon icon={faTrash} />}
+              isDeleteButton={true}
+            />
+          </div>
         </div>
         {activeBadgeData ? (
           <FavouriteListProperty listId={activeBadgeData?.id ?? ""} />
@@ -144,24 +164,28 @@ const ManageListComp = () => {
         openModal={openModalEdit}
         hideModal={hideModalEdit}
         deleteLoading={isPending}
-        deleteAction = {handleDeleteAction}
+        deleteAction={handleDeleteAction}
       />
 
       {/* Delete */}
       <ConfirmationModal
         message={STRING_DATA.MESSAGE_PROCEED}
         openModal={openModalDelete}
-        actionLabel={"Delete"}
+        actionLabel={STRING_DATA.REMOVE}
         hideModal={closeDeleteModal}
         onActionClick={handleDeleteAction}
-        loading={isLoadingDelete}
+        loading={isPending}
       />
 
       <div className="common-list-section-class my-4">
         <div className="flex flex-col gap-4">
           <div className="flex justify-between items-center gap-4">
             <div className="custom-h2-class">{STRING_DATA.YOUR_LIST}</div>
-            <ActionButton text="Add list" onclick={showModal} />
+            <ActionButton
+              text="Add list"
+              onclick={showModal}
+              icon={<FontAwesomeIcon icon={faPlus} />}
+            />
           </div>
           {renderData()}
         </div>

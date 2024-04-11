@@ -49,10 +49,11 @@ const CustomBadge: React.FC<ICustomBadge> = (props) => {
       className={`custom-badge-class ${
         activeBadge?.id === item?.id ? "active-badge-class" : ""
       }`}
+      onClick={() => onclick(item)}
     >
-      <span onClick={() => onclick(item)}>{item?.label}</span>
+      <span>{item?.label}</span>
 
-      {renderDeleteIcon()}
+      {/* {renderDeleteIcon()} */}
     </div>
   );
 };

@@ -1,66 +1,105 @@
-import React from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+"use client";
+
+import React, { useEffect, useRef, useState } from "react";
 import AuctionCard from "../atoms/AuctionCard";
-import { redirect } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
 import { IAuction } from "@/types";
-import { getDataFromQueryParams, sanitizedAuctionData, setDataInQueryParams } from "@/shared/Utilies";
-import { SAMPLE_PLOT2 } from "@/shared/Constants";
+import {
+  getDataFromQueryParams,
+  setDataInQueryParams,
+} from "@/shared/Utilies";
+import { REACT_QUERY } from "@/shared/Constants";
 import NoDataImage from "../ui/NoDataImage";
 import PaginationComp from "../atoms/PaginationComp";
-import { revalidatePath } from "next/cache";
+import { useQuery } from "@tanstack/react-query";
+import { getAuctionData } from "@/server/actions";
 
 const ShowAuctionList = ({
   searchParams,
   responseData,
-  meta
+  meta,
 }: {
   searchParams: any;
   responseData: IAuction[];
   meta: any;
 }) => {
+  const router = useRouter()
+  const params = useSearchParams();
 
-  const handlePageChange = async (page: number)=> {
-    "use server"
-    console.log(page, "pagepagination")
-      // const { category, bank, price, location } = getDataFromQueryParams(
-      //   searchParams?.q ? searchParams?.q.toString() : ""
-      // );
-      // const updateParams = {
-      //   category,
-      //   bank,
-      //   price,
-      //   location,
-      //   page
-      // };
-      // console.log(updateParams, "updateParams");
-      // const data = setDataInQueryParams(updateParams);
-      // const path = `${ROUTE_CONSTANTS.AUCTION}?q=${data}`;
-      // revalidatePath(path, "page");
+  const [apiResponseData, setApiResponseData] = useState<any>({sendResponse: [], meta: {}})
+  const [currentPage, setCurrentPage] = useState<number>(1);
+
+  const filterRef = useRef<any>({});
+
+  const getFilterData = () => {
+    return {
+      category: filterRef.current?.value?.category ?? "",
+      bankName: filterRef.current?.value?.bank ?? "",
+      reservePrice: filterRef.current?.value?.price ?? "",
+      location: filterRef.current?.value?.location ?? "",
+      page: currentPage?.toString() ?? "",
+    };
   }
 
-  const handleClick = async (data: any) => {
-    "use server";
-    redirect(
+  useEffect(() => {
+    if (params.get("q")) {
+      const data = params.get("q")
+      filterRef.current.value = getDataFromQueryParams(data ?? '');
+      // console.log(filterRef.current?.value, "queryData");
+      setCurrentPage(filterRef.current?.value?.page);
+      refetch();
+    }
+  }, [params.get("q")]);
+
+  const {
+    data: auctionData,
+    refetch,
+  } = useQuery({
+    queryKey: [REACT_QUERY.FIND_AUCTION],
+    queryFn: async () => {
+      const res = (await getAuctionData(getFilterData())) as unknown;
+      console.log(res, 'apidata')
+      return res ?? [];
+    },
+    enabled: false,
+  });
+
+  useEffect(()=> {
+    if (auctionData) {
+      setApiResponseData(auctionData);
+    }
+  }, [auctionData])
+
+  const handlePageChange = async (event: { selected: number }) => {
+    const { selected: page } = event;
+    const pageValue = page + 1;
+    setCurrentPage(pageValue);
+    const newParams = { ...filterRef.current.value, page: pageValue };
+    const encodedQuery = setDataInQueryParams(newParams);
+    router.push(ROUTE_CONSTANTS.AUCTION + "?q=" + encodedQuery);
+  };
+
+  const handleClick = (data: any) => {
+    router.push(
       ROUTE_CONSTANTS.AUCTION_DETAIL + "/" + data?.id + "?q=" + searchParams?.q
     );
   };
-  // const auctionData = sanitizedAuctionData(SAMPLE_PLOT2) as unknown as IAuction;
 
-  if (responseData?.length === 0) {
+
+  if (apiResponseData?.sendResponse?.length === 0) {
     return (
       <div className="flex items-center justify-center flex-col h-[70vh]">
-        {/* <p>No Result found</p>
-        <span>(Try using another filter)</span> */}
         <NoDataImage />
       </div>
     );
   }
 
-  // console.log(meta, "meta");
   return (
     <>
       <div className="flex flex-col gap-4 w-full">
-        {responseData.map((item: IAuction, index: number) => {
+        {apiResponseData?.sendResponse?.map((item: IAuction, index: number) => {
           return (
             <div className="w-full" key={index}>
               <AuctionCard item={item} handleClick={handleClick} />
@@ -68,7 +107,11 @@ const ShowAuctionList = ({
           );
         })}
       </div>
-      <PaginationComp totalPage={meta?.total} onChangePage={handlePageChange} />
+      <PaginationComp
+        totalPage={meta?.pageCount}
+        onPageChange={handlePageChange}
+        activePage={currentPage}
+      />
     </>
   );
 };

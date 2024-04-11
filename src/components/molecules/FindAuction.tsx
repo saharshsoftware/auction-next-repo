@@ -42,6 +42,7 @@ import {
   getCategoryBoxCollection,
 } from "@/server/actions";
 import { IBanks, ICategoryCollection, ILocations } from "@/types";
+import useCustomParamsData from "@/hooks/useCustomParamsData";
 
 const gridElementClass = () => "lg:col-span-3  col-span-full";
 const validationSchema = Yup.object({
@@ -60,7 +61,8 @@ const FindAuction: React.FC = () => {
   const router = useRouter();
   const searchParams = new URLSearchParams(params_search);
   const { showModal, openModal, hideModal } = useModal();
-
+  const { setDataInQueryParamsMethod, getDataFromQueryParamsMethod } =
+    useCustomParamsData();
   const { data: categoryOptions, isLoading: isLoadingCategory } = useQuery({
     queryKey: [REACT_QUERY.CATEGORY_BOX_COLLECITON_OPTIONS],
     queryFn: async () => {
@@ -109,10 +111,12 @@ const FindAuction: React.FC = () => {
   });
 
   const handleSubmit = (values: any) => {
-    const data = setDataInQueryParams(values);
+    console.log(values, "values123")
+    const data = setDataInQueryParamsMethod({page:1, ...values});
+    // console.log(data)
     router.push(`${ROUTE_CONSTANTS.AUCTION}?q=${data}`);
     const path = `${ROUTE_CONSTANTS.AUCTION}?q=${data}`;
-    revalidatePath(path, "page");
+    // revalidatePath(path, "page");
 
     // setLoadingUpdate(true);
     // setTimeout(() => {

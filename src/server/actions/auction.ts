@@ -18,9 +18,9 @@ export const getAuctionData = async (payload: {
 }) => {
   try {
     const { page, category, bankName, reservePrice, location } = payload;
-
-    // let filter = `?pagination[page]=${page ?? 1}&pagination[pageSize]=10&`;
-    let filter = `?`;
+    const pageSize = 10;
+    let filter = `?pagination[page]=${page ?? 1}&pagination[pageSize]=${pageSize}&`;
+    // let filter = `?pagination[pageSize]=${pageSize}&`;
     let index = 0; // Initialize index counter
 
     if (category) {
@@ -37,7 +37,7 @@ export const getAuctionData = async (payload: {
     }
 
     if (reservePrice) {
-      filter += `filters[$or][${index++}][reservePrice][$lte]=${reservePrice}&`;
+      filter += `filters[$and][${index++}][reservePrice][$lte]=${reservePrice}&`;
     }
 
     const URL = API_BASE_URL + API_ENPOINTS.NOTICES + filter.slice(0, -1); // Remove the trailing '&' if present

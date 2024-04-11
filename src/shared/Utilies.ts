@@ -130,7 +130,7 @@ export const selectedCategory = (
   data: ICategoryCollection[],
   initialValueData: { category?: string }
 ) => {
-  console.log(data, "categegory");
+  // console.log(data, "categegory");
   if (data?.length) {
     const result =
       data?.find((item: any) => item?.name === initialValueData?.category) ??
