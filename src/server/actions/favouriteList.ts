@@ -9,7 +9,7 @@ export const fetchFavoriteList = async () => {
     const { data } = await getRequest({ API: URL });
     return data;
   } catch (e) {
-    console.log(e, "location error");
+    console.log(e, "fetchfav error");
   }
 };
 
@@ -35,7 +35,7 @@ export const fetchFavoriteListProperty = async (params: { listId: string }) => {
     console.log(data, "propertydata")
     return data;
   } catch (e) {
-    console.log(e, "location error");
+    console.log(e, "fetchfavourite error");
   }
 };
 
@@ -47,7 +47,7 @@ export const deleteFavoriteList = async (params: { id: string }) => {
     const { data } = await deleteRequest({ API: URL });
     return data;
   } catch (e) {
-    console.log(e, "location error");
+    console.log(e, "delete error");
   }
 };
 
@@ -76,7 +76,7 @@ export const removePropertyFromFavoriteList = async (params: { id: string }) => 
     const { data } = await deleteRequest({ API: URL });
     return data;
   } catch (e) {
-    console.log(e, "location error");
+    console.log(e, "remove error");
   }
 };
 

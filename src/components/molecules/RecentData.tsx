@@ -1,10 +1,44 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { formatPrice, formattedDate } from "@/shared/Utilies";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
-import { SAMPLE_CITY, SAMPLE_PLOT, STRING_DATA } from "@/shared/Constants";
-import AddToWishlist from "../templates/AddToWishlist";
+import { COOKIES } from "@/shared/Constants";
+
+import { ISpecificRoute } from "@/types";
+import { getCookie } from "cookies-next";
+import dynamic from "next/dynamic";
+import useFindUrl from "@/hooks/useFindUrl";
+// import TopCategory from "../atoms/TopCategory";
+
+const OtherCategory = dynamic(() => import("../atoms/OtherCategory"), {
+  ssr: false,
+});
+
+const OtherLocations = dynamic(() => import("../atoms/OtherLocations"), {
+  ssr: false,
+});
+
+const OtherBanks = dynamic(() => import("../atoms/OtherBanks"), {
+  ssr: false,
+});
+
+const AddToWishlist = dynamic(() => import("../templates/AddToWishlist"), {
+  ssr: false,
+});
+
+const TopCities = dynamic(() => import("../atoms/TopCities"), {
+  ssr: false,
+});
+
+const TopCategory = dynamic(() => import("@/components/atoms/TopCategory"), {
+  ssr: false,
+});
+
+const TopBanks = dynamic(() => import("@/components/atoms/TopBanks"), {
+  ssr: false,
+});
+
 
 const ShowSimilerProperties = (props: { item: any; index: number }) => {
   const { item, index } = props;
@@ -23,47 +57,56 @@ const ShowSimilerProperties = (props: { item: any; index: number }) => {
   );
 };
 
-const RecentData: React.FC = () => {
+const RecentData = (props: ISpecificRoute) => {
+    const {
+      isBankRoute = false,
+      isCategoryRoute = false,
+      isLocationRoute = false,
+    } = props;
+
   const currentRoute = usePathname();
+  const { findUrl } = useFindUrl();
+  const token = getCookie(COOKIES.TOKEN_KEY) ?? "";
+
+  const renderSpecificRoutes = () => {
+    if (findUrl?.isCategoryRoute) {
+      return (
+        <div className="mb-4">
+          <TopCategory />
+        </div>
+      );
+    }
+    if (findUrl?.isBankRoute) {
+      return (
+        <div className="mb-4">
+          <TopBanks />
+        </div>
+      );
+    }
+    if (findUrl?.isLocationRoute) {
+      return (
+        <div className="mb-4">
+          <TopCities />
+        </div>
+      );
+    }
+  };
+
   const renderChildren = () => {
     if (currentRoute === ROUTE_CONSTANTS.AUCTION) {
       return (
         <>
-          <div className="custom-common-header-class">
-            {STRING_DATA.TOP_CITY}
-          </div>
-          {SAMPLE_CITY.map((item, index) => {
-            return (
-              <div className="custom-common-header-detail-class" key={index}>
-                <div className="flex flex-col gap-4 p-4  w-full min-h-12">
-                  <h2 className="line-clamp-1">{item?.label}</h2>
-                </div>
-              </div>
-            );
-          })}
+          <TopCities />
         </>
       );
     }
     return (
       <>
-        <div className="custom-common-header-class">
-          {STRING_DATA.SIMILER_PROPERTIES}
-        </div>
 
-        {SAMPLE_PLOT.slice(0, 5).map((item, index) => {
-          return (
-            <ShowSimilerProperties item={item} index={index} key={index} />
-          );
-        })}
-
-        <div className="mt-4">
-          <div className="custom-common-header-class">
-            {STRING_DATA.YOUR_LIST}
-          </div>
-          {/* <div className="custom-common-header-detail-class"> */}
-            <AddToWishlist />
-          {/* </div> */}
-        </div>
+        {token? <div className="mb-4">
+          <AddToWishlist />
+        </div>: null}
+        {renderSpecificRoutes()}
       </>
     );
   };

@@ -2,25 +2,49 @@ import React from "react";
 import { NAV_LINKS, STRING_DATA } from "../../shared/Constants";
 import Link from "next/link";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
+import dynamic from "next/dynamic";
+
+const TopCities = dynamic(() => import("@/components/atoms/TopCities"), {
+  ssr: false,
+});
+
+const TopCategory = dynamic(() => import("@/components/atoms/TopCategory"), {
+  ssr: false,
+});
+
+const TopBanks = dynamic(() => import("@/components/atoms/TopBanks"), {
+  ssr: false,
+});
+
+const OtherCategory = dynamic(
+  () => import("@/components/atoms/OtherCategory"),
+  {
+    ssr: false,
+  }
+);
 
 const Footer: React.FC = () => {
   return (
     <>
-      <footer className="footer footer-center p-10 bg-base-200 text-base-content rounded">
-        <div className="flex lg:flex-row flex-col gap-4 justify-between items-center w-full">
-          <nav className="grid grid-flow-col gap-4">
-            <Link
-              className="footer-title cursor-pointer"
-              href={ROUTE_CONSTANTS.DASHBOARD}
-            >
-              {STRING_DATA.EAUCTION_DEKHO.toUpperCase()}
-            </Link>
-            {NAV_LINKS.map((item, index) => (
-              <Link href={item.path} key={index} className="link link-hover">
-                {item?.label}
-              </Link>
-            ))}
-          </nav>
+      <footer className="flex flex-col  gap-4 p-10 bg-base-200 text-base-content rounded">
+        <div className="flex flex-row gap-12 w-full items-start justify-start">
+          <div>
+            <TopCities isFooter={true}/>
+          </div>
+
+          <div>
+            {/* <OtherBanks isFooter={true} /> */}
+           <TopBanks isFooter={true} />
+          </div>
+
+          <div>
+            <TopCategory isFooter={true} />
+            {/* <OtherCategory isFooter={true}/> */}
+          </div>
+        </div>
+
+        <div className="flex lg:flex-row flex-col gap-4 justify-end items-center w-full">
+
           <nav>
             <div className="grid grid-flow-col gap-4">
               <a>
@@ -60,7 +84,7 @@ const Footer: React.FC = () => {
           </nav>
         </div>
 
-        <aside>
+        <aside className="text-end">
           <p>
             Copyright © {new Date().getFullYear()} - All right reserved by{" "}
             {STRING_DATA.BRAND_NAME}

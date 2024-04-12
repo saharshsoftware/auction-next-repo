@@ -17,6 +17,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons/faPlus";
 import { faTrash } from "@fortawesome/free-solid-svg-icons/faTrash";
 import { faPencil } from "@fortawesome/free-solid-svg-icons/faPencil";
+import { fetchFavoriteListClient } from "@/services/favouriteList";
 
 const ManageListComp = () => {
   const queryClient = useQueryClient();
@@ -41,7 +42,8 @@ const ManageListComp = () => {
   } = useQuery({
     queryKey: [REACT_QUERY.FAVOURITE_LIST],
     queryFn: async () => {
-      const res = (await fetchFavoriteList()) as unknown as IFavouriteList[];
+      const res =
+        (await fetchFavoriteListClient()) as unknown as IFavouriteList[];
       setActiveBadgeData(res?.[0]);
       return res ?? [];
     },
@@ -96,8 +98,7 @@ const ManageListComp = () => {
     hideModalDelete();
   };
 
-  const handleSettingClick = (data: IFavouriteList) => {
-    setSelectedBadge(data);
+  const openEditModal = () => {
     showModalEdit();
   };
 
@@ -113,38 +114,37 @@ const ManageListComp = () => {
     }
 
     if (favouriteListData?.length === 0) {
-      return <div className="text-center">{STRING_DATA.NO_DATA_FOUND_LIST}</div>;
+      return (
+        <div className="text-center break-all">
+          {STRING_DATA.NO_DATA_FOUND_LIST}
+        </div>
+      );
     }
     return (
       <>
-        <div className="flex gap-4 min-w-full overflow-x-scroll">
+        <div className="flex gap-4 min-w-full ">
           {favouriteListData?.map((item, index) => (
             <CustomBadge
               key={index}
               item={{ label: item?.name, ...item }}
               activeBadge={activeBadgeData}
               onclick={handleBadgeClick}
-              onclickSetting={handleSettingClick}
               showSettingIcon={true}
             />
           ))}
         </div>
-        <hr className="border-[0.25px] border-zinc-400" />
-        <div className="flex items-center justify-between gap-4 mb-4">
-          <div className="custom-h2-class">{activeBadgeData?.name}</div>
-          <div className="flex items-center justify-end gap-4">
-            <ActionButton
-              text="Edit"
-              onclick={showModalEdit}
-              icon={<FontAwesomeIcon icon={faPencil} />}
-            />
-            <ActionButton
-              text="Delete"
-              onclick={showModalDelete}
-              icon={<FontAwesomeIcon icon={faTrash} />}
-              isDeleteButton={true}
-            />
-          </div>
+        <div className="flex items-center justify-end gap-4">
+          <ActionButton
+            text="Edit"
+            onclick={openEditModal}
+            icon={<FontAwesomeIcon icon={faPencil} />}
+          />
+          <ActionButton
+            text="Delete"
+            onclick={showModalDelete}
+            icon={<FontAwesomeIcon icon={faTrash} />}
+            isDeleteButton={true}
+          />
         </div>
         {activeBadgeData ? (
           <FavouriteListProperty listId={activeBadgeData?.id ?? ""} />
@@ -160,7 +160,7 @@ const ManageListComp = () => {
 
       {/* Create List Modal */}
       <EditFavList
-        fieldata={selectedBadge}
+        fieldata={activeBadgeData}
         openModal={openModalEdit}
         hideModal={hideModalEdit}
         deleteLoading={isPending}

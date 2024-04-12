@@ -1,12 +1,14 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { Suspense, useEffect, useRef, useState } from "react";
 import AuctionCard from "../atoms/AuctionCard";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
 import { IAuction } from "@/types";
 import {
+  capitalizeFirstLetter,
+  convertString,
   getDataFromQueryParams,
   setDataInQueryParams,
 } from "@/shared/Utilies";
@@ -15,78 +17,117 @@ import NoDataImage from "../ui/NoDataImage";
 import PaginationComp from "../atoms/PaginationComp";
 import { useQuery } from "@tanstack/react-query";
 import { getAuctionData } from "@/server/actions";
+import CustomLoading from "../atoms/Loading";
+import { getAuctionDataClient } from "@/services/auction";
+import SkeltonAuctionCard from "../skeltons/SkeltonAuctionCard";
 
-const ShowAuctionList = ({
-  searchParams,
-  responseData,
-  meta,
-}: {
-  searchParams: any;
-  responseData: IAuction[];
-  meta: any;
-}) => {
-  const router = useRouter()
-  const params = useSearchParams();
+interface IShowAuctionList {
+  isCategoryRoute?: boolean;
+  isLocationRoute?: boolean;
+  isBankRoute?: boolean;
+}
 
-  const [apiResponseData, setApiResponseData] = useState<any>({sendResponse: [], meta: {}})
+const ShowAuctionList = (props: IShowAuctionList) => {
+  const {
+    isBankRoute = false,
+    isCategoryRoute = false,
+    isLocationRoute = false,
+  } = props;
+  const router = useRouter();
+  const params = useParams();
+  const searchParams = useSearchParams();
+ const currentRoute = usePathname();
+
+  const [apiResponseData, setApiResponseData] = useState<any>({
+    sendResponse: [],
+    meta: {},
+  });
+
   const [currentPage, setCurrentPage] = useState<number>(1);
 
-  const filterRef = useRef<any>({});
+  const filterRef = useRef<any>({
+    category: currentRoute.startsWith("/category")
+      ? convertString(params?.slug?.toString())
+      : "",
+    bankName: currentRoute.startsWith("/bank")
+      ? convertString(params?.slug?.toString())
+      : "",
+    location: currentRoute.startsWith("/location")
+      ? convertString(params?.slug?.toString())
+      : "",
+  });
 
   const getFilterData = () => {
     return {
-      category: filterRef.current?.value?.category ?? "",
-      bankName: filterRef.current?.value?.bank ?? "",
-      reservePrice: filterRef.current?.value?.price ?? "",
-      location: filterRef.current?.value?.location ?? "",
+      category: filterRef.current?.category ?? "",
+      bankName: filterRef.current?.bankName ?? "",
+      reservePrice: filterRef.current?.price ?? "",
+      location: filterRef.current?.location ?? "",
       page: currentPage?.toString() ?? "",
     };
-  }
+  };
 
   useEffect(() => {
-    if (params.get("q")) {
-      const data = params.get("q")
-      filterRef.current.value = getDataFromQueryParams(data ?? '');
+    if (searchParams.get("q")) {
+      const data = searchParams.get("q");
+      filterRef.current = getDataFromQueryParams(data ?? "");
       // console.log(filterRef.current?.value, "queryData");
-      setCurrentPage(filterRef.current?.value?.page);
+      setCurrentPage(filterRef.current?.page);
       refetch();
     }
-  }, [params.get("q")]);
+  }, [searchParams.get("q")]);
 
   const {
     data: auctionData,
+    fetchStatus,
     refetch,
   } = useQuery({
     queryKey: [REACT_QUERY.FIND_AUCTION],
     queryFn: async () => {
-      const res = (await getAuctionData(getFilterData())) as unknown;
-      console.log(res, 'apidata')
+      const res = (await getAuctionDataClient(getFilterData())) as unknown;
+      console.log(res, "apidata");
+      setApiResponseData(res);
       return res ?? [];
     },
-    enabled: false,
+    enabled:
+      currentRoute.startsWith("/category") ||
+      currentRoute.startsWith("/bank") ||
+      currentRoute.startsWith("/location"),
   });
 
-  useEffect(()=> {
-    if (auctionData) {
-      setApiResponseData(auctionData);
-    }
-  }, [auctionData])
+  // useEffect(() => {
+  //   if (auctionData) {
+  //     setApiResponseData(auctionData);
+  //   }
+  // }, [auctionData]);
 
   const handlePageChange = async (event: { selected: number }) => {
     const { selected: page } = event;
     const pageValue = page + 1;
     setCurrentPage(pageValue);
-    const newParams = { ...filterRef.current.value, page: pageValue };
+    const newParams = { ...filterRef.current, page: pageValue };
     const encodedQuery = setDataInQueryParams(newParams);
-    router.push(ROUTE_CONSTANTS.AUCTION + "?q=" + encodedQuery);
+    router.replace(ROUTE_CONSTANTS.AUCTION + "?q=" + encodedQuery);
   };
 
   const handleClick = (data: any) => {
     router.push(
-      ROUTE_CONSTANTS.AUCTION_DETAIL + "/" + data?.id + "?q=" + searchParams?.q
+      ROUTE_CONSTANTS.AUCTION_DETAIL +
+        "/" +
+        data?.id +
+        "?q=" +
+        searchParams.get("q")
     );
   };
 
+  // console.log("fetchStatus", fetchStatus);
+  if (fetchStatus === "fetching") {
+    return (
+      <div className="min-h-[70vh] flex items-center justify-center">
+        <SkeltonAuctionCard />
+      </div>
+    );
+  }
 
   if (apiResponseData?.sendResponse?.length === 0) {
     return (
@@ -108,7 +149,7 @@ const ShowAuctionList = ({
         })}
       </div>
       <PaginationComp
-        totalPage={meta?.pageCount}
+        totalPage={apiResponseData?.meta?.pageCount}
         onPageChange={handlePageChange}
         activePage={currentPage}
       />

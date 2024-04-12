@@ -40,6 +40,7 @@ const FavouritePropertyCard: React.FC<IFavouritePropertyCardComp> = (props) => {
             text="Remove"
             customClass="lg:w-fit w-full"
             onclick={() => handleClick(item)}
+            isDeleteButton={true}
           />
         </div>
       </div>

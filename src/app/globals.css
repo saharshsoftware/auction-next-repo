@@ -91,6 +91,9 @@ body :focus-within {
   @apply inline-block p-4 border-b-2 border-transparent rounded-t-lg cursor-pointer 
 }
 
+.top-heading-class {
+  @apply font-bold
+}
 
 .custom-select-dropdown {
   border-color: var(--brand-color) !important;

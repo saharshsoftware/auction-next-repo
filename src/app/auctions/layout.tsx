@@ -1,5 +1,6 @@
 import FindAuction from "@/components/molecules/FindAuction";
 import RecentData from "@/components/molecules/RecentData";
+import SkeltonAuctionLayout from "@/components/skeltons/SkeltonAuctionLayout";
 import { Suspense } from "react";
 
 export default function AuctionLayout({
@@ -8,7 +9,7 @@ export default function AuctionLayout({
   children: React.ReactNode;
 }) {
   return (
-    <Suspense>
+    <Suspense fallback={<SkeltonAuctionLayout />}>
       <section>
         <FindAuction />
         <div className="common-section">

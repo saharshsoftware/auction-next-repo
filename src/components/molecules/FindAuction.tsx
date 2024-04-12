@@ -10,6 +10,7 @@ import {
 } from "../../shared/Constants";
 
 import {
+  capitalizeFirstLetter,
   getBankOptions,
   getDataFromQueryParams,
   selectedBank,
@@ -30,7 +31,7 @@ import {
   NoDataRendererDropdown,
 } from "../atoms/NoDataRendererDropdown";
 import { useQuery } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { usePathname, useSearchParams } from "next/navigation";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -43,6 +44,8 @@ import {
 } from "@/server/actions";
 import { IBanks, ICategoryCollection, ILocations } from "@/types";
 import useCustomParamsData from "@/hooks/useCustomParamsData";
+import useFindUrl from "@/hooks/useFindUrl";
+import { getCategoryBoxCollectionClient } from "@/services/auction";
 
 const gridElementClass = () => "lg:col-span-3  col-span-full";
 const validationSchema = Yup.object({
@@ -55,44 +58,60 @@ const validationSchema = Yup.object({
     .integer(ERROR_MESSAGE.PRICE_INTEGER),
 });
 
-const FindAuction: React.FC = () => {
-  const pathname = usePathname();
+interface IFindAuction {
+  isCategoryRoute?: boolean;
+  isLocationRoute?: boolean;
+  isBankRoute?: boolean;
+}
+
+const FindAuction = (props: IFindAuction) => {
+  const {isBankRoute=false, isCategoryRoute=false, isLocationRoute=false} = props;
+  const { findUrl, bankRoute, categoryRoute, locationRoute } = useFindUrl();
+  const params = useParams()
   const params_search = useSearchParams();
   const router = useRouter();
-  const searchParams = new URLSearchParams(params_search);
+  const currentRoute = usePathname();
   const { showModal, openModal, hideModal } = useModal();
   const { setDataInQueryParamsMethod, getDataFromQueryParamsMethod } =
     useCustomParamsData();
-  const { data: categoryOptions, isLoading: isLoadingCategory } = useQuery({
+  const { data: categoryOptions, isLoading: isLoadingCategory ,refetch:refetchCategory } = useQuery({
     queryKey: [REACT_QUERY.CATEGORY_BOX_COLLECITON_OPTIONS],
     queryFn: async () => {
       const res =
-        (await getCategoryBoxCollection()) as unknown as ICategoryCollection[];
-        console.log(res, '<><>><')
+        (await getCategoryBoxCollectionClient()) as unknown as ICategoryCollection[];
+      console.log(
+        res,
+        currentRoute.startsWith("/category"),
+      );
       const updatedData = [{ id: 0, name: STRING_DATA.ALL }, ...res];
+      if (currentRoute.startsWith("/category")) fillFilter(updatedData);
       return updatedData ?? [];
     },
   });
 
-  const { data: bankOptions, isLoading: isLoadingBank } = useQuery({
+  const { data: bankOptions, isLoading: isLoadingBank, refetch:refetchBank } = useQuery({
     queryKey: [REACT_QUERY.AUCTION_BANKS],
     queryFn: async () => {
       const res = (await fetchBanks()) as unknown as IBanks[];
-      const responseData =  getBankOptions(res) ?? [];
+      const responseData = getBankOptions(res) ?? [];
       const updatedData = [{ id: 0, name: STRING_DATA.ALL }, ...responseData];
+      if (currentRoute.startsWith("/bank")) fillFilter(updatedData);
       return updatedData ?? [];
     },
   });
 
-  const { data: locationOptions, isLoading: isLoadingLocation } = useQuery({
+  const { data: locationOptions, isLoading: isLoadingLocation, refetch:refetchLocation } = useQuery({
     queryKey: [REACT_QUERY.AUCTION_LOCATION],
     queryFn: async () => {
       const res = (await fetchLocation()) as unknown as ILocations[];
       const responseData = res ?? [];
       const updatedData = [{ id: 0, name: STRING_DATA.ALL }, ...responseData];
+      if (currentRoute.startsWith("/location")) fillFilter(updatedData);
       return updatedData ?? [];
     },
   });
+
+  const [staticLoading, setStaticLoading] = useState(false);
 
   const [initialValueData, setInitialValueData] = useState<any>(
     structuredClone(
@@ -105,17 +124,67 @@ const FindAuction: React.FC = () => {
     )
   );
 
+  useEffect(()=> {
+    if (params?.slug) {
+      if (currentRoute.startsWith("/category")) {
+        refetchCategory();
+        return;
+      }
+      if (currentRoute.startsWith("/bank")) {
+        refetchBank();
+        return;
+      }
+      if (currentRoute.startsWith("/location")) {
+        refetchLocation();
+        return;
+      }
+    }
+  }, [params?.slug])
+
+  const fillFilter = (data: any) =>{
+    if (currentRoute.startsWith("/category")) {
+      const selectedOne = data.find((item: any) => item?.slug === params?.slug);
+      console.log(selectedOne, "selectedOne");
+      setInitialValueData({
+        category: selectedOne?.name ?? "",
+      });
+    }
+    if (currentRoute.startsWith("/location")) {
+      const selectedOne = data.find((item: any) => item?.slug === params?.slug);
+      console.log(selectedOne, "selectedOne");
+      setInitialValueData({
+        location: selectedOne?.name ?? "",
+      });
+    }
+    if (currentRoute.startsWith("/bank")) {
+      const selectedOne = data.find((item: any) => item?.slug === params?.slug);
+      console.log(selectedOne, "selectedOne");
+      setInitialValueData({
+        bank: selectedOne?.name ?? "",
+      });
+    }
+  }
+
   const [isMobileView, setIsMobileView] = useState({
     mobileView: false,
     isOpenTopbar: false,
   });
 
   const handleSubmit = (values: any) => {
-    console.log(values, "values123")
-    const data = setDataInQueryParamsMethod({page:1, ...values});
+    console.log(values, "values123");
+    const data = setDataInQueryParamsMethod({ page: 1, ...values });
     // console.log(data)
+
+    // setStaticLoading(true);
+
+    setStaticLoading(true);
+    setTimeout(() => {
+      setStaticLoading(false);
+    }, 1000);
+    
     router.push(`${ROUTE_CONSTANTS.AUCTION}?q=${data}`);
     const path = `${ROUTE_CONSTANTS.AUCTION}?q=${data}`;
+    
     // revalidatePath(path, "page");
 
     // setLoadingUpdate(true);
@@ -312,7 +381,7 @@ const FindAuction: React.FC = () => {
                     <ActionButton
                       isSubmit={true}
                       text={STRING_DATA.UPDATE.toUpperCase()}
-                      // isLoading={loadingUpdate}
+                      isLoading={staticLoading}
                       customClass={"min-w-[150px]"}
                     />
                     {isMobileView.mobileView ? (

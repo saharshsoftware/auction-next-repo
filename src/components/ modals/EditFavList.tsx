@@ -100,14 +100,14 @@ const EditFavList = (props: ICreateFavList) => {
                     
                       <div className="flex justify-end items-center gap-4 flex-wrap">
                         <ActionButton
-                          isSubmit={true}
-                          text="Update"
-                          isLoading={isPending}
-                        />
-                        <ActionButton
                           text="Close"
                           onclick={hideModal}
                           isActionButton={false}
+                        />
+                        <ActionButton
+                          isSubmit={true}
+                          text="Update"
+                          isLoading={isPending}
                         />
                       </div>
                     

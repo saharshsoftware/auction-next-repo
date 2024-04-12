@@ -11,6 +11,7 @@ import { IFavouriteListProperty } from "@/types";
 import ConfirmationModal from "../ modals/ConfirmationModal";
 import useModal from "@/hooks/useModal";
 import { handleOnSettled } from "@/shared/Utilies";
+import { fetchFavoriteListPropertyClient } from "@/services/favouriteList";
 
 interface IFavouriteListPropertyComp {
   listId: string;
@@ -33,7 +34,7 @@ const FavouriteListProperty = (props: IFavouriteListPropertyComp) => {
   } = useQuery({
     queryKey: [REACT_QUERY.FAVOURITE_LIST_PROPERTY, listId],
     queryFn: async () => {
-      const res = (await fetchFavoriteListProperty({
+      const res = (await fetchFavoriteListPropertyClient({
         listId: listId,
       })) as unknown as IFavouriteListProperty[];
       return res ?? [];

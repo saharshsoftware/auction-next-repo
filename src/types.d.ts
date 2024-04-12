@@ -51,6 +51,8 @@ export interface IBanks {
   createdAt?: string;
   updatedAt?: string;
   publishedAt?: string;
+  route?: string;
+  slug?: string;
 }
 
 export interface ILocations {
@@ -61,6 +63,8 @@ export interface ILocations {
   createdAt?: string;
   updatedAt?: string;
   publishedAt?: string;
+  route?: string;
+  slug?: string;
 }
 
 export interface ICategoryCollection {
@@ -73,6 +77,7 @@ export interface ICategoryCollection {
   publishedAt?: Date;
   slug?: string;
   categoryName?: string;
+  route?: string;
 }
 
 export interface IHomeBoxCollection {
@@ -131,4 +136,10 @@ export interface IProperty {
   area: null;
   contact: null;
   noticeImageURL: null;
+}
+
+export interface ISpecificRoute {
+  isCategoryRoute?: boolean;
+  isLocationRoute?: boolean;
+  isBankRoute?: boolean;
 }

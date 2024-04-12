@@ -1,5 +1,7 @@
 "use server";
 
+import { cookies } from "next/headers";
+
 import { API_BASE_URL, API_ENPOINTS } from "@/services/api";
 import { getRequest } from "@/shared/Axios";
 import {
@@ -19,7 +21,7 @@ export const getAuctionData = async (payload: {
   try {
     const { page, category, bankName, reservePrice, location } = payload;
     const pageSize = 10;
-    let filter = `?pagination[page]=${page ?? 1}&pagination[pageSize]=${pageSize}&`;
+    let filter = `?pagination[page]=${page ?? 1}&pagination[pageSize]=${pageSize}10&`;
     // let filter = `?pagination[pageSize]=${pageSize}&`;
     let index = 0; // Initialize index counter
 
@@ -102,3 +104,6 @@ export const getCollectionData = async (props: { endpoints: string }) => {
     console.log(e, "auctionDetail error collection");
   }
 };
+
+
+export const getCookietoken = ()=> cookies()?.get("auction-token")?.value;

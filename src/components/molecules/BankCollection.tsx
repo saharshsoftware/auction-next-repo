@@ -1,5 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import { sanitizeStrapiImageUrl } from "@/shared/Utilies";
+import Link from "next/link";
 import React from "react";
 
 const BankCollection = (props: { fetchQuery: string; item: any }) => {
@@ -18,7 +19,11 @@ const BankCollection = (props: { fetchQuery: string; item: any }) => {
               />
             ) : null}
           </div>
-          <div>{item?.bankName}</div>
+          {item?.route ? (
+            <Link href={item?.route}>{item?.bankName}</Link>
+          ) : (
+            <div>{item?.bankName}</div>
+          )}
         </div>
       </div>
     </>

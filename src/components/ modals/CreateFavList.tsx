@@ -8,6 +8,7 @@ import * as Yup from "yup";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { handleOnSettled } from "@/shared/Utilies";
 import { createFavouriteList } from "@/server/actions/favouriteList";
+import { createFavouriteListClient } from "@/services/favouriteList";
 
 interface ICreateFavList {
   openModal: boolean;
@@ -29,7 +30,7 @@ const CreateFavList = (props: ICreateFavList) => {
 
   // Mutations
   const { mutate, isPending } = useMutation({
-    mutationFn: createFavouriteList,
+    mutationFn: createFavouriteListClient,
     onSettled: async (data) => {
       console.log(data);
       const response = {
@@ -71,7 +72,7 @@ const CreateFavList = (props: ICreateFavList) => {
             >
               <div className="flex flex-col gap-4 ">
                 <h2 className="custom-h2-class text-center text-3xl">
-                  {STRING_DATA.ADD}
+                  {STRING_DATA.ADD_LIST}
                 </h2>
                 <TextField
                   type="text"
@@ -87,12 +88,12 @@ const CreateFavList = (props: ICreateFavList) => {
               </span>
             ) : null}
             <div className="flex justify-end items-center gap-4">
-              <ActionButton isSubmit={true} text="Add" isLoading={isPending} />
               <ActionButton
                 text="Close"
                 onclick={hideModal}
                 isActionButton={false}
               />
+              <ActionButton isSubmit={true} text="Add" isLoading={isPending} />
             </div>
           </div>
         </div>

@@ -13,6 +13,9 @@ import { IFavouriteList } from '@/types';
 import { handleOnSettled } from '@/shared/Utilies';
 import { useParams } from "next/navigation";
 import ActionButton from '../atoms/ActionButton';
+import { addPropertyToFavouriteListClient, fetchFavoriteListClient } from '@/services/favouriteList';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCross } from '@fortawesome/free-solid-svg-icons';
 
 const validationSchema = Yup.object({
   wishlist: Yup.string().required(ERROR_MESSAGE.LIST_REQUIRED),
@@ -28,7 +31,7 @@ const AddToWishlist = () => {
   const { data: favouriteListData, isLoading: isLoadingFavourite } = useQuery({
     queryKey: [REACT_QUERY.FAVOURITE_LIST],
     queryFn: async () => {
-      const res = (await fetchFavoriteList()) as unknown as IFavouriteList[];
+      const res = (await fetchFavoriteListClient()) as unknown as IFavouriteList[];
       return res ?? []
     },
   });
@@ -38,7 +41,7 @@ const AddToWishlist = () => {
 
   // Mutations
   const { mutate, isPending } = useMutation({
-    mutationFn: addPropertyToFavouriteList,
+    mutationFn: addPropertyToFavouriteListClient,
     onSettled: async (data) => {
       const response = {
         data,
@@ -66,8 +69,15 @@ const AddToWishlist = () => {
     // resetForm();
   };
 
+  const clearWishlist = (methods: any) => {
+    methods.clearAll();
+  };
+
   return (
     <>
+      <div className="custom-common-header-class">
+        {STRING_DATA.ADD_TO_LIST}
+      </div>
       <div className="custom-common-header-detail-class p-4">
         <CustomFormikForm
           initialValues={initialValues}
@@ -75,14 +85,15 @@ const AddToWishlist = () => {
           wantToUseFormikEvent={true}
           enableReinitialize={true}
           handleSubmit={(values: any, actions: any) => {
-            // actions.resetForm();
             addPropertyToFavourite({ ...values });
-            // setTimeout(() => {
-            //   actions.setFieldValue("wishlist", "");
-            // }, 1000);
+            // document.getElementById("clear-dropdown-button")?.click();
+            // actions.resetForm();
+            setTimeout(() => {
+              actions.setFieldValue("wishlist", null);
+            }, 1000);
           }}
         >
-          {({ setFieldValue, values }: any) => (
+          {({ setFieldValue }: any) => (
             <Form>
               <div className="flex flex-col gap-4 ">
                 {/* {JSON.stringify(values?.wishlist)} */}
@@ -95,6 +106,10 @@ const AddToWishlist = () => {
                         options={favouriteListData ?? []}
                         placeholder={"Add to list"}
                         name={"wishlist"}
+                        clearRenderer={({ methods }:{methods:any}) => (
+                          <div id="clear-dropdown-button" onClick={()=>clearWishlist(methods)} className='hidden'><FontAwesomeIcon icon={faCross}/></div>
+                        )}
+                        clearable={true}
                         loading={isLoadingFavourite}
                         customClass="w-full "
                         onChange={(e: any) => {

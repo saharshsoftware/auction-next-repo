@@ -6,10 +6,16 @@ export const COOKIES = {
 };
 
 export const STRING_DATA = {
+  TOP_CATEGORIES: "Top categories",
+  TOP_BANKS: "Top banks",
+  OTHER_CATEGORIES: "Other categories",
+  OTHER_LOCATIONS: "Other location",
+  OTHER_BANKS: "Other banks",
   REMOVE: "Remove",
   MESSAGE_PROCEED: "Are you sure you want to proceed?",
   CONFIRMATION: "Confirmation",
   ADD: "Add",
+  ADD_LIST: "Add list",
   YOUR_LIST: "Your list",
   ALL: "All",
   BACK: "Back",
@@ -53,8 +59,10 @@ export const STRING_DATA = {
   MANAGE_LIST: "Manage list",
   MANAGE_ALERT: "Manage alert",
   ADD_TO_LIST: "Add to list",
-  NO_DATA_FOUND_LIST_PROPERTY: "No property added to the list. Please go to the property detail and add the property in your desired list",
-  NO_DATA_FOUND_LIST: "You can organize your favorite properties by categorizing it into various lists"
+  NO_DATA_FOUND_LIST_PROPERTY:
+    "No property added to the list. Please go to the property detail and add the property in your desired list",
+  NO_DATA_FOUND_LIST:
+    "You can organize your favorite properties by categorizing it into various lists",
 };
 
 export const NAVBAR_NAV_LINKS = [
