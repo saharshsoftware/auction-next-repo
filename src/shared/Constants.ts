@@ -3,9 +3,24 @@ import { ROUTE_CONSTANTS } from "./Routes";
 export const COOKIES = {
   TOKEN_KEY: "auction-token",
   AUCTION_USER_KEY: "auction-user-data",
+  AUCTION_FILTER: "auction-filter"
 };
 
+export const FILTER_EMPTY = { name: "", bank: "", location: "", category: "", price: "" }
+
+
 export const STRING_DATA = {
+  TOP_CATEGORIES: "Top categories",
+  TOP_BANKS: "Top banks",
+  OTHER_CATEGORIES: "Other categories",
+  OTHER_LOCATIONS: "Other location",
+  OTHER_BANKS: "Other banks",
+  REMOVE: "Remove",
+  MESSAGE_PROCEED: "Are you sure you want to proceed?",
+  CONFIRMATION: "Confirmation",
+  ADD: "Add",
+  ADD_LIST: "Add list",
+  YOUR_LIST: "Your list",
   ALL: "All",
   BACK: "Back",
   EAUCTION_DEKHO: "eauctiondekho",
@@ -47,6 +62,11 @@ export const STRING_DATA = {
   BRANCH_NAME: "Branch name",
   MANAGE_LIST: "Manage list",
   MANAGE_ALERT: "Manage alert",
+  ADD_TO_LIST: "Add to list",
+  NO_DATA_FOUND_LIST_PROPERTY:
+    "No property added to the list. Please go to the property detail and add the property in your desired list",
+  NO_DATA_FOUND_LIST:
+    "You can organize your favorite properties by categorizing it into various lists",
 };
 
 export const NAVBAR_NAV_LINKS = [
@@ -65,7 +85,7 @@ export const INPUT_TYPE = {
 
 export const RANGE_PRICE = {
   MIN: "0",
-  MAX: "50000000",
+  MAX: "500000000",
   STEPS: "100000"
 };
 
@@ -87,6 +107,7 @@ export const ERROR_MESSAGE = {
   NAME_REQUIRED: "Name is required",
   MAX_NAME_30: "Name should not exceed 30 characters",
   PASSWORDS_MUST_MATCH: "Passwords must match",
+  LIST_REQUIRED: "List is required"
 };
 
 export const NAV_LINKS = [
@@ -1006,6 +1027,9 @@ export const REACT_QUERY = {
   CATEGORY_BOX_COLLECITON_OPTIONS: "Categroy-box-collection-options",
   AUCTION_BANKS: "Auction-bank",
   AUCTION_LOCATION: "Auction-location",
+  FAVOURITE_LIST: "Favourite-list",
+  FAVOURITE_LIST_PROPERTY: "Favourite-list-property",
+  FIND_AUCTION: "Find-auction"
 };
 
 export const SAMPLE_CITY = [

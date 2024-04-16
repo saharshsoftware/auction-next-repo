@@ -8,7 +8,9 @@ import CustomFormikForm from "./CustomFormikForm";
 import TextField from "./TextField";
 import {
   CATEGORIES,
+  COOKIES,
   ERROR_MESSAGE,
+  FILTER_EMPTY,
   POPULER_CITIES,
   RANGE_PRICE,
   REACT_QUERY,
@@ -28,6 +30,16 @@ import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { fetchBanks, fetchLocation, getAuctionData, getCategoryBoxCollection } from "@/server/actions";
 import { IBanks, ICategoryCollection, ILocations } from "@/types";
+import Link from "next/link";
+import { setCookie } from "cookies-next";
+import useLocalStorage from "@/hooks/useLocationStorage";
+
+interface IFilter {
+  category: string;
+  price: string;
+  bank: string;
+  location: string;
+}
 
 const validationSchema = Yup.object({
   category: Yup.string().trim(),
@@ -40,7 +52,7 @@ const initialValues = {
   category: STRING_DATA.EMPTY,
   location: STRING_DATA.EMPTY,
   bank: STRING_DATA.EMPTY,
-  price: '25000000' ?? STRING_DATA.EMPTY,
+  price: '250000000' ?? STRING_DATA.EMPTY,
 };
 
 const gridElementClass = () => "lg:col-span-6 col-span-full";
@@ -49,6 +61,7 @@ const HeroSearchBox = () => {
   const router = useRouter();
   const [activeBadgeData, setActiveBadgeData] = useState(POPULER_CITIES?.[0]);
   const [loadingSearch, setLoadingSearch] = useState(false);
+  const [auctionFilter, setAuctionFilter] = useLocalStorage(COOKIES.AUCTION_FILTER, FILTER_EMPTY);
 
   const { data: categoryOptions, isLoading: isLoadingCategory } = useQuery({
     queryKey: [REACT_QUERY.CATEGORY_BOX_COLLECITON_OPTIONS],
@@ -80,18 +93,33 @@ const HeroSearchBox = () => {
     category: string;
     price: string;
     bank: string;
+    location: string;
   }) => {
-    const { category, price, bank } = values;
+    const { category, price, bank, location } = values;
     const response = await getAuctionData({
       category: category,
       bankName: bank,
       reservePrice: price,
+      location: location,
     });
     console.log("response> ", response);
     if (response) {
-      const data = setDataInQueryParams(values);
-      router.push(`${ROUTE_CONSTANTS.AUCTION}?q=${data}`);
+      const filters = { page: 1, ...values };
+      const data = setDataInQueryParams(filters);
+
+      setAuctionFilter(filters);
+      
+      // router.push(`${ROUTE_CONSTANTS.AUCTION}?q=${data}`);
     }
+  };
+
+  const getFilterQuery = (values: {
+    category: string;
+    price: string;
+    bank: string;
+    location: string;
+  }) => {
+    return setDataInQueryParams({ page: 1, ...values });
   };
 
   const handleSubmit = async (values: any) => {
@@ -107,6 +135,11 @@ const HeroSearchBox = () => {
 
   const handleBadgeClick = (data: any) => {
     setActiveBadgeData(data);
+  };
+
+  const handleSearchButton = (values: IFilter) => {
+    setAuctionFilter(values);
+    // const q = getFilterQuery(values);
   };
 
   return (
@@ -157,6 +190,7 @@ const HeroSearchBox = () => {
                           itemRenderer={ItemRenderer}
                           loading={isLoadingLocation}
                           options={locationOptions}
+                          defaultValue={values?.location}
                           placeholder={"Neighborhood, City or State"}
                           customClass="w-full "
                           onChange={(e: any) => {
@@ -201,30 +235,54 @@ const HeroSearchBox = () => {
                 </div>
 
                 <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2">
-                  <ActionButton
-                    isSubmit={true}
-                    text={STRING_DATA.SEARCH.toUpperCase()}
-                    customClass={"rounded-full btn-lg px-12 py-4 min-w-[150px]"}
-                    isLoading={loadingSearch}
-                  />
+                  <Link
+                    href={{
+                      pathname: ROUTE_CONSTANTS.AUCTION,
+                      query: { q: getFilterQuery(values) },
+                    }}
+                  >
+                    <ActionButton
+                      text={STRING_DATA.SEARCH.toUpperCase()}
+                      isLoading={loadingSearch}
+                      onclick={() => handleSearchButton(values)}
+                      customClass={
+                        "rounded-full btn-lg px-12 py-4 min-w-[150px]"
+                      }
+                    />
+                    {STRING_DATA.SEARCH.toUpperCase()}
+                  </Link>
                 </div>
               </div>
+              {/* {JSON.stringify(values?.location)}
+              <TextField
+                label={STRING_DATA.POPULER_CITIES}
+                name="location"
+                hasChildren={true}
+              >
+                <Field name="location">
+                  {() => (
+                    <div className="flex flex-wrap gap-2">
+                      {locationOptions
+                        ?.filter((item) => item?.isPopular)
+                        .map((item, index) => (
+                          <CustomBadge
+                            key={index}
+                            item={{ label: item?.name, ...item }}
+                            activeBadge={activeBadgeData}
+                            onclick={(data)=> {
+                              console.log(data)
+                              setActiveBadgeData(data)
+                              setFieldValue('location', data?.name)
+                            }}
+                          />
+                        ))}
+                    </div>
+                  )}
+                </Field>
+              </TextField> */}
             </Form>
           )}
         </CustomFormikForm>
-        <label className="block text-sm font-medium text-gray-900 text-left">
-          {STRING_DATA.POPULER_CITIES}
-        </label>
-        <div className="flex flex-wrap gap-2">
-          {POPULER_CITIES.map((item, index) => (
-            <CustomBadge
-              key={index}
-              item={item}
-              activeBadge={activeBadgeData}
-              onclick={handleBadgeClick}
-            />
-          ))}
-        </div>
       </div>
     </>
   );

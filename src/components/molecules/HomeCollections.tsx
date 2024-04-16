@@ -46,7 +46,7 @@ const HomeCollections = () => {
   if (!collectionsData?.length) return <SkeltonComponent />;
 
   return (
-    <div>
+    <div className="mb-12">
       {collectionsData?.map((collection: any, index: number) => {
         const ItemComponent = getComponent(collection?.componentName);
         return (

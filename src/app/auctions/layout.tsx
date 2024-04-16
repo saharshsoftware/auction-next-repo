@@ -1,3 +1,4 @@
+import FallbackLoading from "@/components/atoms/FallbackLoading";
 import FindAuction from "@/components/molecules/FindAuction";
 import RecentData from "@/components/molecules/RecentData";
 import { Suspense } from "react";
@@ -8,7 +9,7 @@ export default function AuctionLayout({
   children: React.ReactNode;
 }) {
   return (
-    <Suspense>
+    <Suspense fallback={<FallbackLoading />}>
       <section>
         <FindAuction />
         <div className="common-section">

@@ -1,9 +1,10 @@
-"use client"
-import { IHomeBoxCollection } from '@/types';
-import React, { useState } from 'react'
-import CustomReactCarousel from '../atoms/CustomReactCarousel';
-import { useQuery } from '@tanstack/react-query';
-import { getCollectionData } from '@/server/actions';
+"use client";
+import { IHomeBoxCollection } from "@/types";
+import React, { useState } from "react";
+import CustomReactCarousel from "../atoms/CustomReactCarousel";
+import { useQuery } from "@tanstack/react-query";
+import { getCollectionData } from "@/server/actions";
+import SkeltonComponent, { Skelton } from "../skeltons/SkeltonComponent";
 
 interface ICollectionComponent {
   ItemComponent: any;
@@ -27,13 +28,26 @@ const CollectionComponent = (props: ICollectionComponent) => {
       const res = await getCollectionData({
         endpoints: collection?.strapiAPIQuery,
       });
-      console.log(res, 'res')
+      console.log(res, "res");
       setItems(res);
       return res ?? [];
     },
   });
 
-  if (!items?.length || !ItemComponent) return null;
+  if (!items?.length || !ItemComponent) {
+    return (
+      <div className="flex flex-col gap-4 my-4">
+        <div className="text-center">
+          <div className="skeleton h-4 w-28 "></div>
+        </div>
+        <div className="grid lg:grid-cols-5 md:grid-cols-3 gap-5">
+          {Array.from({ length: 5 }, (_, index) => (
+            <Skelton key={index} />
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -53,6 +67,6 @@ const CollectionComponent = (props: ICollectionComponent) => {
       </CustomReactCarousel>
     </>
   );
-}
+};
 
-export default CollectionComponent
+export default CollectionComponent;

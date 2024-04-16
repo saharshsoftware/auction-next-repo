@@ -7,5 +7,7 @@ export const API_ENPOINTS = {
   BANKS: "/banks",
   LOCATIONS: "/locations",
   CATEGORY_BOX_COLLETIONS: "/categories",
-  HOME_BOX_COLLECTIONS: "/home-box-collections"
+  HOME_BOX_COLLECTIONS: "/home-box-collections",
+  FAVOURITE_LIST: "/favorite-list",
+  FAVOURITE_LIST_PROPERTY: "/property-in-favorite-list",
 };

@@ -29,7 +29,7 @@ const ActionButton: React.FC<IActionButton> = (props) => {
 
   const getButtonClass = () => {
     if (isDeleteButton) {
-      return "btn-error";
+      return "bg-[#dc3545] text-white";
     }
     if (isActionButton) {
       return "bg-action-btn text-white";
@@ -42,7 +42,7 @@ const ActionButton: React.FC<IActionButton> = (props) => {
       <button
         type={isSubmit ? "submit" : "button"}
         disabled={disabled || isLoading}
-        className={`${disabled ? "custom-btn-disabled" : ""} ${
+        className={`min-w-[80px] ${disabled ? "custom-btn-disabled" : ""} ${
           customClass ?? "custom-action-button-class"
         } btn  ${getButtonClass()}`}
         onClick={onclick}

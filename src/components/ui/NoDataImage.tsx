@@ -1,9 +1,11 @@
 import React from 'react'
+import nodataimage from "@/assets/images/no-data.png"
+import Image from 'next/image';
 
 const NoDataImage = () => {
   return (
     <>
-      <svg
+      {/* <svg
         xmlns="http://www.w3.org/2000/svg"
         data-name="Layer 1"
         // width="862.70323"
@@ -285,7 +287,15 @@ const NoDataImage = () => {
           transform="translate(-168.64838 -127.60704)"
           fill="#2f2e41"
         />
-      </svg>
+      </svg> */}
+      <div className='relative'>
+        <Image 
+        src={nodataimage}
+          width={200}
+          height={20}
+          alt="no-data"
+        />
+      </div>
     </>
   );
 }

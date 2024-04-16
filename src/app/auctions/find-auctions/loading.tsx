@@ -1,5 +1,4 @@
 import CustomLoading from "@/components/atoms/Loading";
-import React from "react";
 
 export default function Loading() {
   return (

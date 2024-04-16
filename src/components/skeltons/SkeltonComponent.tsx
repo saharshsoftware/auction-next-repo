@@ -1,6 +1,6 @@
 import React from "react";
 
-const Skelton = () => {
+export const Skelton = () => {
   return (
     <>
       <div className="flex flex-col gap-4 w-full justify-center">

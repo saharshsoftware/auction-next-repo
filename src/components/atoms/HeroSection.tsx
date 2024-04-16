@@ -1,8 +1,14 @@
+"use client"
 import React from "react";
-import HeroSearchBox from "./HeroSearchBox";
+import dynamic from "next/dynamic";
+// const HeroSearchBox = dynamic(() => import("./HeroSearchBox"), {
+//   ssr: false,
+// });
+
 import waveImage from "@/assets/wave.svg";
 import { STRING_DATA } from "../../shared/Constants";
 import { IBanks, ILocations } from "@/types";
+import HeroSearchBox from "./HeroSearchBox";
 
 const HeroSection = () => {
   return (

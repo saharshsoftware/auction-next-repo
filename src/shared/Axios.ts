@@ -1,8 +1,8 @@
-"use server"
 import { IRequest } from "@/interfaces/RequestInteface";
 import { API_BASE_URL } from "@/services/api";
 import axios, { AxiosInstance, AxiosResponse } from "axios";
-import { cookies } from "next/headers";
+import { getCookie } from "cookies-next";
+import { COOKIES } from "./Constants";
 
 export type RequestMethod = "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
 
@@ -13,7 +13,7 @@ const instance: AxiosInstance = axios.create({
 
 instance.interceptors.request.use(
   (config: any) => {
-    const token = cookies()?.get("auction-token")?.value;
+    const token = getCookie(COOKIES.TOKEN_KEY);
     if (!!token) {
       config.headers.authorization = `Bearer ${token}`;
     }

@@ -109,6 +109,7 @@ export const getBankOptions = (data: IBanks[]) => {
     // ...item,
     id: item?.id,
     name: item?.bankName,
+    slug: item?.slug
   }));
   return sanitizeData;
 };
@@ -130,7 +131,7 @@ export const selectedCategory = (
   data: ICategoryCollection[],
   initialValueData: { category?: string }
 ) => {
-  console.log(data, "categegory");
+  // console.log(data, "categegory");
   if (data?.length) {
     const result =
       data?.find((item: any) => item?.name === initialValueData?.category) ??
@@ -154,9 +155,9 @@ export const selectedBank = (
 
 
 export const sanitizeStrapiImageUrl = (item:any) => {
-  const result =
-    "https://newt-classic-briefly.ngrok-free.app" +
-    item?.image?.data?.attributes?.url;
+  const imagelink = item?.image?.data?.attributes?.url
+  // const result = "https://newt-classic-briefly.ngrok-free.app" + imagelink;
+  const result = "http://localhost:1337" + imagelink;
   return result
 }
 
@@ -174,4 +175,15 @@ export function getInitials(name: string) {
     ?.split(" ")
     .map((word: string) => word.charAt(0).toUpperCase())
     .join("");
+}
+
+export function capitalizeFirstLetter(str:string) {
+  return str?.charAt(0)?.toUpperCase() + str?.slice(1);
+}
+
+export function convertString(str1:string) {
+  return str1
+    .split("-")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(" ");
 }
