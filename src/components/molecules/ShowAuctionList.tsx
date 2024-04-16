@@ -114,13 +114,8 @@ const ShowAuctionList = (props: IShowAuctionList) => {
   };
 
   const handleClick = (data: any) => {
-    router.push(
-      ROUTE_CONSTANTS.AUCTION_DETAIL +
-        "/" +
-        data?.id +
-        "?q=" +
-        searchParams.get("q")
-    );
+    const paramsValue = searchParams.get("q")? `?q=${searchParams.get("q")}`: '';
+    router.push(`${ROUTE_CONSTANTS.AUCTION_DETAIL}/${data?.id}${paramsValue}`);
   };
 
   // console.log("fetchStatus", fetchStatus);
@@ -135,7 +130,8 @@ const ShowAuctionList = (props: IShowAuctionList) => {
   if (apiResponseData?.sendResponse?.length === 0) {
     return (
       <div className="flex items-center justify-center flex-col h-[70vh]">
-        <NoDataImage />
+        {/* <NoDataImage /> */}
+        No data found
       </div>
     );
   }

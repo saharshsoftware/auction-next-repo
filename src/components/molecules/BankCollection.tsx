@@ -14,7 +14,7 @@ const BankCollection = (props: { fetchQuery: string; item: any }) => {
             {imageUrl ? (
               <img
                 src={imageUrl}
-                alt="category_image"
+                alt="i"
                 className="object-contain bg-contain "
               />
             ) : null}

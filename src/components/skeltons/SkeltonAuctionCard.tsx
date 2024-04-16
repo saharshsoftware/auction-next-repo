@@ -8,8 +8,11 @@ const SkeltonCard = () => {
           <div className="skeleton h-4 w-3/5 "></div>
           <div className="skeleton h-4 w-[10%]"></div>
         </div>
-        <div className="skeleton h-4 w-[20%]"></div>
-        <div className="skeleton h-4 w-[10%]"></div>
+        <div className="flex flex-col gap-4">
+          <span>Reserve price</span>
+          <div className="skeleton h-4 w-[10%]"></div>
+        </div>
+        Seller - <div className="skeleton h-4 w-[10%]"></div>
         <div className="flex gap-4 items-center justify-between">
           <div className="skeleton h-4 w-1/4"></div>
           <div className="skeleton h-4 w-1/4"></div>

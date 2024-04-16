@@ -121,7 +121,7 @@ const FindAuction = (props: IFindAuction) => {
 
   const [initialValueData, setInitialValueData] = useState<any>(
     structuredClone(
-      getDataFromQueryParams(params_search.get("q") ?? "") ?? {
+      params_search.get("q") ? getDataFromQueryParams(params_search.get("q") ?? "") : {
         bank: STRING_DATA.EMPTY,
         price: STRING_DATA.EMPTY,
         location: STRING_DATA.EMPTY,
@@ -230,6 +230,10 @@ const FindAuction = (props: IFindAuction) => {
     };
   }, []);
 
+  const handleBack = () => {
+    router.back();
+  }
+
   const renderData = () => {
     if (!isMobileView.mobileView) {
       return <div className="common-section p-4">{renderForm()}</div>;
@@ -237,8 +241,8 @@ const FindAuction = (props: IFindAuction) => {
     return (
       <>
         <div className="flex flex-row items-start justify-between gap-4 p-4">
-          <div className="flex items-start justify-start gap-4">
-            <em>
+          <div className="flex items-center justify-start gap-4">
+            <em onClick={handleBack}>
               <FontAwesomeIcon icon={faArrowLeft} />
             </em>
             <div className="flex flex-col gap-2">

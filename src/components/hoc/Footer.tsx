@@ -1,7 +1,5 @@
 import React from "react";
-import { NAV_LINKS, STRING_DATA } from "../../shared/Constants";
-import Link from "next/link";
-import { ROUTE_CONSTANTS } from "@/shared/Routes";
+import {STRING_DATA } from "../../shared/Constants";
 import dynamic from "next/dynamic";
 
 const TopCities = dynamic(() => import("@/components/atoms/TopCities"), {
@@ -16,35 +14,27 @@ const TopBanks = dynamic(() => import("@/components/atoms/TopBanks"), {
   ssr: false,
 });
 
-const OtherCategory = dynamic(
-  () => import("@/components/atoms/OtherCategory"),
-  {
-    ssr: false,
-  }
-);
+const topClass = () => ("lg:w-auto w-full")
 
 const Footer: React.FC = () => {
   return (
     <>
-      <footer className="flex flex-col  gap-4 p-10 bg-base-200 text-base-content rounded">
-        <div className="flex lg:flex-row flex-col gap-14 w-full items-start justify-start">
-          <div>
-            <TopCities isFooter={true}/>
+      <footer className="flex flex-col  gap-8 p-10 bg-base-200 text-base-content rounded">
+        <div className="flex lg:flex-row flex-col gap-14 w-full lg:items-start lg:justify-start items-center justify-start">
+          <div className={topClass()}>
+            <TopCities isFooter={true} />
           </div>
 
-          <div>
-            {/* <OtherBanks isFooter={true} /> */}
-           <TopBanks isFooter={true} />
+          <div className={topClass()}>
+            <TopBanks isFooter={true} />
           </div>
 
-          <div>
+          <div className={topClass()}>
             <TopCategory isFooter={true} />
-            {/* <OtherCategory isFooter={true}/> */}
           </div>
         </div>
 
         <div className="flex lg:flex-row flex-col gap-4 justify-end items-center w-full">
-
           <nav>
             <div className="grid grid-flow-col gap-4">
               <a>
@@ -84,7 +74,7 @@ const Footer: React.FC = () => {
           </nav>
         </div>
 
-        <aside className="text-end">
+        <aside className="lg:text-end text-center text-sm">
           <p>
             Copyright © {new Date().getFullYear()} - All right reserved by{" "}
             {STRING_DATA.BRAND_NAME}

@@ -13,6 +13,16 @@ interface ICustomReactCarousel {
   title: string;
 }
 
+function SampleNextArrow(props: any) {
+  const { className, style, onClick } = props;
+  return <div className={className} onClick={onClick} />;
+}
+
+function SamplePrevArrow(props: any) {
+  const { className, style, onClick } = props;
+  return <div className={` ${className} `} onClick={onClick} />;
+}
+
 const CustomReactCarousel = (props: ICustomReactCarousel) => {
   const { homePageCollection, title, children, slideCount } = props;
 
@@ -20,9 +30,11 @@ const CustomReactCarousel = (props: ICustomReactCarousel) => {
     dots: true,
     infinite: false,
     speed: 500,
-    slidesToShow: 5,
-    slidesToScroll: 5,
+    slidesToShow: 4,
+    slidesToScroll: 2,
     initialSlide: 0,
+    nextArrow: <SampleNextArrow />,
+    prevArrow: <SamplePrevArrow />,
     responsive: [
       {
         breakpoint: 1024,
@@ -31,6 +43,7 @@ const CustomReactCarousel = (props: ICustomReactCarousel) => {
           slidesToScroll: 3,
           infinite: true,
           dots: true,
+          arrows: false,
         },
       },
       {
@@ -39,6 +52,7 @@ const CustomReactCarousel = (props: ICustomReactCarousel) => {
           slidesToShow: 2,
           slidesToScroll: 2,
           initialSlide: 2,
+          arrows: false,
         },
       },
       {
@@ -46,6 +60,7 @@ const CustomReactCarousel = (props: ICustomReactCarousel) => {
         settings: {
           slidesToShow: 1,
           slidesToScroll: 1,
+          arrows: false,
         },
       },
     ],

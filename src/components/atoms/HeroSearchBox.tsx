@@ -249,7 +249,6 @@ const HeroSearchBox = () => {
                         "rounded-full btn-lg px-12 py-4 min-w-[150px]"
                       }
                     />
-                    {STRING_DATA.SEARCH.toUpperCase()}
                   </Link>
                 </div>
               </div>

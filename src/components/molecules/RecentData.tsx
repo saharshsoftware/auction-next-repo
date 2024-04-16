@@ -39,7 +39,6 @@ const TopBanks = dynamic(() => import("@/components/atoms/TopBanks"), {
   ssr: false,
 });
 
-
 const ShowSimilerProperties = (props: { item: any; index: number }) => {
   const { item, index } = props;
   return (
@@ -58,11 +57,11 @@ const ShowSimilerProperties = (props: { item: any; index: number }) => {
 };
 
 const RecentData = (props: ISpecificRoute) => {
-    const {
-      isBankRoute = false,
-      isCategoryRoute = false,
-      isLocationRoute = false,
-    } = props;
+  const {
+    isBankRoute = false,
+    isCategoryRoute = false,
+    isLocationRoute = false,
+  } = props;
 
   const currentRoute = usePathname();
   const { findUrl } = useFindUrl();
@@ -92,6 +91,18 @@ const RecentData = (props: ISpecificRoute) => {
     }
   };
 
+  const showAddToWishlist = () => {
+    const requiredRoute = currentRoute.split("/").slice(0, 3).join("/");
+    if (requiredRoute === ROUTE_CONSTANTS.AUCTION_DETAIL && token) {
+      return (
+        <>
+          <AddToWishlist />
+        </>
+      );
+    }
+    return null;
+  };
+
   const renderChildren = () => {
     if (currentRoute === ROUTE_CONSTANTS.AUCTION) {
       return (
@@ -102,10 +113,7 @@ const RecentData = (props: ISpecificRoute) => {
     }
     return (
       <>
-
-        {token? <div className="mb-4">
-          <AddToWishlist />
-        </div>: null}
+        {showAddToWishlist()}
         {renderSpecificRoutes()}
       </>
     );

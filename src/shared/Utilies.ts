@@ -4,6 +4,7 @@ import { STORE_KEY } from "../zustandStore/store";
 import { IAuction, IBanks, ICategoryCollection, ILocations } from "@/types";
 import { AxiosError } from "axios";
 import { STRING_DATA } from "./Constants";
+import { ROUTE_CONSTANTS } from "./Routes";
 
 export const getDataFromLocalStorage = () => {
   const storedData = localStorage.getItem(STORE_KEY);
@@ -21,7 +22,8 @@ export const setDataInQueryParams = (values: any) => {
 };
 
 export const getDataFromQueryParams = (encodedString: string) => {
-  const data = encodedString ? JSON.parse(atob(encodedString)) : "";
+  console.log(!encodedString, "encodedString");
+  const data = !!encodedString ? JSON.parse(atob(encodedString)) : "";
   return data;
 };
 
@@ -157,7 +159,8 @@ export const selectedBank = (
 export const sanitizeStrapiImageUrl = (item:any) => {
   const imagelink = item?.image?.data?.attributes?.url
   // const result = "https://newt-classic-briefly.ngrok-free.app" + imagelink;
-  const result = "http://localhost:1337" + imagelink;
+  const result = process.env.NEXT_PUBLIC_API_BASE_URL + imagelink;
+  console.log(result, "resultimagebank");
   return result
 }
 
@@ -186,4 +189,9 @@ export function convertString(str1:string) {
     .split("-")
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
     .join(" ");
+}
+
+export function getSharedAuctionUrl(item: any) {
+  const news_share_path = `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}${ROUTE_CONSTANTS.AUCTION_DETAIL}/${item?.id}`;
+  return news_share_path;
 }

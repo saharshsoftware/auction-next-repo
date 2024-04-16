@@ -22,7 +22,7 @@ const CategoryCollection = (props: ICategroyCollection) => {
           <div className="relative w-12 h-12">
             <img
               src={imageUrl}
-              alt="category_image"
+              alt="i"
               className="object-contain bg-contain "
             />
           </div>

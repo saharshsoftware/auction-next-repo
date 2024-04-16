@@ -20,7 +20,7 @@ const CustomModal = (props: props) => {
     if (openModal) {
       return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className={`bg-white rounded-lg flex flex-col items-center justify-center gap-4 p-6 ${getRequiredWidth()}}`}>
+          <div className={`bg-white rounded-lg flex flex-col items-center justify-center gap-4 p-6 ${getRequiredWidth()}`}>
             {children}
           </div>
         </div>
