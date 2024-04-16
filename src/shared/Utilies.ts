@@ -109,6 +109,7 @@ export const getBankOptions = (data: IBanks[]) => {
     // ...item,
     id: item?.id,
     name: item?.bankName,
+    slug: item?.slug
   }));
   return sanitizeData;
 };

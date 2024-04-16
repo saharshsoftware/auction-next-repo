@@ -8,7 +8,9 @@ import CustomFormikForm from "./CustomFormikForm";
 import TextField from "./TextField";
 import {
   CATEGORIES,
+  COOKIES,
   ERROR_MESSAGE,
+  FILTER_EMPTY,
   POPULER_CITIES,
   RANGE_PRICE,
   REACT_QUERY,
@@ -29,6 +31,15 @@ import { useRouter } from "next/navigation";
 import { fetchBanks, fetchLocation, getAuctionData, getCategoryBoxCollection } from "@/server/actions";
 import { IBanks, ICategoryCollection, ILocations } from "@/types";
 import Link from "next/link";
+import { setCookie } from "cookies-next";
+import useLocalStorage from "@/hooks/useLocationStorage";
+
+interface IFilter {
+  category: string;
+  price: string;
+  bank: string;
+  location: string;
+}
 
 const validationSchema = Yup.object({
   category: Yup.string().trim(),
@@ -50,6 +61,7 @@ const HeroSearchBox = () => {
   const router = useRouter();
   const [activeBadgeData, setActiveBadgeData] = useState(POPULER_CITIES?.[0]);
   const [loadingSearch, setLoadingSearch] = useState(false);
+  const [auctionFilter, setAuctionFilter] = useLocalStorage(COOKIES.AUCTION_FILTER, FILTER_EMPTY);
 
   const { data: categoryOptions, isLoading: isLoadingCategory } = useQuery({
     queryKey: [REACT_QUERY.CATEGORY_BOX_COLLECITON_OPTIONS],
@@ -92,8 +104,12 @@ const HeroSearchBox = () => {
     });
     console.log("response> ", response);
     if (response) {
-      const data = setDataInQueryParams({page:1 , ...values});
-      router.push(`${ROUTE_CONSTANTS.AUCTION}?q=${data}`);
+      const filters = { page: 1, ...values };
+      const data = setDataInQueryParams(filters);
+
+      setAuctionFilter(filters);
+      
+      // router.push(`${ROUTE_CONSTANTS.AUCTION}?q=${data}`);
     }
   };
 
@@ -119,6 +135,11 @@ const HeroSearchBox = () => {
 
   const handleBadgeClick = (data: any) => {
     setActiveBadgeData(data);
+  };
+
+  const handleSearchButton = (values: IFilter) => {
+    setAuctionFilter(values);
+    // const q = getFilterQuery(values);
   };
 
   return (
@@ -214,7 +235,6 @@ const HeroSearchBox = () => {
                 </div>
 
                 <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2">
-                  
                   <Link
                     href={{
                       pathname: ROUTE_CONSTANTS.AUCTION,
@@ -224,6 +244,7 @@ const HeroSearchBox = () => {
                     <ActionButton
                       text={STRING_DATA.SEARCH.toUpperCase()}
                       isLoading={loadingSearch}
+                      onclick={() => handleSearchButton(values)}
                       customClass={
                         "rounded-full btn-lg px-12 py-4 min-w-[150px]"
                       }

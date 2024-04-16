@@ -3,7 +3,11 @@ import { ROUTE_CONSTANTS } from "./Routes";
 export const COOKIES = {
   TOKEN_KEY: "auction-token",
   AUCTION_USER_KEY: "auction-user-data",
+  AUCTION_FILTER: "auction-filter"
 };
+
+export const FILTER_EMPTY = { name: "", bank: "", location: "", category: "", price: "" }
+
 
 export const STRING_DATA = {
   TOP_CATEGORIES: "Top categories",

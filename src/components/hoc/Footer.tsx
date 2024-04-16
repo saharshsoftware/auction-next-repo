@@ -27,7 +27,7 @@ const Footer: React.FC = () => {
   return (
     <>
       <footer className="flex flex-col  gap-4 p-10 bg-base-200 text-base-content rounded">
-        <div className="flex flex-row gap-12 w-full items-start justify-start">
+        <div className="flex lg:flex-row flex-col gap-14 w-full items-start justify-start">
           <div>
             <TopCities isFooter={true}/>
           </div>

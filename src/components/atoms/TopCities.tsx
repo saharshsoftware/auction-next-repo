@@ -23,7 +23,7 @@ const TopCities = (props:{isFooter?:boolean}) => {
         if (item?.route) {
           return (
             <Link
-              className={`${isFooter ? "link link-primary" : ""}`}
+              className={`${isFooter ? "footer-link-custom-class" : ""}`}
               href={item?.route ?? ""}
             >
               {item?.name}
@@ -45,7 +45,7 @@ const TopCities = (props:{isFooter?:boolean}) => {
             );
           })}
           <Link
-            className={`${isFooter ? "link link-primary" : ""}`}
+            className={`${isFooter ? "footer-link-custom-class" : ""}`}
             href={ROUTE_CONSTANTS.E_CITIES_ALL}
           >
             All

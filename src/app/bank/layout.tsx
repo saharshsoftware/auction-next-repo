@@ -1,8 +1,8 @@
+import FallbackLoading from "@/components/atoms/FallbackLoading";
 import FindAuction from "@/components/molecules/FindAuction";
-// import RecentData from "@/components/molecules/RecentData";
-import SkeltonAuctionLayout from "@/components/skeltons/SkeltonAuctionLayout";
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
+
 const RecentData = dynamic(() => import("@/components/molecules/RecentData"), {
   ssr: false,
 });
@@ -13,7 +13,7 @@ export default function AuctionLayout({
   children: React.ReactNode;
 }) {
   return (
-    <Suspense fallback={<SkeltonAuctionLayout />}>
+    <Suspense fallback={<FallbackLoading />}>
       <section>
         <FindAuction  />
         <div className="common-section">

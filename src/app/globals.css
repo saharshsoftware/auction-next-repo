@@ -175,3 +175,7 @@ body :focus-within {
 .slick-slide {
   padding:10px;
 }
+
+.footer-link-custom-class {
+  @apply link link-hover
+}

@@ -12,7 +12,7 @@ import {
   getDataFromQueryParams,
   setDataInQueryParams,
 } from "@/shared/Utilies";
-import { REACT_QUERY } from "@/shared/Constants";
+import { COOKIES, FILTER_EMPTY, REACT_QUERY } from "@/shared/Constants";
 import NoDataImage from "../ui/NoDataImage";
 import PaginationComp from "../atoms/PaginationComp";
 import { useQuery } from "@tanstack/react-query";
@@ -20,6 +20,7 @@ import { getAuctionData } from "@/server/actions";
 import CustomLoading from "../atoms/Loading";
 import { getAuctionDataClient } from "@/services/auction";
 import SkeltonAuctionCard from "../skeltons/SkeltonAuctionCard";
+import useLocalStorage from "@/hooks/useLocationStorage";
 
 interface IShowAuctionList {
   isCategoryRoute?: boolean;
@@ -44,13 +45,15 @@ const ShowAuctionList = (props: IShowAuctionList) => {
   });
 
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [auctionFilter, setAuctionFilter] = useLocalStorage(COOKIES.AUCTION_FILTER, FILTER_EMPTY);
+  console.log(auctionFilter, "auctionFilterauctionFilter");
 
   const filterRef = useRef<any>({
     category: currentRoute.startsWith("/category")
       ? convertString(params?.slug?.toString())
       : "",
     bankName: currentRoute.startsWith("/bank")
-      ? convertString(params?.slug?.toString())
+      ? auctionFilter?.bank
       : "",
     location: currentRoute.startsWith("/location")
       ? convertString(params?.slug?.toString())

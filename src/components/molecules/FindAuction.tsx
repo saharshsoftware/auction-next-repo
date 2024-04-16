@@ -3,7 +3,9 @@
 import React, { useEffect, useState } from "react";
 import {
   CATEGORIES,
+  COOKIES,
   ERROR_MESSAGE,
+  FILTER_EMPTY,
   RANGE_PRICE,
   REACT_QUERY,
   STRING_DATA,
@@ -46,6 +48,7 @@ import { IBanks, ICategoryCollection, ILocations } from "@/types";
 import useCustomParamsData from "@/hooks/useCustomParamsData";
 import useFindUrl from "@/hooks/useFindUrl";
 import { getCategoryBoxCollectionClient } from "@/services/auction";
+import useLocalStorage from "@/hooks/useLocationStorage";
 
 const gridElementClass = () => "lg:col-span-3  col-span-full";
 const validationSchema = Yup.object({
@@ -72,6 +75,8 @@ const FindAuction = (props: IFindAuction) => {
   const router = useRouter();
   const currentRoute = usePathname();
   const { showModal, openModal, hideModal } = useModal();
+  const [auctionFilter, setAuctionFilter] = useLocalStorage(COOKIES.AUCTION_FILTER, FILTER_EMPTY);
+  
   const { setDataInQueryParamsMethod, getDataFromQueryParamsMethod } =
     useCustomParamsData();
   const { data: categoryOptions, isLoading: isLoadingCategory ,refetch:refetchCategory } = useQuery({
@@ -95,6 +100,7 @@ const FindAuction = (props: IFindAuction) => {
       const res = (await fetchBanks()) as unknown as IBanks[];
       const responseData = getBankOptions(res) ?? [];
       const updatedData = [{ id: 0, name: STRING_DATA.ALL }, ...responseData];
+      // console.log(updatedData, "updateadslfk");
       if (currentRoute.startsWith("/bank")) fillFilter(updatedData);
       return updatedData ?? [];
     },
@@ -158,9 +164,10 @@ const FindAuction = (props: IFindAuction) => {
     }
     if (currentRoute.startsWith("/bank")) {
       const selectedOne = data.find((item: any) => item?.slug === params?.slug);
-      console.log(selectedOne, "selectedOne");
+      console.log(selectedOne, "selectedOne", auctionFilter?.bank);
+      // debugger;
       setInitialValueData({
-        bank: selectedOne?.name ?? "",
+        bank: selectedOne?.name ?? auctionFilter?.bank ?? "",
       });
     }
   }
@@ -172,7 +179,9 @@ const FindAuction = (props: IFindAuction) => {
 
   const handleSubmit = (values: any) => {
     console.log(values, "values123");
-    const data = setDataInQueryParamsMethod({ page: 1, ...values });
+    const filter = { page: 1, ...values };
+    setAuctionFilter(filter);
+    const data = setDataInQueryParamsMethod(filter);
     // console.log(data)
 
     // setStaticLoading(true);
