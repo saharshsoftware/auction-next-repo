@@ -41,7 +41,7 @@ export const handleOnSettled = (actionResponse: IActionResponse) => {
   const { message } = actionResponse?.data?.error ?? {};
   if (message) {
     if (actionResponse?.fail) {
-      debugger;
+      // debugger;
       actionResponse?.fail?.(actionResponse?.data?.error);
       return;
     }
@@ -194,6 +194,6 @@ export function convertString(str1:string) {
 }
 
 export function getSharedAuctionUrl(item: any) {
-  const news_share_path = `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}${ROUTE_CONSTANTS.AUCTION_DETAIL}/${item?.id}`;
+  const news_share_path = `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}${ROUTE_CONSTANTS.AUCTION_DETAIL}/${item?.slug}`;
   return news_share_path;
 }

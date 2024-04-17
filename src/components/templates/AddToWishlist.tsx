@@ -1,38 +1,39 @@
 "use client"
 import React, { useState } from 'react'
-import TextField from '../atoms/TextField';
-import ReactSelectDropdown from '../atoms/ReactSelectDropdown';
-import { ItemRenderer, NoDataRendererDropdown } from '../atoms/NoDataRendererDropdown';
-import { Field, Form } from 'formik';
-import CustomFormikForm from '../atoms/CustomFormikForm';
-import * as Yup from "yup";
+import Select from "react-select";
 import { ERROR_MESSAGE, REACT_QUERY, STRING_DATA } from '@/shared/Constants';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { addPropertyToFavouriteList, fetchFavoriteList } from '@/server/actions/favouriteList';
 import { IFavouriteList } from '@/types';
 import { handleOnSettled } from '@/shared/Utilies';
 import { useParams } from "next/navigation";
 import ActionButton from '../atoms/ActionButton';
 import { addPropertyToFavouriteListClient, fetchFavoriteListClient } from '@/services/favouriteList';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCross } from '@fortawesome/free-solid-svg-icons';
-
-const validationSchema = Yup.object({
-  wishlist: Yup.string().required(ERROR_MESSAGE.LIST_REQUIRED),
-});
-
-const initialValues = {
-  wishlist: STRING_DATA.EMPTY
-};
+import { getAuctionDetailClient } from '@/services/auction';
 
 const AddToWishlist = () => {
   const params = useParams<{ slug: string; item: string }>();
+
+  const [selectedOption, setSelectedOption] = useState<any>({value: '', label: ''});
+
+  const { data: auctionData, fetchStatus } = useQuery({
+    queryKey: [REACT_QUERY.AUCTION_DETAIL],
+    queryFn: async () => {
+      const res = (await getAuctionDetailClient({
+        slug: params?.slug,
+      })) as unknown as any;
+      return res ?? [];
+    },
+  });
+
+  // console.log(auctionData, "auctionData-favourite");
 
   const { data: favouriteListData, isLoading: isLoadingFavourite } = useQuery({
     queryKey: [REACT_QUERY.FAVOURITE_LIST],
     queryFn: async () => {
       const res = (await fetchFavoriteListClient()) as unknown as IFavouriteList[];
-      return res ?? []
+      const dropdownData = res.map((item)=> ({value: item?.id, label: item?.name}))
+      // console.log(dropdownData, "dropdownData");
+      return dropdownData ?? [];
     },
   });
 
@@ -46,31 +47,36 @@ const AddToWishlist = () => {
       const response = {
         data,
         success: () => {
-          // queryClient.invalidateQueries({
-          //   queryKey: [REACT_QUERY.FAVOURITE_LIST],
-          // });
+          setSelectedOption(null);
         },
         fail: (error: any) => {
           const { message } = error;
           setRespError(message);
+          setSelectedOption(null);
         },
       };
       handleOnSettled(response);
     },
   });
 
-  const addPropertyToFavourite = (values: any) => {
+  const addPropertyToFavourite = () => {
     const body = {
-      listId: values?.wishlist?.toString(),
-      propertyId: params?.slug,
+      listId: selectedOption?.value ?? "",
+      propertyId: auctionData?.id ?? '',
     };
     console.log(body);
     mutate(body);
     // resetForm();
   };
 
-  const clearWishlist = (methods: any) => {
-    methods.clearAll();
+  const handleSubmit = (event:any) => {
+    event.preventDefault();
+    if (!selectedOption) {
+      setRespError("List is required")
+      return
+    }
+    // console.log(selectedOption);
+    addPropertyToFavourite();
   };
 
   return (
@@ -79,57 +85,32 @@ const AddToWishlist = () => {
         {STRING_DATA.ADD_TO_LIST}
       </div>
       <div className="custom-common-header-detail-class p-4">
-        <CustomFormikForm
-          initialValues={initialValues}
-          validationSchema={validationSchema}
-          wantToUseFormikEvent={true}
-          enableReinitialize={true}
-          handleSubmit={(values: any, actions: any) => {
-            addPropertyToFavourite({ ...values });
-            // document.getElementById("clear-dropdown-button")?.click();
-            // actions.resetForm();
-            setTimeout(() => {
-              actions.setFieldValue("wishlist", null);
-            }, 1000);
-          }}
+        <form
+          onSubmit={handleSubmit}
+          className="flex flex-col items-center space-y-4"
         >
-          {({ setFieldValue }: any) => (
-            <Form>
-              <div className="flex flex-col gap-4 ">
-                {/* {JSON.stringify(values?.wishlist)} */}
-                <TextField name={"wishlist"} hasChildren={true}>
-                  <Field name="wishlist">
-                    {() => (
-                      <ReactSelectDropdown
-                        noDataRenderer={NoDataRendererDropdown}
-                        itemRenderer={ItemRenderer}
-                        options={favouriteListData ?? []}
-                        placeholder={"Add to list"}
-                        name={"wishlist"}
-                        clearRenderer={({ methods }:{methods:any}) => (
-                          <div id="clear-dropdown-button" onClick={()=>clearWishlist(methods)} className='hidden'><FontAwesomeIcon icon={faCross}/></div>
-                        )}
-                        clearable={true}
-                        loading={isLoadingFavourite}
-                        customClass="w-full "
-                        onChange={(e: any) => {
-                          setFieldValue("wishlist", e?.[0]?.id);
-                        }}
-                      />
-                    )}
-                  </Field>
-                </TextField>
-                <ActionButton
-                  isSubmit={true}
-                  text="Add"
-                  isLoading={isPending}
-                  disabled={isLoadingFavourite}
-                  customClass="w-full"
-                />
-              </div>
-            </Form>
-          )}
-        </CustomFormikForm>
+          <Select
+            className="w-full"
+            placeholder="Select list"
+            name="wishlist"
+            value={selectedOption}
+            onChange={setSelectedOption}
+            options={favouriteListData}
+          />
+
+          {respError ? (
+            <span className="text-center text-sm text-red-700">
+              {respError}
+            </span>
+          ) : null}
+          <ActionButton
+            isSubmit={true}
+            text="Add"
+            isLoading={isPending}
+            disabled={isLoadingFavourite}
+            customClass="w-full"
+          />
+        </form>
       </div>
     </>
   );

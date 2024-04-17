@@ -80,8 +80,6 @@ const CreateFavList = (props: ICreateFavList) => {
                   label="Name"
                   placeholder="Enter name"
                 />
-              </div>
-            </CustomFormikForm>
             {respError ? (
               <span className="text-center text-sm text-red-700">
                 {respError}
@@ -95,6 +93,8 @@ const CreateFavList = (props: ICreateFavList) => {
               />
               <ActionButton isSubmit={true} text="Add" isLoading={isPending} />
             </div>
+              </div>
+            </CustomFormikForm>
           </div>
         </div>
       </CustomModal>

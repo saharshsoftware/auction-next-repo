@@ -1030,7 +1030,8 @@ export const REACT_QUERY = {
   AUCTION_LOCATION: "Auction-location",
   FAVOURITE_LIST: "Favourite-list",
   FAVOURITE_LIST_PROPERTY: "Favourite-list-property",
-  FIND_AUCTION: "Find-auction"
+  FIND_AUCTION: "Find-auction",
+  AUCTION_DETAIL:"auction-detail"
 };
 
 export const SAMPLE_CITY = [
