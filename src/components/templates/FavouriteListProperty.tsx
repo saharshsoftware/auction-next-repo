@@ -11,7 +11,7 @@ import { IFavouriteListProperty } from "@/types";
 import ConfirmationModal from "../ modals/ConfirmationModal";
 import useModal from "@/hooks/useModal";
 import { handleOnSettled } from "@/shared/Utilies";
-import { fetchFavoriteListPropertyClient } from "@/services/favouriteList";
+import { fetchFavoriteListPropertyClient, removePropertyFromFavoriteListClient } from "@/services/favouriteList";
 
 interface IFavouriteListPropertyComp {
   listId: string;
@@ -44,7 +44,7 @@ const FavouriteListProperty = (props: IFavouriteListPropertyComp) => {
 
   // Mutations
   const { mutate, isPending } = useMutation({
-    mutationFn: removePropertyFromFavoriteList,
+    mutationFn: removePropertyFromFavoriteListClient,
     onSettled: async (data) => {
       console.log(data);
       const response = {
@@ -119,7 +119,7 @@ const FavouriteListProperty = (props: IFavouriteListPropertyComp) => {
       <ConfirmationModal
         message={STRING_DATA.MESSAGE_PROCEED}
         openModal={openModalDelete}
-        actionLabel={"Delete"}
+        actionLabel={STRING_DATA.REMOVE}
         hideModal={closeDeleteModal}
         onActionClick={handleDeleteAction}
         loading={isPending}

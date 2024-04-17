@@ -17,7 +17,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons/faPlus";
 import { faTrash } from "@fortawesome/free-solid-svg-icons/faTrash";
 import { faPencil } from "@fortawesome/free-solid-svg-icons/faPencil";
-import { fetchFavoriteListClient } from "@/services/favouriteList";
+import { deleteFavoriteListClient, fetchFavoriteListClient } from "@/services/favouriteList";
 
 const ManageListComp = () => {
   const queryClient = useQueryClient();
@@ -49,24 +49,9 @@ const ManageListComp = () => {
     },
   });
 
-  const { isLoading: isLoadingDelete, refetch } = useQuery({
-    queryKey: [REACT_QUERY.FAVOURITE_LIST, selectedBadge?.id],
-    queryFn: async () => {
-      const res = (await deleteFavoriteList({
-        id: selectedBadge?.id,
-      })) as unknown as IFavouriteList[];
-      queryClient.invalidateQueries({
-        queryKey: [REACT_QUERY.FAVOURITE_LIST],
-      });
-      closeDeleteModal();
-      return res ?? [];
-    },
-    enabled: false,
-  });
-
   // Mutations
   const { mutate, isPending } = useMutation({
-    mutationFn: deleteFavoriteList,
+    mutationFn: deleteFavoriteListClient,
     onSettled: async (data) => {
       console.log(data);
       hideModalDelete();
@@ -171,7 +156,7 @@ const ManageListComp = () => {
       <ConfirmationModal
         message={STRING_DATA.MESSAGE_PROCEED}
         openModal={openModalDelete}
-        actionLabel={STRING_DATA.REMOVE}
+        actionLabel={STRING_DATA.DELETE}
         hideModal={closeDeleteModal}
         onActionClick={handleDeleteAction}
         loading={isPending}

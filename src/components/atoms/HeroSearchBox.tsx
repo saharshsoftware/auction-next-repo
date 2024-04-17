@@ -190,7 +190,6 @@ const HeroSearchBox = () => {
                           itemRenderer={ItemRenderer}
                           loading={isLoadingLocation}
                           options={locationOptions}
-                          defaultValue={values?.location}
                           placeholder={"Neighborhood, City or State"}
                           customClass="w-full "
                           onChange={(e: any) => {

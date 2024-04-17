@@ -16,6 +16,7 @@ import Link from "next/link";
 // import { authenticate } from "@/app/lib/actions";
 // import { signIn } from "@/auth";
 import { signIn } from "next-auth/react";
+import { loginClient } from "@/services/auth";
 
 const validationSchema = Yup.object({
   email: Yup.string().trim().required(ERROR_MESSAGE.EMAIL_REQUIRED),
@@ -34,7 +35,7 @@ export default function LoginComp() {
 
   // Mutations
   const { mutate, isPending } = useMutation({
-    mutationFn: login,
+    mutationFn: loginClient,
     onSettled: async (data) => {
       console.log(data);
       const response = {

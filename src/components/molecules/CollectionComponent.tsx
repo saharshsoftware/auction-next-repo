@@ -5,6 +5,7 @@ import CustomReactCarousel from "../atoms/CustomReactCarousel";
 import { useQuery } from "@tanstack/react-query";
 import { getCollectionData } from "@/server/actions";
 import SkeltonComponent, { Skelton } from "../skeltons/SkeltonComponent";
+import { getCollectionDataClient } from "@/services/auction";
 
 interface ICollectionComponent {
   ItemComponent: any;
@@ -25,14 +26,17 @@ const CollectionComponent = (props: ICollectionComponent) => {
       collection?.strapiAPIQuery,
     ],
     queryFn: async () => {
-      const res = await getCollectionData({
+      const res = await getCollectionDataClient({
         endpoints: collection?.strapiAPIQuery,
       });
       console.log(res, "res");
       setItems(res);
       return res ?? [];
     },
+    staleTime: 300000, // 5 mins
   });
+
+  console.log(dataBank, items, ItemComponent, ">>>>>cient");
 
   if (!items?.length || !ItemComponent) {
     return (

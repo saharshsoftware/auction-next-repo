@@ -8,6 +8,7 @@ import CategoryCollection from "./CategoryCollection";
 import BankCollection from "./BankCollection";
 import { IHomeBoxCollection } from "@/types";
 import SkeltonComponent from "../skeltons/SkeltonComponent";
+import { getHomeBoxCollectionClient } from "@/services/auction";
 
 const getComponent = (componentName: string) => {
   switch (componentName) {
@@ -29,7 +30,7 @@ const HomeCollections = () => {
     queryKey: [REACT_QUERY.HOME_BOX_COLLETIONS],
     queryFn: async () => {
       const res =
-        (await getHomeBoxCollection()) as unknown as IHomeBoxCollection[];
+        (await getHomeBoxCollectionClient()) as unknown as IHomeBoxCollection[];
       return res ?? [];
     },
     enabled: true,

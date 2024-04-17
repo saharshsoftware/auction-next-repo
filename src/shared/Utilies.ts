@@ -59,14 +59,17 @@ export const formatPrice = (price: any) => {
 
   if (price >= 10000000) {
     // If price is greater than or equal to 1 crore (10,000,000)
-    formattedPrice =
-      (price / 10000000).toLocaleString("en-IN", { style: "decimal" }) + " Cr";
+ formattedPrice =
+   (price / 10000000).toFixed(2).toLocaleString() +
+   " Cr";
   } else if (price >= 100000) {
     // If price is greater than or equal to 1 lakh (100,000)
     formattedPrice =
-      (price / 100000).toLocaleString("en-IN", { style: "decimal" }) + " Lakh";
+      (price / 100000)
+        .toFixed(2)
+        .toLocaleString() + " Lakh";
   } else {
-    formattedPrice = price.toLocaleString("en-IN", { style: "decimal" });
+    formattedPrice = price.toLocaleString();
   }
   return `₹ ${formattedPrice}`;
 };
@@ -158,9 +161,8 @@ export const selectedBank = (
 
 export const sanitizeStrapiImageUrl = (item:any) => {
   const imagelink = item?.image?.data?.attributes?.url
-  // const result = "https://newt-classic-briefly.ngrok-free.app" + imagelink;
   const result = process.env.NEXT_PUBLIC_API_BASE_URL + imagelink;
-  console.log(result, "resultimagebank");
+  // console.log(result, "resultimagebank");
   return result
 }
 

@@ -53,18 +53,18 @@ export const getAuctionDataClient = async (payload: {
   }
 };
 
-// export const getAuctionDetail = async ({ slug }: { slug: string }) => {
-//   // "use server";
-//   try {
-//     const URL = API_BASE_URL + API_ENPOINTS.NOTICES + `/${slug}`;
-//     console.log(URL, "auction-detail");
-//     const { data } = await getRequest({ API: URL });
-//     const sendResponse = sanitizedAuctionDetail(data.data) as IAuction;
-//     return sendResponse;
-//   } catch (e) {
-//     console.log(e, "auctionDetail error auction detail");
-//   }
-// };
+export const getAuctionDetailClient = async ({ slug }: { slug: string }) => {
+  // "use server";
+  try {
+    const URL = API_BASE_URL + API_ENPOINTS.NOTICES + `/${slug}`;
+    console.log(URL, "auction-detail");
+    const { data } = await getRequest({ API: URL });
+    const sendResponse = sanitizedAuctionDetail(data.data) as IAuction;
+    return sendResponse;
+  } catch (e) {
+    console.log(e, "auctionDetail error auction detail");
+  }
+};
 
 export const getCategoryBoxCollectionClient = async () => {
   try {
@@ -78,26 +78,25 @@ export const getCategoryBoxCollectionClient = async () => {
   }
 };
 
-// export const getHomeBoxCollection = async () => {
-//   "use server";
-//   try {
-//     const URL = API_BASE_URL + API_ENPOINTS.HOME_BOX_COLLECTIONS;
-//     const { data } = await getRequest({ API: URL });
-//     const sendResponse = sanitizeStrapiData(data.data) as ICategoryCollection;
-//     return sendResponse;
-//   } catch (e) {
-//     console.log(e, "auctionDetail error Home-box");
-//   }
-// };
+export const getHomeBoxCollectionClient = async () => {
+  try {
+    const URL = API_BASE_URL + API_ENPOINTS.HOME_BOX_COLLECTIONS;
+    const { data } = await getRequest({ API: URL });
+    const sendResponse = sanitizeStrapiData(data.data) as ICategoryCollection;
+    return sendResponse;
+  } catch (e) {
+    console.log(e, "auctionDetail error Home-box");
+  }
+};
 
-// export const getCollectionData = async (props: { endpoints: string }) => {
-//   try {
-//     const { endpoints } = props;
-//     const URL = API_BASE_URL + endpoints + `?populate=*`;
-//     const { data } = await getRequest({ API: URL });
-//     const sendResponse = sanitizeStrapiData(data.data) as any;
-//     return sendResponse;
-//   } catch (e) {
-//     console.log(e, "auctionDetail error collection");
-//   }
-// };
+export const getCollectionDataClient = async (props: { endpoints: string }) => {
+  try {
+    const { endpoints } = props;
+    const URL = API_BASE_URL + endpoints + `?populate=*`;
+    const { data } = await getRequest({ API: URL });
+    const sendResponse = sanitizeStrapiData(data.data) as any;
+    return sendResponse;
+  } catch (e) {
+    console.log(e, "auctionDetail error collection");
+  }
+};

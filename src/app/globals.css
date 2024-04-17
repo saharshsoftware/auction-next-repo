@@ -188,3 +188,89 @@ body :focus-within {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
+
+.pagination {
+  margin: 0;
+  list-style: none;
+}
+
+.pagination li {
+  margin: 0 0.25rem;
+}
+
+.pagination li.previous a,
+.pagination li.next a {
+  background-position: center;
+  background-repeat: no-repeat;
+  background-image: url(../assets/images/right_icon.svg);
+  background-size: 18px;
+  font-size: 0;
+}
+
+.pagination li.previous {
+  transform: scaleX(-1);
+}
+
+.pagination li a {
+  border-radius: 0.375rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem;
+  border: 1px solid #cbd5e0;
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.pagination li a:hover,
+.pagination li.selected a {
+  background-color: var(--brand-color);
+  color: white;
+}
+
+.pagination li.disabled a {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+
+/* 
+.pagination {
+  @apply m-0 list-none;
+
+  li {
+    @apply mx-1;
+
+    &.previous a,
+    &.next a {
+      @apply bg-center bg-no-repeat;
+
+      background-image: url(../assets/images/right_icon.svg);
+      background-size: 18px;
+      font-size: 0;
+    }
+
+    &.previous {
+      transform: scaleX(-1); /* Use scaleX instead of scale(-1)
+    }
+
+    a {
+      @apply rounded-md w-10 h-10 flex items-center justify-center p-1 border border-gray-400 font-semibold text-sm;
+    }
+
+    &:hover,
+    &.selected {
+      a {
+        @apply bg-[var(--brand-color)] text-white
+      }
+    }
+
+    &.disabled {
+      a {
+        @apply pointer-events-none opacity-50;
+      }
+    }
+  }
+} */

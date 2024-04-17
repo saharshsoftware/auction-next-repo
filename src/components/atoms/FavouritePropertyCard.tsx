@@ -24,7 +24,7 @@ const FavouritePropertyCard: React.FC<IFavouritePropertyCardComp> = (props) => {
         <div className="flex flex-col gap-4 justify-between items-start">
           <h2 className="custom-h2-class">{propertyData?.title} </h2>
         </div>
-        <div className="flex lg:flex-row flex-col gap-4 justify-between items-start ">
+        <div className="flex gap-4 justify-between items-start ">
           <div className="flex flex-col gap-2 items-start justify-start">
             <span className={auctionLabelClass()}>Reserve price</span>
             <span className="custom-prize-color font-bold text-2xl">

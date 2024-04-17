@@ -115,7 +115,7 @@ const ShowAuctionList = (props: IShowAuctionList) => {
 
   const handleClick = (data: any) => {
     const paramsValue = searchParams.get("q")? `?q=${searchParams.get("q")}`: '';
-    router.push(`${ROUTE_CONSTANTS.AUCTION_DETAIL}/${data?.id}${paramsValue}`);
+    router.push(`${ROUTE_CONSTANTS.AUCTION_DETAIL}/${data?.slug}${paramsValue}`);
   };
 
   // console.log("fetchStatus", fetchStatus);

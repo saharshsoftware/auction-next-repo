@@ -9,6 +9,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { handleOnSettled } from "@/shared/Utilies";
 import { updateFavouriteList } from "@/server/actions/favouriteList";
 import { Form } from "formik";
+import { updateFavouriteListClient } from "@/services/favouriteList";
 
 interface ICreateFavList {
   openModal: boolean;
@@ -33,7 +34,7 @@ const EditFavList = (props: ICreateFavList) => {
 
   // Mutations
   const { mutate, isPending } = useMutation({
-    mutationFn: updateFavouriteList,
+    mutationFn: updateFavouriteListClient,
     onSettled: async (data) => {
       console.log(data);
       const response = {

@@ -57,10 +57,12 @@ export const getAuctionData = async (payload: {
 export const getAuctionDetail = async ({ slug }: { slug: string }) => {
   "use server";
   try {
-    const URL = API_BASE_URL + API_ENPOINTS.NOTICES + `/${slug}`;
+    const filter = `?filters[slug][$eq]=${slug}`;
+    const URL = API_BASE_URL + API_ENPOINTS.NOTICES + `${filter}`;
     console.log(URL, "auction-detail");
     const { data } = await getRequest({ API: URL });
-    const sendResponse = sanitizedAuctionDetail(data.data) as IAuction;
+    // console.log(data, ">>detail")
+    const sendResponse = sanitizedAuctionDetail(data.data?.[0]) as IAuction;
     return sendResponse;
   } catch (e) {
     console.log(e, "auctionDetail error auction detail");

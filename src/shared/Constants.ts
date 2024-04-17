@@ -10,6 +10,7 @@ export const FILTER_EMPTY = { name: "", bank: "", location: "", category: "", pr
 
 
 export const STRING_DATA = {
+  DELETE: 'Delete',
   TOP_CATEGORIES: "Top categories",
   TOP_BANKS: "Top banks",
   OTHER_CATEGORIES: "Other categories",
