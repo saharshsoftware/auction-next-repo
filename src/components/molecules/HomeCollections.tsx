@@ -53,7 +53,7 @@ const HomeCollections = () => {
         return (
           <div className="vertical-margin" key={index}>
             <CollectionComponent
-              key={collection?._id}
+              key={collection?.id}
               ItemComponent={ItemComponent}
               collection={collection}
             />

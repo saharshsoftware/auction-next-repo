@@ -1,6 +1,6 @@
 "use client";
 import { IHomeBoxCollection } from "@/types";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CustomReactCarousel from "../atoms/CustomReactCarousel";
 import { useQuery } from "@tanstack/react-query";
 import { getCollectionData } from "@/server/actions";
@@ -16,9 +16,9 @@ interface ICollectionComponent {
 const CollectionComponent = (props: ICollectionComponent) => {
   const { ItemComponent, collection, key } = props;
   const [items, setItems] = useState<any[]>([]);
+  // console.log(collection?.id, "collection-key");
   const {
     data: dataBank,
-    isLoading,
     fetchStatus,
   } = useQuery({
     queryKey: [
@@ -29,16 +29,24 @@ const CollectionComponent = (props: ICollectionComponent) => {
       const res = await getCollectionDataClient({
         endpoints: collection?.strapiAPIQuery,
       });
-      console.log(res, "res");
-      setItems(res);
+      // console.log(res, "res");
+      // setItems(res);
       return res ?? [];
     },
+    // enabled: !!collection?.id,
     staleTime: 300000, // 5 mins
   });
 
-  console.log(dataBank, items, ItemComponent, ">>>>>cient");
+  useEffect(() => {
+    console.log(dataBank, "dataBank");
+    if (dataBank) {
+      setItems(dataBank);
+    } 
+  }, [dataBank]);
 
-  if (!items?.length || !ItemComponent) {
+  console.log(fetchStatus, ">>>>>cient");
+
+  if (fetchStatus === "fetching") {
     return (
       <div className="flex flex-col gap-4 my-4">
         <div className="text-center">

@@ -2,10 +2,11 @@
 import React, { useEffect, useState } from "react";
 import TooltipContent from "../atoms/TooltipContent";
 import { getCookie } from "cookies-next";
-import { COOKIES, NAVBAR_NAV_LINKS } from "@/shared/Constants";
+import { COOKIES, NAVBAR_NAV_LINKS, STRING_DATA } from "@/shared/Constants";
 import { getInitials } from "@/shared/Utilies";
 import LogoutButton from "../ui/LogoutButton";
 import Link from "next/link";
+import { ROUTE_CONSTANTS } from "@/shared/Routes";
 
 interface ICustomDrawer {
   toggleTopBar: ()=> void;
@@ -44,16 +45,14 @@ const CustomDrawer = (props: ICustomDrawer) => {
         </div>
       );
     }
-    return (
-      <div className="lg:flex hidden items-center gap-8">
-        <LogoutButton />
-      </div>
-    );
+    return null
   };
-  return (
-    <>
-      <div className="flex flex-col gap-4 w-full h-full">
-        <div className="flex flex-col gap-4 transform transition duration-300 py-4 flex-1 overflow-y-scroll min-h-[70vh]">
+
+
+  const renderLinks = () => {
+    if (myToken) {
+      return (
+        <>
           <ul className="flex flex-col gap-4">
             {NAVBAR_NAV_LINKS.map((nav, index) => {
               return (
@@ -65,6 +64,25 @@ const CustomDrawer = (props: ICustomDrawer) => {
               );
             })}
           </ul>
+        </>
+      );
+    }
+    return (
+      <>
+        <Link href={ROUTE_CONSTANTS.LOGIN} onClick={toggleTopBar}>
+          {STRING_DATA.LOGIN}
+        </Link>
+        <Link href={ROUTE_CONSTANTS.REGISTER} onClick={toggleTopBar}>
+          {STRING_DATA.REGISTER}
+        </Link>
+      </>
+    );
+  }
+  return (
+    <>
+      <div className="flex flex-col gap-4 w-full h-full">
+        <div className="flex flex-col gap-4 transform transition duration-300 py-4 flex-1 ">
+          {renderLinks()}
         </div>
         <hr className="bg-gray-600 "></hr>
         {renderAuthComponent()}

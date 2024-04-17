@@ -184,12 +184,12 @@ const Navbar: React.FC = () => {
         <em className="sticky top-0 left-0 right-0">{getWaveSvg()}</em>
         <div className="flex flex-row items-center justify-between px-4 w-full">
           <div className="flex gap-8">
-            <div
+            <Link
+              href={ROUTE_CONSTANTS.DASHBOARD}
               className="text-xl font-bold cursor-pointer "
-              onClick={() => router.push(ROUTE_CONSTANTS.DASHBOARD)}
             >
               {STRING_DATA.EAUCTION_DEKHO.toUpperCase()}{" "}
-            </div>
+            </Link>
           </div>
           <div className="hidden lg:block">{renderAuthComponent()}</div>
 

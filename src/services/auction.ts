@@ -93,6 +93,7 @@ export const getCollectionDataClient = async (props: { endpoints: string }) => {
   try {
     const { endpoints } = props;
     const URL = API_BASE_URL + endpoints + `?populate=*`;
+    // console.log(URL, "URLCollection")
     const { data } = await getRequest({ API: URL });
     const sendResponse = sanitizeStrapiData(data.data) as any;
     return sendResponse;

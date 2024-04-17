@@ -86,3 +86,5 @@ const Footer: React.FC = () => {
 };
 
 export default Footer;
+
+export const revalidate = 0
