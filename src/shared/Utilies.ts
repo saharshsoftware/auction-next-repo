@@ -194,7 +194,7 @@ export function convertString(str1:string) {
 }
 
 export function getSharedAuctionUrl(item: any) {
-  const news_share_path = `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}${ROUTE_CONSTANTS.AUCTION_DETAIL}/${item?.slug}`;
+  const news_share_path = `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}${ROUTE_CONSTANTS.AUCTION_SLASH}/${item?.slug}`;
   return news_share_path;
 }
 
@@ -216,7 +216,7 @@ export function groupByState(data:ILocations[]) {
   });
 
   const resultArray = states.map((state: ILocations) => {
-    const stateName = state.name;
+    const stateName = state.name || '';
     return {
       ...state, // spread state attributes
       cities: stateToCitiesMap[stateName] || [], // the array of cities
@@ -226,13 +226,18 @@ export function groupByState(data:ILocations[]) {
   return resultArray;
 }
 
+type GroupedBanks = {
+  [key: string]: IBanks[];
+};
+
+
 export function groupAndSortBanks(data:IBanks[]) {
   // Initialize an object to group banks by the first letter of their bankName
-  const bankGroups = {};
+  const bankGroups: GroupedBanks = {};
 
   // Group banks by the first letter of their bankName
-  data?.forEach((bank:IBanks) => {
-    const firstLetter = bank?.bankName?.charAt(0).toUpperCase();
+  data?.forEach((bank:IBanks, index) => {
+    const firstLetter = bank?.bankName?.charAt(0).toUpperCase() || '';
     if (!bankGroups[firstLetter]) {
       bankGroups[firstLetter] = [];
     }

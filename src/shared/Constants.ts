@@ -118,6 +118,7 @@ export const ERROR_MESSAGE = {
   PHONE_REQUIRED: "Phone number is required",
   PHONE_NUMERIC: "Please enter numeric value",
   PHONE_LENGTH: "Please enter",
+  MIN_PHONE_LENGTH: "Invalid number"
 };
 
 export const NAV_LINKS = [

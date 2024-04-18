@@ -22,6 +22,7 @@ const validationSchema = Yup.object({
   phoneNumber: Yup.string()
     .trim()
     .required(ERROR_MESSAGE.PHONE_REQUIRED)
+    .min(10, ERROR_MESSAGE.MIN_PHONE_LENGTH)
     .matches(/^[0-9]+$/, ERROR_MESSAGE.PHONE_NUMERIC), // Add pattern validation
   password: Yup.string()
     .trim()
@@ -41,7 +42,7 @@ const initialValues = {
 };
 
 export default function SignupComp() {
-  const router = useRouter()
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [respError, setRespError] = useState<string>("");
 
@@ -64,21 +65,19 @@ export default function SignupComp() {
       };
       handleOnSettled(response);
     },
-    onError:(error) => {
+    onError: (error) => {
       console.log(error, "error");
     },
   });
 
-  const handleRegister = async (
-    values: FormikValues,
-  ) => {
+  const handleRegister = async (values: FormikValues) => {
     const formData = {
       username: values.phoneNumber,
       email: values.email,
       password: values.password,
-      name: values.name
+      name: values.name,
     };
-    console.log(formData, "formdata")
+    console.log(formData, "formdata");
     mutate({ formData });
   };
   return (
@@ -108,7 +107,7 @@ export default function SignupComp() {
             <TextField
               type="text"
               name="phoneNumber"
-              label="Phone Number"
+              label="Phone Number (+91)"
               placeholder="Enter phone number"
               showNumber91={true}
             />

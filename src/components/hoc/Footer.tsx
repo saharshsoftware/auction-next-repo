@@ -28,7 +28,13 @@ const Footer: React.FC = () => {
           <a className="link link-hover">{STRING_DATA.PRIVACY_POLICY}</a>
           <a className="link link-hover">{STRING_DATA.ABOUT_US}</a>
           <a className="link link-hover">{STRING_DATA.CONTACT_US}</a>
-          <a className="link link-hover">{STRING_DATA.SITEMAP}</a>
+          <Link
+            href={process.env.NEXT_PUBLIC_SITEMAP ?? ''}
+            className="link link-hover"
+            target="_blank"
+          >
+            {STRING_DATA.SITEMAP}
+          </Link>
         </nav>
         {/* <div className="flex lg:flex-row flex-col gap-4 justify-center items-center w-full text-sm">
           <nav>

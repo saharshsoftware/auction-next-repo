@@ -77,7 +77,7 @@ const AuctionCard: React.FC<IAuctionCard> = (props) => {
             ) : null}
           </div>
           <Link
-            href={`${ROUTE_CONSTANTS.AUCTION_DETAIL}/${item?.slug}`}
+            href={`${ROUTE_CONSTANTS.AUCTION_SLASH}/${item?.slug}`}
             target="_blank"
             prefetch={false}
           >
