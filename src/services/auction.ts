@@ -94,7 +94,10 @@ export const getHomeBoxCollectionClient = async () => {
 export const getCollectionDataClient = async (props: { endpoints: string }) => {
   try {
     const { endpoints } = props;
-    const URL = API_BASE_URL + endpoints + `?populate=*&filters[$and][0][isPopular]=true`;
+    const URL =
+      API_BASE_URL +
+      endpoints +
+      `?sort[0]=name:asc&populate=*&filters[$and][0][isPopular]=true`;
     // console.log(URL, "URLCollection")
     const { data } = await getRequest({ API: URL });
     const sendResponse = sanitizeStrapiData(data.data) as any;
