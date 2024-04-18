@@ -23,8 +23,8 @@ export default function ProfileTemplate() {
       <div className="custom-common-header-class">{STRING_DATA.PROFILE}</div>
       <div className="custom-common-header-detail-class">
         <div className="flex flex-col gap-4 p-4  w-full min-h-12">
-          <ShowLabelValue heading={"Full Name"} value={userInfo?.name} />
-          <ShowLabelValue heading={"Email"} value={userInfo?.email} />
+          <ShowLabelValue heading={"Full Name"} value={userInfo?.name ?? '-'} />
+          <ShowLabelValue heading={"Email"} value={userInfo?.email ?? '-'} />
         </div>
       </div>
     </>

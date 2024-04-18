@@ -2,6 +2,7 @@ export const ROUTE_CONSTANTS = {
   DASHBOARD: "/",
   LOGIN: "/login",
   REGISTER: "/register",
+  AUCTION_SLASH: "/auctions",
   AUCTION: "/auctions/find-auctions",
   AUCTION_DETAIL: "/auctions/auction-detail",
   PROFILE: "/profile",

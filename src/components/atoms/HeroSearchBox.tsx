@@ -245,7 +245,7 @@ const HeroSearchBox = () => {
                       isLoading={loadingSearch}
                       onclick={() => handleSearchButton(values)}
                       customClass={
-                        "rounded-full btn-lg px-12 py-4 min-w-[150px]"
+                        "rounded-full btn-lg lg:px-12 lg:py-4 px-10 py-6 min-w-fit lg:min-w-[150px]"
                       }
                     />
                   </Link>
