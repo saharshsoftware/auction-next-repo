@@ -19,6 +19,10 @@ import { IUserData } from "@/types";
 const validationSchema = Yup.object({
   name: Yup.string().trim().required(ERROR_MESSAGE.NAME_REQUIRED),
   email: Yup.string().trim().required(ERROR_MESSAGE.EMAIL_REQUIRED),
+  phoneNumber: Yup.string()
+    .trim()
+    .required(ERROR_MESSAGE.PHONE_REQUIRED)
+    .matches(/^[0-9]+$/, ERROR_MESSAGE.PHONE_NUMERIC), // Add pattern validation
   password: Yup.string()
     .trim()
     .min(6, ERROR_MESSAGE.MIN_6)
@@ -33,6 +37,7 @@ const validationSchema = Yup.object({
 const initialValues = {
   email: STRING_DATA.EMPTY,
   password: STRING_DATA.EMPTY,
+  phoneNumber: STRING_DATA.EMPTY,
 };
 
 export default function SignupComp() {
@@ -68,12 +73,12 @@ export default function SignupComp() {
     values: FormikValues,
   ) => {
     const formData = {
-      username: values.email,
+      username: values.phoneNumber,
       email: values.email,
       password: values.password,
       name: values.name
     };
-
+    console.log(formData, "formdata")
     mutate({ formData });
   };
   return (
@@ -101,10 +106,18 @@ export default function SignupComp() {
               placeholder="Enter email"
             />
             <TextField
+              type="text"
+              name="phoneNumber"
+              label="Phone Number"
+              placeholder="Enter phone number"
+              showNumber91={true}
+            />
+            <TextField
               type={!showPassword ? "password" : "text"}
               name="password"
               label="Password"
               placeholder="Enter password"
+              className="form-control1"
             />
             <ActionCheckbox
               checkboxLabel={"Show password"}
@@ -131,9 +144,9 @@ export default function SignupComp() {
               />
             </div>
             <p className="text-sm font-semibold">
-              { STRING_DATA.ALREADY_HAVE_ACCOUNT } &nbsp;
-              <Link  href={ROUTE_CONSTANTS.LOGIN} className="link link-primary">
-                { STRING_DATA.LOGIN }
+              {STRING_DATA.ALREADY_HAVE_ACCOUNT} &nbsp;
+              <Link href={ROUTE_CONSTANTS.LOGIN} className="link link-primary">
+                {STRING_DATA.LOGIN}
               </Link>
             </p>
           </div>

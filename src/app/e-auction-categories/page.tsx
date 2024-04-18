@@ -1,5 +1,8 @@
+import AllCategories from "@/components/templates/AllCategories";
 import React from "react";
 
 export default function Page() {
-  return <div>page</div>;
+  return <section>
+    <AllCategories />
+  </section>;
 }

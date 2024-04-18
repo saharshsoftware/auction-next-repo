@@ -5,8 +5,8 @@ import Link from "next/link";
 import React from "react";
 interface ICategroyCollection {
   item: any;
-  fetchQuery: string;
-  key: string;
+  fetchQuery?: string;
+  key?: string;
 }
 
 const CategoryCollection = (props: ICategroyCollection) => {

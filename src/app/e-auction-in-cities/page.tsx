@@ -1,5 +1,8 @@
+import AllCities from "@/components/templates/AllCities";
 import React from "react";
 
 export default function Page() {
-  return <div>page</div>;
+  return <section>
+    <AllCities />
+  </section>;
 }

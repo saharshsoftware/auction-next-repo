@@ -47,8 +47,8 @@ const ActionButton: React.FC<IActionButton> = (props) => {
         } btn  ${getButtonClass()}`}
         onClick={onclick}
       >
-        {icon ? icon : null}
         {isLoading ? <CustomLoading /> : text}
+        {icon ? icon : null}
       </button>
     </>
   );

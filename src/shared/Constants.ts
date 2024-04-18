@@ -10,8 +10,14 @@ export const FILTER_EMPTY = { name: "", bank: "", location: "", category: "", pr
 
 
 export const STRING_DATA = {
+  TERMS_CONDITIONS: "Terms and condition",
+  PRIVACY_POLICY: "Privacy policy",
+  CONTACT_US: "Contact us",
+  ABOUT_US: "About us",
+  SITEMAP: "Sitemap",
   DELETE: 'Delete',
   TOP_CATEGORIES: "Top categories",
+  CATEGORY: "Category",
   TOP_BANKS: "Top banks",
   OTHER_CATEGORIES: "Other categories",
   OTHER_LOCATIONS: "Other location",
@@ -108,7 +114,10 @@ export const ERROR_MESSAGE = {
   NAME_REQUIRED: "Name is required",
   MAX_NAME_30: "Name should not exceed 30 characters",
   PASSWORDS_MUST_MATCH: "Passwords must match",
-  LIST_REQUIRED: "List is required"
+  LIST_REQUIRED: "List is required",
+  PHONE_REQUIRED: "Phone number is required",
+  PHONE_NUMERIC: "Please enter numeric value",
+  PHONE_LENGTH: "Please enter",
 };
 
 export const NAV_LINKS = [

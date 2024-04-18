@@ -197,3 +197,52 @@ export function getSharedAuctionUrl(item: any) {
   const news_share_path = `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}${ROUTE_CONSTANTS.AUCTION_DETAIL}/${item?.slug}`;
   return news_share_path;
 }
+
+export function groupByState(data:ILocations[]) {
+  // console.log(data)
+  const stateToCitiesMap:any = {};
+
+  const cities = data.filter((item: ILocations) => item.type === "city");
+  const states = data.filter((item:  ILocations) => item.type === "state");
+
+  cities.forEach((city: ILocations) => {
+    const stateName = city?.state;
+    if (stateName) {
+      if (!stateToCitiesMap[stateName]) {
+        stateToCitiesMap[stateName] = [];
+      }
+      stateToCitiesMap[stateName].push(city);
+    }
+  });
+
+  const resultArray = states.map((state: ILocations) => {
+    const stateName = state.name;
+    return {
+      ...state, // spread state attributes
+      cities: stateToCitiesMap[stateName] || [], // the array of cities
+    };
+  });
+
+  return resultArray;
+}
+
+export function groupAndSortBanks(data:IBanks[]) {
+  // Initialize an object to group banks by the first letter of their bankName
+  const bankGroups = {};
+
+  // Group banks by the first letter of their bankName
+  data?.forEach((bank:IBanks) => {
+    const firstLetter = bank?.bankName?.charAt(0).toUpperCase();
+    if (!bankGroups[firstLetter]) {
+      bankGroups[firstLetter] = [];
+    }
+    bankGroups[firstLetter].push(bank);
+  });
+
+  // Convert the object to an array of [key, value] pairs and sort it by key (alphabetically)
+  const sortedGroups = Object.entries(bankGroups).sort((a, b) =>
+    a[0].localeCompare(b[0])
+  );
+
+  return sortedGroups;
+}

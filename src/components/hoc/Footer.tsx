@@ -1,40 +1,36 @@
 import React from "react";
 import {STRING_DATA } from "../../shared/Constants";
 import dynamic from "next/dynamic";
-
-const TopCities = dynamic(() => import("@/components/atoms/TopCities"), {
-  ssr: false,
-});
-
-const TopCategory = dynamic(() => import("@/components/atoms/TopCategory"), {
-  ssr: false,
-});
-
-const TopBanks = dynamic(() => import("@/components/atoms/TopBanks"), {
-  ssr: false,
-});
-
-const topClass = () => ("lg:w-auto w-full")
+import Link from "next/link";
+import { ROUTE_CONSTANTS } from "@/shared/Routes";
 
 const Footer: React.FC = () => {
   return (
     <>
-      <footer className="flex flex-col  gap-8 p-10 bg-base-200 text-base-content rounded">
-        <div className="flex lg:flex-row flex-col gap-14 w-full lg:items-start lg:justify-start items-center justify-start">
-          <div className={topClass()}>
-            <TopCities isFooter={true} />
-          </div>
+      <footer className="flex flex-col  gap-8 p-10 bg-neutral text-neutral-content rounded">
+        <nav className="flex items-center justify-center gap-4 text-sm">
+          <Link href={ROUTE_CONSTANTS.E_CITIES_ALL} className="link link-hover">
+            {STRING_DATA.CITY}
+          </Link>
+          <Link href={ROUTE_CONSTANTS.E_BANKS_ALL} className="link link-hover">
+            {STRING_DATA.BANK}
+          </Link>
+          <Link
+            href={ROUTE_CONSTANTS.E_CATOGRIES_ALL}
+            className="link link-hover"
+          >
+            {STRING_DATA.CATEGORY}
+          </Link>
+        </nav>
 
-          <div className={topClass()}>
-            <TopBanks isFooter={true} />
-          </div>
-
-          <div className={topClass()}>
-            <TopCategory isFooter={true} />
-          </div>
-        </div>
-
-        <div className="flex lg:flex-row flex-col gap-4 justify-end items-center w-full">
+        <nav className="flex items-center justify-center gap-4 text-sm">
+          <a className="link link-hover">{STRING_DATA.TERMS_CONDITIONS}</a>
+          <a className="link link-hover">{STRING_DATA.PRIVACY_POLICY}</a>
+          <a className="link link-hover">{STRING_DATA.ABOUT_US}</a>
+          <a className="link link-hover">{STRING_DATA.CONTACT_US}</a>
+          <a className="link link-hover">{STRING_DATA.SITEMAP}</a>
+        </nav>
+        {/* <div className="flex lg:flex-row flex-col gap-4 justify-center items-center w-full text-sm">
           <nav>
             <div className="grid grid-flow-col gap-4">
               <a>
@@ -72,12 +68,12 @@ const Footer: React.FC = () => {
               </a>
             </div>
           </nav>
-        </div>
+        </div> */}
 
-        <aside className="lg:text-end text-center text-sm">
+        <aside className="text-center text-sm">
           <p>
             Copyright © {new Date().getFullYear()} - All right reserved by{" "}
-            {STRING_DATA.BRAND_NAME}
+            {STRING_DATA.EAUCTION_DEKHO}
           </p>
         </aside>
       </footer>

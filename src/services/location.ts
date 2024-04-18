@@ -13,3 +13,14 @@ export const fetchLocationTopClient = async () => {
     console.log(e, "location error");
   }
 };
+
+export const fetchLocationClient = async () => {
+  try {
+    const URL = API_BASE_URL + API_ENPOINTS.LOCATIONS;
+    const { data } = await getRequest({ API: URL });
+    const sendResponse = sanitizeStrapiData(data?.data);
+    return sendResponse;
+  } catch (e) {
+    console.log(e, "location error");
+  }
+};
