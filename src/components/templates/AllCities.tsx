@@ -42,16 +42,16 @@ function renderStatesAndCities(resultArray:any) {
           name, slug, type, cities
         } = stateObj;
         return (
-          <div key={slug} className="state-section flex flex-col gap-2">
-            <Link className={`state-name hover:text-gray-400 flex items-center justify-start gap-2`} href={`/location/${slug}`}>
-              <span>
-
-              {name}
-              </span>
-              <span>
-
-              {getIcon()}
-              </span>
+          <div
+            key={slug}
+            className="state-section flex flex-col gap-2 border border-blue-400 rounded shadow p-2"
+          >
+            <Link
+              className={`state-name hover:text-gray-400 flex items-center justify-start gap-2`}
+              href={`/location/${slug}`}
+            >
+              <span>{name}</span>
+              <span>{getIcon()}</span>
             </Link>
             <div className="grid grid-cols-12 gap-4">
               {cities?.map((cityObj: any) => {

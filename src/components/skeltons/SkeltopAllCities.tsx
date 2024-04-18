@@ -3,7 +3,7 @@ import React from "react";
 const SkeltonCard = () => {
   return (
     <>
-      <div className="flex flex-col gap-4 w-full justify-center min-h-40 p-4">
+      <div className="flex flex-col gap-4 w-full justify-center min-h-40 p-4 border border-blue-400 rounded shadow">
         <div className="skeleton h-4 w-[15%] "></div>
         <div className="grid grid-cols-12 gap-4">
           {Array.from({ length: 5 }, (_, index) => (

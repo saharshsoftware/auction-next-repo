@@ -139,7 +139,7 @@ export default async function Page({
             heading={STRING_DATA.AUCTION_END_D_AND_T}
             value={formattedDateAndTime(auctionDetail?.auctionEndDate ?? "")}
           />
-
+          {/* {JSON.stringify(auctionDetail?.noticeImageURL)} */}
           <Link
             href={`${process.env.NEXT_PUBLIC_IMAGE_CLOUDFRONT}${auctionDetail?.noticeImageURL}`}
             target="_blank"
