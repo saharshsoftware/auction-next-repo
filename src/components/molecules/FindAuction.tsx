@@ -397,7 +397,7 @@ const FindAuction = (props: IFindAuction) => {
                       isSubmit={true}
                       text={STRING_DATA.UPDATE.toUpperCase()}
                       isLoading={staticLoading}
-                      customClass={"min-w-[150px]"}
+                      // customClass={"min-w-[150px]"}
                     />
                     {isMobileView.mobileView ? (
                       <ActionButton

@@ -33,6 +33,8 @@ import { IBanks, ICategoryCollection, ILocations } from "@/types";
 import Link from "next/link";
 import { setCookie } from "cookies-next";
 import useLocalStorage from "@/hooks/useLocationStorage";
+import { fetchBanksClient } from "@/services/bank";
+import { fetchLocationClient } from "@/services/location";
 
 interface IFilter {
   category: string;
@@ -76,7 +78,7 @@ const HeroSearchBox = () => {
   const { data: bankOptions, isLoading: isLoadingBank } = useQuery({
     queryKey: [REACT_QUERY.AUCTION_BANKS],
     queryFn: async () => {
-      const res = (await fetchBanks()) as unknown as IBanks[];
+      const res = (await fetchBanksClient()) as unknown as IBanks[];
       return getBankOptions(res) ?? [];
     },
   });
@@ -84,7 +86,7 @@ const HeroSearchBox = () => {
   const { data: locationOptions, isLoading: isLoadingLocation } = useQuery({
     queryKey: [REACT_QUERY.AUCTION_LOCATION],
     queryFn: async () => {
-      const res = (await fetchLocation()) as unknown as ILocations[];
+      const res = (await fetchLocationClient()) as unknown as ILocations[];
       return res ?? [];
     },
   });

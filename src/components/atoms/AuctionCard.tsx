@@ -62,7 +62,7 @@ const AuctionCard: React.FC<IAuctionCard> = (props) => {
             <span className="custom-prize-color font-bold text-2xl">
               {formatPrice(item?.reservePrice)}
             </span>
-            <span className="border border-blue-300 bg-blue-100 text-sm rounded-full px-2 py-1 font-semibold">
+            <span className="border border-blue-300 bg-blue-100 text-sm rounded-full px-2 py-1 font-semibold " style={{width:"max-content"}}>
               Estimated Market Value {formatPrice(item?.estimatedMarketPrice)}
             </span>
           </div>

@@ -21,8 +21,8 @@ const ReactPagination = (props: IReactPaginate) => {
         nextLabel="next >"
         pageCount={totalPage}
         onPageChange={onPageChange}
-        // marginPagesDisplayed={1}
-        // pageRangeDisplayed={3}
+        marginPagesDisplayed={1}
+        pageRangeDisplayed={1}
         forcePage={activePage - 1}
         className="flex justify-center pagination"
       />
