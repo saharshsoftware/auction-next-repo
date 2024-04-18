@@ -48,7 +48,7 @@ export default async function Page({
         <div className="space-y-4 w-full">
           <ShowLabelValue
             heading={STRING_DATA.BANK}
-            value={auctionDetail?.bankName}
+            value={auctionDetail?.name}
           />
           <ShowLabelValue
             heading={STRING_DATA.BRANCH_NAME}

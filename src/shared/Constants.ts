@@ -10,6 +10,9 @@ export const FILTER_EMPTY = { name: "", bank: "", location: "", category: "", pr
 
 
 export const STRING_DATA = {
+  CITIES: 'Cities',
+  BANKS: "Banks",
+  CATEGORIES: "Categories",
   TERMS_CONDITIONS: "Terms and condition",
   PRIVACY_POLICY: "Privacy policy",
   CONTACT_US: "Contact us",

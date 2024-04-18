@@ -13,11 +13,11 @@ const renderLink = (item: IBanks) => {
   if (item?.route) {
     return (
       <Link className={`text-blue-600`} href={item?.route ?? ""}>
-        {item?.bankName}
+        {item?.name}
       </Link>
     );
   }
-  return item?.bankName;
+  return item?.name;
 };
 
 function renderBankGroups(sortedGroups:any) {

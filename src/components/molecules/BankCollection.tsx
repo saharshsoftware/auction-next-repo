@@ -8,23 +8,8 @@ const BankCollection = (props: { fetchQuery: string; item: any }) => {
   const imageUrl = sanitizeStrapiImageUrl(item) ?? '';
   return (
     <>
-      <div className="w-full border border-gray-400 rounded-lg shadow p-4">
-        <div className="flex flex-col items-center justify-center gap-2">
-          <div className="relative w-12 h-12">
-            {imageUrl ? (
-              <img
-                src={imageUrl}
-                alt="i"
-                className="object-contain bg-contain "
-              />
-            ) : null}
-          </div>
-          {item?.route ? (
-            <Link href={item?.route}>{item?.bankName}</Link>
-          ) : (
-            <div>{item?.bankName}</div>
-          )}
-        </div>
+      <div className="w-full p-4 border border-gray-400 rounded-lg shadow min-h-20">
+        <div className="text-sm text-center">{item?.name}</div>
       </div>
     </>
   );

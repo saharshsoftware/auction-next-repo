@@ -113,7 +113,7 @@ export const getBankOptions = (data: IBanks[]) => {
   const sanitizeData = data?.map((item: IBanks) => ({
     // ...item,
     id: item?.id,
-    name: item?.bankName,
+    name: item?.name,
     slug: item?.slug
   }));
   return sanitizeData;
@@ -237,7 +237,7 @@ export function groupAndSortBanks(data:IBanks[]) {
 
   // Group banks by the first letter of their bankName
   data?.forEach((bank:IBanks, index) => {
-    const firstLetter = bank?.bankName?.charAt(0).toUpperCase() || '';
+    const firstLetter = bank?.name?.charAt(0).toUpperCase() || '';
     if (!bankGroups[firstLetter]) {
       bankGroups[firstLetter] = [];
     }

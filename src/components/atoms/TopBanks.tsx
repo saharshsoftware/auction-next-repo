@@ -25,7 +25,7 @@ const TopBanks = (props:{isFooter?:boolean}) => {
 
     const handleFilter = (item: IBanks) => {
       "use client"
-      const filter = { bank: item?.bankName };
+      const filter = { bank: item?.name };
       console.log(filter)
       // debugger;
       setAuctionFilter?.(filter);
@@ -42,12 +42,12 @@ const TopBanks = (props:{isFooter?:boolean}) => {
                 onClick={()=>handleFilter(item)}
               >
 
-              {item?.bankName}
+              {item?.name}
               </span>
             </Link>
           );
         }
-        return item?.bankName;
+        return item?.name;
       };
 
     if (isFooter) {

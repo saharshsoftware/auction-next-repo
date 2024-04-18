@@ -35,9 +35,9 @@ const OtherBanks = (props: { isFooter?: boolean }) => {
 
   const renderLink = (item: IBanks) => {
     if (item?.route) {
-      return <Link href={item?.route ?? ""}>{item?.bankName}</Link>;
+      return <Link href={item?.route ?? ""}>{item?.name}</Link>;
     }
-    return item?.bankName;
+    return item?.name;
   };
 
   if (isFooter) {

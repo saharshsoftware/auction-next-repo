@@ -47,7 +47,7 @@ export interface User {
 
 export interface IBanks {
   id?: string | number;
-  bankName?: string;
+  name?: string;
   createdAt?: string;
   updatedAt?: string;
   publishedAt?: string;
