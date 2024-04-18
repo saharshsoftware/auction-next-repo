@@ -83,7 +83,7 @@ export default async function Page({
             {formatPrice(auctionDetail?.reservePrice)}
           </span>
         </div>
-        <span className="border border-blue-300 bg-blue-100 text-sm rounded-full px-2 py-1 font-semibold">
+        <span className="border border-blue-300 bg-blue-100 text-sm rounded-full px-2 py-1 font-semibold w-fit">
           Estimated Market Value{" "}
           {formatPrice(auctionDetail?.estimatedMarketPrice)}
         </span>
@@ -141,13 +141,12 @@ export default async function Page({
           />
 
           <Link
-            href={`${process.env.NEXT_PUBLIC_IMAGE_CLOUDFRONT}/${auctionDetail?.noticeImageURL}`}
+            href={`${process.env.NEXT_PUBLIC_IMAGE_CLOUDFRONT}${auctionDetail?.noticeImageURL}`}
             target="_blank"
-            className="mt-8"
           >
             <ActionButton
               text="View notice"
-              customClass="lg:w-fit w-full"
+              customClass="lg:w-fit w-full mt-4"
               icon={getIcon()}
             />
           </Link>
