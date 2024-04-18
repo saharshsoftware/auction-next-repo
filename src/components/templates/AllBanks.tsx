@@ -8,16 +8,14 @@ import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import React from 'react'
 import SkeltopAllBanks from '../skeltons/SkeltopAllBanks';
+import { ROUTE_CONSTANTS } from '@/shared/Routes';
 
 const renderLink = (item: IBanks) => {
-  if (item?.route) {
-    return (
-      <Link className={`text-blue-600`} href={item?.route ?? ""}>
-        {item?.name}
-      </Link>
-    );
-  }
-  return item?.name;
+  return (
+    <Link className={`text-blue-600`} href={`/bank/${item?.slug}`}>
+      {item?.name}
+    </Link>
+  );
 };
 
 function renderBankGroups(sortedGroups:any) {

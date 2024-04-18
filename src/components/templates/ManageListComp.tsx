@@ -141,7 +141,7 @@ const ManageListComp = () => {
   return (
     <>
       {/* Create List Modal */}
-      <CreateFavList openModal={openModal} hideModal={hideModal} />
+      {openModal? <CreateFavList openModal={openModal} hideModal={hideModal} />: null}
 
       {/* Create List Modal */}
       <EditFavList

@@ -160,8 +160,8 @@ export const selectedBank = (
 
 
 export const sanitizeStrapiImageUrl = (item:any) => {
-  const imagelink = item?.image?.data?.attributes?.url
-  const result = process.env.NEXT_PUBLIC_API_BASE_URL + imagelink;
+  const imagelink = item?.imageURL
+  const result = process.env.NEXT_PUBLIC_IMAGE_CLOUDFRONT + imagelink;
   // console.log(result, "resultimagebank");
   return result
 }

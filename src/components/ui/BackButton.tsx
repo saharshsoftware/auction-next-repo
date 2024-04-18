@@ -4,9 +4,13 @@ import { STRING_DATA } from "@/shared/Constants";
 import ActionButton from "../atoms/ActionButton";
 import { useRouter } from "next/navigation";
 
-const BackButton = () => {
+const BackButton = ({ backRoute }: { backRoute?:()=>void }) => {
   const router = useRouter();
   const handleBack = () => {
+    if (backRoute) {
+      backRoute();
+      return;
+    }
     router.back();
   };
   return (

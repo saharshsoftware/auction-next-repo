@@ -1,19 +1,24 @@
-"use client"
-import React, { useState } from 'react'
+"use client";
+import React, { useState } from "react";
 import Select from "react-select";
-import { ERROR_MESSAGE, REACT_QUERY, STRING_DATA } from '@/shared/Constants';
-import { useMutation, useQuery } from '@tanstack/react-query';
-import { IFavouriteList } from '@/types';
-import { handleOnSettled } from '@/shared/Utilies';
+import { ERROR_MESSAGE, REACT_QUERY, STRING_DATA } from "@/shared/Constants";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { IFavouriteList } from "@/types";
+import { handleOnSettled } from "@/shared/Utilies";
 import { useParams } from "next/navigation";
-import ActionButton from '../atoms/ActionButton';
-import { addPropertyToFavouriteListClient, fetchFavoriteListClient } from '@/services/favouriteList';
-import { getAuctionDetailClient } from '@/services/auction';
+import ActionButton from "../atoms/ActionButton";
+import {
+  addPropertyToFavouriteListClient,
+  fetchFavoriteListClient,
+} from "@/services/favouriteList";
+import { getAuctionDetailClient } from "@/services/auction";
+import Link from "next/link";
+import { ROUTE_CONSTANTS } from "@/shared/Routes";
 
 const AddToWishlist = () => {
   const params = useParams<{ slug: string; item: string }>();
 
-  const [selectedOption, setSelectedOption] = useState<any>({value: '', label: ''});
+  const [selectedOption, setSelectedOption] = useState<any>(null);
 
   const { data: auctionData, fetchStatus } = useQuery({
     queryKey: [REACT_QUERY.AUCTION_DETAIL],
@@ -30,8 +35,12 @@ const AddToWishlist = () => {
   const { data: favouriteListData, isLoading: isLoadingFavourite } = useQuery({
     queryKey: [REACT_QUERY.FAVOURITE_LIST],
     queryFn: async () => {
-      const res = (await fetchFavoriteListClient()) as unknown as IFavouriteList[];
-      const dropdownData = res.map((item)=> ({value: item?.id, label: item?.name}))
+      const res =
+        (await fetchFavoriteListClient()) as unknown as IFavouriteList[];
+      const dropdownData = res.map((item) => ({
+        value: item?.id,
+        label: item?.name,
+      }));
       // console.log(dropdownData, "dropdownData");
       return dropdownData ?? [];
     },
@@ -62,58 +71,63 @@ const AddToWishlist = () => {
   const addPropertyToFavourite = () => {
     const body = {
       listId: selectedOption?.value ?? "",
-      propertyId: auctionData?.id ?? '',
+      propertyId: auctionData?.id ?? "",
     };
     console.log(body);
     mutate(body);
     // resetForm();
   };
 
-  const handleSubmit = (event:any) => {
+  const handleSubmit = (event: any) => {
     event.preventDefault();
+
     if (!selectedOption) {
-      setRespError("List is required")
-      return
+      setRespError("List is required");
+      return;
     }
     // console.log(selectedOption);
     addPropertyToFavourite();
   };
 
+  const renderer = () => {
+    if (favouriteListData?.length === 0) {
+      return <Link href={ROUTE_CONSTANTS.MANAGE_LIST} className="link link-primary text-center"> Create your list</Link>;
+    }
+    return (
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col items-center space-y-4"
+      >
+        <Select
+          className="w-full"
+          placeholder="Select list"
+          name="wishlist"
+          value={selectedOption}
+          onChange={setSelectedOption}
+          options={favouriteListData}
+        />
+
+        {respError ? (
+          <span className="text-center text-sm text-red-700">{respError}</span>
+        ) : null}
+        <ActionButton
+          isSubmit={true}
+          text="Add"
+          isLoading={isPending}
+          disabled={isLoadingFavourite}
+          customClass="w-full"
+        />
+      </form>
+    );
+  };
   return (
     <>
       <div className="custom-common-header-class">
         {STRING_DATA.ADD_TO_LIST}
       </div>
-      <div className="custom-common-header-detail-class p-4">
-        <form
-          onSubmit={handleSubmit}
-          className="flex flex-col items-center space-y-4"
-        >
-          <Select
-            className="w-full"
-            placeholder="Select list"
-            name="wishlist"
-            value={selectedOption}
-            onChange={setSelectedOption}
-            options={favouriteListData}
-          />
-
-          {respError ? (
-            <span className="text-center text-sm text-red-700">
-              {respError}
-            </span>
-          ) : null}
-          <ActionButton
-            isSubmit={true}
-            text="Add"
-            isLoading={isPending}
-            disabled={isLoadingFavourite}
-            customClass="w-full"
-          />
-        </form>
-      </div>
+      <div className="custom-common-header-detail-class p-4">{renderer()}</div>
     </>
   );
-}
+};
 
-export default AddToWishlist
+export default AddToWishlist;

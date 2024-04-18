@@ -32,12 +32,11 @@ const TopBanks = (props:{isFooter?:boolean}) => {
     };
 
       const renderLink = (item: IBanks) => {
-        if (item?.route) {
           return (
             <Link
               className={`${isFooter ? "footer-link-custom-class" : ""}`}
-              href={item?.route ?? ""}
-              >
+              href={`/bank/${item?.slug}`}
+            >
               <span
                 onClick={()=>handleFilter(item)}
               >
@@ -46,8 +45,6 @@ const TopBanks = (props:{isFooter?:boolean}) => {
               </span>
             </Link>
           );
-        }
-        return item?.name;
       };
 
     if (isFooter) {

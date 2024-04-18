@@ -15,9 +15,7 @@ const CategoryCollection = (props: ICategroyCollection) => {
 
   return (
     <>
-      <div
-        className="w-full border border-gray-400 rounded-lg shadow p-4"
-      >
+      <div className="w-full border border-gray-400 rounded-lg shadow p-4">
         <div className="flex flex-col items-center justify-center gap-2">
           <div className="relative w-12 h-12">
             <img
@@ -27,9 +25,7 @@ const CategoryCollection = (props: ICategroyCollection) => {
             />
           </div>
           <div>{item?.totalNotices}</div>
-          {item?.route ? (
-          <Link href={item?.route}>{item?.name}</Link>
-          ):<div>{item?.name}</div>}
+          <Link href={`/category/${item?.slug}`}>{item?.name}</Link>
         </div>
       </div>
     </>

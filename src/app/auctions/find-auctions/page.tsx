@@ -15,10 +15,8 @@ export default async function Page({
 }) {
   return (
     <>
-    <section>
-      <Suspense fallback={<p>Loading feed...</p>}>
-      <ShowAuctionList />
-      </Suspense>
+      <section>
+        <ShowAuctionList />
       </section>
     </>
   );

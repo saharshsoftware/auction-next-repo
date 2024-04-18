@@ -21,7 +21,7 @@ const ItemRenderer: React.FC<IItemRenderer> = ({
 }) => {
   return (
     <div key={item[props.valueField]} onClick={() => methods.addItem(item)}>
-      <div className="m-2 text-left">
+      <div className="m-2 text-left line-clamp-1">
         {item.emoji} {item[props.labelField]}
       </div>
     </div>

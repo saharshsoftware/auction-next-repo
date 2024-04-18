@@ -6,7 +6,7 @@ import ActionButton from "../../components/atoms/ActionButton";
 import { ERROR_MESSAGE, STRING_DATA } from "../../shared/Constants";
 import * as Yup from "yup";
 import ActionCheckbox from "../atoms/ActionCheckbox";
-import { FormikValues } from "formik";
+import { Field, Form, FormikValues } from "formik";
 
 import { signup } from "@/server/actions";
 import { useMutation } from "@tanstack/react-query";
@@ -36,6 +36,7 @@ const validationSchema = Yup.object({
 });
 
 const initialValues = {
+  name: STRING_DATA.EMPTY,
   email: STRING_DATA.EMPTY,
   password: STRING_DATA.EMPTY,
   phoneNumber: STRING_DATA.EMPTY,
@@ -87,68 +88,94 @@ export default function SignupComp() {
           initialValues={initialValues}
           validationSchema={validationSchema}
           handleSubmit={handleRegister}
+          wantToUseFormikEvent={true}
         >
-          <div className="flex flex-col gap-4 ">
-            <h2 className="custom-h2-class text-center text-3xl">
-              {STRING_DATA.REGISTER}
-            </h2>
-            <TextField
-              type="text"
-              name="name"
-              label="Name"
-              placeholder="Enter name"
-            />
-            <TextField
-              type="text"
-              name="email"
-              label="Email"
-              placeholder="Enter email"
-            />
-            <TextField
-              type="text"
-              name="phoneNumber"
-              label="Phone Number (+91)"
-              placeholder="Enter phone number"
-              showNumber91={true}
-            />
-            <TextField
-              type={!showPassword ? "password" : "text"}
-              name="password"
-              label="Password"
-              placeholder="Enter password"
-              className="form-control1"
-            />
-            <ActionCheckbox
-              checkboxLabel={"Show password"}
-              checked={showPassword}
-              onChange={() => setShowPassword((prev) => !prev)}
-            />
-            <TextField
-              type="password"
-              name="confirmPassword"
-              label="Confirm password"
-              placeholder="Enter confirm password"
-            />
-            {respError ? (
-              <span className="text-center text-sm text-red-700">
-                {respError}
-              </span>
-            ) : null}
-            <div className="flex justify-center items-center gap-4 ">
-              <ActionButton
-                text={STRING_DATA.CREATE_ACCOUNT.toUpperCase()}
-                isSubmit={true}
-                customClass="w-full"
-                isLoading={isPending}
-              />
-            </div>
-            <p className="text-sm font-semibold">
-              {STRING_DATA.ALREADY_HAVE_ACCOUNT} &nbsp;
-              <Link href={ROUTE_CONSTANTS.LOGIN} className="link link-primary">
-                {STRING_DATA.LOGIN}
-              </Link>
-            </p>
-          </div>
+          {({ setFieldValue, values }: any) => (
+            <Form>
+              <div className="flex flex-col gap-4 ">
+                <h2 className="custom-h2-class text-center text-3xl">
+                  {STRING_DATA.REGISTER}
+                </h2>
+                <TextField
+                  type="text"
+                  name="name"
+                  label="Name"
+                  placeholder="Enter name"
+                />
+                <TextField
+                  type="text"
+                  name="email"
+                  label="Email"
+                  placeholder="Enter email"
+                />
+                <TextField
+                  label={"Phone Number"}
+                  name={"phoneNumber"}
+                  hasChildren={true}
+                >
+                  <Field name="phoneNumber">
+                    {() => (
+                      <div className="relative w-full">
+                        <div className="absolute inset-y-0 start-0 top-0 flex items-center ps-3.5 pointer-events-none text-base sm:text-sm">
+                          + 91
+                        </div>
+                        <input
+                          type="text"
+                          name={"phoneNumber"}
+                          className="bg-gray-50 border border-brand-color text-gray-900 sm:text-sm hover:bg-gray-100 block w-full p-2 ps-12 rounded"
+                          autoComplete="false"
+                          placeholder="Enter phone number"
+                          onChange={(e)=> {
+                            setFieldValue("phoneNumber", e.target.value);
+                          }}
+                        />
+                      </div>
+                    )}
+                  </Field>
+                </TextField>
+                <TextField
+                  type={!showPassword ? "password" : "text"}
+                  name="password"
+                  label="Password"
+                  placeholder="Enter password"
+                  className="form-control1"
+                />
+                <ActionCheckbox
+                  checkboxLabel={"Show password"}
+                  checked={showPassword}
+                  onChange={() => setShowPassword((prev) => !prev)}
+                />
+                <TextField
+                  type="password"
+                  name="confirmPassword"
+                  label="Confirm password"
+                  placeholder="Enter confirm password"
+                />
+                {respError ? (
+                  <span className="text-center text-sm text-red-700">
+                    {respError}
+                  </span>
+                ) : null}
+                <div className="flex justify-center items-center gap-4 ">
+                  <ActionButton
+                    text={STRING_DATA.CREATE_ACCOUNT.toUpperCase()}
+                    isSubmit={true}
+                    customClass="w-full"
+                    isLoading={isPending}
+                  />
+                </div>
+                <p className="text-sm font-semibold">
+                  {STRING_DATA.ALREADY_HAVE_ACCOUNT} &nbsp;
+                  <Link
+                    href={ROUTE_CONSTANTS.LOGIN}
+                    className="link link-primary"
+                  >
+                    {STRING_DATA.LOGIN}
+                  </Link>
+                </p>
+              </div>
+            </Form>
+          )}
         </CustomFormikForm>
       </div>
     </>

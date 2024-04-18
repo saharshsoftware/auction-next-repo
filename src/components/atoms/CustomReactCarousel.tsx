@@ -30,6 +30,7 @@ const CustomReactCarousel = (props: ICustomReactCarousel) => {
     dots: true,
     infinite: false,
     speed: 500,
+    autoplay: true,
     slidesToShow: 4,
     slidesToScroll: 2,
     initialSlide: 0,

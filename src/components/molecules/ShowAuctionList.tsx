@@ -61,13 +61,15 @@ const ShowAuctionList = (props: IShowAuctionList) => {
   });
 
   const getFilterData = () => {
-    return {
+    const filterData = {
       category: filterRef.current?.category ?? "",
-      bankName: filterRef.current?.bankName ?? "",
+      bankName: filterRef.current?.bankName ?? auctionFilter?.bank ?? "",
       reservePrice: filterRef.current?.price ?? "",
       location: filterRef.current?.location ?? "",
       page: currentPage?.toString() ?? "",
     };
+    console.log(filterData, "filterDAta")
+    return filterData;
   };
 
   useEffect(() => {
@@ -92,10 +94,10 @@ const ShowAuctionList = (props: IShowAuctionList) => {
       setApiResponseData(res);
       return res ?? [];
     },
-    enabled:
-      currentRoute.startsWith("/category") ||
-      currentRoute.startsWith("/bank") ||
-      currentRoute.startsWith("/location"),
+    enabled: true
+      // currentRoute.startsWith("/category") ||
+      // currentRoute.startsWith("/bank") ||
+      // currentRoute.startsWith("/location"),
   });
 
   // useEffect(() => {

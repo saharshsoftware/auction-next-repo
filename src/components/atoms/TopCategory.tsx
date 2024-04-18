@@ -1,60 +1,53 @@
-"use client"
-import { fetchLocation } from '@/server/actions';
-import { fetchCategoriesTopClient } from '@/services/Home';
-import { fetchLocationTopClient } from '@/services/location';
-import { REACT_QUERY, SAMPLE_CITY, STRING_DATA } from '@/shared/Constants';
-import { ROUTE_CONSTANTS } from '@/shared/Routes';
-import { ILocations } from '@/types';
-import { useQuery } from '@tanstack/react-query';
-import Link from 'next/link';
-import React from 'react'
+"use client";
+import { fetchLocation } from "@/server/actions";
+import { fetchCategoriesTopClient } from "@/services/Home";
+import { fetchLocationTopClient } from "@/services/location";
+import { REACT_QUERY, SAMPLE_CITY, STRING_DATA } from "@/shared/Constants";
+import { ROUTE_CONSTANTS } from "@/shared/Routes";
+import { ILocations } from "@/types";
+import { useQuery } from "@tanstack/react-query";
+import Link from "next/link";
+import React from "react";
 
-const TopCategory = (props:{isFooter?:boolean}) => {
-  const {isFooter=false} = props
-    const { data: locationOptions, isLoading: isLoadingLocation } = useQuery({
-      queryKey: [REACT_QUERY.CATEGORY_BOX_COLLECITON, "top"],
-      queryFn: async () => {
-        const res =
-          (await fetchCategoriesTopClient()) as unknown as ILocations[];
-        console.log(res, "footertop")
-        return res ?? [];
-      },
-    });
+const TopCategory = (props: { isFooter?: boolean }) => {
+  const { isFooter = false } = props;
+  const { data: locationOptions, isLoading: isLoadingLocation } = useQuery({
+    queryKey: [REACT_QUERY.CATEGORY_BOX_COLLECITON, "top"],
+    queryFn: async () => {
+      const res = (await fetchCategoriesTopClient()) as unknown as ILocations[];
+      console.log(res, "footertop");
+      return res ?? [];
+    },
+  });
 
-      const renderLink = (item: ILocations) => {
-        if (item?.route) {
+  const renderLink = (item: ILocations) => {
+    return (
+      <Link href={`/category/${item?.slug}`}>
+        {item?.name}
+      </Link>
+    );
+  };
+
+  if (isFooter) {
+    return (
+      <>
+        <div className="top-heading-class">{"Categories"}</div>
+        {[...(locationOptions ?? [])].map((item, index) => {
           return (
-            <Link
-              className={`${isFooter ? "footer-link-custom-class" : ""}`}
-              href={item?.route ?? ""}
-            >
-              {item?.name}
-            </Link>
+            <div className="" key={index}>
+              {renderLink(item)}
+            </div>
           );
-        }
-        return item?.name;
-      };
-
-    if (isFooter) {
-      return (
-        <>
-          <div className="top-heading-class">{'Categories'}</div>
-          {[...(locationOptions ?? [])].map((item, index) => {
-            return (
-              <div className="" key={index}>
-                {renderLink(item)}
-              </div>
-            );
-          })}
-          <Link
-            className={`${isFooter ? "footer-link-custom-class" : ""}`}
-            href={ROUTE_CONSTANTS.E_CATOGRIES_ALL}
-          >
-            All
-          </Link>
-        </>
-      );
-    }
+        })}
+        <Link
+          className={`${isFooter ? "footer-link-custom-class" : ""}`}
+          href={ROUTE_CONSTANTS.E_CATOGRIES_ALL}
+        >
+          All
+        </Link>
+      </>
+    );
+  }
 
   return (
     <>
@@ -72,6 +65,6 @@ const TopCategory = (props:{isFooter?:boolean}) => {
       })}
     </>
   );
-}
+};
 
-export default TopCategory
+export default TopCategory;

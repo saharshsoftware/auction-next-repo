@@ -120,7 +120,7 @@ body :focus-within {
 }
 
 .react-dropdown-select-content {
-  @apply text-base
+  @apply text-base line-clamp-1
 }
 
 .react-dropdown-select-dropdown {

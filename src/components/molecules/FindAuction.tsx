@@ -49,6 +49,8 @@ import useCustomParamsData from "@/hooks/useCustomParamsData";
 import useFindUrl from "@/hooks/useFindUrl";
 import { getCategoryBoxCollectionClient } from "@/services/auction";
 import useLocalStorage from "@/hooks/useLocationStorage";
+import { fetchBanksClient } from "@/services/bank";
+import { fetchLocationClient } from "@/services/location";
 
 const gridElementClass = () => "lg:col-span-3  col-span-full";
 const validationSchema = Yup.object({
@@ -97,10 +99,10 @@ const FindAuction = (props: IFindAuction) => {
   const { data: bankOptions, isLoading: isLoadingBank, refetch:refetchBank } = useQuery({
     queryKey: [REACT_QUERY.AUCTION_BANKS],
     queryFn: async () => {
-      const res = (await fetchBanks()) as unknown as IBanks[];
+      const res = (await fetchBanksClient()) as unknown as IBanks[];
       const responseData = getBankOptions(res) ?? [];
       const updatedData = [{ id: 0, name: STRING_DATA.ALL }, ...responseData];
-      // console.log(updatedData, "updateadslfk");
+      console.log(updatedData, "updateadslfk");
       if (currentRoute.startsWith("/bank")) fillFilter(updatedData);
       return updatedData ?? [];
     },
@@ -109,7 +111,7 @@ const FindAuction = (props: IFindAuction) => {
   const { data: locationOptions, isLoading: isLoadingLocation, refetch:refetchLocation } = useQuery({
     queryKey: [REACT_QUERY.AUCTION_LOCATION],
     queryFn: async () => {
-      const res = (await fetchLocation()) as unknown as ILocations[];
+      const res = (await fetchLocationClient()) as unknown as ILocations[];
       const responseData = res ?? [];
       const updatedData = [{ id: 0, name: STRING_DATA.ALL }, ...responseData];
       if (currentRoute.startsWith("/location")) fillFilter(updatedData);
@@ -363,7 +365,7 @@ const FindAuction = (props: IFindAuction) => {
                             loading={isLoadingBank}
                             options={bankOptions}
                             placeholder={"Banks"}
-                            customClass="w-full "
+                            customClass="w-full"
                             onChange={(e: any) => {
                               if (e?.[0]?.name !== STRING_DATA.ALL) {
                                 setFieldValue("bank", e?.[0]?.name);
