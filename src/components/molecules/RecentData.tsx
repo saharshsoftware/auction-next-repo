@@ -92,7 +92,8 @@ const RecentData = (props: ISpecificRoute) => {
   };
 
   const showAddToWishlist = () => {
-    const requiredRoute = currentRoute.split("/").slice(0, 3).join("/");
+    const requiredRoute = currentRoute.split("/").slice(0, 2).join("/");
+    console.log(requiredRoute, "requiredRoute");
     if (requiredRoute === ROUTE_CONSTANTS.AUCTION_SLASH && token) {
       return (
         <>
