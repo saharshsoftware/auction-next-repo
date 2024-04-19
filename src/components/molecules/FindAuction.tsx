@@ -323,6 +323,40 @@ const FindAuction = (props: IFindAuction) => {
               >
                 <div className="grid gap-4 grid-cols-12 w-full ">
                   {/* {JSON.stringify(values.category)} */}
+
+                  <div className={gridElementClass()}>
+                    <TextField
+                      label={"Categories"}
+                      name={"category"}
+                      hasChildren={true}
+                    >
+                      <Field name="category">
+                        {() => (
+                          <ReactSelectDropdown
+                            defaultValue={selectedCategory(
+                              categoryOptions ?? [],
+                              initialValueData?.category
+                                ? initialValueData
+                                : { category: STRING_DATA.ALL }
+                            )}
+                            noDataRenderer={NoDataRendererDropdown}
+                            itemRenderer={ItemRenderer}
+                            options={categoryOptions ?? []}
+                            loading={isLoadingCategory}
+                            placeholder={"Category"}
+                            customClass="w-full "
+                            onChange={(e) => {
+                              if (e?.[0]?.name !== STRING_DATA.ALL) {
+                                setFieldValue("category", e?.[0]?.name);
+                                return;
+                              }
+                              setFieldValue("category", "");
+                            }}
+                          />
+                        )}
+                      </Field>
+                    </TextField>
+                  </div>
                   <div className={gridElementClass()}>
                     {/* {JSON.stringify(initialValueData?.category)} */}
                     <TextField
@@ -351,39 +385,6 @@ const FindAuction = (props: IFindAuction) => {
                                 return;
                               }
                               setFieldValue("propertyType", "");
-                            }}
-                          />
-                        )}
-                      </Field>
-                    </TextField>
-                  </div>
-                  <div className={gridElementClass()}>
-                    <TextField
-                      label={"Categories"}
-                      name={"category"}
-                      hasChildren={true}
-                    >
-                      <Field name="category">
-                        {() => (
-                          <ReactSelectDropdown
-                            defaultValue={selectedCategory(
-                              categoryOptions ?? [],
-                              initialValueData?.category
-                                ? initialValueData
-                                : { category: STRING_DATA.ALL }
-                            )}
-                            noDataRenderer={NoDataRendererDropdown}
-                            itemRenderer={ItemRenderer}
-                            options={categoryOptions ?? []}
-                            loading={isLoadingCategory}
-                            placeholder={"Category"}
-                            customClass="w-full "
-                            onChange={(e) => {
-                              if (e?.[0]?.name !== STRING_DATA.ALL) {
-                                setFieldValue("category", e?.[0]?.name);
-                                return;
-                              }
-                              setFieldValue("category", "");
                             }}
                           />
                         )}

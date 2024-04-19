@@ -23,6 +23,19 @@ export const metadata: Metadata = {
   title: "Find auction with amazing deals",
 };
 
+// export const STRAPI_AUCTION_CARD_KEY = [
+//   "title",
+//   "reservePrice",
+//   "estimatedMarketPrice",
+//   "description",
+//   "bankName",
+//   "branchName",
+//   "propertyType",
+//   "area",
+//   "city",
+//   "borrowerName",
+// ];
+
 export default async function Page({
   params,
   searchParams,

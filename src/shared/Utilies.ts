@@ -84,9 +84,9 @@ export const sanitizedAuctionData = (data: any[]) => {
 };
 
 export const sanitizedAuctionDetail = (data: any) => {
-  const { assetCategory, propertyType, contactNo, contact, area, city, state } = data?.attributes;
+  const { assetCategory, assetType, contactNo, contact, area, city, state } = data?.attributes;
   const result =  { id: data.id, ...data.attributes };
-  result.propertyType = `${assetCategory ?? '-'} - ${propertyType ?? ''}`;
+  result.propertyType = `${assetCategory ?? "-"} - ${assetType ?? ""}`;
   result.contact = `${contact ?? ''} ${contactNo ?? ''}`;
   result.area = `${area ?? ''}, ${city ?? ''}, ${state ?? ''}`
   // console.log(result, "santizied")
@@ -296,4 +296,8 @@ export function groupAndSortBanks(data:IBanks[]) {
   );
 
   return sortedGroups;
+}
+
+export function generateQueryParamString(arr:any, paramName='fields') {
+  return arr.map((value:any, index:number) => `${paramName}[${index}]=${value}`).join("&");
 }
