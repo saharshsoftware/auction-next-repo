@@ -24,13 +24,11 @@ const ConfirmationModal: React.FC<IConfirmationModal> = (props) => {
   return (
     <CustomModal
       openModal={openModal}
+      modalHeading={STRING_DATA.CONFIRMATION}
       customWidthClass="md:w-[30%] sm:w-3/5 w-11/12"
     >
       <div className="flex flex-col gap-2">
-        <h2 className="custom-h2-class text-center text-4xl">
-          {STRING_DATA.CONFIRMATION}
-        </h2>
-        <p className="font-bold text-left my-2">{message}</p>
+        <p className="text-left">{message}</p>
         <div className="flex justify-end items-center">
           <div className="flex justify-end items-center gap-4">
             <ActionButton

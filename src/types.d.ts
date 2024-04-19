@@ -1,5 +1,16 @@
 declare module 'react-slick'
 
+export interface IAssetType {
+  id: number;
+  createdAt: Date;
+  updatedAt: Date;
+  name: null;
+  totalNotices: number;
+  imageURL: string;
+  isPopular: bpp;eam;
+  slug: "plot";
+}
+
 export interface IAuction {
   [x: string]: any;
   id: string;

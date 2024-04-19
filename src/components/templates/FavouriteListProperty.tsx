@@ -7,11 +7,12 @@ import { REACT_QUERY, STRING_DATA } from "@/shared/Constants";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
 import FavouritePropertyCard from "../atoms/FavouritePropertyCard";
-import { IFavouriteListProperty } from "@/types";
+import { IAuction, IFavouriteListProperty } from "@/types";
 import ConfirmationModal from "../ modals/ConfirmationModal";
 import useModal from "@/hooks/useModal";
 import { handleOnSettled } from "@/shared/Utilies";
 import { fetchFavoriteListPropertyClient, removePropertyFromFavoriteListClient } from "@/services/favouriteList";
+import AuctionCard from "../atoms/AuctionCard";
 
 interface IFavouriteListPropertyComp {
   listId: string;
@@ -97,13 +98,14 @@ const FavouriteListProperty = (props: IFavouriteListPropertyComp) => {
         <div className="flex flex-col gap-4">
           {favouriteListPropertyData?.map(
             (item: IFavouriteListProperty, index: number) => {
-              const propertyInformation = item?.property;
+              const propertyInformation = item?.property as unknown as IAuction;
               return (
                 <div key={index}>
-                  <FavouritePropertyCard
-                    item={item}
-                    propertyData={propertyInformation}
-                    handleClick={handleRemove}
+                  <AuctionCard
+                    showRemoveButton={true}
+                    item={propertyInformation}
+                    // propertyData={propertyInformation}
+                    handleRemove={handleRemove}
                   />
                 </div>
               );

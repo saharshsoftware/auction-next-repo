@@ -10,6 +10,9 @@ export const FILTER_EMPTY = { name: "", bank: "", location: "", category: "", pr
 
 
 export const STRING_DATA = {
+  EDIT_LIST: "Edit list",
+  BORROW_NAME: "Borrow name",
+  CONTACT: "Contact",
   CITIES: 'Cities',
   BANKS: "Banks",
   CATEGORIES: "Categories",
@@ -1044,7 +1047,8 @@ export const REACT_QUERY = {
   FAVOURITE_LIST: "Favourite-list",
   FAVOURITE_LIST_PROPERTY: "Favourite-list-property",
   FIND_AUCTION: "Find-auction",
-  AUCTION_DETAIL:"auction-detail"
+  AUCTION_DETAIL: "auction-detail",
+  ASSETS_TYPE: "Assets-type",
 };
 
 export const SAMPLE_CITY = [

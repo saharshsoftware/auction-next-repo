@@ -20,21 +20,19 @@ import * as Yup from "yup";
 import { ROUTE_CONSTANTS } from "../../shared/Routes";
 import { ItemRenderer, NoDataRendererDropdown } from "./NoDataRendererDropdown";
 import {
-  getBankOptions,
-  getCategoryOptions,
-  handleQueryResponse,
-  hasNonEmptyOrNullValue,
+  sanitizeReactSelectOptions,
   setDataInQueryParams,
 } from "../../shared/Utilies";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { fetchBanks, fetchLocation, getAuctionData, getCategoryBoxCollection } from "@/server/actions";
-import { IBanks, ICategoryCollection, ILocations } from "@/types";
+import { IAssetType, IBanks, ICategoryCollection, ILocations } from "@/types";
 import Link from "next/link";
 import { setCookie } from "cookies-next";
 import useLocalStorage from "@/hooks/useLocationStorage";
 import { fetchBanksClient } from "@/services/bank";
 import { fetchLocationClient } from "@/services/location";
+import { getAssetTypeClient } from "@/services/auction";
 
 interface IFilter {
   category: string;
@@ -44,33 +42,48 @@ interface IFilter {
 }
 
 const validationSchema = Yup.object({
+  propertyType: Yup.string().trim(),
   category: Yup.string().trim(),
-  location: Yup.string().trim(),
+  location: Yup.object(),
   bank: Yup.string().trim(),
-  price: Yup.number()
+  price: Yup.number(),
+  keyword: Yup.string(),
 });
 
 const initialValues = {
+  propertyType: STRING_DATA.EMPTY,
   category: STRING_DATA.EMPTY,
   location: STRING_DATA.EMPTY,
   bank: STRING_DATA.EMPTY,
-  price: '250000000' ?? STRING_DATA.EMPTY,
+  keyword: STRING_DATA.EMPTY,
+  price: "250000000" ?? STRING_DATA.EMPTY,
 };
 
 const gridElementClass = () => "lg:col-span-6 col-span-full";
-
+const separatorClass = () => "border-dashed border-2 border-gray-300 w-full";
 const HeroSearchBox = () => {
   const router = useRouter();
   const [activeBadgeData, setActiveBadgeData] = useState(POPULER_CITIES?.[0]);
   const [loadingSearch, setLoadingSearch] = useState(false);
   const [auctionFilter, setAuctionFilter] = useLocalStorage(COOKIES.AUCTION_FILTER, FILTER_EMPTY);
 
+    const {
+      data: assetsTypeOptions,
+      isLoading: isLoadingAssetsTypeCategory,
+    } = useQuery({
+      queryKey: [REACT_QUERY.ASSETS_TYPE],
+      queryFn: async () => {
+        const res = (await getAssetTypeClient()) as unknown as IAssetType[];
+        return sanitizeReactSelectOptions(res) ?? [];
+      },
+    });
+
   const { data: categoryOptions, isLoading: isLoadingCategory } = useQuery({
     queryKey: [REACT_QUERY.CATEGORY_BOX_COLLECITON_OPTIONS],
     queryFn: async () => {
       const res =
         (await getCategoryBoxCollection()) as unknown as ICategoryCollection[];
-      return (res) ?? [];
+      return sanitizeReactSelectOptions(res) ?? [];
     },
     staleTime: 0,
   });
@@ -79,7 +92,7 @@ const HeroSearchBox = () => {
     queryKey: [REACT_QUERY.AUCTION_BANKS],
     queryFn: async () => {
       const res = (await fetchBanksClient()) as unknown as IBanks[];
-      return getBankOptions(res) ?? [];
+      return sanitizeReactSelectOptions(res) ?? [];
     },
   });
 
@@ -87,7 +100,7 @@ const HeroSearchBox = () => {
     queryKey: [REACT_QUERY.AUCTION_LOCATION],
     queryFn: async () => {
       const res = (await fetchLocationClient()) as unknown as ILocations[];
-      return res ?? [];
+      return sanitizeReactSelectOptions(res) ?? [];
     },
   });
 
@@ -119,21 +132,29 @@ const HeroSearchBox = () => {
     category: string;
     price: string;
     bank: string;
-    location: string;
+    location: any;
+    propertyType: string;
+    keyword?: string;
   }) => {
-    return setDataInQueryParams({ page: 1, ...values });
+    console.log(values, "Vakyes");
+    const { category, price, bank, location, propertyType, keyword } = values;
+    const { type, name } = location ?? {};
+    const filter = {
+      page: 1,
+      category,
+      price,
+      bank,
+      locationType: type,
+      location: name,
+      propertyType,
+      keyword,
+    };
+    console.log(filter, "hero-filter");
+    // debugger
+    return setDataInQueryParams(filter);
   };
 
-  const handleSubmit = async (values: any) => {
- 
-    setLoadingSearch(true);
-
-    setTimeout(() => {
-      setLoadingSearch(false);
-    }, 1000);
-    console.log(values);
-    fetchAuctionRequest(values);
-  };
+  const handleSubmit = (values: any) => {};
 
   const handleBadgeClick = (data: any) => {
     setActiveBadgeData(data);
@@ -156,6 +177,29 @@ const HeroSearchBox = () => {
           {({ setFieldValue, values }: any) => (
             <Form>
               <div className="grid gap-4 grid-cols-12 w-full ">
+                <div className={gridElementClass()}>
+                  <TextField
+                    label={"Asset type"}
+                    name={"propertyType"}
+                    hasChildren={true}
+                  >
+                    <Field name="propertyType">
+                      {() => (
+                        <ReactSelectDropdown
+                          noDataRenderer={NoDataRendererDropdown}
+                          itemRenderer={ItemRenderer}
+                          options={assetsTypeOptions ?? []}
+                          placeholder={"Asset type"}
+                          loading={isLoadingAssetsTypeCategory}
+                          customClass="w-full "
+                          onChange={(e: any) => {
+                            setFieldValue("propertyType", e?.[0]?.name);
+                          }}
+                        />
+                      )}
+                    </Field>
+                  </TextField>
+                </div>
                 <div className={gridElementClass()}>
                   <TextField
                     label={"Categories"}
@@ -195,14 +239,14 @@ const HeroSearchBox = () => {
                           placeholder={"Neighborhood, City or State"}
                           customClass="w-full "
                           onChange={(e: any) => {
-                            setFieldValue("location", e?.[0]?.name);
+                            setFieldValue("location", e?.[0]);
                           }}
                         />
                       )}
                     </Field>
                   </TextField>
                 </div>
-                <div className={"col-span-full"}>
+                <div className={gridElementClass()}>
                   <TextField label="Bank" name="bank" hasChildren={true}>
                     <Field name="bank">
                       {() => (
@@ -232,6 +276,22 @@ const HeroSearchBox = () => {
                     max={RANGE_PRICE.MAX}
                     step={RANGE_PRICE.STEPS}
                     customClass={"custom-range-class"}
+                  />
+                </div>
+                <div className="col-span-full">
+                  <div className="flex items-center justify-between w-full gap-2">
+                    <hr className={separatorClass()} />
+                    <span className="min-w-fit text-blue-500">OR</span>
+                    <hr className={separatorClass()} />
+                  </div>
+                </div>
+                <div className={"col-span-full"}>
+                  <TextField
+                    type="text"
+                    name="keyword"
+                    label="Keyword"
+                    placeholder="Enter keyword"
+                    value={values.keyword}
                   />
                 </div>
 

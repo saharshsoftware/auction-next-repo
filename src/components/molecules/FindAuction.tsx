@@ -15,6 +15,8 @@ import {
   capitalizeFirstLetter,
   getBankOptions,
   getDataFromQueryParams,
+  sanitizeReactSelectOptions,
+  selectedAssetTypeCategory,
   selectedBank,
   selectedCategory,
   selectedLocation,
@@ -44,19 +46,20 @@ import {
   fetchLocation,
   getCategoryBoxCollection,
 } from "@/server/actions";
-import { IBanks, ICategoryCollection, ILocations } from "@/types";
+import { IAssetType, IBanks, ICategoryCollection, ILocations } from "@/types";
 import useCustomParamsData from "@/hooks/useCustomParamsData";
 import useFindUrl from "@/hooks/useFindUrl";
-import { getCategoryBoxCollectionClient } from "@/services/auction";
+import { getAssetTypeClient, getCategoryBoxCollectionClient } from "@/services/auction";
 import useLocalStorage from "@/hooks/useLocationStorage";
 import { fetchBanksClient } from "@/services/bank";
 import { fetchLocationClient } from "@/services/location";
 
-const gridElementClass = () => "lg:col-span-3  col-span-full";
+const gridElementClass = () => "lg:col-span-2  col-span-full";
 const validationSchema = Yup.object({
-  category: Yup.string().trim(),
-  location: Yup.string().trim(),
-  bank: Yup.string().trim(),
+  category: Yup.string(),
+  location: Yup.object(),
+  bank: Yup.string(),
+  propertyType: Yup.string(),
   price: Yup.number()
     
     .positive(ERROR_MESSAGE.PRICE_POSITIVE)
@@ -68,6 +71,8 @@ interface IFindAuction {
   isLocationRoute?: boolean;
   isBankRoute?: boolean;
 }
+
+const getEmptyAllObject = () => ({ id: 0, name: STRING_DATA.ALL });
 
 const FindAuction = (props: IFindAuction) => {
   const {isBankRoute=false, isCategoryRoute=false, isLocationRoute=false} = props;
@@ -84,14 +89,29 @@ const FindAuction = (props: IFindAuction) => {
   const { data: categoryOptions, isLoading: isLoadingCategory ,refetch:refetchCategory } = useQuery({
     queryKey: [REACT_QUERY.CATEGORY_BOX_COLLECITON_OPTIONS],
     queryFn: async () => {
-      const res =
-        (await getCategoryBoxCollectionClient()) as unknown as ICategoryCollection[];
-      console.log(
-        res,
-        currentRoute.startsWith("/category"),
-      );
-      const updatedData = [{ id: 0, name: STRING_DATA.ALL }, ...res];
+      const res = (await getCategoryBoxCollectionClient()) as unknown as ICategoryCollection[];
+      const updatedData = [
+        getEmptyAllObject(),
+        ...sanitizeReactSelectOptions(res),
+      ];
       if (currentRoute.startsWith("/category")) fillFilter(updatedData);
+      return (updatedData) ?? [];
+    },
+  });
+
+  const {
+    data: assetsTypeOptions,
+    isLoading: isLoadingAssetsTypeCategory,
+    refetch: refetchAssetTypeCategory,
+  } = useQuery({
+    queryKey: [REACT_QUERY.ASSETS_TYPE],
+    queryFn: async () => {
+      const res = (await getAssetTypeClient()) as unknown as IAssetType[];
+      const updatedData = [
+        getEmptyAllObject(),
+        ...sanitizeReactSelectOptions(res),
+      ];
+      // if (currentRoute.startsWith("/category")) fillFilter(updatedData);
       return updatedData ?? [];
     },
   });
@@ -100,8 +120,10 @@ const FindAuction = (props: IFindAuction) => {
     queryKey: [REACT_QUERY.AUCTION_BANKS],
     queryFn: async () => {
       const res = (await fetchBanksClient()) as unknown as IBanks[];
-      const responseData = getBankOptions(res) ?? [];
-      const updatedData = [{ id: 0, name: STRING_DATA.ALL }, ...responseData];
+      const updatedData = [
+        getEmptyAllObject(),
+        ...sanitizeReactSelectOptions(res),
+      ];
       console.log(updatedData, "updateadslfk");
       if (currentRoute.startsWith("/bank")) fillFilter(updatedData);
       return updatedData ?? [];
@@ -113,9 +135,12 @@ const FindAuction = (props: IFindAuction) => {
     queryFn: async () => {
       const res = (await fetchLocationClient()) as unknown as ILocations[];
       const responseData = res ?? [];
-      const updatedData = [{ id: 0, name: STRING_DATA.ALL }, ...responseData];
+      const updatedData = [
+        getEmptyAllObject(),
+        ...sanitizeReactSelectOptions(responseData),
+      ];
       if (currentRoute.startsWith("/location")) fillFilter(updatedData);
-      return updatedData ?? [];
+      return updatedData  ?? [];
     },
   });
 
@@ -123,12 +148,15 @@ const FindAuction = (props: IFindAuction) => {
 
   const [initialValueData, setInitialValueData] = useState<any>(
     structuredClone(
-      params_search.get("q") ? getDataFromQueryParams(params_search.get("q") ?? "") : {
-        bank: STRING_DATA.EMPTY,
-        price: STRING_DATA.EMPTY,
-        location: STRING_DATA.EMPTY,
-        category: STRING_DATA.EMPTY,
-      }
+      params_search.get("q")
+        ? getDataFromQueryParams(params_search.get("q") ?? "")
+        : {
+            propertyType: STRING_DATA.EMPTY,
+            bank: STRING_DATA.EMPTY,
+            price: STRING_DATA.EMPTY,
+            location: STRING_DATA.EMPTY,
+            category: STRING_DATA.EMPTY,
+          }
     )
   );
 
@@ -181,7 +209,18 @@ const FindAuction = (props: IFindAuction) => {
 
   const handleSubmit = (values: any) => {
     console.log(values, "values123");
-    const filter = { page: 1, ...values };
+    const { category, price, bank, location, propertyType } = values;
+    const { type, name } = location ?? {};
+    const filter = {
+      page: 1,
+      category,
+      price,
+      bank,
+      locationType: type,
+      location: name,
+      propertyType,
+    };
+    console.log(filter);
     setAuctionFilter(filter);
     const data = setDataInQueryParamsMethod(filter);
     // console.log(data)
@@ -265,6 +304,7 @@ const FindAuction = (props: IFindAuction) => {
       <>
         <CustomFormikForm
           initialValues={{
+            propertyType: initialValueData?.propertyType ?? STRING_DATA.EMPTY,
             bank: initialValueData?.bank ?? STRING_DATA.EMPTY,
             price: initialValueData?.price ?? STRING_DATA.EMPTY,
             location: initialValueData?.location ?? STRING_DATA.EMPTY,
@@ -283,6 +323,40 @@ const FindAuction = (props: IFindAuction) => {
               >
                 <div className="grid gap-4 grid-cols-12 w-full ">
                   {/* {JSON.stringify(values.category)} */}
+                  <div className={gridElementClass()}>
+                    {/* {JSON.stringify(initialValueData?.category)} */}
+                    <TextField
+                      label={"Asset type"}
+                      name={"propertyType"}
+                      hasChildren={true}
+                    >
+                      <Field name="propertyType">
+                        {() => (
+                          <ReactSelectDropdown
+                            defaultValue={selectedAssetTypeCategory(
+                              assetsTypeOptions ?? [],
+                              initialValueData?.propertyType
+                                ? initialValueData
+                                : { propertyType: STRING_DATA.ALL }
+                            )}
+                            noDataRenderer={NoDataRendererDropdown}
+                            itemRenderer={ItemRenderer}
+                            options={assetsTypeOptions ?? []}
+                            loading={isLoadingAssetsTypeCategory}
+                            placeholder={"Property type"}
+                            customClass="w-full "
+                            onChange={(e) => {
+                              if (e?.[0]?.name !== STRING_DATA.ALL) {
+                                setFieldValue("propertyType", e?.[0]?.name);
+                                return;
+                              }
+                              setFieldValue("propertyType", "");
+                            }}
+                          />
+                        )}
+                      </Field>
+                    </TextField>
+                  </div>
                   <div className={gridElementClass()}>
                     <TextField
                       label={"Categories"}
@@ -339,7 +413,7 @@ const FindAuction = (props: IFindAuction) => {
                             customClass="w-full "
                             onChange={(e) => {
                               if (e?.[0]?.name !== STRING_DATA.ALL) {
-                                setFieldValue("location", e?.[0]?.name);
+                                setFieldValue("location", e?.[0]);
                                 return;
                               }
                               setFieldValue("location", "");
@@ -378,7 +452,7 @@ const FindAuction = (props: IFindAuction) => {
                       </Field>
                     </TextField>
                   </div>
-                  <div className={gridElementClass()}>
+                  <div className={`lg:col-span-4  col-span-full`}>
                     <TextField
                       type="range"
                       name="price"

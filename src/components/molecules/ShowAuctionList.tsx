@@ -22,27 +22,18 @@ import { getAuctionDataClient } from "@/services/auction";
 import SkeltonAuctionCard from "../skeltons/SkeltonAuctionCard";
 import useLocalStorage from "@/hooks/useLocationStorage";
 
-interface IShowAuctionList {
-  isCategoryRoute?: boolean;
-  isLocationRoute?: boolean;
-  isBankRoute?: boolean;
-}
-
-const ShowAuctionList = (props: IShowAuctionList) => {
-  const {
-    isBankRoute = false,
-    isCategoryRoute = false,
-    isLocationRoute = false,
-  } = props;
+const ShowAuctionList = () => {
   const router = useRouter();
   const params = useParams();
   const searchParams = useSearchParams();
- const currentRoute = usePathname();
+  const currentRoute = usePathname();
 
   const [apiResponseData, setApiResponseData] = useState<any>({
     sendResponse: [],
     meta: {},
   });
+
+  const [hasKeywordSearchValue, setHasKeywordSearchValue] = useState<string>('');
 
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [auctionFilter, setAuctionFilter] = useLocalStorage(COOKIES.AUCTION_FILTER, FILTER_EMPTY);
@@ -63,9 +54,12 @@ const ShowAuctionList = (props: IShowAuctionList) => {
   const getFilterData = () => {
     const filterData = {
       category: filterRef.current?.category ?? "",
-      bankName: filterRef.current?.bankName ?? auctionFilter?.bank ?? "",
+      bankName: filterRef.current?.bank ?? auctionFilter?.bank ?? "",
       reservePrice: filterRef.current?.price ?? "",
       location: filterRef.current?.location ?? "",
+      locationType: filterRef.current?.locationType ?? "",
+      propertyType: filterRef.current?.propertyType,
+      keyword: filterRef.current?.keyword ?? "",
       page: currentPage?.toString() ?? "",
     };
     console.log(filterData, "filterDAta")
@@ -76,9 +70,15 @@ const ShowAuctionList = (props: IShowAuctionList) => {
     if (searchParams.get("q")) {
       const data = searchParams.get("q");
       filterRef.current = getDataFromQueryParams(data ?? "");
-      // console.log(filterRef.current?.value, "queryData");
       setCurrentPage(filterRef.current?.page);
       refetch();
+      // console.log(filterRef.current?.value, "queryData");
+
+      if (filterRef.current?.keyword)  {
+        setHasKeywordSearchValue(filterRef.current?.keyword)
+        return;
+      }
+      setHasKeywordSearchValue('')
     }
   }, [searchParams.get("q")]);
 
@@ -95,16 +95,8 @@ const ShowAuctionList = (props: IShowAuctionList) => {
       return res ?? [];
     },
     enabled: true
-      // currentRoute.startsWith("/category") ||
-      // currentRoute.startsWith("/bank") ||
-      // currentRoute.startsWith("/location"),
-  });
+});
 
-  // useEffect(() => {
-  //   if (auctionData) {
-  //     setApiResponseData(auctionData);
-  //   }
-  // }, [auctionData]);
 
   const handlePageChange = async (event: { selected: number }) => {
     const { selected: page } = event;
@@ -138,9 +130,19 @@ const ShowAuctionList = (props: IShowAuctionList) => {
     );
   }
 
+  const renderKeywordSearchContainer = () => {
+    if (hasKeywordSearchValue) {
+      return (
+        <div className="text-sm ">Results for {hasKeywordSearchValue}</div>
+      )
+    }
+    return null
+  }
+
   return (
     <>
       <div className="flex flex-col gap-4 w-full">
+        {renderKeywordSearchContainer()}
         {apiResponseData?.sendResponse?.map((item: IAuction, index: number) => {
           return (
             <div className="w-full" key={index}>

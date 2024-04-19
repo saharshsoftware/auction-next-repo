@@ -4,10 +4,15 @@ interface props {
   children: React.ReactElement;
   openModal: boolean;
   customWidthClass?: string;
+  modalHeading?: string;
 }
 
 const CustomModal = (props: props) => {
-  const { children, openModal = false, customWidthClass='' } = props;
+  const {
+    modalHeading, children,
+    openModal = false,
+    customWidthClass = "",
+  } = props;
 
   const getRequiredWidth = () => {
     if (customWidthClass) {
@@ -20,7 +25,14 @@ const CustomModal = (props: props) => {
     if (openModal) {
       return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className={`bg-white rounded-lg flex flex-col items-center justify-center gap-4 p-6 ${getRequiredWidth()}`}>
+          <div
+            className={`bg-white rounded-lg flex flex-col gap-4 p-6 ${getRequiredWidth()}`}
+          >
+            {modalHeading ? (
+              <h2 className="custom-h2-class text-left text-3xl">
+                {modalHeading}
+              </h2>
+            ) : null}
             {children}
           </div>
         </div>

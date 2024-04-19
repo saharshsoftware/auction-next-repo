@@ -14,6 +14,7 @@ import {
 import { getAuctionDetailClient } from "@/services/auction";
 import Link from "next/link";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
+import toast from "react-simple-toasts";
 
 const AddToWishlist = () => {
   const params = useParams<{ slug: string; item: string }>();
@@ -57,10 +58,18 @@ const AddToWishlist = () => {
         data,
         success: () => {
           setSelectedOption(null);
+          toast("Successfully Added", {
+            theme: "success",
+            position: "top-center",
+          });
         },
         fail: (error: any) => {
           const { message } = error;
-          setRespError(message);
+          toast(message, {
+            theme: "failure",
+            position: "top-center",
+          });
+          // setRespError(message);
           setSelectedOption(null);
         },
       };
@@ -80,9 +89,10 @@ const AddToWishlist = () => {
 
   const handleSubmit = (event: any) => {
     event.preventDefault();
-
+    // toast("Hello, World!", { theme: "success", position: "top-center" });
+    // addToast("Saved Successfully", { appearance: "success" });
     if (!selectedOption) {
-      setRespError("List is required");
+      setRespError("Please select a List");
       return;
     }
     // console.log(selectedOption);

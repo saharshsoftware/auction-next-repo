@@ -1,5 +1,8 @@
 @import "@fortawesome/fontawesome-svg-core/styles.css";
+@import 'react-simple-toasts/dist/theme/success.css';
+@import 'react-simple-toasts/dist/theme/failure.css';
 
+/* toastConfig({ theme: 'dark' }); */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -237,4 +240,16 @@ body :focus-within {
 
 .state-name {
   @apply text-2xl font-bold
+}
+
+.react-select-container .react-select__control {
+  @apply border border-brand-color
+}
+
+.react-select-container .react-select__menu .react-select__option {
+  @apply text-gray-700
+}
+
+.react-select-container .react-select__placeholder {
+  @apply text-sm
 }

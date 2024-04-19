@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { API_BASE_URL, API_ENPOINTS } from "@/services/api";
 import { getRequest } from "@/shared/Axios";
 import {
@@ -6,7 +6,21 @@ import {
   sanitizedAuctionData,
   sanitizedAuctionDetail,
 } from "@/shared/Utilies";
-import { IAuction, ICategoryCollection } from "@/types";
+import { IAssetType, IAuction, ICategoryCollection } from "@/types";
+
+export const getAssetTypeClient = async () => {
+  // "use server";
+  try {
+    const filter = `?sort[0]=name:asc`;
+    const URL = API_BASE_URL + API_ENPOINTS.ASSET_TYPES + `${filter}`;
+    console.log(URL, "assetstype-detail");
+    const { data } = await getRequest({ API: URL });
+    const sendResponse = sanitizeStrapiData(data.data) as IAssetType;
+    return sendResponse;
+  } catch (e) {
+    console.log(e, "auctionDetail error auction detail");
+  }
+};
 
 export const getAuctionDataClient = async (payload: {
   page?: string;
@@ -14,39 +28,73 @@ export const getAuctionDataClient = async (payload: {
   bankName?: string;
   reservePrice?: string;
   location?: string;
+  keyword?: string;
+  propertyType?: string;
+  locationType?: string;
 }) => {
   try {
-    const { page, category, bankName, reservePrice, location } = payload;
+    const {
+      page,
+      category,
+      bankName,
+      reservePrice,
+      location,
+      keyword,
+      propertyType,
+      locationType,
+    } = payload;
     const pageSize = 10;
+    let URL;
     let filter = `?pagination[page]=${
       page ?? 1
     }&pagination[pageSize]=${pageSize}&`;
-    // let filter = `?pagination[pageSize]=${pageSize}&`;
-    let index = 0; // Initialize index counter
 
-    if (category) {
-      filter += `filters[$and][${index++}][assetCategory]=${encodeURI(
-        category
-      )}&`;
-    }
-    if (bankName) {
-      filter += `filters[$and][${index++}][bankName]=${encodeURI(bankName)}&`;
-    }
+    let filterSearch = `?pageSize=${pageSize}&pageNo=${page}&`;
+    // debugger;
+    if (keyword) {
+      filterSearch += `q=${encodeURI(keyword)}&`;
+      URL = API_ENPOINTS.NOTICES + "/search" + filterSearch.slice(0, -1); // Remove the trailing '&' if
+    } else {
+      let index = 0; // Initialize index counter
 
-    if (location) {
-      filter += `filters[$and][${index++}][location]=${encodeURI(location)}&`;
-    }
+      if (category) {
+        filter += `filters[$and][${index++}][assetCategory]=${encodeURI(
+          category
+        )}&`;
+      }
+      if (bankName) {
+        filter += `filters[$and][${index++}][bankName]=${encodeURI(bankName)}&`;
+      }
 
-    if (reservePrice) {
-      filter += `filters[$and][${index++}][reservePrice][$lte]=${reservePrice}&`;
-    }
+      if (locationType === 'city' && location) {
+          filter += `filters[$and][${index++}][city]=${encodeURI(location)}&`;
+      }
 
-    const URL = API_ENPOINTS.NOTICES + filter.slice(0, -1); // Remove the trailing '&' if present
+      if (locationType === "state" && location) {
+        filter += `filters[$and][${index++}][state]=${encodeURI(location)}&`;
+      }
+
+      if (propertyType) {
+        filter += `filters[$and][${index++}][assetType]=${encodeURI(
+          propertyType
+        )}&`;
+      }
+
+      if (reservePrice) {
+        filter += `filters[$and][${index++}][reservePrice][$lte]=${reservePrice}&`;
+      }
+      URL = API_ENPOINTS.NOTICES + filter.slice(0, -1); // Remove the trailing '&' if present
+    }
 
     console.log(URL, "auction-filter");
     const { data } = await getRequest({ API: URL });
     console.log(data, ">123");
-    const sendResponse = sanitizedAuctionData(data.data) as IAuction[];
+    let sendResponse;;
+    if (keyword) {
+      sendResponse= data as IAuction[]; 
+      return { sendResponse }
+    }
+    sendResponse = sanitizedAuctionData(data.data) as IAuction[];
     return { sendResponse, meta: data?.meta?.pagination };
   } catch (e) {
     console.log(e, "Error Auction api");

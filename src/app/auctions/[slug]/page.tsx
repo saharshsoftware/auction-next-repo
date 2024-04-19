@@ -17,6 +17,7 @@ import ActionButton from "@/components/atoms/ActionButton";
 import { ROUTES_MANIFEST } from "next/dist/shared/lib/constants";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
 import nodataimage from "@/assets/images/new-tab.png";
+import NewTabSvg from "@/components/svgIcons/NewTabSvg";
 
 export const metadata: Metadata = {
   title: "Find auction with amazing deals",
@@ -32,38 +33,6 @@ export default async function Page({
   const { slug } = params;
   const auctionDetail = (await getAuctionDetail({ slug })) as IAuction;
   // const auctionDetail = sanitizedAuctionDetail(SAMPLE_PLOT2?.[0]) as IAuction;
-
-  const getIcon = () => {
-    return (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        xmlnsXlink="http://www.w3.org/1999/xlink"
-        viewBox="0,0,256,256"
-        width="1.2rem"
-        height="1.2rem"
-      >
-        <g
-          fill="#ffffff"
-          fill-rule="nonzero"
-          stroke="none"
-          stroke-width="1"
-          stroke-linecap="butt"
-          stroke-linejoin="miter"
-          stroke-miterlimit="10"
-          stroke-dasharray=""
-          stroke-dashoffset="0"
-          font-family="none"
-          font-weight="none"
-          font-size="none"
-          text-anchor="none"
-        >
-          <g transform="scale(5.33333,5.33333)">
-            <path d="M40.96094,4.98047c-0.07387,0.00243 -0.14755,0.00895 -0.2207,0.01953h-12.74023c-0.72127,-0.0102 -1.39216,0.36875 -1.75578,0.99175c-0.36361,0.623 -0.36361,1.39351 0,2.01651c0.36361,0.623 1.0345,1.00195 1.75578,0.99175h8.17188l-13.58594,13.58594c-0.52248,0.50163 -0.73295,1.24653 -0.55024,1.94742c0.18271,0.70088 0.73006,1.24823 1.43094,1.43094c0.70088,0.18271 1.44578,-0.02776 1.94742,-0.55024l13.58594,-13.58594v8.17188c-0.0102,0.72127 0.36875,1.39216 0.99175,1.75578c0.623,0.36361 1.39351,0.36361 2.01651,0c0.623,-0.36361 1.00195,-1.0345 0.99175,-1.75578v-12.75391c0.0781,-0.58158 -0.10312,-1.16812 -0.49567,-1.60429c-0.39255,-0.43617 -0.95683,-0.67796 -1.5434,-0.66133zM12.5,8c-4.11731,0 -7.5,3.38269 -7.5,7.5v20c0,4.11731 3.38269,7.5 7.5,7.5h20c4.11731,0 7.5,-3.38269 7.5,-7.5v-9.5c0.0102,-0.72127 -0.36875,-1.39216 -0.99175,-1.75578c-0.623,-0.36361 -1.39351,-0.36361 -2.01651,0c-0.623,0.36361 -1.00195,1.0345 -0.99175,1.75578v9.5c0,1.94669 -1.55331,3.5 -3.5,3.5h-20c-1.94669,0 -3.5,-1.55331 -3.5,-3.5v-20c0,-1.94669 1.55331,-3.5 3.5,-3.5h9.5c0.72127,0.0102 1.39216,-0.36875 1.75578,-0.99175c0.36361,-0.623 0.36361,-1.39351 0,-2.01651c-0.36361,-0.623 -1.0345,-1.00195 -1.75578,-0.99175z"></path>
-          </g>
-        </g>
-      </svg>
-    );
-  }
 
   if (auctionDetail) {
     return (
@@ -93,7 +62,7 @@ export default async function Page({
         <div className="space-y-4 w-full">
           <ShowLabelValue
             heading={STRING_DATA.BANK}
-            value={auctionDetail?.name}
+            value={auctionDetail?.bankName}
           />
           <ShowLabelValue
             heading={STRING_DATA.BRANCH_NAME}
@@ -101,19 +70,23 @@ export default async function Page({
           />
           <ShowLabelValue
             heading={STRING_DATA.PROPERTY_TYPE}
-            value={formatPrice(auctionDetail?.propertyType)}
+            value={auctionDetail?.propertyType}
           />
           <ShowLabelValue
             heading={STRING_DATA.AREA}
-            value={auctionDetail?.authorisedOfficerContactPerson}
-          />
-          <ShowLabelValue
-            heading={STRING_DATA.LOCALITY}
-            value={auctionDetail?.location}
+            value={auctionDetail?.area ?? "-"}
           />
           <ShowLabelValue
             heading={STRING_DATA.CITY}
-            value={auctionDetail?.location}
+            value={auctionDetail?.city}
+          />
+          <ShowLabelValue
+            heading={STRING_DATA.BORROW_NAME}
+            value={auctionDetail?.borrowerName}
+          />
+          <ShowLabelValue
+            heading={STRING_DATA.CONTACT}
+            value={auctionDetail?.contact}
           />
           <ShowLabelValue
             heading={STRING_DATA.RESERVED_PRICE}
@@ -139,7 +112,7 @@ export default async function Page({
             heading={STRING_DATA.AUCTION_END_D_AND_T}
             value={formattedDateAndTime(auctionDetail?.auctionEndDate ?? "")}
           />
-          {/* {JSON.stringify(auctionDetail?.noticeImageURL)} */}
+          {/* {JSON.stringify(auctionDetail)} */}
           <Link
             href={`${process.env.NEXT_PUBLIC_IMAGE_CLOUDFRONT}${auctionDetail?.noticeImageURL}`}
             target="_blank"
@@ -147,7 +120,7 @@ export default async function Page({
             <ActionButton
               text="View notice"
               customClass="lg:w-fit w-full mt-4"
-              icon={getIcon()}
+              icon={<NewTabSvg />}
             />
           </Link>
         </div>

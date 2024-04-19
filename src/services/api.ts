@@ -10,4 +10,5 @@ export const API_ENPOINTS = {
   HOME_BOX_COLLECTIONS: "/api/home-box-collections",
   FAVOURITE_LIST: "/api/favorite-list",
   FAVOURITE_LIST_PROPERTY: "/api/property-in-favorite-list",
+  ASSET_TYPES: "/api/asset-types"
 };

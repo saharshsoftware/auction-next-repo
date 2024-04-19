@@ -61,9 +61,10 @@ const CreateFavList = (props: ICreateFavList) => {
     <>
       <CustomModal
         openModal={openModal}
+        modalHeading={STRING_DATA.ADD_LIST}
         customWidthClass="md:w-[40%] sm:w-3/5 w-11/12"
       >
-        <div className="w-full p-2">
+        <div className="w-full">
           <div className="flex flex-col gap-4">
             <CustomFormikForm
               initialValues={initialValues}
@@ -71,28 +72,29 @@ const CreateFavList = (props: ICreateFavList) => {
               handleSubmit={handleFavlist}
             >
               <div className="flex flex-col gap-4 ">
-                <h2 className="custom-h2-class text-center text-3xl">
-                  {STRING_DATA.ADD_LIST}
-                </h2>
                 <TextField
                   type="text"
                   name="name"
                   label="Name"
                   placeholder="Enter name"
                 />
-            {respError ? (
-              <span className="text-center text-sm text-red-700">
-                {respError}
-              </span>
-            ) : null}
-            <div className="flex justify-end items-center gap-4">
-              <ActionButton
-                text="Close"
-                onclick={hideModal}
-                isActionButton={false}
-              />
-              <ActionButton isSubmit={true} text="Add" isLoading={isPending} />
-            </div>
+                {respError ? (
+                  <span className="text-center text-sm text-red-700">
+                    {respError}
+                  </span>
+                ) : null}
+                <div className="flex justify-end items-center gap-4">
+                  <ActionButton
+                    text="Close"
+                    onclick={hideModal}
+                    isActionButton={false}
+                  />
+                  <ActionButton
+                    isSubmit={true}
+                    text="Add"
+                    isLoading={isPending}
+                  />
+                </div>
               </div>
             </CustomFormikForm>
           </div>

@@ -1,7 +1,7 @@
 import moment from "moment";
 import { IActionResponse } from "../interfaces/RequestInteface";
 import { STORE_KEY } from "../zustandStore/store";
-import { IAuction, IBanks, ICategoryCollection, ILocations } from "@/types";
+import { IAssetType, IAuction, IBanks, ICategoryCollection, ILocations } from "@/types";
 import { AxiosError } from "axios";
 import { STRING_DATA } from "./Constants";
 import { ROUTE_CONSTANTS } from "./Routes";
@@ -84,7 +84,13 @@ export const sanitizedAuctionData = (data: any[]) => {
 };
 
 export const sanitizedAuctionDetail = (data: any) => {
-  return { id: data.id, ...data.attributes };
+  const { assetCategory, propertyType, contactNo, contact, area, city, state } = data?.attributes;
+  const result =  { id: data.id, ...data.attributes };
+  result.propertyType = `${assetCategory ?? '-'} - ${propertyType ?? ''}`;
+  result.contact = `${contact ?? ''} ${contactNo ?? ''}`;
+  result.area = `${area ?? ''}, ${city ?? ''}, ${state ?? ''}`
+  // console.log(result, "santizied")
+  return result;
 };
 
 export const santizedErrorResponse = (error: any) => {
@@ -100,11 +106,35 @@ export const sanitizeStrapiData = (data: any) => {
   return sanitizeData;
 };
 
+export const sanitizeReactSelectOptions = (data: any[]) => {
+  const sanitizeData = data?.map((item: any) => ({
+    ...item,
+    id: item?.id,
+    name: item?.name,
+    slug: item?.slug,
+    label: item?.name,
+    value: item?.id,
+  }));
+  return sanitizeData;
+};
+
 export const getCategoryOptions = (data: ICategoryCollection[]) => {
   const sanitizeData = data?.map((item: ICategoryCollection) => ({
     // ...item,
     id: item?.id,
-    name: item?.categoryName,
+    name: item?.name,
+    slug: item?.slug,
+    label: item?.name,
+    value: item?.id,
+  }));
+  return sanitizeData;
+};
+
+export const getLocationOptions = (data: ILocations[]) => {
+  const sanitizeData = data?.map((item: ILocations) => ({
+    // ...item,
+    value: item?.id,
+    label: item?.name,
   }));
   return sanitizeData;
 };
@@ -114,7 +144,9 @@ export const getBankOptions = (data: IBanks[]) => {
     // ...item,
     id: item?.id,
     name: item?.name,
-    slug: item?.slug
+    slug: item?.slug,
+    label: item?.name,
+    value: item?.id
   }));
   return sanitizeData;
 };
@@ -126,6 +158,20 @@ export const selectedLocation = (
   if (data?.length) {
     const result =
       data?.find((item: any) => item?.name === initialValueData?.location) ??
+      {};
+    return [result];
+  }
+  return [];
+};
+
+export const selectedAssetTypeCategory = (
+  data: IAssetType[],
+  initialValueData: { propertyType?: string }
+) => {
+  // console.log(data, "categegory");
+  if (data?.length) {
+    const result =
+      data?.find((item: any) => item?.name === initialValueData?.propertyType) ??
       {};
     return [result];
   }

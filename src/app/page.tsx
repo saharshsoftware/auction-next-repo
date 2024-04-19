@@ -8,7 +8,7 @@ export default async function Home() {
       <section>
         <HeroSection />
       </section>
-      <section className="common-section">
+      <section className="common-section md:my-auto mt-12">
         {/* <CategoryCollection /> */}
         <HomeCollections />
       </section>
