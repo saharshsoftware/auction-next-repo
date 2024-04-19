@@ -15,7 +15,7 @@ export default async function Page({
 }) {
   return (
     <>
-      <ShowAuctionList isLocationRoute={true} />
+      <ShowAuctionList />
     </>
   );
 }
