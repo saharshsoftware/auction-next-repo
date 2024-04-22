@@ -58,7 +58,7 @@ const initialValues = {
   location: STRING_DATA.EMPTY,
   bank: STRING_DATA.EMPTY,
   keyword: STRING_DATA.EMPTY,
-  price: [0, 500000000] ?? STRING_DATA.EMPTY,
+  price: [0, RANGE_PRICE.MAX] ?? STRING_DATA.EMPTY,
 };
 
 const gridElementClass = () => "lg:col-span-6 col-span-full";
@@ -267,7 +267,7 @@ const HeroSearchBox = () => {
                       {() => (
                         <>
                           <div className="text-black flex items-center gap-4 absolute top-0 right-0">
-                            <span>{formatPrice(values?.price?.[0])}</span> - 
+                            <span>{formatPrice(values?.price?.[0])}</span> -
                             <span>{formatPrice(values?.price?.[1])}</span>
                           </div>
                           <RangeSliderCustom

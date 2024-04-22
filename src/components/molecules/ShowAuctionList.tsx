@@ -53,7 +53,7 @@ const ShowAuctionList = () => {
 
   const getFilterData = () => {
     const filterData = {
-      category: filterRef.current?.category?.name ?? "",
+      category: filterRef.current?.category?.name ?? auctionFilter?.category?.name ?? "",
       bankName:
         filterRef.current?.bank?.name ?? auctionFilter?.bank?.name ?? "",
       reservePrice: filterRef.current?.price ?? "",
@@ -136,9 +136,13 @@ const ShowAuctionList = () => {
 
   const renderKeywordSearchContainer = () => {
     if (hasKeywordSearchValue) {
+      console.log(apiResponseData, "apiResponseData");
       return (
-        <div className="text-sm ">Results for {hasKeywordSearchValue}</div>
-      )
+        <div className="text-sm ">
+          {" "}
+          {apiResponseData?.meta?.total} results of {hasKeywordSearchValue}
+        </div>
+      );
     }
     return null
   }

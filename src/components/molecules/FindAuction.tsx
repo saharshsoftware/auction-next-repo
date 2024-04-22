@@ -320,7 +320,9 @@ const FindAuction = (props: IFindAuction) => {
             bank: initialValueData?.bank
               ? initialValueData?.bank
               : getEmptyAllObject(),
-            price: initialValueData?.price ?initialValueData?.price: [10000000, 500000000],
+            price: initialValueData?.price
+              ? initialValueData?.price
+              : [0, RANGE_PRICE.MAX],
             location: initialValueData?.location
               ? initialValueData?.location
               : getEmptyAllObject(),
@@ -478,6 +480,7 @@ const FindAuction = (props: IFindAuction) => {
                             ) : null}
                             <RangeSliderCustom
                               value={values?.price}
+                              customClass={"my-4"}
                               onInput={(value: any, e: any) => {
                                 console.log(value);
                                 setFieldValue("price", value);

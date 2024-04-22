@@ -56,12 +56,7 @@ const ShowSimilerProperties = (props: { item: any; index: number }) => {
   );
 };
 
-const RecentData = (props: ISpecificRoute) => {
-  const {
-    isBankRoute = false,
-    isCategoryRoute = false,
-    isLocationRoute = false,
-  } = props;
+const RecentData = () => {
 
   const currentRoute = usePathname();
   const { findUrl } = useFindUrl();

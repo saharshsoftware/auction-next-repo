@@ -92,7 +92,7 @@ export const getAuctionDataClient = async (payload: {
     let sendResponse;;
     if (keyword) {
       sendResponse= data?.data as IAuction[]; 
-      return { sendResponse, meta: data?.meta?.pagination };
+      return { sendResponse, meta: data?.meta };
     }
     sendResponse = sanitizedAuctionData(data.data) as IAuction[];
     return { sendResponse, meta: data?.meta?.pagination };

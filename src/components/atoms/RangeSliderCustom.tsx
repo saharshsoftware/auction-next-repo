@@ -5,8 +5,8 @@ import { RANGE_PRICE } from "@/shared/Constants";
 import RangeSlider from "react-range-slider-input";
 import "react-range-slider-input/dist/style.css";
 
-export default function RangeSliderCustom(props: { value: any; onInput: any; }) {
-  const { value, onInput } = props;
+export default function RangeSliderCustom(props: { value: any; onInput: any; customClass?:string }) {
+  const { value, onInput, customClass } = props;
   return (
     <RangeSlider
       placeholder="Enter price"
@@ -14,7 +14,7 @@ export default function RangeSliderCustom(props: { value: any; onInput: any; }) 
       min={RANGE_PRICE.MIN}
       max={RANGE_PRICE.MAX}
       onInput={onInput}
-      className={"z-[0.8]"}
+      className={customClass ?? ""}
     />
   );
 }
