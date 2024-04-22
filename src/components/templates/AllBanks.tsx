@@ -36,7 +36,7 @@ function renderBankGroups(sortedGroups:any) {
 
   return (
     <div className="flex flex-col gap-8">
-      {sortedGroups.map(([letter, banks]: any) => (
+      {sortedGroups?.map(([letter, banks]: any) => (
         <div key={letter} className="rounded shadow p-2 flex flex-col border border-blue-400 gap-4">
           <h2 className="font-semibold text-2xl">{letter}</h2>
           <ul className="grid grid-cols-12 gap-4">

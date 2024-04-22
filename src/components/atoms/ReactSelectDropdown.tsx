@@ -84,8 +84,8 @@ const ReactSelectDropdown: React.FC<IReactSelectDropdown> = (props) => {
           // valueField="id"
           isSearchable={true}
           isClearable={clearable}
-          defaultValue={defaultValue}
-          value={defaultValue}
+          // defaultValue={defaultValue}
+          value={defaultValue ?? null}
           // dropdownHandle={false}
           // menuIsOpen={menuIsOpen}
           onChange={onChange}

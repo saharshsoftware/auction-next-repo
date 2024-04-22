@@ -2,9 +2,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
 import {
-  CATEGORIES,
   COOKIES,
-  ERROR_MESSAGE,
   FILTER_EMPTY,
   RANGE_PRICE,
   REACT_QUERY,
@@ -12,16 +10,9 @@ import {
 } from "../../shared/Constants";
 
 import {
-  capitalizeFirstLetter,
   formatPrice,
-  getBankOptions,
   getDataFromQueryParams,
   sanitizeReactSelectOptions,
-  selectedAssetTypeCategory,
-  selectedBank,
-  selectedCategory,
-  selectedLocation,
-  setDataInQueryParams,
 } from "../../shared/Utilies";
 import useModal from "../../hooks/useModal";
 import CustomModal from "../atoms/CustomModal";
@@ -31,22 +22,13 @@ import TextField from "../atoms/TextField";
 import ActionButton from "../atoms/ActionButton";
 import * as Yup from "yup";
 import ReactSelectDropdown from "../atoms/ReactSelectDropdown";
-import {
-  ItemRenderer,
-  NoDataRendererDropdown,
-} from "../atoms/NoDataRendererDropdown";
 import { useQuery } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
 import { usePathname, useSearchParams } from "next/navigation";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
-import { revalidatePath } from "next/cache";
-import {
-  fetchBanks,
-  fetchLocation,
-  getCategoryBoxCollection,
-} from "@/server/actions";
+
 import { IAssetType, IBanks, ICategoryCollection, ILocations } from "@/types";
 import useCustomParamsData from "@/hooks/useCustomParamsData";
 import useFindUrl from "@/hooks/useFindUrl";
@@ -57,16 +39,6 @@ import { fetchLocationClient } from "@/services/location";
 import RangeSliderCustom from "../atoms/RangeSliderCustom";
 
 const gridElementClass = () => "lg:col-span-2  col-span-full";
-const validationSchema = Yup.object({
-  // category: Yup.string(),
-  // location: Yup.object(),
-  // bank: Yup.string(),
-  // propertyType: Yup.string(),
-  // price: Yup.number()
-    
-  //   .positive(ERROR_MESSAGE.PRICE_POSITIVE)
-  //   .integer(ERROR_MESSAGE.PRICE_INTEGER),
-});
 
 interface IFindAuction {
   isCategoryRoute?: boolean;
@@ -82,8 +54,7 @@ const getEmptyAllObject = () => ({
 });
 
 const FindAuction = (props: IFindAuction) => {
-  const {isBankRoute=false, isCategoryRoute=false, isLocationRoute=false} = props;
-  const { findUrl, bankRoute, categoryRoute, locationRoute } = useFindUrl();
+
   const params = useParams()
   const params_search = useSearchParams();
   const router = useRouter();
@@ -115,26 +86,31 @@ const FindAuction = (props: IFindAuction) => {
     queryFn: async () => {
       const res = (await getAssetTypeClient()) as unknown as IAssetType[];
       const updatedData = [
-        getEmptyAllObject(),
+        // getEmptyAllObject(),
         ...sanitizeReactSelectOptions(res),
       ];
-      // if (currentRoute.startsWith("/category")) fillFilter(updatedData);
+      if (currentRoute.startsWith("/category")) fillFilter(updatedData);
       return updatedData ?? [];
     },
   });
 
-  const { data: bankOptions, isLoading: isLoadingBank, refetch:refetchBank } = useQuery({
+  const {
+    data: bankOptions,
+    isLoading: isLoadingBank,
+    refetch: refetchBank,
+  } = useQuery({
     queryKey: [REACT_QUERY.AUCTION_BANKS],
     queryFn: async () => {
       const res = (await fetchBanksClient()) as unknown as IBanks[];
       const updatedData = [
-        getEmptyAllObject(),
+        // getEmptyAllObject(),
         ...sanitizeReactSelectOptions(res),
       ];
-      console.log(updatedData, "updateadslfk");
+      // console.log(updatedData, "updateadslfk");
       if (currentRoute.startsWith("/bank")) fillFilter(updatedData);
       return updatedData ?? [];
     },
+    // enabled: !currentRoute.startsWith("/bank"),
   });
 
   const { data: locationOptions, isLoading: isLoadingLocation, refetch:refetchLocation } = useQuery({
@@ -153,18 +129,13 @@ const FindAuction = (props: IFindAuction) => {
 
   const [staticLoading, setStaticLoading] = useState(false);
 
-  const [initialValueData, setInitialValueData] = useState<any>(
-    structuredClone(
-      params_search.get("q")
-        ? getDataFromQueryParams(params_search.get("q") ?? "")
-        : {
-            propertyType: getEmptyAllObject(),
-            bank: getEmptyAllObject(),
-            price: STRING_DATA.EMPTY,
-            location: getEmptyAllObject(),
-            category: getEmptyAllObject(),
-          }
-    )
+  const [initialValueData, setInitialValueData] = useState<any>({
+      propertyType: getEmptyAllObject(),
+      bank: getEmptyAllObject(),
+      price: STRING_DATA.EMPTY,
+      location: getEmptyAllObject(),
+      category: getEmptyAllObject(),
+    }
   );
 
   // console.log(initialValueData, "initialValueData");
@@ -189,21 +160,21 @@ const FindAuction = (props: IFindAuction) => {
   const fillFilter = (data: any) =>{
     if (currentRoute.startsWith("/category")) {
       const selectedOne = data.find((item: any) => item?.slug === params?.slug);
-      console.log(selectedOne, "selectedOne");
+      // console.log(selectedOne, "selectedOne");
       setInitialValueData({
-        category: selectedOne ?? "",
+        category: selectedOne ?? auctionFilter?.category ?? "",
       });
     }
     if (currentRoute.startsWith("/location")) {
       const selectedOne = data.find((item: any) => item?.slug === params?.slug);
-      console.log(selectedOne, "selectedOne");
+      // console.log(selectedOne, "selectedOne");
       setInitialValueData({
         location: selectedOne ?? "",
       });
     }
     if (currentRoute.startsWith("/bank")) {
       const selectedOne = data.find((item: any) => item?.slug === params?.slug);
-      console.log(selectedOne, "selectedOne", auctionFilter?.bank);
+      // console.log(selectedOne, "selectedOne", auctionFilter?.bank);
       // debugger;
       setInitialValueData({
         bank: selectedOne ?? auctionFilter?.bank ?? "",
@@ -217,7 +188,7 @@ const FindAuction = (props: IFindAuction) => {
   });
 
   const handleSubmit = (values: any) => {
-    console.log(values, "values123");
+    // console.log(values, "values123");
     const { category, price, bank, location, propertyType } = values;
     const { type, name } = location ?? {};
     const filter = {
@@ -230,7 +201,7 @@ const FindAuction = (props: IFindAuction) => {
         location?.label === STRING_DATA.ALL ? STRING_DATA.EMPTY : location,
       propertyType: propertyType?.label === STRING_DATA.ALL?STRING_DATA.EMPTY :propertyType
     };
-    console.log(filter);
+    // console.log(filter);
     setAuctionFilter(filter);
     const data = setDataInQueryParamsMethod(filter);
     // console.log(data)
@@ -243,17 +214,7 @@ const FindAuction = (props: IFindAuction) => {
     }, 1000);
     
     router.push(`${ROUTE_CONSTANTS.AUCTION}?q=${data}`);
-    const path = `${ROUTE_CONSTANTS.AUCTION}?q=${data}`;
-    
-    // revalidatePath(path, "page");
 
-    // setLoadingUpdate(true);
-    // setTimeout(() => {
-    //   setLoadingUpdate(false);
-    // }, 500);
-    // if (pathname !== ROUTE_CONSTANTS.AUCTION) {
-    //   router.push(`${ROUTE_CONSTANTS.AUCTION}?q=${data}`);
-    // }
     hideModal?.();
   };
   const handleResize = () => {
@@ -268,7 +229,7 @@ const FindAuction = (props: IFindAuction) => {
       const updateFormData = structuredClone(
         getDataFromQueryParams(params_search.get("q") ?? "")
       );
-      setInitialValueData(updateFormData);
+      setInitialValueData({...updateFormData});
     }
   }, [params_search?.get("q")]);
 
@@ -297,8 +258,8 @@ const FindAuction = (props: IFindAuction) => {
               <FontAwesomeIcon icon={faArrowLeft} />
             </em>
             <div className="flex flex-col gap-2">
-              <p className="line-clamp-1">{initialValueData?.category}</p>
-              <p className="line-clamp-1">{initialValueData?.location}</p>
+              <p className="line-clamp-1">{initialValueData?.category?.name}</p>
+              <p className="line-clamp-1">{initialValueData?.location?.name}</p>
             </div>
           </div>
           <span className="link primary-link" onClick={showModal}>
@@ -331,7 +292,7 @@ const FindAuction = (props: IFindAuction) => {
               : getEmptyAllObject(),
           }}
           handleSubmit={handleSubmit}
-          validationSchema={validationSchema}
+          // validationSchema={validationSchema}
           wantToUseFormikEvent={true}
           enableReinitialize={true}
         >
@@ -391,7 +352,7 @@ const FindAuction = (props: IFindAuction) => {
                             placeholder={"Property type"}
                             customClass="w-full "
                             onChange={(e) => {
-                              console.log(e);
+                              // console.log(e);
                               if (e?.label !== STRING_DATA.ALL) {
                                 setFieldValue("propertyType", e);
                                 return;
@@ -482,7 +443,7 @@ const FindAuction = (props: IFindAuction) => {
                               value={values?.price}
                               customClass={"my-4"}
                               onInput={(value: any, e: any) => {
-                                console.log(value);
+                                // console.log(value);
                                 setFieldValue("price", value);
                               }}
                             />
@@ -520,7 +481,9 @@ const FindAuction = (props: IFindAuction) => {
   return (
     <>
       <CustomModal openModal={openModal}>
-        <div className="w-full flex flex-col gap-4">{renderForm()}</div>
+        <div className="w-full flex flex-col gap-4">
+          {renderForm()}
+          </div>
       </CustomModal>
       <div className="bg-[#e3e3e3] sticky left-0 right-0 top-0  z-20">
         {renderData()}

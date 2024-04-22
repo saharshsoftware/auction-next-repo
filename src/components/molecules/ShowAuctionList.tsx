@@ -1,23 +1,19 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
-import React, { Suspense, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import AuctionCard from "../atoms/AuctionCard";
 import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
 import { IAuction } from "@/types";
 import {
-  capitalizeFirstLetter,
   convertString,
   getDataFromQueryParams,
   setDataInQueryParams,
 } from "@/shared/Utilies";
 import { COOKIES, FILTER_EMPTY, REACT_QUERY } from "@/shared/Constants";
-import NoDataImage from "../ui/NoDataImage";
 import PaginationComp from "../atoms/PaginationComp";
 import { useQuery } from "@tanstack/react-query";
-import { getAuctionData } from "@/server/actions";
-import CustomLoading from "../atoms/Loading";
 import { getAuctionDataClient } from "@/services/auction";
 import SkeltonAuctionCard from "../skeltons/SkeltonAuctionCard";
 import useLocalStorage from "@/hooks/useLocationStorage";
