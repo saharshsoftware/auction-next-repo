@@ -246,8 +246,13 @@ body :focus-within {
   @apply border border-brand-color
 }
 
+.react-select-container .react-select__menu {
+  @apply  z-[999999999]
+}
+
 .react-select-container .react-select__menu .react-select__option {
-  @apply text-gray-700 }
+  @apply text-gray-700
+}
 
 .react-select-container .react-select__placeholder {
   @apply text-sm
