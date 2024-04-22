@@ -1,7 +1,8 @@
 "use client";
+import useLocalStorage from "@/hooks/useLocationStorage";
 import { fetchLocation } from "@/server/actions";
 import { fetchLocationTopClient } from "@/services/location";
-import { REACT_QUERY, SAMPLE_CITY, STRING_DATA } from "@/shared/Constants";
+import { COOKIES, FILTER_EMPTY, REACT_QUERY, SAMPLE_CITY, STRING_DATA } from "@/shared/Constants";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
 import { ILocations } from "@/types";
 import { useQuery } from "@tanstack/react-query";
@@ -9,6 +10,14 @@ import Link from "next/link";
 import React from "react";
 
 const TopCities = (props: { isFooter?: boolean }) => {
+  const [auctionFilter, setAuctionFilter] = useLocalStorage(
+    COOKIES.AUCTION_FILTER,
+    FILTER_EMPTY
+  );
+
+  const handleLinkClick = (location: ILocations) => {
+    setAuctionFilter({ ...FILTER_EMPTY, location });
+  };
   const { isFooter = false } = props;
   const { data: locationOptions, isLoading: isLoadingLocation } = useQuery({
     queryKey: [REACT_QUERY.AUCTION_LOCATION, "top"],
@@ -21,7 +30,7 @@ const TopCities = (props: { isFooter?: boolean }) => {
 
   const renderLink = (item: ILocations) => {
     return (
-      <Link  href={`/location/${item?.slug}`}>
+      <Link href={`/location/${item?.slug}`} onClick={() => handleLinkClick(item)}>
         {item?.name}
       </Link>
     );

@@ -1,4 +1,5 @@
 declare module 'react-slick'
+declare module "react-range-slider-input";
 
 export interface IAssetType {
   id: number;

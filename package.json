@@ -25,6 +25,7 @@
     "react-dom": "^18",
     "react-dropdown-select": "^4.11.2",
     "react-paginate": "^8.2.0",
+    "react-range-slider-input": "^3.0.7",
     "react-select": "^5.8.0",
     "react-share": "^5.1.0",
     "react-simple-toasts": "^5.10.0",

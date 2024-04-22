@@ -20,6 +20,7 @@ import * as Yup from "yup";
 import { ROUTE_CONSTANTS } from "../../shared/Routes";
 import { ItemRenderer, NoDataRendererDropdown } from "./NoDataRendererDropdown";
 import {
+  formatPrice,
   sanitizeReactSelectOptions,
   setDataInQueryParams,
 } from "../../shared/Utilies";
@@ -33,6 +34,7 @@ import useLocalStorage from "@/hooks/useLocationStorage";
 import { fetchBanksClient } from "@/services/bank";
 import { fetchLocationClient } from "@/services/location";
 import { getAssetTypeClient } from "@/services/auction";
+import RangeSliderCustom from "./RangeSliderCustom";
 
 interface IFilter {
   category: string;
@@ -42,12 +44,12 @@ interface IFilter {
 }
 
 const validationSchema = Yup.object({
-  propertyType: Yup.string().trim(),
-  category: Yup.string().trim(),
-  location: Yup.object(),
-  bank: Yup.string().trim(),
-  price: Yup.number(),
-  keyword: Yup.string(),
+  // propertyType: Yup.string().trim(),
+  // category: Yup.string().trim(),
+  // location: Yup.object(),
+  // bank: Yup.string().trim(),
+  // price: Yup.number(),
+  // keyword: Yup.string(),
 });
 
 const initialValues = {
@@ -56,7 +58,7 @@ const initialValues = {
   location: STRING_DATA.EMPTY,
   bank: STRING_DATA.EMPTY,
   keyword: STRING_DATA.EMPTY,
-  price: "250000000" ?? STRING_DATA.EMPTY,
+  price: [0, 500000000] ?? STRING_DATA.EMPTY,
 };
 
 const gridElementClass = () => "lg:col-span-6 col-span-full";
@@ -129,11 +131,11 @@ const HeroSearchBox = () => {
   };
 
   const getFilterQuery = (values: {
-    category: string;
-    price: string;
-    bank: string;
+    category: any;
+    price: any;
+    bank: any;
     location: any;
-    propertyType: string;
+    propertyType: any;
     keyword?: string;
   }) => {
     console.log(values, "Vakyes");
@@ -145,7 +147,7 @@ const HeroSearchBox = () => {
       price,
       bank,
       locationType: type,
-      location: name,
+      location,
       propertyType,
       keyword,
     };
@@ -176,6 +178,7 @@ const HeroSearchBox = () => {
         >
           {({ setFieldValue, values }: any) => (
             <Form>
+              {/* {JSON.stringify(values)} */}
               <div className="grid gap-4 grid-cols-12 w-full ">
                 <div className={gridElementClass()}>
                   <TextField
@@ -186,14 +189,13 @@ const HeroSearchBox = () => {
                     <Field name="propertyType">
                       {() => (
                         <ReactSelectDropdown
-                          noDataRenderer={NoDataRendererDropdown}
-                          itemRenderer={ItemRenderer}
                           options={assetsTypeOptions ?? []}
                           placeholder={"Asset type"}
                           loading={isLoadingAssetsTypeCategory}
                           customClass="w-full "
                           onChange={(e: any) => {
-                            setFieldValue("propertyType", e?.[0]?.name);
+                            // console.log(e, "formik")
+                            setFieldValue("propertyType", e);
                           }}
                         />
                       )}
@@ -209,14 +211,12 @@ const HeroSearchBox = () => {
                     <Field name="category">
                       {() => (
                         <ReactSelectDropdown
-                          noDataRenderer={NoDataRendererDropdown}
-                          itemRenderer={ItemRenderer}
                           options={categoryOptions ?? []}
                           placeholder={"Category"}
                           loading={isLoadingCategory}
                           customClass="w-full "
                           onChange={(e: any) => {
-                            setFieldValue("category", e?.[0]?.name);
+                            setFieldValue("category", e);
                           }}
                         />
                       )}
@@ -232,14 +232,12 @@ const HeroSearchBox = () => {
                     <Field name="location">
                       {() => (
                         <ReactSelectDropdown
-                          noDataRenderer={NoDataRendererDropdown}
-                          itemRenderer={ItemRenderer}
                           loading={isLoadingLocation}
                           options={locationOptions}
                           placeholder={"Neighborhood, City or State"}
                           customClass="w-full "
                           onChange={(e: any) => {
-                            setFieldValue("location", e?.[0]);
+                            setFieldValue("location", e);
                           }}
                         />
                       )}
@@ -251,14 +249,12 @@ const HeroSearchBox = () => {
                     <Field name="bank">
                       {() => (
                         <ReactSelectDropdown
-                          noDataRenderer={NoDataRendererDropdown}
-                          itemRenderer={ItemRenderer}
                           options={bankOptions}
                           loading={isLoadingBank}
                           placeholder={"Banks"}
                           customClass="w-full "
                           onChange={(e: any) => {
-                            setFieldValue("bank", e?.[0]?.name);
+                            setFieldValue("bank", e);
                           }}
                         />
                       )}
@@ -266,7 +262,26 @@ const HeroSearchBox = () => {
                   </TextField>
                 </div>
                 <div className={"col-span-full"}>
-                  <TextField
+                  <TextField label="Price" name="price" hasChildren={true}>
+                    <Field name="price">
+                      {() => (
+                        <>
+                          <div className="text-black flex items-center gap-4 absolute top-0 right-0">
+                            <span>{formatPrice(values?.price?.[0])}</span> - 
+                            <span>{formatPrice(values?.price?.[1])}</span>
+                          </div>
+                          <RangeSliderCustom
+                            value={values.price}
+                            onInput={(value: any, e: any) => {
+                              console.log(value);
+                              setFieldValue("price", value);
+                            }}
+                          />
+                        </>
+                      )}
+                    </Field>
+                  </TextField>
+                  {/* <TextField
                     type="range"
                     name="price"
                     label="Price"
@@ -276,7 +291,7 @@ const HeroSearchBox = () => {
                     max={RANGE_PRICE.MAX}
                     step={RANGE_PRICE.STEPS}
                     customClass={"custom-range-class"}
-                  />
+                  /> */}
                 </div>
                 <div className="col-span-full">
                   <div className="flex items-center justify-between w-full gap-2">
@@ -299,6 +314,7 @@ const HeroSearchBox = () => {
                   <Link
                     href={{
                       pathname: ROUTE_CONSTANTS.AUCTION,
+                      // pathname: "/",
                       query: { q: getFilterQuery(values) },
                     }}
                   >
@@ -313,33 +329,6 @@ const HeroSearchBox = () => {
                   </Link>
                 </div>
               </div>
-              {/* {JSON.stringify(values?.location)}
-              <TextField
-                label={STRING_DATA.POPULER_CITIES}
-                name="location"
-                hasChildren={true}
-              >
-                <Field name="location">
-                  {() => (
-                    <div className="flex flex-wrap gap-2">
-                      {locationOptions
-                        ?.filter((item) => item?.isPopular)
-                        .map((item, index) => (
-                          <CustomBadge
-                            key={index}
-                            item={{ label: item?.name, ...item }}
-                            activeBadge={activeBadgeData}
-                            onclick={(data)=> {
-                              console.log(data)
-                              setActiveBadgeData(data)
-                              setFieldValue('location', data?.name)
-                            }}
-                          />
-                        ))}
-                    </div>
-                  )}
-                </Field>
-              </TextField> */}
             </Form>
           )}
         </CustomFormikForm>

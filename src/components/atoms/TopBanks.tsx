@@ -12,7 +12,10 @@ import React from 'react'
 
 const TopBanks = (props:{isFooter?:boolean}) => {
   const {isFooter=false} = props
-    const [auctionFilter, setAuctionFilter] = useLocalStorage(COOKIES.AUCTION_FILTER,FILTER_EMPTY);
+  const [auctionFilter, setAuctionFilter] = useLocalStorage(
+    COOKIES.AUCTION_FILTER,
+    FILTER_EMPTY
+  );
 
     const { data: locationOptions, isLoading: isLoadingLocation } = useQuery({
       queryKey: [REACT_QUERY.AUCTION_BANKS, "top"],
@@ -23,26 +26,20 @@ const TopBanks = (props:{isFooter?:boolean}) => {
       },
     });
 
-    const handleFilter = (item: IBanks) => {
-      "use client"
-      const filter = { bank: item?.name };
-      console.log(filter)
-      // debugger;
-      setAuctionFilter?.(filter);
-    };
+ 
+
+  const handleLinkClick = (bank: IBanks) => {
+    setAuctionFilter({ ...FILTER_EMPTY, bank });
+  };
 
       const renderLink = (item: IBanks) => {
           return (
             <Link
               className={`${isFooter ? "footer-link-custom-class" : ""}`}
               href={`/bank/${item?.slug}`}
+              onClick={() => handleLinkClick(item)}
             >
-              <span
-                onClick={()=>handleFilter(item)}
-              >
-
               {item?.name}
-              </span>
             </Link>
           );
       };

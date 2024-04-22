@@ -66,7 +66,7 @@ export const getAuctionDataClient = async (payload: {
         filter += `filters[$and][${index++}][bankName]=${encodeURI(bankName)}&`;
       }
 
-      if (locationType === 'city' && location) {
+      if ((locationType === 'city') && location) {
           filter += `filters[$and][${index++}][city]=${encodeURI(location)}&`;
       }
 
@@ -81,7 +81,7 @@ export const getAuctionDataClient = async (payload: {
       }
 
       if (reservePrice) {
-        filter += `filters[$and][${index++}][reservePrice][$lte]=${reservePrice}&`;
+        filter += `filters[$and][${index++}][reservePrice][$gte]=${reservePrice[0]}&filters[$and][${index++}][reservePrice][$lte]=${reservePrice[1]}&`;
       }
       URL = API_ENPOINTS.NOTICES + filter.slice(0, -1); // Remove the trailing '&' if present
     }
@@ -91,8 +91,8 @@ export const getAuctionDataClient = async (payload: {
     console.log(data, ">123");
     let sendResponse;;
     if (keyword) {
-      sendResponse= data as IAuction[]; 
-      return { sendResponse }
+      sendResponse= data?.data as IAuction[]; 
+      return { sendResponse, meta: data?.meta?.pagination };
     }
     sendResponse = sanitizedAuctionData(data.data) as IAuction[];
     return { sendResponse, meta: data?.meta?.pagination };

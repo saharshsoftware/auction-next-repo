@@ -13,6 +13,7 @@ import {
 
 import {
   capitalizeFirstLetter,
+  formatPrice,
   getBankOptions,
   getDataFromQueryParams,
   sanitizeReactSelectOptions,
@@ -53,17 +54,18 @@ import { getAssetTypeClient, getCategoryBoxCollectionClient } from "@/services/a
 import useLocalStorage from "@/hooks/useLocationStorage";
 import { fetchBanksClient } from "@/services/bank";
 import { fetchLocationClient } from "@/services/location";
+import RangeSliderCustom from "../atoms/RangeSliderCustom";
 
 const gridElementClass = () => "lg:col-span-2  col-span-full";
 const validationSchema = Yup.object({
-  category: Yup.string(),
-  location: Yup.object(),
-  bank: Yup.string(),
-  propertyType: Yup.string(),
-  price: Yup.number()
+  // category: Yup.string(),
+  // location: Yup.object(),
+  // bank: Yup.string(),
+  // propertyType: Yup.string(),
+  // price: Yup.number()
     
-    .positive(ERROR_MESSAGE.PRICE_POSITIVE)
-    .integer(ERROR_MESSAGE.PRICE_INTEGER),
+  //   .positive(ERROR_MESSAGE.PRICE_POSITIVE)
+  //   .integer(ERROR_MESSAGE.PRICE_INTEGER),
 });
 
 interface IFindAuction {
@@ -72,7 +74,12 @@ interface IFindAuction {
   isBankRoute?: boolean;
 }
 
-const getEmptyAllObject = () => ({ id: 0, name: STRING_DATA.ALL });
+const getEmptyAllObject = () => ({
+  // id: 0,
+  // name: STRING_DATA.ALL,
+  value: '',
+  label: STRING_DATA.ALL,
+});
 
 const FindAuction = (props: IFindAuction) => {
   const {isBankRoute=false, isCategoryRoute=false, isLocationRoute=false} = props;
@@ -151,14 +158,16 @@ const FindAuction = (props: IFindAuction) => {
       params_search.get("q")
         ? getDataFromQueryParams(params_search.get("q") ?? "")
         : {
-            propertyType: STRING_DATA.EMPTY,
-            bank: STRING_DATA.EMPTY,
+            propertyType: getEmptyAllObject(),
+            bank: getEmptyAllObject(),
             price: STRING_DATA.EMPTY,
-            location: STRING_DATA.EMPTY,
-            category: STRING_DATA.EMPTY,
+            location: getEmptyAllObject(),
+            category: getEmptyAllObject(),
           }
     )
   );
+
+  // console.log(initialValueData, "initialValueData");
 
   useEffect(()=> {
     if (params?.slug) {
@@ -182,14 +191,14 @@ const FindAuction = (props: IFindAuction) => {
       const selectedOne = data.find((item: any) => item?.slug === params?.slug);
       console.log(selectedOne, "selectedOne");
       setInitialValueData({
-        category: selectedOne?.name ?? "",
+        category: selectedOne ?? "",
       });
     }
     if (currentRoute.startsWith("/location")) {
       const selectedOne = data.find((item: any) => item?.slug === params?.slug);
       console.log(selectedOne, "selectedOne");
       setInitialValueData({
-        location: selectedOne?.name ?? "",
+        location: selectedOne ?? "",
       });
     }
     if (currentRoute.startsWith("/bank")) {
@@ -197,7 +206,7 @@ const FindAuction = (props: IFindAuction) => {
       console.log(selectedOne, "selectedOne", auctionFilter?.bank);
       // debugger;
       setInitialValueData({
-        bank: selectedOne?.name ?? auctionFilter?.bank ?? "",
+        bank: selectedOne ?? auctionFilter?.bank ?? "",
       });
     }
   }
@@ -213,12 +222,13 @@ const FindAuction = (props: IFindAuction) => {
     const { type, name } = location ?? {};
     const filter = {
       page: 1,
-      category,
+      category: category?.label === STRING_DATA.ALL?STRING_DATA.EMPTY :category,
       price,
-      bank,
+      bank: bank?.label === STRING_DATA.ALL ? STRING_DATA.EMPTY : bank,
       locationType: type,
-      location: name,
-      propertyType,
+      location:
+        location?.label === STRING_DATA.ALL ? STRING_DATA.EMPTY : location,
+      propertyType: propertyType?.label === STRING_DATA.ALL?STRING_DATA.EMPTY :propertyType
     };
     console.log(filter);
     setAuctionFilter(filter);
@@ -304,15 +314,24 @@ const FindAuction = (props: IFindAuction) => {
       <>
         <CustomFormikForm
           initialValues={{
-            propertyType: initialValueData?.propertyType ?? STRING_DATA.EMPTY,
-            bank: initialValueData?.bank ?? STRING_DATA.EMPTY,
-            price: initialValueData?.price ?? STRING_DATA.EMPTY,
-            location: initialValueData?.location ?? STRING_DATA.EMPTY,
-            category: initialValueData?.category ?? STRING_DATA.EMPTY,
+            propertyType: initialValueData?.propertyType
+              ? initialValueData?.propertyType
+              : getEmptyAllObject(),
+            bank: initialValueData?.bank
+              ? initialValueData?.bank
+              : getEmptyAllObject(),
+            price: initialValueData?.price ?initialValueData?.price: [10000000, 500000000],
+            location: initialValueData?.location
+              ? initialValueData?.location
+              : getEmptyAllObject(),
+            category: initialValueData?.category
+              ? initialValueData?.category
+              : getEmptyAllObject(),
           }}
           handleSubmit={handleSubmit}
           validationSchema={validationSchema}
           wantToUseFormikEvent={true}
+          enableReinitialize={true}
         >
           {({ values, setFieldValue }: any) => (
             <Form>
@@ -322,7 +341,7 @@ const FindAuction = (props: IFindAuction) => {
                 } items-end justify-between gap-4 `}
               >
                 <div className="grid gap-4 grid-cols-12 w-full ">
-                  {/* {JSON.stringify(values.category)} */}
+                  {/* {JSON.stringify(values.price)} */}
 
                   <div className={gridElementClass()}>
                     <TextField
@@ -333,24 +352,17 @@ const FindAuction = (props: IFindAuction) => {
                       <Field name="category">
                         {() => (
                           <ReactSelectDropdown
-                            defaultValue={selectedCategory(
-                              categoryOptions ?? [],
-                              initialValueData?.category
-                                ? initialValueData
-                                : { category: STRING_DATA.ALL }
-                            )}
-                            noDataRenderer={NoDataRendererDropdown}
-                            itemRenderer={ItemRenderer}
+                            defaultValue={values?.category}
                             options={categoryOptions ?? []}
                             loading={isLoadingCategory}
                             placeholder={"Category"}
                             customClass="w-full "
                             onChange={(e) => {
-                              if (e?.[0]?.name !== STRING_DATA.ALL) {
-                                setFieldValue("category", e?.[0]?.name);
+                              if (e?.label !== STRING_DATA.ALL) {
+                                setFieldValue("category", e);
                                 return;
                               }
-                              setFieldValue("category", "");
+                              setFieldValue("category", getEmptyAllObject());
                             }}
                           />
                         )}
@@ -358,7 +370,7 @@ const FindAuction = (props: IFindAuction) => {
                     </TextField>
                   </div>
                   <div className={gridElementClass()}>
-                    {/* {JSON.stringify(initialValueData?.category)} */}
+                    {/* {JSON.stringify(initialValueData?.propertyType)} */}
                     <TextField
                       label={"Asset type"}
                       name={"propertyType"}
@@ -367,24 +379,21 @@ const FindAuction = (props: IFindAuction) => {
                       <Field name="propertyType">
                         {() => (
                           <ReactSelectDropdown
-                            defaultValue={selectedAssetTypeCategory(
-                              assetsTypeOptions ?? [],
-                              initialValueData?.propertyType
-                                ? initialValueData
-                                : { propertyType: STRING_DATA.ALL }
-                            )}
-                            noDataRenderer={NoDataRendererDropdown}
-                            itemRenderer={ItemRenderer}
+                            defaultValue={values?.propertyType}
                             options={assetsTypeOptions ?? []}
                             loading={isLoadingAssetsTypeCategory}
                             placeholder={"Property type"}
                             customClass="w-full "
                             onChange={(e) => {
-                              if (e?.[0]?.name !== STRING_DATA.ALL) {
-                                setFieldValue("propertyType", e?.[0]?.name);
+                              console.log(e);
+                              if (e?.label !== STRING_DATA.ALL) {
+                                setFieldValue("propertyType", e);
                                 return;
                               }
-                              setFieldValue("propertyType", "");
+                              setFieldValue(
+                                "propertyType",
+                                getEmptyAllObject()
+                              );
                             }}
                           />
                         )}
@@ -400,24 +409,17 @@ const FindAuction = (props: IFindAuction) => {
                       <Field name="location">
                         {() => (
                           <ReactSelectDropdown
-                            noDataRenderer={NoDataRendererDropdown}
-                            itemRenderer={ItemRenderer}
-                            defaultValue={selectedLocation(
-                              locationOptions ?? [],
-                              initialValueData?.location
-                                ? initialValueData
-                                : { location: STRING_DATA.ALL }
-                            )}
+                            defaultValue={values?.location}
                             loading={isLoadingLocation}
                             options={locationOptions}
                             placeholder={"Location"}
                             customClass="w-full "
                             onChange={(e) => {
-                              if (e?.[0]?.name !== STRING_DATA.ALL) {
-                                setFieldValue("location", e?.[0]);
+                              if (e?.label !== STRING_DATA.ALL) {
+                                setFieldValue("location", e);
                                 return;
                               }
-                              setFieldValue("location", "");
+                              setFieldValue("location", null);
                             }}
                           />
                         )}
@@ -429,24 +431,17 @@ const FindAuction = (props: IFindAuction) => {
                       <Field name="bank">
                         {() => (
                           <ReactSelectDropdown
-                            noDataRenderer={NoDataRendererDropdown}
-                            itemRenderer={ItemRenderer}
-                            defaultValue={selectedBank(
-                              bankOptions ?? [],
-                              initialValueData?.bank
-                                ? initialValueData
-                                : { bank: STRING_DATA.ALL }
-                            )}
+                            defaultValue={values?.bank}
                             loading={isLoadingBank}
                             options={bankOptions}
                             placeholder={"Banks"}
                             customClass="w-full"
                             onChange={(e: any) => {
-                              if (e?.[0]?.name !== STRING_DATA.ALL) {
-                                setFieldValue("bank", e?.[0]?.name);
+                              if (e?.label !== STRING_DATA.ALL) {
+                                setFieldValue("bank", e);
                                 return;
                               }
-                              setFieldValue("bank", "");
+                              setFieldValue("bank", null);
                             }}
                           />
                         )}
@@ -454,16 +449,28 @@ const FindAuction = (props: IFindAuction) => {
                     </TextField>
                   </div>
                   <div className={`lg:col-span-4  col-span-full`}>
-                    <TextField
-                      type="range"
-                      name="price"
-                      label="Price"
-                      value={values.price}
-                      placeholder="Enter price"
-                      min={RANGE_PRICE.MIN}
-                      max={RANGE_PRICE.MAX}
-                      customClass={"custom-range-class"}
-                    />
+                    {/* {JSON.stringify(values?.price)} */}
+                    <TextField label="Price" name="price" hasChildren={true}>
+                      <Field name="price">
+                        {() => (
+                          <>
+                            {values?.price?.length ? (
+                              <div className="text-black flex items-center gap-4 absolute top-0 right-0">
+                                <span>{formatPrice(values?.price?.[0])}</span> -
+                                <span>{formatPrice(values?.price?.[1])}</span>
+                              </div>
+                            ) : null}
+                            <RangeSliderCustom
+                              value={values?.price}
+                              onInput={(value: any, e: any) => {
+                                console.log(value);
+                                setFieldValue("price", value);
+                              }}
+                            />
+                          </>
+                        )}
+                      </Field>
+                    </TextField>
                   </div>
                 </div>
                 <div className={gridElementClass()}>

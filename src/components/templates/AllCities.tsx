@@ -1,12 +1,13 @@
 "use client"
 import { fetchLocationClient } from '@/services/location';
-import { REACT_QUERY } from '@/shared/Constants';
+import { COOKIES, FILTER_EMPTY, REACT_QUERY } from '@/shared/Constants';
 import { groupByState } from '@/shared/Utilies';
 import { ILocations } from '@/types';
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import React from 'react'
 import SkeltopAllCities from '../skeltons/SkeltopAllCities';
+import useLocalStorage from '@/hooks/useLocationStorage';
 
 const renderLink = (item: ILocations) => {
   return (
@@ -73,6 +74,14 @@ function renderStatesAndCities(resultArray:any) {
 }
 
 const AllCities = () => {
+    const [auctionFilter, setAuctionFilter] = useLocalStorage(
+      COOKIES.AUCTION_FILTER,
+      FILTER_EMPTY
+    );
+
+    const handleLinkClick = (location: ILocations) => {
+      setAuctionFilter({ ...FILTER_EMPTY, location });
+    };
     const {
       data: locationOptions,
       fetchStatus
@@ -95,7 +104,48 @@ const AllCities = () => {
   }
   return (
     <div className="common-section my-8">
-      {renderStatesAndCities(locationOptions)}
+      {/* {renderStatesAndCities(locationOptions)} */}
+      <div className="flex flex-col gap-8">
+        {/* Map through each state in the result array */}
+        {locationOptions?.map((stateObj: any) => {
+          const { name, slug, type, cities } = stateObj;
+          return (
+            <div
+              key={slug}
+              className="state-section flex flex-col gap-2 border border-blue-400 rounded shadow p-2"
+            >
+              <Link
+                className={`state-name hover:text-gray-400 flex items-center justify-start gap-2`}
+                href={`/location/${slug}`}
+                onClick={() => handleLinkClick(stateObj)}
+              >
+                <span>{name}</span>
+                <span>{getIcon()}</span>
+              </Link>
+              <div className="grid grid-cols-12 gap-4">
+                {cities?.map((cityObj: any) => {
+                  return (
+                    <div
+                      key={cityObj?.slug}
+                      className="lg:col-span-3 md:col-span-4 col-span-6 "
+                    >
+                      <p>
+                        <Link
+                          className={`text-blue-600`}
+                          href={`/location/${cityObj?.slug}`}
+                          onClick={() => handleLinkClick(cityObj)}
+                        >
+                          {cityObj?.name}
+                        </Link>
+                      </p>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }

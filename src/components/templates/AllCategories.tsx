@@ -34,7 +34,7 @@ const AllCategories = () => {
               key={item?.slug}
               className="lg:col-span-3 md:col-span-4 col-span-6"
             >
-              <CategoryCollection item={item} key={item?.slug} />
+              <CategoryCollection item={item} key={item?.slug}/>
             </div>
           )
         })}

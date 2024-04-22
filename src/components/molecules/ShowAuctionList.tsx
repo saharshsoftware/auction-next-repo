@@ -43,8 +43,8 @@ const ShowAuctionList = () => {
     category: currentRoute.startsWith("/category")
       ? convertString(params?.slug?.toString())
       : "",
-    bankName: currentRoute.startsWith("/bank")
-      ? auctionFilter?.bank
+    bank: currentRoute.startsWith("/bank")
+      ? auctionFilter?.bank?.slug?.toString()
       : "",
     location: currentRoute.startsWith("/location")
       ? convertString(params?.slug?.toString())
@@ -53,12 +53,16 @@ const ShowAuctionList = () => {
 
   const getFilterData = () => {
     const filterData = {
-      category: filterRef.current?.category ?? "",
-      bankName: filterRef.current?.bank ?? auctionFilter?.bank ?? "",
+      category: filterRef.current?.category?.name ?? "",
+      bankName:
+        filterRef.current?.bank?.name ?? auctionFilter?.bank?.name ?? "",
       reservePrice: filterRef.current?.price ?? "",
-      location: filterRef.current?.location ?? "",
-      locationType: filterRef.current?.locationType ?? "",
-      propertyType: filterRef.current?.propertyType,
+      location:
+        filterRef.current?.location?.name ?? auctionFilter?.location?.name ?? "",
+      locationType:
+        filterRef.current?.location?.type ?? auctionFilter?.location?.type ?? "",
+      propertyType:
+        filterRef.current?.propertyType?.name ?? auctionFilter?.propertyType?.name ?? "",
       keyword: filterRef.current?.keyword ?? "",
       page: currentPage?.toString() ?? "",
     };
