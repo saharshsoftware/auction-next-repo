@@ -363,6 +363,10 @@ const FindAuction = (props: IFindAuction) => {
                                 return;
                               }
                               setFieldValue("category", getEmptyAllObject());
+                              setAuctionFilter({
+                                ...auctionFilter,
+                                category: STRING_DATA.EMPTY,
+                              });
                             }}
                           />
                         )}
@@ -394,6 +398,10 @@ const FindAuction = (props: IFindAuction) => {
                                 "propertyType",
                                 getEmptyAllObject()
                               );
+                              setAuctionFilter({
+                                ...auctionFilter,
+                                propertyType: STRING_DATA.EMPTY,
+                              });
                             }}
                           />
                         )}
@@ -420,6 +428,10 @@ const FindAuction = (props: IFindAuction) => {
                                 return;
                               }
                               setFieldValue("location", null);
+                              setAuctionFilter({
+                                ...auctionFilter,
+                                location: STRING_DATA.EMPTY,
+                              });
                             }}
                           />
                         )}
@@ -442,6 +454,10 @@ const FindAuction = (props: IFindAuction) => {
                                 return;
                               }
                               setFieldValue("bank", null);
+                              setAuctionFilter({
+                                ...auctionFilter,
+                                bank: STRING_DATA.EMPTY,
+                              });
                             }}
                           />
                         )}
