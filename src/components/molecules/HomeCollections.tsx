@@ -21,28 +21,29 @@ const getComponent = (componentName: string) => {
   }
 };
 
-const HomeCollections = () => {
-  const {
-    data: collectionsData,
-    isLoading,
-    fetchStatus,
-  } = useQuery({
-    queryKey: [REACT_QUERY.HOME_BOX_COLLETIONS],
-    queryFn: async () => {
-      const res =
-        (await getHomeBoxCollectionClient()) as unknown as IHomeBoxCollection[];
-      return res ?? [];
-    },
-    enabled: true,
-  });
+const HomeCollections = (props: { collectionsData: IHomeBoxCollection[] }) => {
+  const {collectionsData} = props
+  // const {
+  //   data: collectionsData,
+  //   isLoading,
+  //   fetchStatus,
+  // } = useQuery({
+  //   queryKey: [REACT_QUERY.HOME_BOX_COLLETIONS],
+  //   queryFn: async () => {
+  //     const res =
+  //       (await getHomeBoxCollectionClient()) as unknown as IHomeBoxCollection[];
+  //     return res ?? [];
+  //   },
+  //   enabled: true,
+  // });
 
-  if (isLoading && fetchStatus === "fetching") {
-    return (
-      <div className="text-center">
-        <SkeltonComponent />
-      </div>
-    );
-  }
+  // if (isLoading && fetchStatus === "fetching") {
+  //   return (
+  //     <div className="text-center">
+  //       <SkeltonComponent />
+  //     </div>
+  //   );
+  // }
 
   if (!collectionsData?.length) return <SkeltonComponent />;
 
