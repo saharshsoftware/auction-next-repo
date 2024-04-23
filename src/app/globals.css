@@ -257,3 +257,18 @@ body :focus-within {
 .react-select-container .react-select__placeholder {
   @apply text-sm
 }
+
+.range-slider .range-slider__range {
+  height: 4px !important;
+  background: var(--brand-color)!important;
+}
+
+.range-slider .range-slider__thumb {
+  width: 12px !important;
+  height: 12px !important;
+  background: var(--brand-color)!important;
+}
+
+.range-slider {
+  height: 4px !important;
+}

@@ -1,39 +1,30 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import ActionButton from "./ActionButton";
-import CustomBadge from "./CustomBadge";
 import ReactSelectDropdown from "./ReactSelectDropdown";
 import { Field, Form } from "formik";
 import CustomFormikForm from "./CustomFormikForm";
 import TextField from "./TextField";
 import {
-  CATEGORIES,
   COOKIES,
-  ERROR_MESSAGE,
   FILTER_EMPTY,
-  POPULER_CITIES,
   RANGE_PRICE,
   REACT_QUERY,
   STRING_DATA,
 } from "../../shared/Constants";
-import * as Yup from "yup";
 import { ROUTE_CONSTANTS } from "../../shared/Routes";
-import { ItemRenderer, NoDataRendererDropdown } from "./NoDataRendererDropdown";
 import {
   formatPrice,
   sanitizeReactSelectOptions,
   setDataInQueryParams,
 } from "../../shared/Utilies";
 import { useQuery } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
-import { fetchBanks, fetchLocation, getAuctionData, getCategoryBoxCollection } from "@/server/actions";
 import { IAssetType, IBanks, ICategoryCollection, ILocations } from "@/types";
 import Link from "next/link";
-import { setCookie } from "cookies-next";
 import useLocalStorage from "@/hooks/useLocationStorage";
 import { fetchBanksClient } from "@/services/bank";
 import { fetchLocationClient } from "@/services/location";
-import { getAssetTypeClient } from "@/services/auction";
+import { getAssetTypeClient, getCategoryBoxCollectionClient } from "@/services/auction";
 import RangeSliderCustom from "./RangeSliderCustom";
 
 interface IFilter {
@@ -42,15 +33,6 @@ interface IFilter {
   bank: string;
   location: string;
 }
-
-const validationSchema = Yup.object({
-  // propertyType: Yup.string().trim(),
-  // category: Yup.string().trim(),
-  // location: Yup.object(),
-  // bank: Yup.string().trim(),
-  // price: Yup.number(),
-  // keyword: Yup.string(),
-});
 
 const initialValues = {
   propertyType: STRING_DATA.EMPTY,
@@ -64,8 +46,6 @@ const initialValues = {
 const gridElementClass = () => "lg:col-span-6 col-span-full";
 const separatorClass = () => "border-dashed border-2 border-gray-300 w-full";
 const HeroSearchBox = () => {
-  const router = useRouter();
-  const [activeBadgeData, setActiveBadgeData] = useState(POPULER_CITIES?.[0]);
   const [loadingSearch, setLoadingSearch] = useState(false);
   const [auctionFilter, setAuctionFilter] = useLocalStorage(COOKIES.AUCTION_FILTER, FILTER_EMPTY);
 
@@ -84,7 +64,7 @@ const HeroSearchBox = () => {
     queryKey: [REACT_QUERY.CATEGORY_BOX_COLLECITON_OPTIONS],
     queryFn: async () => {
       const res =
-        (await getCategoryBoxCollection()) as unknown as ICategoryCollection[];
+        (await getCategoryBoxCollectionClient()) as unknown as ICategoryCollection[];
       return sanitizeReactSelectOptions(res) ?? [];
     },
     staleTime: 0,
@@ -106,30 +86,6 @@ const HeroSearchBox = () => {
     },
   });
 
-  const fetchAuctionRequest = async (values: {
-    category: string;
-    price: string;
-    bank: string;
-    location: string;
-  }) => {
-    const { category, price, bank, location } = values;
-    const response = await getAuctionData({
-      category: category,
-      bankName: bank,
-      reservePrice: price,
-      location: location,
-    });
-    console.log("response> ", response);
-    if (response) {
-      const filters = { page: 1, ...values };
-      const data = setDataInQueryParams(filters);
-
-      setAuctionFilter(filters);
-      
-      // router.push(`${ROUTE_CONSTANTS.AUCTION}?q=${data}`);
-    }
-  };
-
   const getFilterQuery = (values: {
     category: any;
     price: any;
@@ -138,7 +94,7 @@ const HeroSearchBox = () => {
     propertyType: any;
     keyword?: string;
   }) => {
-    console.log(values, "Vakyes");
+    // console.log(values, "Vakyes");
     const { category, price, bank, location, propertyType, keyword } = values;
     const { type, name } = location ?? {};
     const filter = {
@@ -151,16 +107,12 @@ const HeroSearchBox = () => {
       propertyType,
       keyword,
     };
-    console.log(filter, "hero-filter");
+    // console.log(filter, "hero-filter");
     // debugger
     return setDataInQueryParams(filter);
   };
 
   const handleSubmit = (values: any) => {};
-
-  const handleBadgeClick = (data: any) => {
-    setActiveBadgeData(data);
-  };
 
   const handleSearchButton = (values: IFilter) => {
     setAuctionFilter(values);
@@ -173,12 +125,11 @@ const HeroSearchBox = () => {
         <CustomFormikForm
           initialValues={initialValues}
           handleSubmit={handleSubmit}
-          validationSchema={validationSchema}
           wantToUseFormikEvent={true}
         >
           {({ setFieldValue, values }: any) => (
             <Form>
-              {/* {JSON.stringify(values)} */}
+              {/* {JSON.stringify(values?.propertyType)} */}
               <div className="grid gap-4 grid-cols-12 w-full ">
                 <div className={gridElementClass()}>
                   <TextField
@@ -189,6 +140,7 @@ const HeroSearchBox = () => {
                     <Field name="propertyType">
                       {() => (
                         <ReactSelectDropdown
+                          defaultValue={values?.propertyType ?? null}
                           options={assetsTypeOptions ?? []}
                           placeholder={"Asset type"}
                           loading={isLoadingAssetsTypeCategory}
@@ -211,6 +163,7 @@ const HeroSearchBox = () => {
                     <Field name="category">
                       {() => (
                         <ReactSelectDropdown
+                          defaultValue={values?.category ?? null}
                           options={categoryOptions ?? []}
                           placeholder={"Category"}
                           loading={isLoadingCategory}
@@ -232,6 +185,7 @@ const HeroSearchBox = () => {
                     <Field name="location">
                       {() => (
                         <ReactSelectDropdown
+                          defaultValue={values?.location ?? null}
                           loading={isLoadingLocation}
                           options={locationOptions}
                           placeholder={"Neighborhood, City or State"}
@@ -249,6 +203,7 @@ const HeroSearchBox = () => {
                     <Field name="bank">
                       {() => (
                         <ReactSelectDropdown
+                          defaultValue={values?.bank ?? null}
                           options={bankOptions}
                           loading={isLoadingBank}
                           placeholder={"Banks"}
@@ -262,14 +217,14 @@ const HeroSearchBox = () => {
                   </TextField>
                 </div>
                 <div className={"col-span-full"}>
-                  <TextField label="Price" name="price" hasChildren={true}>
+                  <TextField
+                    label="Price range"
+                    name="price"
+                    hasChildren={true}
+                  >
                     <Field name="price">
                       {() => (
-                        <>
-                          <div className="text-black flex items-center gap-4 absolute top-0 right-0">
-                            <span>{formatPrice(values?.price?.[0])}</span> -
-                            <span>{formatPrice(values?.price?.[1])}</span>
-                          </div>
+                        <div className="relative w-full space-y-2">
                           <RangeSliderCustom
                             value={values.price}
                             onInput={(value: any, e: any) => {
@@ -277,21 +232,18 @@ const HeroSearchBox = () => {
                               setFieldValue("price", value);
                             }}
                           />
-                        </>
+                          <div className="text-black flex items-center justify-between gap-4 ">
+                            <span className="text-sm text-gray-900">
+                              {formatPrice(values?.price?.[0])}
+                            </span>{" "}
+                            <span className="text-sm text-gray-900">
+                              {formatPrice(values?.price?.[1])}
+                            </span>
+                          </div>
+                        </div>
                       )}
                     </Field>
                   </TextField>
-                  {/* <TextField
-                    type="range"
-                    name="price"
-                    label="Price"
-                    placeholder="Enter price"
-                    value={values.price}
-                    min={RANGE_PRICE.MIN}
-                    max={RANGE_PRICE.MAX}
-                    step={RANGE_PRICE.STEPS}
-                    customClass={"custom-range-class"}
-                  /> */}
                 </div>
                 <div className="col-span-full">
                   <div className="flex items-center justify-between w-full gap-2">

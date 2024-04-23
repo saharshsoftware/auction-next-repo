@@ -34,7 +34,7 @@ const CollectionComponent = (props: ICollectionComponent) => {
       return res ?? [];
     },
     // enabled: !!collection?.id,
-    staleTime:  3600000 // 1 hr
+    staleTime:  3600 * 1000 // 1 hr
   });
 
   useEffect(() => {

@@ -97,7 +97,7 @@ const AllBanks = () => {
   return (
     <div className="common-section my-8">
       <div className="flex flex-col gap-8">
-        {bankData?.map(([letter, banks]: any) => (
+        {bankData?.map(([letter, banks])=> (
           <div
             key={letter}
             className="rounded shadow p-2 flex flex-col border border-blue-400 gap-4"

@@ -86,7 +86,7 @@ const FindAuction = (props: IFindAuction) => {
     queryFn: async () => {
       const res = (await getAssetTypeClient()) as unknown as IAssetType[];
       const updatedData = [
-        // getEmptyAllObject(),
+        getEmptyAllObject(),
         ...sanitizeReactSelectOptions(res),
       ];
       if (currentRoute.startsWith("/category")) fillFilter(updatedData);
@@ -103,7 +103,7 @@ const FindAuction = (props: IFindAuction) => {
     queryFn: async () => {
       const res = (await fetchBanksClient()) as unknown as IBanks[];
       const updatedData = [
-        // getEmptyAllObject(),
+        getEmptyAllObject(),
         ...sanitizeReactSelectOptions(res),
       ];
       // console.log(updatedData, "updateadslfk");
@@ -429,25 +429,33 @@ const FindAuction = (props: IFindAuction) => {
                   </div>
                   <div className={`lg:col-span-4  col-span-full`}>
                     {/* {JSON.stringify(values?.price)} */}
-                    <TextField label="Price" name="price" hasChildren={true}>
+                    <TextField
+                      label="Price range"
+                      name="price"
+                      hasChildren={true}
+                    >
                       <Field name="price">
                         {() => (
-                          <>
-                            {values?.price?.length ? (
-                              <div className="text-black flex items-center gap-4 absolute top-0 right-0">
-                                <span>{formatPrice(values?.price?.[0])}</span> -
-                                <span>{formatPrice(values?.price?.[1])}</span>
-                              </div>
-                            ) : null}
+                          <div className="relative w-full">
                             <RangeSliderCustom
                               value={values?.price}
-                              customClass={"my-4"}
+                              customClass={"mb-2"}
                               onInput={(value: any, e: any) => {
                                 // console.log(value);
                                 setFieldValue("price", value);
                               }}
                             />
-                          </>
+                            {values?.price?.length ? (
+                              <div className="text-black flex items-center gap-4 justify-between">
+                                <span className="text-sm text-gray-900">
+                                  {formatPrice(values?.price?.[0])}
+                                </span>
+                                <span className="text-sm text-gray-900">
+                                  {formatPrice(values?.price?.[1])}
+                                </span>
+                              </div>
+                            ) : null}
+                          </div>
                         )}
                       </Field>
                     </TextField>

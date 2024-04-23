@@ -7,17 +7,26 @@ import { IHomeBoxCollection } from "@/types";
 
 export default async function Home() {
   const res = (await getHomeBoxCollection()) as unknown as IHomeBoxCollection[];
+  
+  const renderHomeCollection = () =>{ 
+    if (res) {
+      return (
+        <section className="common-section md:my-auto mt-12">
+          <HomeCollections collectionsData={res} />
+        </section>
+      );
+    }
+    return null
+  }
+
   return (
     <main className="mb-4">
       <section>
         <HeroSection />
       </section>
-      <section className="common-section md:my-auto mt-12">
-        {/* <CategoryCollection /> */}
-        <HomeCollections collectionsData={res}/>
-      </section>
+      {renderHomeCollection()}
     </main>
   );
 }
 
-export const revalidate = 36000;
+export const revalidate = 3600; // 1hr
