@@ -24,10 +24,10 @@ const Footer: React.FC = () => {
         </nav>
 
         <nav className="flex md:flex-row flex-col items-center justify-center gap-4 text-sm">
-          <a className="link link-hover">{STRING_DATA.TERMS_CONDITIONS}</a>
-          <a className="link link-hover">{STRING_DATA.PRIVACY_POLICY}</a>
-          <a className="link link-hover">{STRING_DATA.ABOUT_US}</a>
-          <a className="link link-hover">{STRING_DATA.CONTACT_US}</a>
+          <Link href={ROUTE_CONSTANTS.TERMS} className="link link-hover">{STRING_DATA.TERMS_CONDITIONS}</Link>
+          <Link href={ROUTE_CONSTANTS.PRIVACY} className="link link-hover">{STRING_DATA.PRIVACY_POLICY}</Link>
+          <Link href={ROUTE_CONSTANTS.ABOUT_US} className="link link-hover">{STRING_DATA.ABOUT_US}</Link>
+          <Link href={ROUTE_CONSTANTS.CONTACT} className="link link-hover">{STRING_DATA.CONTACT_US}</Link>
           <Link
             href={process.env.NEXT_PUBLIC_SITEMAP ?? ""}
             className="link link-hover"

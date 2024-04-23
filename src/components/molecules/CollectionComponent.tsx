@@ -5,7 +5,7 @@ import CustomReactCarousel from "../atoms/CustomReactCarousel";
 import { useQuery } from "@tanstack/react-query";
 import { getCollectionData } from "@/server/actions";
 import SkeltonComponent, { Skelton } from "../skeltons/SkeltonComponent";
-import { getCollectionDataClient } from "@/services/auction";
+import { getCollectionDataClient, getCollectionDataClientFetch } from "@/services/auction";
 
 interface ICollectionComponent {
   ItemComponent: any;

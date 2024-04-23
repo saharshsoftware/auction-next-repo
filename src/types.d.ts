@@ -1,6 +1,6 @@
 declare module 'react-slick'
 declare module "react-range-slider-input";
-
+declare module 'markdown-it';
 export interface IAssetType {
   id: number;
   createdAt: Date;

@@ -154,3 +154,21 @@ export const getCollectionDataClient = async (props: { endpoints: string }) => {
     console.log(e, "auctionDetail error collection");
   }
 };
+
+export const getCollectionDataClientFetch = async (props: { endpoints: string }) => {
+  try {
+    const { endpoints } = props;
+    const URL =
+      API_BASE_URL +
+      endpoints +
+      `?sort[0]=name:asc&populate=*&filters[$and][0][isPopular]=true`;
+    // console.log(URL, "URLCollection")
+    const response = await fetch(URL, { next: { revalidate: 3600 } });
+    const data = await response.json()
+    console.log(data, "responsefetch");
+    // const sendResponse = sanitizeStrapiData(data.data) as any;
+    // return sendResponse;
+  } catch (e) {
+    console.log(e, "auctionDetail error collection");
+  }
+};

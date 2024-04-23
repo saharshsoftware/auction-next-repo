@@ -12,4 +12,8 @@ export const ROUTE_CONSTANTS = {
   E_CITIES_ALL: "/e-auction-in-cities",
   E_CATOGRIES_ALL: "/e-auction-categories",
   E_BANKS_ALL: "/e-auction-banks",
+  TERMS: "/terms",
+  CONTACT: "/contact",
+  PRIVACY: "/privacy",
+  ABOUT_US: "/about"
 };
