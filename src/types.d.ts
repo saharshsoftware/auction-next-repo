@@ -156,3 +156,15 @@ export interface ISpecificRoute {
   isLocationRoute?: boolean;
   isBankRoute?: boolean;
 }
+
+export interface ISavedSearch {
+  id?: string | number;
+  name?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  publishedAt?: string;
+  route?: string;
+  slug?: string;
+  filter: string;
+  sitemap_exclude: boolean;
+}

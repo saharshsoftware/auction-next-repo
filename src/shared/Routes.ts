@@ -15,5 +15,6 @@ export const ROUTE_CONSTANTS = {
   TERMS: "/terms",
   CONTACT: "/contact",
   PRIVACY: "/privacy",
-  ABOUT_US: "/about"
+  ABOUT_US: "/about",
+  MANAGE_FILTERS: "/manage-filter"
 };

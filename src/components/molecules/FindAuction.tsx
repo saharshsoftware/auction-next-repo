@@ -203,7 +203,7 @@ const FindAuction = (props: IFindAuction) => {
     };
     // console.log(filter);
     setAuctionFilter(filter);
-    const data = setDataInQueryParamsMethod(filter);
+    const data:any = setDataInQueryParamsMethod(filter);
     // console.log(data)
 
     // setStaticLoading(true);
@@ -469,6 +469,7 @@ const FindAuction = (props: IFindAuction) => {
                       isLoading={staticLoading}
                       // customClass={"min-w-[150px]"}
                     />
+
                     {isMobileView.mobileView ? (
                       <ActionButton
                         text={STRING_DATA.CANCEL.toUpperCase()}

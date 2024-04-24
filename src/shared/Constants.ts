@@ -10,12 +10,14 @@ export const FILTER_EMPTY = { name: "", bank: "", location: "", category: "", pr
 
 
 export const STRING_DATA = {
+  SAVED: "Saved",
+  SAVED_SEARCH: "Saved Search",
   SUBMIT: "Submit",
   CONTACT_FORM: "Contact form",
   EDIT_LIST: "Edit list",
   BORROW_NAME: "Borrow name",
   CONTACT: "Contact",
-  CITIES: 'Cities',
+  CITIES: "Cities",
   BANKS: "Banks",
   CATEGORIES: "Categories",
   TERMS_CONDITIONS: "Terms and condition",
@@ -23,7 +25,7 @@ export const STRING_DATA = {
   CONTACT_US: "Contact us",
   ABOUT_US: "About us",
   SITEMAP: "Sitemap",
-  DELETE: 'Delete',
+  DELETE: "Delete",
   TOP_CATEGORIES: "Top categories",
   CATEGORY: "Category",
   TOP_BANKS: "Top banks",
@@ -82,12 +84,15 @@ export const STRING_DATA = {
     "No property added to the list. Please go to the property detail and add the property in your desired list",
   NO_DATA_FOUND_LIST:
     "You can organize your favorite properties by categorizing it into various lists",
+  MANAGE_FILTERS: "Manage filter",
+  YOUR_FILTERS: "Your filters",
 };
 
 export const NAVBAR_NAV_LINKS = [
   { path: ROUTE_CONSTANTS.PROFILE, label: STRING_DATA.PROFILE },
   { path: ROUTE_CONSTANTS.MANAGE_LIST, label: STRING_DATA.MANAGE_LIST },
   { path: ROUTE_CONSTANTS.MANAGE_ALERT, label: STRING_DATA.MANAGE_ALERT },
+  { path: ROUTE_CONSTANTS.MANAGE_FILTERS, label: STRING_DATA.MANAGE_FILTERS },
 ];
 
 export const INPUT_TYPE = {
@@ -1054,6 +1059,7 @@ export const REACT_QUERY = {
   AUCTION_DETAIL: "auction-detail",
   ASSETS_TYPE: "Assets-type",
   AUCTION_LOCATION_ALL: "Auction-location-all",
+  SAVED_SEARCH: "Saved-search"
 };
 
 export const SAMPLE_CITY = [

@@ -16,5 +16,6 @@ API_ENPOINTS = {
   TERMS: "/api/term",
   ABOUT_US: "/api/about-company",
   CONTACT_US: "/api/contact-us",
-  CONTACT_USER: "/api/contact-users"
+  CONTACT_USER: "/api/contact-users",
+  SAVED_SEARCH: "/api/saved-search"
 };

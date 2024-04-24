@@ -1,6 +1,6 @@
 "use client";
 import { API_BASE_URL, API_ENPOINTS } from "@/services/api";
-import { getRequest } from "@/shared/Axios";
+import { deleteRequest, getRequest, postRequest, putRequest } from "@/shared/Axios";
 import {
   sanitizeStrapiData,
   sanitizedAuctionData,
@@ -168,6 +168,62 @@ export const getCollectionDataClientFetch = async (props: { endpoints: string })
     console.log(data, "responsefetch");
     const sendResponse = sanitizeStrapiData(data.data) as any;
     return sendResponse;
+  } catch (e) {
+    console.log(e, "auctionDetail error collection");
+  }
+};
+
+export const createSavedSearch = async (props:{formData: {name: string; filter: string}}) => {
+  try {
+    const {formData} = props
+    const URL = API_BASE_URL + API_ENPOINTS.SAVED_SEARCH;
+    
+    const { data } = await postRequest({ API: URL, DATA: formData });
+    
+    console.log(data, "responsefetch");
+    return data;
+  } catch (e:any) {
+    // return e?.response?.data?.error?.message
+    console.log(e, "auctionDetail error collection");
+    return e
+  }
+};
+
+export const fetchSavedSearch = async () => {
+  try {
+    const URL = API_BASE_URL + API_ENPOINTS.SAVED_SEARCH;
+    const { data } = await getRequest({ API: URL });
+    console.log(data, "responsefetch");
+    return data;
+  } catch (e) {
+    console.log(e, "auctionDetail error collection");
+  }
+};
+
+export const updateSavedSearch = async (payload: {
+  id: string;
+  body: { name: string };
+}) => {
+  try {
+    const { id, body } = payload;
+    const URL = API_BASE_URL + API_ENPOINTS.SAVED_SEARCH + `/${id}`;
+
+    const { data } = await putRequest({ API: URL, DATA: body });
+
+    console.log(data, "responsefetch");
+    return data;
+  } catch (e) {
+    console.log(e, "auctionDetail error collection");
+  }
+};
+
+export const deleteSavedSearch = async (props: {id: string}) => {
+  const {id} = props
+  try {
+    const URL = API_BASE_URL + API_ENPOINTS.SAVED_SEARCH + `/${id}`;
+    const { data } = await deleteRequest({ API: URL });
+    console.log(data, "responsefetch");
+    return data;
   } catch (e) {
     console.log(e, "auctionDetail error collection");
   }

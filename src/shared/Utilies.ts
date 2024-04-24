@@ -38,11 +38,14 @@ export const handleQueryResponse = (actionResponse: IActionResponse) => {
 };
 
 export const handleOnSettled = (actionResponse: IActionResponse) => {
-  const { message } = actionResponse?.data?.error ?? {};
+  const { message } = actionResponse?.data?.error ?? actionResponse?.data ?? {};
+  // debugger;
   if (message) {
     if (actionResponse?.fail) {
       // debugger;
-      actionResponse?.fail?.(actionResponse?.data?.error);
+      actionResponse?.fail?.(
+        actionResponse?.data?.error ?? actionResponse?.data?.response?.data?.error
+      );
       return;
     }
   } else {

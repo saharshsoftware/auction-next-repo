@@ -11,12 +11,16 @@ import {
   getDataFromQueryParams,
   setDataInQueryParams,
 } from "@/shared/Utilies";
-import { COOKIES, FILTER_EMPTY, REACT_QUERY } from "@/shared/Constants";
+import { COOKIES, FILTER_EMPTY, REACT_QUERY, STRING_DATA } from "@/shared/Constants";
 import PaginationComp from "../atoms/PaginationComp";
 import { useQuery } from "@tanstack/react-query";
 import { getAuctionDataClient } from "@/services/auction";
 import SkeltonAuctionCard from "../skeltons/SkeltonAuctionCard";
 import useLocalStorage from "@/hooks/useLocationStorage";
+import ActionButton from "../atoms/ActionButton";
+import useModal from "@/hooks/useModal";
+import SavedSearchModal from "../ modals/SavedSearchModal";
+import { getCookie } from "cookies-next";
 
 const ShowAuctionList = () => {
   const router = useRouter();
@@ -24,6 +28,7 @@ const ShowAuctionList = () => {
   const searchParams = useSearchParams();
   const currentRoute = usePathname();
 
+  const { showModal, openModal, hideModal } = useModal();
   const [apiResponseData, setApiResponseData] = useState<any>({
     sendResponse: [],
     meta: {},
@@ -62,7 +67,7 @@ const ShowAuctionList = () => {
       keyword: filterRef.current?.keyword ?? "",
       page: currentPage?.toString() ?? "",
     };
-    console.log(filterData, "filterDAta")
+    // console.log(filterData, "filterDAta")
     return filterData;
   };
 
@@ -90,7 +95,7 @@ const ShowAuctionList = () => {
     queryKey: [REACT_QUERY.FIND_AUCTION],
     queryFn: async () => {
       const res = (await getAuctionDataClient(getFilterData())) as unknown;
-      console.log(res, "apidata");
+      // console.log(res, "apidata");
       setApiResponseData(res);
       return res ?? [];
     },
@@ -148,10 +153,26 @@ const ShowAuctionList = () => {
     return null
   }
 
+
+  const renderSavedSearchButton = () => {
+    const token = getCookie(COOKIES.TOKEN_KEY) ?? "";
+    if (searchParams.get("q") && token) {
+      return (
+        <ActionButton
+          text={STRING_DATA.SAVED_SEARCH.toUpperCase()}
+          onclick={showModal}
+        />
+      );
+    }
+    return null
+  }
+
   return (
     <>
+      {openModal ? <SavedSearchModal openModal={openModal} hideModal={hideModal} /> : null}
       <div className="flex flex-col gap-4 w-full">
         {renderKeywordSearchContainer()}
+        {renderSavedSearchButton()}
         {apiResponseData?.sendResponse?.map((item: IAuction, index: number) => {
           return (
             <div className="w-full" key={index}>

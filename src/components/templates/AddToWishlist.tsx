@@ -57,6 +57,7 @@ const AddToWishlist = () => {
       const response = {
         data,
         success: () => {
+          setRespError('');
           setSelectedOption(null);
           toast("Successfully Added", {
             theme: "success",

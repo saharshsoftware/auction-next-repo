@@ -9,23 +9,18 @@ import {
   COOKIES,
   FILTER_EMPTY,
   RANGE_PRICE,
-  REACT_QUERY,
   STRING_DATA,
 } from "../../shared/Constants";
 import { ROUTE_CONSTANTS } from "../../shared/Routes";
 import {
   formatPrice,
-  sanitizeReactSelectOptions,
   setDataInQueryParams,
 } from "../../shared/Utilies";
-import { useQuery } from "@tanstack/react-query";
-import { IAssetType, IBanks, ICategoryCollection, ILocations } from "@/types";
 import Link from "next/link";
 import useLocalStorage from "@/hooks/useLocationStorage";
-import { fetchBanksClient } from "@/services/bank";
-import { fetchLocationClient } from "@/services/location";
-import { getAssetTypeClient, getCategoryBoxCollectionClient } from "@/services/auction";
 import RangeSliderCustom from "./RangeSliderCustom";
+import SavedSearchList from "./SavedSearchList";
+import { getCookie } from "cookies-next";
 
 
 interface IFilter {
@@ -54,46 +49,12 @@ const HeroSearchBox = (props: {
 }) => {
   const { assetsTypeOptions, bankOptions, categoryOptions, locationOptions } =
     props;
+  const token = getCookie(COOKIES.TOKEN_KEY) ?? "";
   const [loadingSearch, setLoadingSearch] = useState(false);
   const [auctionFilter, setAuctionFilter] = useLocalStorage(
     COOKIES.AUCTION_FILTER,
     FILTER_EMPTY
   );
-
-  // const { data: assetsTypeOptions, isLoading: isLoadingAssetsTypeCategory } =
-  //   useQuery({
-  //     queryKey: [REACT_QUERY.ASSETS_TYPE],
-  //     queryFn: async () => {
-  //       const res = (await getAssetTypeClient()) as unknown as IAssetType[];
-  //       return sanitizeReactSelectOptions(res) ?? [];
-  //     },
-  //   });
-
-  // const { data: categoryOptions, isLoading: isLoadingCategory } = useQuery({
-  //   queryKey: [REACT_QUERY.CATEGORY_BOX_COLLECITON_OPTIONS],
-  //   queryFn: async () => {
-  //     const res =
-  //       (await getCategoryBoxCollectionClient()) as unknown as ICategoryCollection[];
-  //     return sanitizeReactSelectOptions(res) ?? [];
-  //   },
-  //   staleTime: 0,
-  // });
-
-  // const { data: bankOptions, isLoading: isLoadingBank } = useQuery({
-  //   queryKey: [REACT_QUERY.AUCTION_BANKS],
-  //   queryFn: async () => {
-  //     const res = (await fetchBanksClient()) as unknown as IBanks[];
-  //     return sanitizeReactSelectOptions(res) ?? [];
-  //   },
-  // });
-
-  // const { data: locationOptions, isLoading: isLoadingLocation } = useQuery({
-  //   queryKey: [REACT_QUERY.AUCTION_LOCATION],
-  //   queryFn: async () => {
-  //     const res = (await fetchLocationClient()) as unknown as ILocations[];
-  //     return sanitizeReactSelectOptions(res) ?? [];
-  //   },
-  // });
 
   const getFilterQuery = (values: {
     category: any;
@@ -270,7 +231,11 @@ const HeroSearchBox = (props: {
                     value={values.keyword}
                   />
                 </div>
-
+                {token?(
+                  <div className={"col-span-full"}>
+                    <SavedSearchList />
+                  </div>
+                ):null}
                 <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2">
                   <Link
                     href={{
