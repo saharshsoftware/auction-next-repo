@@ -10,6 +10,8 @@ export const FILTER_EMPTY = { name: "", bank: "", location: "", category: "", pr
 
 
 export const STRING_DATA = {
+  SUBMIT: "Submit",
+  CONTACT_FORM: "Contact form",
   EDIT_LIST: "Edit list",
   BORROW_NAME: "Borrow name",
   CONTACT: "Contact",
@@ -106,6 +108,8 @@ export const ERROR_MESSAGE = {
   EMAIL_REQUIRED: "Email is required",
   PASSWORD_REQUIRED: "Password is required",
   CATEGORY_REQUIRED: "Category is required",
+  SUBJECT_REQUIRED: "Subject is required",
+  MESSAGE_REQUIRED: "Message is required",
   LOCATION_REQUIRED: "Location is required",
   BANK_REQUIRED: "Bank is required",
   PRICE_REQUIRED: "Price is required",
@@ -124,7 +128,7 @@ export const ERROR_MESSAGE = {
   PHONE_REQUIRED: "Phone number is required",
   PHONE_NUMERIC: "Please enter numeric value",
   PHONE_LENGTH: "Please enter",
-  MIN_PHONE_LENGTH: "Invalid number"
+  MIN_PHONE_LENGTH: "Invalid number",
 };
 
 export const NAV_LINKS = [
@@ -1049,6 +1053,7 @@ export const REACT_QUERY = {
   FIND_AUCTION: "Find-auction",
   AUCTION_DETAIL: "auction-detail",
   ASSETS_TYPE: "Assets-type",
+  AUCTION_LOCATION_ALL: "Auction-location-all",
 };
 
 export const SAMPLE_CITY = [

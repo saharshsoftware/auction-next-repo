@@ -82,11 +82,8 @@ const AllCities = () => {
     const handleLinkClick = (location: ILocations) => {
       setAuctionFilter({ ...FILTER_EMPTY, location });
     };
-    const {
-      data: locationOptions,
-      fetchStatus
-    } = useQuery({
-      queryKey: [REACT_QUERY.AUCTION_LOCATION],
+    const { data: locationOptions, fetchStatus } = useQuery({
+      queryKey: [REACT_QUERY.AUCTION_LOCATION_ALL],
       queryFn: async () => {
         const res = (await fetchLocationClient()) as unknown as ILocations[];
         const updatedData = groupByState(res);

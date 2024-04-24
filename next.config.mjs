@@ -13,35 +13,34 @@ const nextConfig = {
   async rewrites() {
     return [
       {
-        source: "/category/sitemap.xml",
+        source: "/categories/sitemap.xml",
         destination: `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/categories/sitemap/index.xml`,
       },
       {
-        source: "/location/sitemap.xml",
+        source: "/locations/sitemap.xml",
         destination: `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/locations/sitemap/index.xml`,
       },
       {
-        source: "/bank/sitemap.xml",
+        source: "/banks/sitemap.xml",
         destination: `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/banks/sitemap/index.xml`,
       },
       {
-        source: "/category/sitemap.xml",
-        destination: `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/categories/sitemap.xml`,
+        source: "/asset-types/sitemap.xml",
+        destination: `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/asset-types/sitemap.xml`,
       },
       {
-        source: "/bank/:slug*/sitemap.xml",
+        source: "/banks/:slug*/sitemap.xml",
         destination: `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/banks/:slug*/sitemap.xml`,
       },
       {
-        source: "/category/:slug*/sitemap.xml",
+        source: "/categories/:slug*/sitemap.xml",
         destination: `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/categories/:slug*/sitemap.xml`,
       },
       {
-        source: "/location/:slug*/sitemap.xml",
+        source: "/locations/:slug*/sitemap.xml",
         destination: `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/locations/:slug*/sitemap.xml`,
       },
     ];
   },
 };
-
 export default nextConfig;

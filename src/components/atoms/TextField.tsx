@@ -73,6 +73,7 @@ const TextField: React.FC<FieldHookConfig<string> & ICustomInput> = (props) => {
     <textarea
       className={`${customClass || "form-controls"} `}
       id={id ?? name}
+      value={value}
       name={name || field.name}
       onChange={
         (onChange as React.ChangeEventHandler<HTMLTextAreaElement>) ||

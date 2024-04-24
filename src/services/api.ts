@@ -1,6 +1,7 @@
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
-export const API_ENPOINTS = {
+export const 
+API_ENPOINTS = {
   NOTICES: "/api/notices",
   SIGNUP: "/api/auth/local/register",
   LOGIN: "/api/auth/local",
@@ -14,5 +15,6 @@ export const API_ENPOINTS = {
   PRIVACY_POLICY: "/api/privacy-policy",
   TERMS: "/api/term",
   ABOUT_US: "/api/about-company",
-  CONTACT_US: "/api/contact-us"
+  CONTACT_US: "/api/contact-us",
+  CONTACT_USER: "/api/contact-users"
 };

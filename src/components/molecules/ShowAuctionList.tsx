@@ -97,6 +97,11 @@ const ShowAuctionList = () => {
     enabled: true
 });
 
+  useEffect(()=> {
+    if (params?.slug) {
+      refetch()
+    }
+  }, [params?.slug])
 
   const handlePageChange = async (event: { selected: number }) => {
     const { selected: page } = event;

@@ -143,15 +143,15 @@ const FindAuction = (props: IFindAuction) => {
   useEffect(()=> {
     if (params?.slug) {
       if (currentRoute.startsWith("/category")) {
-        refetchCategory();
+        fillFilter(categoryOptions)
         return;
       }
       if (currentRoute.startsWith("/bank")) {
-        refetchBank();
+        fillFilter(bankOptions);
         return;
       }
       if (currentRoute.startsWith("/location")) {
-        refetchLocation();
+        fillFilter(locationOptions)
         return;
       }
     }
@@ -159,21 +159,21 @@ const FindAuction = (props: IFindAuction) => {
 
   const fillFilter = (data: any) =>{
     if (currentRoute.startsWith("/category")) {
-      const selectedOne = data.find((item: any) => item?.slug === params?.slug);
+      const selectedOne = data?.find((item: any) => item?.slug === params?.slug);
       // console.log(selectedOne, "selectedOne");
       setInitialValueData({
         category: selectedOne ?? auctionFilter?.category ?? "",
       });
     }
     if (currentRoute.startsWith("/location")) {
-      const selectedOne = data.find((item: any) => item?.slug === params?.slug);
+      const selectedOne = data?.find((item: any) => item?.slug === params?.slug);
       // console.log(selectedOne, "selectedOne");
       setInitialValueData({
-        location: selectedOne ?? "",
+        location: selectedOne ?? auctionFilter?.location ?? "",
       });
     }
     if (currentRoute.startsWith("/bank")) {
-      const selectedOne = data.find((item: any) => item?.slug === params?.slug);
+      const selectedOne = data?.find((item: any) => item?.slug === params?.slug);
       // console.log(selectedOne, "selectedOne", auctionFilter?.bank);
       // debugger;
       setInitialValueData({

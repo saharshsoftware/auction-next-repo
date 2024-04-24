@@ -1,24 +1,43 @@
 "use client";
+import useLocalStorage from "@/hooks/useLocationStorage";
 import { fetchCategoriesTopClient } from "@/services/Home";
-import { REACT_QUERY, SAMPLE_CITY, STRING_DATA } from "@/shared/Constants";
-import { ILocations } from "@/types";
+import {
+  COOKIES,
+  FILTER_EMPTY,
+  REACT_QUERY,
+  SAMPLE_CITY,
+  STRING_DATA,
+} from "@/shared/Constants";
+import { ICategoryCollection, ILocations } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import React from "react";
 
 const TopCategory = () => {
+  const [auctionFilter, setAuctionFilter] = useLocalStorage(
+    COOKIES.AUCTION_FILTER,
+    FILTER_EMPTY
+  );
   const { data: categoryOptions, fetchStatus } = useQuery({
     queryKey: [REACT_QUERY.CATEGORY_BOX_COLLECITON, "top"],
     queryFn: async () => {
-      const res = (await fetchCategoriesTopClient()) as unknown as ILocations[];
+      const res =
+        (await fetchCategoriesTopClient()) as unknown as ICategoryCollection[];
       console.log(res, "footertop");
       return res ?? [];
     },
   });
 
-  const renderLink = (item: ILocations) => {
+  const handleLinkClick = (category: ICategoryCollection) => {
+    setAuctionFilter({ ...FILTER_EMPTY, category });
+  };
+
+  const renderLink = (item: ICategoryCollection) => {
     return (
-      <Link href={`/category/${item?.slug}`}>
+      <Link
+        href={`/category/${item?.slug}`}
+        onClick={() => handleLinkClick(item)}
+      >
         {item?.name}
       </Link>
     );
