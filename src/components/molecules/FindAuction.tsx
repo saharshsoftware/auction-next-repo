@@ -436,7 +436,7 @@ const FindAuction = (props: IFindAuction) => {
                     >
                       <Field name="price">
                         {() => (
-                          <div className="relative w-full">
+                          <div className="relative w-full mt-2">
                             <RangeSliderCustom
                               value={values?.price}
                               customClass={"mb-2"}
