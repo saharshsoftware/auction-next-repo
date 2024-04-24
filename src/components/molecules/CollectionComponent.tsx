@@ -26,7 +26,7 @@ const CollectionComponent = (props: ICollectionComponent) => {
       collection?.strapiAPIQuery,
     ],
     queryFn: async () => {
-      const res = await getCollectionDataClient({
+      const res = await getCollectionData({
         endpoints: collection?.strapiAPIQuery,
       });
       // console.log(res, "res");

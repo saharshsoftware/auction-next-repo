@@ -21,7 +21,9 @@ export const getAuctionData = async (payload: {
   try {
     const { page, category, bankName, reservePrice, location } = payload;
     const pageSize = 10;
-    let filter = `?pagination[page]=${page ?? 1}&pagination[pageSize]=${pageSize}10&`;
+    let filter = `?pagination[page]=${
+      page ?? 1
+    }&pagination[pageSize]=${pageSize}10&`;
     // let filter = `?pagination[pageSize]=${pageSize}&`;
     let index = 0; // Initialize index counter
 
@@ -75,7 +77,7 @@ export const getCategoryBoxCollection = async () => {
     const URL = API_BASE_URL + API_ENPOINTS.CATEGORY_BOX_COLLETIONS;
     console.log(URL, "category-url");
     const { data } = await getRequest({ API: URL });
-    const sendResponse = sanitizeStrapiData(data.data) as ICategoryCollection;
+    const sendResponse = sanitizeStrapiData(data.data);
     return sendResponse;
   } catch (e) {
     console.log(e, "auctionDetail error category-box");
@@ -107,5 +109,27 @@ export const getCollectionData = async (props: { endpoints: string }) => {
   }
 };
 
+export const getCookietoken = () => cookies()?.get("auction-token")?.value;
 
-export const getCookietoken = ()=> cookies()?.get("auction-token")?.value;
+export const getCarouselData = async () => {
+  "use server";
+  try {
+    const URL = API_BASE_URL + API_ENPOINTS.HOME_BOX_COLLECTIONS;
+    const { data } = await getRequest({ API: URL });
+    const categories = sanitizeStrapiData(data.data) as ICategoryCollection;
+
+    const categorizedData = await Promise.all(
+      categories.map(async (category:any) => {
+        const collectionData = await getCollectionData({
+          endpoints: category.strapiAPIQuery,
+        });
+        return { ...category, collectionData };
+      })
+    );
+
+    // console.log(categorizedData, "categorizedData");
+    return categorizedData;
+  } catch (e) {
+    console.log(e, "auctionDetail error Home-box");
+  }
+};

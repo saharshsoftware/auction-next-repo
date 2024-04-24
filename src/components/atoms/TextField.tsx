@@ -1,3 +1,4 @@
+"use client"
 import { ErrorMessage, FieldHookConfig, useField } from "formik";
 import { INPUT_TYPE } from "../../shared/Constants";
 import { formatPrice } from "../../shared/Utilies";

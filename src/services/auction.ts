@@ -166,8 +166,8 @@ export const getCollectionDataClientFetch = async (props: { endpoints: string })
     const response = await fetch(URL, { next: { revalidate: 3600 } });
     const data = await response.json()
     console.log(data, "responsefetch");
-    // const sendResponse = sanitizeStrapiData(data.data) as any;
-    // return sendResponse;
+    const sendResponse = sanitizeStrapiData(data.data) as any;
+    return sendResponse;
   } catch (e) {
     console.log(e, "auctionDetail error collection");
   }

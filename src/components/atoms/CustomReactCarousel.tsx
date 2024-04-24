@@ -7,7 +7,7 @@ import "slick-carousel/slick/slick-theme.css";
 
 interface ICustomReactCarousel {
   homePageCollection: any;
-  ItemComponent: any;
+  ItemComponent?: any;
   children: React.ReactNode | any;
   slideCount: number;
   title: string;

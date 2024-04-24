@@ -80,6 +80,7 @@ export interface ILocations {
 }
 
 export interface ICategoryCollection {
+  [x: string]: ReactNode;
   id: string | number; 
   name?: string;
   collectionIcon?: string;

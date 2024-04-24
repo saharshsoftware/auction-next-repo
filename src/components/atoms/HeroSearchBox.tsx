@@ -2,9 +2,9 @@
 import React, { useState } from "react";
 import ActionButton from "./ActionButton";
 import ReactSelectDropdown from "./ReactSelectDropdown";
-import { Field, Form } from "formik";
 import CustomFormikForm from "./CustomFormikForm";
 import TextField from "./TextField";
+import { Field, Form } from "formik";
 import {
   COOKIES,
   FILTER_EMPTY,
@@ -26,6 +26,19 @@ import { fetchBanksClient } from "@/services/bank";
 import { fetchLocationClient } from "@/services/location";
 import { getAssetTypeClient, getCategoryBoxCollectionClient } from "@/services/auction";
 import RangeSliderCustom from "./RangeSliderCustom";
+import dynamic from "next/dynamic";
+
+// const ReactSelectDropdown = dynamic(() => import("./ReactSelectDropdown"), {
+//   ssr: false,
+// });
+
+// const CustomFormikForm = dynamic(() => import("./CustomFormikForm"), {
+//   ssr: false,
+// });
+
+// const TextField = dynamic(() => import("./TextField"), {
+//   ssr: false,
+// });
 
 interface IFilter {
   category: string;
