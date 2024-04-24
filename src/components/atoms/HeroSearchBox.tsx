@@ -26,19 +26,7 @@ import { fetchBanksClient } from "@/services/bank";
 import { fetchLocationClient } from "@/services/location";
 import { getAssetTypeClient, getCategoryBoxCollectionClient } from "@/services/auction";
 import RangeSliderCustom from "./RangeSliderCustom";
-import dynamic from "next/dynamic";
 
-// const ReactSelectDropdown = dynamic(() => import("./ReactSelectDropdown"), {
-//   ssr: false,
-// });
-
-// const CustomFormikForm = dynamic(() => import("./CustomFormikForm"), {
-//   ssr: false,
-// });
-
-// const TextField = dynamic(() => import("./TextField"), {
-//   ssr: false,
-// });
 
 interface IFilter {
   category: string;
@@ -58,46 +46,54 @@ const initialValues = {
 
 const gridElementClass = () => "lg:col-span-6 col-span-full";
 const separatorClass = () => "border-dashed border-2 border-gray-300 w-full";
-const HeroSearchBox = () => {
+const HeroSearchBox = (props: {
+  assetsTypeOptions: any;
+  categoryOptions: any;
+  bankOptions: any;
+  locationOptions: any;
+}) => {
+  const { assetsTypeOptions, bankOptions, categoryOptions, locationOptions } =
+    props;
   const [loadingSearch, setLoadingSearch] = useState(false);
-  const [auctionFilter, setAuctionFilter] = useLocalStorage(COOKIES.AUCTION_FILTER, FILTER_EMPTY);
+  const [auctionFilter, setAuctionFilter] = useLocalStorage(
+    COOKIES.AUCTION_FILTER,
+    FILTER_EMPTY
+  );
 
-    const {
-      data: assetsTypeOptions,
-      isLoading: isLoadingAssetsTypeCategory,
-    } = useQuery({
-      queryKey: [REACT_QUERY.ASSETS_TYPE],
-      queryFn: async () => {
-        const res = (await getAssetTypeClient()) as unknown as IAssetType[];
-        return sanitizeReactSelectOptions(res) ?? [];
-      },
-    });
+  // const { data: assetsTypeOptions, isLoading: isLoadingAssetsTypeCategory } =
+  //   useQuery({
+  //     queryKey: [REACT_QUERY.ASSETS_TYPE],
+  //     queryFn: async () => {
+  //       const res = (await getAssetTypeClient()) as unknown as IAssetType[];
+  //       return sanitizeReactSelectOptions(res) ?? [];
+  //     },
+  //   });
 
-  const { data: categoryOptions, isLoading: isLoadingCategory } = useQuery({
-    queryKey: [REACT_QUERY.CATEGORY_BOX_COLLECITON_OPTIONS],
-    queryFn: async () => {
-      const res =
-        (await getCategoryBoxCollectionClient()) as unknown as ICategoryCollection[];
-      return sanitizeReactSelectOptions(res) ?? [];
-    },
-    staleTime: 0,
-  });
+  // const { data: categoryOptions, isLoading: isLoadingCategory } = useQuery({
+  //   queryKey: [REACT_QUERY.CATEGORY_BOX_COLLECITON_OPTIONS],
+  //   queryFn: async () => {
+  //     const res =
+  //       (await getCategoryBoxCollectionClient()) as unknown as ICategoryCollection[];
+  //     return sanitizeReactSelectOptions(res) ?? [];
+  //   },
+  //   staleTime: 0,
+  // });
 
-  const { data: bankOptions, isLoading: isLoadingBank } = useQuery({
-    queryKey: [REACT_QUERY.AUCTION_BANKS],
-    queryFn: async () => {
-      const res = (await fetchBanksClient()) as unknown as IBanks[];
-      return sanitizeReactSelectOptions(res) ?? [];
-    },
-  });
+  // const { data: bankOptions, isLoading: isLoadingBank } = useQuery({
+  //   queryKey: [REACT_QUERY.AUCTION_BANKS],
+  //   queryFn: async () => {
+  //     const res = (await fetchBanksClient()) as unknown as IBanks[];
+  //     return sanitizeReactSelectOptions(res) ?? [];
+  //   },
+  // });
 
-  const { data: locationOptions, isLoading: isLoadingLocation } = useQuery({
-    queryKey: [REACT_QUERY.AUCTION_LOCATION],
-    queryFn: async () => {
-      const res = (await fetchLocationClient()) as unknown as ILocations[];
-      return sanitizeReactSelectOptions(res) ?? [];
-    },
-  });
+  // const { data: locationOptions, isLoading: isLoadingLocation } = useQuery({
+  //   queryKey: [REACT_QUERY.AUCTION_LOCATION],
+  //   queryFn: async () => {
+  //     const res = (await fetchLocationClient()) as unknown as ILocations[];
+  //     return sanitizeReactSelectOptions(res) ?? [];
+  //   },
+  // });
 
   const getFilterQuery = (values: {
     category: any;
@@ -156,7 +152,7 @@ const HeroSearchBox = () => {
                           defaultValue={values?.propertyType ?? null}
                           options={assetsTypeOptions ?? []}
                           placeholder={"Asset type"}
-                          loading={isLoadingAssetsTypeCategory}
+                          // loading={isLoadingAssetsTypeCategory}
                           customClass="w-full "
                           onChange={(e: any) => {
                             // console.log(e, "formik")
@@ -179,7 +175,7 @@ const HeroSearchBox = () => {
                           defaultValue={values?.category ?? null}
                           options={categoryOptions ?? []}
                           placeholder={"Category"}
-                          loading={isLoadingCategory}
+                          // loading={isLoadingCategory}
                           customClass="w-full "
                           onChange={(e: any) => {
                             setFieldValue("category", e);
@@ -199,7 +195,7 @@ const HeroSearchBox = () => {
                       {() => (
                         <ReactSelectDropdown
                           defaultValue={values?.location ?? null}
-                          loading={isLoadingLocation}
+                          // loading={isLoadingLocation}
                           options={locationOptions}
                           placeholder={"Neighborhood, City or State"}
                           customClass="w-full "
@@ -218,7 +214,7 @@ const HeroSearchBox = () => {
                         <ReactSelectDropdown
                           defaultValue={values?.bank ?? null}
                           options={bankOptions}
-                          loading={isLoadingBank}
+                          // loading={isLoadingBank}
                           placeholder={"Banks"}
                           customClass="w-full "
                           onChange={(e: any) => {

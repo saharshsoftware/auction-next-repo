@@ -9,6 +9,18 @@ const nextConfig = {
       },
     ],
   },
+  async rewrites() {
+    return [
+      {
+        source: "/category/sitemap.xml",
+        destination: `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/categories/sitemap/index.xml`,
+      },
+      // {
+      //   source: "/blog/:path*/",
+      //   destination: "https://example.com/blog/:path*/",
+      // },
+    ];
+  },
 };
 
 export default nextConfig;

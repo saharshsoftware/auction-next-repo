@@ -9,7 +9,7 @@ import {
   sanitizedAuctionData,
   sanitizedAuctionDetail,
 } from "@/shared/Utilies";
-import { IAuction, ICategoryCollection } from "@/types";
+import { IAssetType, IAuction, ICategoryCollection } from "@/types";
 
 export const getAuctionData = async (payload: {
   page?: string;
@@ -77,7 +77,7 @@ export const getCategoryBoxCollection = async () => {
     const URL = API_BASE_URL + API_ENPOINTS.CATEGORY_BOX_COLLETIONS;
     console.log(URL, "category-url");
     const { data } = await getRequest({ API: URL });
-    const sendResponse = sanitizeStrapiData(data.data);
+    const sendResponse = sanitizeStrapiData(data.data) as unknown;
     return sendResponse;
   } catch (e) {
     console.log(e, "auctionDetail error category-box");
@@ -100,7 +100,8 @@ export const getCollectionData = async (props: { endpoints: string }) => {
   "use server";
   try {
     const { endpoints } = props;
-    const URL = API_BASE_URL + endpoints + `?populate=*`;
+    const URL =
+      API_BASE_URL + endpoints + `?populate=*&filters[isPopular]=true`;
     const { data } = await getRequest({ API: URL });
     const sendResponse = sanitizeStrapiData(data.data) as any;
     return sendResponse;
@@ -131,5 +132,19 @@ export const getCarouselData = async () => {
     return categorizedData;
   } catch (e) {
     console.log(e, "auctionDetail error Home-box");
+  }
+};
+
+export const getAssetType = async () => {
+  "use server";
+  try {
+    const filter = `?sort[0]=name:asc`;
+    const URL = API_BASE_URL + API_ENPOINTS.ASSET_TYPES + `${filter}`;
+    console.log(URL, "assetstype-detail");
+    const { data } = await getRequest({ API: URL });
+    const sendResponse = sanitizeStrapiData(data.data) as IAssetType;
+    return sendResponse;
+  } catch (e) {
+    console.log(e, "auctionDetail error auction detail");
   }
 };
