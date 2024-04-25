@@ -29,7 +29,7 @@ const Footer: React.FC = () => {
           <Link href={ROUTE_CONSTANTS.ABOUT_US} className="link link-hover">{STRING_DATA.ABOUT_US}</Link>
           <Link href={ROUTE_CONSTANTS.CONTACT} className="link link-hover">{STRING_DATA.CONTACT_US}</Link>
           <Link
-            href={process.env.NEXT_PUBLIC_SITEMAP ?? ""}
+            href={"/sitemap.xml"}
             className="link link-hover"
             target="_blank"
           >

@@ -217,6 +217,7 @@ body :focus-within {
 .pagination li a {
   border-radius: 0.375rem;
   width: 2.8rem;
+  min-width: max-content;
   height: 2.5rem;
   display: flex;
   align-items: center;

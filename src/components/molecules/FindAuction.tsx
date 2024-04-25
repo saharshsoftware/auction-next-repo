@@ -219,13 +219,20 @@ const FindAuction = (props: IFindAuction) => {
     hideModal?.();
   };
 
-  const handleDropdownChange = (keyname:string,value:any, values:any) => {
-    const filter = {
-      ...auctionFilter,
+  const handleDropdownChange = (keyname: string,value:any, values:any) => {
+    // debugger
+    const { category, bank, price, propertyType , location} = values;
+    const filter:any = {
       page: 1,
-      [keyname]: value,
+      category,
+      bank,
+      price,
+      propertyType,
+      location,
     };
-    // console.log(filter)
+
+    filter[keyname] = value,
+    console.log(auctionFilter);
 
     setAuctionFilter(filter);
     const data: any = setDataInQueryParamsMethod(filter);

@@ -24,10 +24,10 @@ export async function generateMetadata(
   try {
     const categoryData = await getSlugData(slug);
     // console.log(categoryData, "category-slug");
-    const {name} = categoryData;
+    const { name, subCategories } = categoryData;
     return {
       title: `${name} Auctions Across India | Updated Listings - eauctiondekho`,
-      description: `Discover the latest ${name} auction across India. Explore a wide range of {{CategoryNameItems}} available for auction with eauctiondekho. Find great deals through our updated and comprehensive listings.`,
+      description: `Discover the latest ${name} auction across India. Explore a wide range of ${subCategories} available for auction with eauctiondekho. Find great deals through our updated and comprehensive listings.`,
       alternates: {
         canonical: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/${slug}-auctions`,
       },
@@ -38,7 +38,7 @@ export async function generateMetadata(
         url: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/${slug}-auctions`,
         title: `Explore Top ${name} Auctions Across India | eauctiondekho`,
         description:
-          "Bid on and win {{CategoryNameItems}} at auctions across India. eauctiondekho offers updated listings to help you find the best auction deals available. Start bidding today!",
+          "Bid on and win ${subCategories} at auctions across India. eauctiondekho offers updated listings to help you find the best auction deals available. Start bidding today!",
         images: [
           {
             url: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/${slug}-auctions-meta-image.jpg`,
@@ -50,7 +50,7 @@ export async function generateMetadata(
         card: "summary_large_image",
         title: `${name} Auctions in India | eauctiondekho Listings`,
         description:
-          `Looking for your next {{CategoryNameSingular}}? Check out our comprehensive listings of ${name} auctions across India. Find and bid on {{CategoryNameItems}} with eauctiondekho.`,
+          `Looking for your next {{CategoryNameSingular}}? Check out our comprehensive listings of ${name} auctions across India. Find and bid on ${subCategories} with eauctiondekho.`,
         images: [
           {
             url: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/${slug}-auctions-twitter-meta-image.jpg`,
