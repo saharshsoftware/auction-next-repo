@@ -221,18 +221,20 @@ const FindAuction = (props: IFindAuction) => {
 
   const handleDropdownChange = (keyname: string,value:any, values:any) => {
     // debugger
-    const { category, bank, price, propertyType , location} = values;
-    const filter:any = {
+    const { category, bank, price, propertyType, location } = values;
+    const { type, name } = location ?? {};
+    const filter: any = {
       page: 1,
-      category,
-      bank,
       price,
-      propertyType,
-      location,
+      category: category?.label === STRING_DATA.ALL ? STRING_DATA.EMPTY : category,
+      bank: bank?.label === STRING_DATA.ALL ? STRING_DATA.EMPTY : bank,
+      propertyType: propertyType?.label === STRING_DATA.ALL ? STRING_DATA.EMPTY: propertyType,
+      location: location?.label === STRING_DATA.ALL ? STRING_DATA.EMPTY : location,
+      locationType: type,
     };
 
     filter[keyname] = value,
-    console.log(auctionFilter);
+    console.log(filter);
 
     setAuctionFilter(filter);
     const data: any = setDataInQueryParamsMethod(filter);
@@ -352,7 +354,7 @@ const FindAuction = (props: IFindAuction) => {
                                 return;
                               }
                               setFieldValue("category", getEmptyAllObject());
-                              handleDropdownChange("category",e,STRING_DATA.EMPTY);
+                              handleDropdownChange("category", e, values);
                             }}
                           />
                         )}
@@ -385,7 +387,7 @@ const FindAuction = (props: IFindAuction) => {
                                 "propertyType",
                                 getEmptyAllObject()
                               );
-                              handleDropdownChange("propertyType",e,STRING_DATA.EMPTY);
+                              handleDropdownChange("propertyType", e, values);
                             }}
                           />
                         )}
@@ -413,7 +415,7 @@ const FindAuction = (props: IFindAuction) => {
                                 return;
                               }
                               setFieldValue("location", null);
-                              handleDropdownChange("location",e,STRING_DATA.EMPTY);
+                              handleDropdownChange("location", e, values);
                             }}
                           />
                         )}
@@ -437,7 +439,7 @@ const FindAuction = (props: IFindAuction) => {
                                 return;
                               }
                               setFieldValue("bank", null);
-                              handleDropdownChange("bank",e,STRING_DATA.EMPTY);
+                              handleDropdownChange("bank", e, values);
                             }}
                           />
                         )}

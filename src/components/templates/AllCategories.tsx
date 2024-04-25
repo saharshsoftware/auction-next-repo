@@ -18,7 +18,7 @@ const AllCategories = () => {
     );
 
   const { data: categoryOptions, fetchStatus } = useQuery({
-    queryKey: [REACT_QUERY.CATEGORY_BOX_COLLECITON_OPTIONS],
+    queryKey: [REACT_QUERY.CATEGORY_BOX_COLLECITON_OPTIONS, "all"],
     queryFn: async () => {
       const res =
         (await getCategoryBoxCollectionClient()) as unknown as ICategoryCollection[];
