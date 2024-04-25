@@ -17,39 +17,73 @@ export const getAuctionData = async (payload: {
   bankName?: string;
   reservePrice?: string;
   location?: string;
+  keyword?: string;
+  propertyType?: string;
+  locationType?: string;
 }) => {
   try {
-    const { page, category, bankName, reservePrice, location } = payload;
+    const {
+      page,
+      category,
+      bankName,
+      reservePrice,
+      location,
+      keyword,
+      propertyType,
+      locationType,
+    } = payload;
     const pageSize = 10;
+    let URL;
     let filter = `?pagination[page]=${
       page ?? 1
-    }&pagination[pageSize]=${pageSize}10&`;
-    // let filter = `?pagination[pageSize]=${pageSize}&`;
-    let index = 0; // Initialize index counter
+    }&pagination[pageSize]=${pageSize}&`;
 
-    if (category) {
-      filter += `filters[$and][${index++}][assetCategory]=${encodeURI(
-        category
-      )}&`;
-    }
-    if (bankName) {
-      filter += `filters[$and][${index++}][bankName]=${encodeURI(bankName)}&`;
-    }
+    let filterSearch = `?pageSize=${pageSize}&pageNo=${page}&`;
+    // debugger;
+    if (keyword) {
+      filterSearch += `q=${encodeURI(keyword)}&`;
+      URL = API_ENPOINTS.NOTICES + "/search" + filterSearch.slice(0, -1); // Remove the trailing '&' if
+    } else {
+      let index = 0; // Initialize index counter
 
-    if (location) {
-      filter += `filters[$and][${index++}][location]=${encodeURI(location)}&`;
-    }
+      if (category) {
+        filter += `filters[$and][${index++}][assetCategory]=${encodeURI(
+          category
+        )}&`;
+      }
+      if (bankName) {
+        filter += `filters[$and][${index++}][bankName]=${encodeURI(bankName)}&`;
+      }
 
-    if (reservePrice) {
-      filter += `filters[$and][${index++}][reservePrice][$lte]=${reservePrice}&`;
-    }
+      if ((locationType === 'city') && location) {
+          filter += `filters[$and][${index++}][city]=${encodeURI(location)}&`;
+      }
 
-    const URL = API_BASE_URL + API_ENPOINTS.NOTICES + filter.slice(0, -1); // Remove the trailing '&' if present
+      if (locationType === "state" && location) {
+        filter += `filters[$and][${index++}][state]=${encodeURI(location)}&`;
+      }
+
+      if (propertyType) {
+        filter += `filters[$and][${index++}][assetType]=${encodeURI(
+          propertyType
+        )}&`;
+      }
+
+      if (reservePrice) {
+        filter += `filters[$and][${index++}][reservePrice][$gte]=${reservePrice[0]}&filters[$and][${index++}][reservePrice][$lte]=${reservePrice[1]}&`;
+      }
+      URL = API_ENPOINTS.NOTICES + filter.slice(0, -1); // Remove the trailing '&' if present
+    }
 
     console.log(URL, "auction-filter");
     const { data } = await getRequest({ API: URL });
-    // console.log(data, ">123");
-    const sendResponse = sanitizedAuctionData(data.data) as IAuction[];
+    console.log(data, ">123");
+    let sendResponse;;
+    if (keyword) {
+      sendResponse= data?.data as IAuction[]; 
+      return { sendResponse, meta: data?.meta };
+    }
+    sendResponse = sanitizedAuctionData(data.data) as IAuction[];
     return { sendResponse, meta: data?.meta?.pagination };
   } catch (e) {
     console.log(e, "Error Auction api");
@@ -81,6 +115,21 @@ export const getCategoryBoxCollection = async () => {
     return sendResponse;
   } catch (e) {
     console.log(e, "auctionDetail error category-box");
+  }
+};
+
+export const getCategoryBoxCollectionBySlug = async (props: {slug:string}) => {
+  "use server";
+  try {
+    const {slug} = props
+    const filter = `?filters[slug][$eq]=${slug}`;
+    const URL = API_BASE_URL + API_ENPOINTS.CATEGORY_BOX_COLLETIONS+filter;
+    // console.log(URL, "category-url-slug");
+    const { data } = await getRequest({ API: URL });
+    const sendResponse = sanitizeStrapiData(data.data) as unknown;
+    return sendResponse;
+  } catch (e) {
+    console.log(e, "category-slug error category-box");
   }
 };
 

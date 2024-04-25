@@ -1,9 +1,5 @@
 import CustomReactCarousel from "@/components/atoms/CustomReactCarousel";
 import HeroSection from "@/components/atoms/HeroSection";
-
-// const HeroSection = dynamic(() => import("@/components/atoms/HeroSection"), {
-//   ssr: false,
-// });
 import BankCollection from "@/components/molecules/BankCollection";
 import CategoryCollection from "@/components/molecules/CategoryCollection";
 import { fetchBanks, fetchLocation } from "@/server/actions";
@@ -69,17 +65,19 @@ export default async function Home() {
   };
 
   return (
-    <main className="mb-4">
-      <section>
-        <HeroSection
-          assetsTypeOptions={sanitizeReactSelectOptions(assetsTypeOptions)}
-          categoryOptions={sanitizeReactSelectOptions(categoryOptions)}
-          bankOptions={sanitizeReactSelectOptions(bankOptions)}
-          locationOptions={sanitizeReactSelectOptions(locationOptions)}
-        />
-      </section>
-      {renderHomeCollection()}
-    </main>
+    <>
+      <main className="mb-4">
+        <section>
+          <HeroSection
+            assetsTypeOptions={sanitizeReactSelectOptions(assetsTypeOptions)}
+            categoryOptions={sanitizeReactSelectOptions(categoryOptions)}
+            bankOptions={sanitizeReactSelectOptions(bankOptions)}
+            locationOptions={sanitizeReactSelectOptions(locationOptions)}
+          />
+        </section>
+        {renderHomeCollection()}
+      </main>
+    </>
   );
 }
 

@@ -3,7 +3,12 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import AuctionCard from "../atoms/AuctionCard";
-import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation";
+import {
+  useParams,
+  usePathname,
+  useRouter,
+  useSearchParams,
+} from "next/navigation";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
 import { IAuction } from "@/types";
 import {
@@ -11,7 +16,12 @@ import {
   getDataFromQueryParams,
   setDataInQueryParams,
 } from "@/shared/Utilies";
-import { COOKIES, FILTER_EMPTY, REACT_QUERY, STRING_DATA } from "@/shared/Constants";
+import {
+  COOKIES,
+  FILTER_EMPTY,
+  REACT_QUERY,
+  STRING_DATA,
+} from "@/shared/Constants";
 import PaginationComp from "../atoms/PaginationComp";
 import { useQuery } from "@tanstack/react-query";
 import { getAuctionDataClient } from "@/services/auction";
@@ -21,6 +31,7 @@ import ActionButton from "../atoms/ActionButton";
 import useModal from "@/hooks/useModal";
 import SavedSearchModal from "../ modals/SavedSearchModal";
 import { getCookie } from "cookies-next";
+import debounce from "lodash/debounce";
 
 const ShowAuctionList = () => {
   const router = useRouter();
@@ -34,11 +45,15 @@ const ShowAuctionList = () => {
     meta: {},
   });
 
-  const [hasKeywordSearchValue, setHasKeywordSearchValue] = useState<string>('');
+  const [hasKeywordSearchValue, setHasKeywordSearchValue] =
+    useState<string>("");
 
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [auctionFilter, setAuctionFilter] = useLocalStorage(COOKIES.AUCTION_FILTER, FILTER_EMPTY);
-  console.log(auctionFilter, "auctionFilterauctionFilter");
+  const [auctionFilter, setAuctionFilter] = useLocalStorage(
+    COOKIES.AUCTION_FILTER,
+    FILTER_EMPTY
+  );
+  // console.log(auctionFilter, "auctionFilterauctionFilter");
 
   const filterRef = useRef<any>({
     category: currentRoute.startsWith("/category")
@@ -54,38 +69,31 @@ const ShowAuctionList = () => {
 
   const getFilterData = () => {
     const filterData = {
-      category: filterRef.current?.category?.name ?? auctionFilter?.category?.name ?? "",
+      category:
+        filterRef.current?.category?.name ??
+        auctionFilter?.category?.name ??
+        "",
       bankName:
         filterRef.current?.bank?.name ?? auctionFilter?.bank?.name ?? "",
       reservePrice: filterRef.current?.price ?? "",
       location:
-        filterRef.current?.location?.name ?? auctionFilter?.location?.name ?? "",
+        filterRef.current?.location?.name ??
+        auctionFilter?.location?.name ??
+        "",
       locationType:
-        filterRef.current?.location?.type ?? auctionFilter?.location?.type ?? "",
+        filterRef.current?.location?.type ??
+        auctionFilter?.location?.type ??
+        "",
       propertyType:
-        filterRef.current?.propertyType?.name ?? auctionFilter?.propertyType?.name ?? "",
+        filterRef.current?.propertyType?.name ??
+        auctionFilter?.propertyType?.name ??
+        "",
       keyword: filterRef.current?.keyword ?? "",
       page: currentPage?.toString() ?? "",
     };
     // console.log(filterData, "filterDAta")
     return filterData;
   };
-
-  useEffect(() => {
-    if (searchParams.get("q")) {
-      const data = searchParams.get("q");
-      filterRef.current = getDataFromQueryParams(data ?? "");
-      setCurrentPage(filterRef.current?.page);
-      refetch();
-      // console.log(filterRef.current?.value, "queryData");
-
-      if (filterRef.current?.keyword)  {
-        setHasKeywordSearchValue(filterRef.current?.keyword)
-        return;
-      }
-      setHasKeywordSearchValue('')
-    }
-  }, [searchParams.get("q")]);
 
   const {
     data: auctionData,
@@ -99,14 +107,14 @@ const ShowAuctionList = () => {
       setApiResponseData(res);
       return res ?? [];
     },
-    enabled: true
-});
+    enabled: true,
+  });
 
-  useEffect(()=> {
+  useEffect(() => {
     if (params?.slug) {
-      refetch()
+      refetch();
     }
-  }, [params?.slug])
+  }, [params?.slug]);
 
   const handlePageChange = async (event: { selected: number }) => {
     const { selected: page } = event;
@@ -117,8 +125,28 @@ const ShowAuctionList = () => {
     router.replace(ROUTE_CONSTANTS.AUCTION + "?q=" + encodedQuery);
   };
 
+  const debouncedRefetch = debounce(refetch, 500); // Adjust debounce time as per your requirement
+
+  useEffect(() => {
+    if (searchParams.get("q")) {
+      const data = searchParams.get("q");
+      filterRef.current = getDataFromQueryParams(data ?? "");
+      setCurrentPage(filterRef.current?.page);
+      debouncedRefetch();
+      // console.log(filterRef.current?.value, "queryData");
+
+      if (filterRef.current?.keyword) {
+        setHasKeywordSearchValue(filterRef.current?.keyword);
+        return;
+      }
+      setHasKeywordSearchValue("");
+    }
+  }, [searchParams.get("q")]);
+
   const handleClick = (data: any) => {
-    const paramsValue = searchParams.get("q")? `?q=${searchParams.get("q")}`: '';
+    const paramsValue = searchParams.get("q")
+      ? `?q=${searchParams.get("q")}`
+      : "";
     router.push(`${ROUTE_CONSTANTS.AUCTION_DETAIL}/${data?.slug}`);
   };
 
@@ -150,26 +178,26 @@ const ShowAuctionList = () => {
         </div>
       );
     }
-    return null
-  }
-
+    return null;
+  };
 
   const renderSavedSearchButton = () => {
     const token = getCookie(COOKIES.TOKEN_KEY) ?? "";
     if (searchParams.get("q") && token) {
       return (
-        <ActionButton
-          text={STRING_DATA.SAVED_SEARCH.toUpperCase()}
-          onclick={showModal}
-        />
+        <div className={"max-w-fit link link-primary"} onClick={showModal}>
+          {STRING_DATA.SAVED_SEARCH.toUpperCase()}
+        </div>
       );
     }
-    return null
-  }
+    return null;
+  };
 
   return (
     <>
-      {openModal ? <SavedSearchModal openModal={openModal} hideModal={hideModal} /> : null}
+      {openModal ? (
+        <SavedSearchModal openModal={openModal} hideModal={hideModal} />
+      ) : null}
       <div className="flex flex-col gap-4 w-full">
         {renderKeywordSearchContainer()}
         {renderSavedSearchButton()}

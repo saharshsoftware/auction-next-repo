@@ -65,7 +65,7 @@ const SavedSearchModal = (props: ISavedSearchModal) => {
     <>
       <CustomModal
         openModal={openModal}
-        modalHeading={STRING_DATA.SAVED_SEARCH}
+        modalHeading={"Save your search"}
         customWidthClass="md:w-[40%] sm:w-3/5 w-11/12"
       >
         <div className="w-full">

@@ -114,7 +114,7 @@ const ManageSavedList = () => {
     if (savedSearchData?.length === 0) {
       return (
         <div className="text-center break-all">
-          {STRING_DATA.NO_DATA_FOUND_LIST}
+          {STRING_DATA.NO_SAVED_LIST_FOUND}
         </div>
       );
     }

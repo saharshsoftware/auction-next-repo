@@ -86,6 +86,7 @@ export const STRING_DATA = {
     "You can organize your favorite properties by categorizing it into various lists",
   MANAGE_FILTERS: "Manage filter",
   YOUR_FILTERS: "Your filters",
+  NO_SAVED_LIST_FOUND: "No saved search found",
 };
 
 export const NAVBAR_NAV_LINKS = [
