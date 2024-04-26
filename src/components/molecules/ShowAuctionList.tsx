@@ -56,13 +56,13 @@ const ShowAuctionList = () => {
   // console.log(auctionFilter, "auctionFilterauctionFilter");
 
   const filterRef = useRef<any>({
-    category: currentRoute.startsWith("/category")
+    category: currentRoute.startsWith(ROUTE_CONSTANTS.CATEGORY)
       ? convertString(params?.slug?.toString())
       : "",
-    bank: currentRoute.startsWith("/bank")
+    bank: currentRoute.startsWith(ROUTE_CONSTANTS.BANKS)
       ? auctionFilter?.bank?.slug?.toString()
       : "",
-    location: currentRoute.startsWith("/location")
+    location: currentRoute.startsWith(ROUTE_CONSTANTS.LOCATION)
       ? convertString(params?.slug?.toString())
       : "",
   });
@@ -70,10 +70,10 @@ const ShowAuctionList = () => {
   const getFilterData = () => {
     console.log(filterRef.current, "checkfilter", auctionFilter);
     const filterData = {
-      category: currentRoute.startsWith("/category") ? auctionFilter?.category?.name: filterRef.current?.category?.name ?? "",
-      bankName: currentRoute.startsWith("/bank") ? auctionFilter?.bank?.name : filterRef.current?.bank?.name ?? "",
-      location: currentRoute.startsWith("/locations") ? auctionFilter?.location?.name : filterRef.current?.location?.name ?? "",
-      propertyType: currentRoute.startsWith("/asset-types") ? auctionFilter?.propertyType?.name: filterRef.current?.propertyType?.name ?? "",
+      category: currentRoute.startsWith(ROUTE_CONSTANTS.CATEGORY) ? auctionFilter?.category?.name: filterRef.current?.category?.name ?? "",
+      bankName: currentRoute.startsWith(ROUTE_CONSTANTS.BANKS) ? auctionFilter?.bank?.name : filterRef.current?.bank?.name ?? "",
+      location: currentRoute.startsWith(ROUTE_CONSTANTS.LOCATION) ? auctionFilter?.location?.name : filterRef.current?.location?.name ?? "",
+      propertyType: currentRoute.startsWith(ROUTE_CONSTANTS.ASSETS_TYPE) ? auctionFilter?.propertyType?.name: filterRef.current?.propertyType?.name ?? "",
       reservePrice: filterRef.current?.price ?? "",
       locationType:
         filterRef.current?.location?.type ??
@@ -181,7 +181,7 @@ const ShowAuctionList = () => {
     if (searchParams.get("q") && token) {
       return (
         <div className={"max-w-fit link link-primary"} onClick={showModal}>
-          {STRING_DATA.SAVED_SEARCH.toUpperCase()}
+          {"Save this search".toUpperCase()}
         </div>
       );
     }

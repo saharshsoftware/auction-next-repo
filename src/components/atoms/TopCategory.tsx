@@ -8,6 +8,7 @@ import {
   SAMPLE_CITY,
   STRING_DATA,
 } from "@/shared/Constants";
+import { ROUTE_CONSTANTS } from "@/shared/Routes";
 import { ICategoryCollection, ILocations } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
@@ -29,13 +30,20 @@ const TopCategory = () => {
   });
 
   const handleLinkClick = (category: ICategoryCollection) => {
-    setAuctionFilter({ ...FILTER_EMPTY, category });
+    setAuctionFilter({
+      ...FILTER_EMPTY,
+      category: {
+        ...category,
+        label: category?.name,
+        value: category?.id,
+      },
+    });
   };
 
   const renderLink = (item: ICategoryCollection) => {
     return (
       <Link
-        href={`/category/${item?.slug}`}
+        href={`${ROUTE_CONSTANTS.CATEGORY}/${item?.slug}`}
         onClick={() => handleLinkClick(item)}
       >
         {item?.name}

@@ -38,43 +38,37 @@ const SavedSearchList = () => {
 
   const renderer = () => {
     if (savedSearchData?.length === 0) {
-      return (
-        <div className="text-center break-all text-gray-600">
-          {STRING_DATA.NO_SAVED_LIST_FOUND}
-        </div>
-      );
+      return null;
     }
     return (
       <>
-        <div className="flex flex-wrap gap-4 items-center">
-          {savedSearchData?.map((item: ISavedSearch, index) => {
-            return (
-              <Link
-                href={{
-                  pathname: ROUTE_CONSTANTS.AUCTION,
-                  query: { q: item?.filter },
-                }}
-                className="border bg-gray-200 min-w-fit text-sm text-gray-800 shadow px-2 py-1 rounded-lg border-brand-color "
-                key={index}
-              >
-                {item?.name}
-              </Link>
-            );
-          })}
+        <div className="flex flex-col gap-2 w-full">
+          <label className={`flex justify-start items-center w-full `}>
+            <span className="text-sm text-gray-900">Saved search </span>
+          </label>
+          <div className="flex flex-wrap gap-4 items-center">
+            {savedSearchData?.map((item: ISavedSearch, index) => {
+              return (
+                <Link
+                  href={{
+                    pathname: ROUTE_CONSTANTS.AUCTION,
+                    query: { q: item?.filter },
+                  }}
+                  className="border bg-gray-200 min-w-fit text-sm text-gray-800 shadow px-2 py-1 rounded-lg border-brand-color "
+                  key={index}
+                >
+                  {item?.name}
+                </Link>
+              );
+            })}
+          </div>
         </div>
       </>
     );
   };
 
   // console.log(savedSearchData, "savedSearchData");
-  return (
-    <div className="flex flex-col gap-2 w-full">
-      <label className={`flex justify-start items-center w-full `}>
-        <span className="text-sm text-gray-900">Saved search </span>
-      </label>
-      {renderer()}
-    </div>
-  );
+  return <>{renderer()}</>;
 };
 
 export default SavedSearchList;

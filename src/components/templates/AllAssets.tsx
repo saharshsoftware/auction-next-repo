@@ -1,6 +1,6 @@
 "use client";
 import { COOKIES, FILTER_EMPTY } from "@/shared/Constants";
-import { ICategoryCollection } from "@/types";
+import { IAssetType } from "@/types";
 import React from "react";
 import useLocalStorage from "@/hooks/useLocationStorage";
 import Link from "next/link";
@@ -8,24 +8,24 @@ import { sanitizeStrapiImageUrl } from "@/shared/Utilies";
 import ImageTag from "../ui/ImageTag";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
 
-const AllCategories = (props: { data: ICategoryCollection[] }) => {
-  const { data: categoryOptions } = props;
+const AllAssets = (props: { data: IAssetType[] }) => {
+  const { data: assetsType } = props;
   const [auctionFilter, setAuctionFilter] = useLocalStorage(
     COOKIES.AUCTION_FILTER,
     FILTER_EMPTY
   );
 
-  const handleLinkClick = (category: ICategoryCollection) => {
+  const handleLinkClick = (propertyType: IAssetType) => {
     setAuctionFilter({
       ...FILTER_EMPTY,
-      category: { ...category, label: category?.name, value: category?.id },
+      propertyType: { ...propertyType, label: propertyType?.name, value: propertyType?.id },
     });
   };
 
   return (
     <div className="common-section my-8">
       <div className="grid grid-cols-12 gap-4">
-        {categoryOptions?.map((item: ICategoryCollection) => {
+        {assetsType?.map((item: IAssetType) => {
           const imageUrl = sanitizeStrapiImageUrl(item);
           return (
             <div
@@ -33,7 +33,7 @@ const AllCategories = (props: { data: ICategoryCollection[] }) => {
               className="lg:col-span-3 md:col-span-4 col-span-6"
             >
               <Link
-                href={`${ROUTE_CONSTANTS.CATEGORY}/${item?.slug}`}
+                href={`${ROUTE_CONSTANTS.ASSETS_TYPE}/${item?.slug}`}
                 onClick={() => handleLinkClick(item)}
               >
                 <div className="w-full border border-gray-400 rounded-lg shadow p-4">
@@ -58,4 +58,4 @@ const AllCategories = (props: { data: ICategoryCollection[] }) => {
   );
 };
 
-export default AllCategories;
+export default AllAssets;

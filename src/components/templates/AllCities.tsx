@@ -1,22 +1,10 @@
-"use client"
-import { fetchLocationClient } from '@/services/location';
-import { COOKIES, FILTER_EMPTY, REACT_QUERY } from '@/shared/Constants';
-import { groupByState } from '@/shared/Utilies';
-import { ILocations } from '@/types';
-import { useQuery } from '@tanstack/react-query';
-import Link from 'next/link';
-import React from 'react'
-import SkeltopAllCities from '../skeltons/SkeltopAllCities';
-import useLocalStorage from '@/hooks/useLocationStorage';
-
-const renderLink = (item: ILocations) => {
-  return (
-      <Link className={`text-blue-600`} href={`/location/${item?.slug}`}>
-        {item?.name}
-      </Link>
-    );
-  }
-
+"use client";
+import { COOKIES, FILTER_EMPTY, REACT_QUERY } from "@/shared/Constants";
+import { ILocations } from "@/types";
+import Link from "next/link";
+import React from "react";
+import useLocalStorage from "@/hooks/useLocationStorage";
+import { ROUTE_CONSTANTS } from "@/shared/Routes";
 
 const getIcon = () => {
   return (
@@ -32,78 +20,26 @@ const getIcon = () => {
       />
     </svg>
   );
-}
+};
 
-function renderStatesAndCities(resultArray:any) {
-  return (
-    <div className='flex flex-col gap-8'>
-      {/* Map through each state in the result array */}
-      {resultArray?.map((stateObj:any) => {
-        const {
-          name, slug, type, cities
-        } = stateObj;
-        return (
-          <div
-            key={slug}
-            className="state-section flex flex-col gap-2 border border-blue-400 rounded shadow p-2"
-          >
-            <Link
-              className={`state-name hover:text-gray-400 flex items-center justify-start gap-2`}
-              href={`/location/${slug}`}
-            >
-              <span>{name}</span>
-              <span>{getIcon()}</span>
-            </Link>
-            <div className="grid grid-cols-12 gap-4">
-              {cities?.map((cityObj: any) => {
-                return (
-                  <div
-                    key={cityObj?.slug}
-                    className="lg:col-span-3 md:col-span-4 col-span-6 "
-                  >
-                    <p>{renderLink(cityObj)}</p>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        );
-      })}
-    </div>
+const AllCities = (props: { data: ILocations[] }) => {
+  const { data: locationOptions } = props;
+  const [auctionFilter, setAuctionFilter] = useLocalStorage(
+    COOKIES.AUCTION_FILTER,
+    FILTER_EMPTY
   );
-}
 
-const AllCities = () => {
-    const [auctionFilter, setAuctionFilter] = useLocalStorage(
-      COOKIES.AUCTION_FILTER,
-      FILTER_EMPTY
-    );
-
-    const handleLinkClick = (location: ILocations) => {
-      setAuctionFilter({ ...FILTER_EMPTY, location });
-    };
-    const { data: locationOptions, fetchStatus } = useQuery({
-      queryKey: [REACT_QUERY.AUCTION_LOCATION_ALL],
-      queryFn: async () => {
-        const res = (await fetchLocationClient()) as unknown as ILocations[];
-        const updatedData = groupByState(res);
-        console.log(updatedData, "res");
-        return updatedData ?? [];
-      },
+  const handleLinkClick = (location: ILocations) => {
+    setAuctionFilter({
+      ...FILTER_EMPTY,
+      location: { ...location, label: location?.name, value: location?.id },
     });
+  };
 
-  if (fetchStatus === 'fetching') {
-    return (
-    <div className="common-section my-8 min-h-[70vh] flex items-center justify-center">
-
-    <SkeltopAllCities />
-    </div>)
-  }
   return (
     <div className="common-section my-8">
-      {/* {renderStatesAndCities(locationOptions)} */}
+      {/* {JSON.stringify(locationOptions)} */}
       <div className="flex flex-col gap-8">
-        {/* Map through each state in the result array */}
         {locationOptions?.map((stateObj: any) => {
           const { name, slug, type, cities } = stateObj;
           return (
@@ -113,7 +49,7 @@ const AllCities = () => {
             >
               <Link
                 className={`state-name hover:text-gray-400 flex items-center justify-start gap-2`}
-                href={`/location/${slug}`}
+                href={`${ROUTE_CONSTANTS.LOCATION}/${slug}`}
                 onClick={() => handleLinkClick(stateObj)}
               >
                 <span>{name}</span>
@@ -129,7 +65,7 @@ const AllCities = () => {
                       <p>
                         <Link
                           className={`text-blue-600`}
-                          href={`/location/${cityObj?.slug}`}
+                          href={`${ROUTE_CONSTANTS.LOCATION}/${cityObj?.slug}`}
                           onClick={() => handleLinkClick(cityObj)}
                         >
                           {cityObj?.name}
@@ -145,6 +81,6 @@ const AllCities = () => {
       </div>
     </div>
   );
-}
+};
 
-export default AllCities
+export default AllCities;

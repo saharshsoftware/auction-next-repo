@@ -22,7 +22,14 @@ const TopCities = () => {
   );
 
   const handleLinkClick = (location: ILocations) => {
-    setAuctionFilter({ ...FILTER_EMPTY, location });
+    setAuctionFilter({
+      ...FILTER_EMPTY,
+      location: {
+        ...location,
+        label: location?.name,
+        value: location?.id,
+      },
+    });
   };
   const {
     data: locationOptions,
@@ -39,7 +46,7 @@ const TopCities = () => {
   const renderLink = (item: ILocations) => {
     return (
       <Link
-        href={`/location/${item?.slug}`}
+        href={`${ROUTE_CONSTANTS.LOCATION}/${item?.slug}`}
         onClick={() => handleLinkClick(item)}
       >
         {item?.name}

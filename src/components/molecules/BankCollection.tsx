@@ -6,6 +6,7 @@ import ImageTag from "../ui/ImageTag";
 import useLocalStorage from "@/hooks/useLocationStorage";
 import { COOKIES, FILTER_EMPTY } from "@/shared/Constants";
 import { IBanks } from "@/types";
+import { ROUTE_CONSTANTS } from "@/shared/Routes";
 
 const BankCollection = (props: { fetchQuery?: string; item: any }) => {
   const [auctionFilter, setAuctionFilter] = useLocalStorage(
@@ -22,7 +23,7 @@ const BankCollection = (props: { fetchQuery?: string; item: any }) => {
     <>
       <Link
         className="z-20 text-center"
-        href={`/bank/${item?.slug}`}
+        href={`${ROUTE_CONSTANTS.BANKS}/${item?.slug}`}
         onClick={() => handleLinkClick(item)}
       >
         <div className="w-full p-4 border border-gray-400 rounded-lg shadow min-h-28">

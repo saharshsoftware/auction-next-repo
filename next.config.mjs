@@ -26,7 +26,11 @@ const nextConfig = {
       },
       {
         source: "/asset-types/sitemap.xml",
-        destination: `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/asset-types/sitemap.xml`,
+        destination: `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/asset-types/sitemap/index.xml`,
+      },
+      {
+        source: "/asset-types/sitemap.xml",
+        destination: `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/asset-types/:slug*/sitemap.xml`,
       },
       {
         source: "/banks/:slug*/sitemap.xml",

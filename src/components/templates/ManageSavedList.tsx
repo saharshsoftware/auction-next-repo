@@ -124,7 +124,7 @@ const ManageSavedList = () => {
           {savedSearchData?.map((item, index) => (
             <div
               key={index}
-              className="flex items-center justify-between gap-4 w-full"
+              className="flex items-center justify-between gap-4 w-full border border-brand-color shadow px-2 py-1 rounded-lg"
             >
               <span>{item?.name}</span>
               <div className="flex items-center justify-end gap-4">
@@ -149,7 +149,6 @@ const ManageSavedList = () => {
 
   return (
     <>
-
       {/* Create List Modal */}
       <EditSavedList
         fieldata={selectedBadge}
@@ -161,7 +160,7 @@ const ManageSavedList = () => {
 
       {/* Delete */}
       <ConfirmationModal
-        message={STRING_DATA.MESSAGE_PROCEED}
+        message={STRING_DATA.DELETE_SEARCH_ITEM_MESSAGE}
         openModal={openModalDelete}
         actionLabel={STRING_DATA.DELETE}
         hideModal={closeDeleteModal}

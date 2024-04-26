@@ -25,7 +25,7 @@ const ConfirmationModal: React.FC<IConfirmationModal> = (props) => {
     <CustomModal
       openModal={openModal}
       modalHeading={STRING_DATA.CONFIRMATION}
-      customWidthClass="md:w-[30%] sm:w-3/5 w-11/12"
+      customWidthClass="md:w-[32%] sm:w-3/5 w-11/12"
     >
       <div className="flex flex-col gap-2">
         <p className="text-left">{message}</p>

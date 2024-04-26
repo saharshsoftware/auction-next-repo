@@ -8,8 +8,11 @@ export const COOKIES = {
 
 export const FILTER_EMPTY = { name: "", bank: "", location: "", category: "", price: "" }
 
+export const PAGE_REVALIDATE_TIME = 86400 // 24 hr
 
 export const STRING_DATA = {
+  TOP_ASSETS: "Top assets",
+  ASSETS: "Assets",
   SAVED: "Saved",
   SAVED_SEARCH: "Saved Search",
   SUBMIT: "Submit",
@@ -87,13 +90,14 @@ export const STRING_DATA = {
   MANAGE_FILTERS: "Manage filter",
   YOUR_FILTERS: "Your filters",
   NO_SAVED_LIST_FOUND: "No saved search found",
+  DELETE_SEARCH_ITEM_MESSAGE: "Are you sure you want to delete this saved search ?",
 };
 
 export const NAVBAR_NAV_LINKS = [
   { path: ROUTE_CONSTANTS.PROFILE, label: STRING_DATA.PROFILE },
   { path: ROUTE_CONSTANTS.MANAGE_LIST, label: STRING_DATA.MANAGE_LIST },
   { path: ROUTE_CONSTANTS.MANAGE_ALERT, label: STRING_DATA.MANAGE_ALERT },
-  { path: ROUTE_CONSTANTS.MANAGE_FILTERS, label: STRING_DATA.MANAGE_FILTERS },
+  { path: ROUTE_CONSTANTS.MANAGE_FILTERS, label: "Manage saved search" },
 ];
 
 export const INPUT_TYPE = {

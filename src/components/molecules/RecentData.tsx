@@ -7,6 +7,10 @@ import { getCookie } from "cookies-next";
 import dynamic from "next/dynamic";
 import useFindUrl from "@/hooks/useFindUrl";
 
+const TopAssets = dynamic(()=> import( "../atoms/TopAssets"), {
+  ssr: false,
+});
+
 const AddToWishlist = dynamic(() => import("../templates/AddToWishlist"), {
   ssr: false,
 });
@@ -30,6 +34,7 @@ const RecentData = () => {
   const token = getCookie(COOKIES.TOKEN_KEY) ?? "";
 
   const renderSpecificRoutes = () => {
+    // console.log(findUrl, "findUrlfindUrl");
     if (findUrl?.isCategoryRoute) {
       return (
         <div className="mb-4">
@@ -51,11 +56,18 @@ const RecentData = () => {
         </div>
       );
     }
+    if (findUrl?.isAssetsRoute) {
+      return (
+        <div className="mb-4">
+          <TopAssets />
+        </div>
+      );
+    }
   };
 
   const showAddToWishlist = () => {
     const requiredRoute = currentRoute.split("/").slice(0, 2).join("/");
-    console.log(requiredRoute, "requiredRoute");
+    // console.log(requiredRoute, "requiredRoute");
     if (requiredRoute === ROUTE_CONSTANTS.AUCTION_SLASH && token) {
       return (
         <>

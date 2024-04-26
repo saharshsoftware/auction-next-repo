@@ -20,7 +20,6 @@ import CustomFormikForm from "../atoms/CustomFormikForm";
 import { Field, Form } from "formik";
 import TextField from "../atoms/TextField";
 import ActionButton from "../atoms/ActionButton";
-import * as Yup from "yup";
 import ReactSelectDropdown from "../atoms/ReactSelectDropdown";
 import { useQuery } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
@@ -31,13 +30,11 @@ import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 
 import { IAssetType, IBanks, ICategoryCollection, ILocations } from "@/types";
 import useCustomParamsData from "@/hooks/useCustomParamsData";
-import useFindUrl from "@/hooks/useFindUrl";
 import { getAssetTypeClient, getCategoryBoxCollectionClient } from "@/services/auction";
 import useLocalStorage from "@/hooks/useLocationStorage";
 import { fetchBanksClient } from "@/services/bank";
 import { fetchLocationClient } from "@/services/location";
 import RangeSliderCustom from "../atoms/RangeSliderCustom";
-import debounce from "lodash/debounce";
 
 const gridElementClass = () => "lg:col-span-2  col-span-full";
 
@@ -65,7 +62,7 @@ const FindAuction = (props: IFindAuction) => {
   
   const { setDataInQueryParamsMethod, getDataFromQueryParamsMethod } =
     useCustomParamsData();
-  const { data: categoryOptions, isLoading: isLoadingCategory ,refetch:refetchCategory } = useQuery({
+  const { data: categoryOptions, isLoading: isLoadingCategory} = useQuery({
     queryKey: [REACT_QUERY.CATEGORY_BOX_COLLECITON_OPTIONS],
     queryFn: async () => {
       const res = (await getCategoryBoxCollectionClient()) as unknown as ICategoryCollection[];
@@ -73,7 +70,7 @@ const FindAuction = (props: IFindAuction) => {
         getEmptyAllObject(),
         ...sanitizeReactSelectOptions(res),
       ];
-      if (currentRoute.startsWith("/category")) fillFilter(updatedData);
+      if (currentRoute.startsWith(ROUTE_CONSTANTS.CATEGORY)) fillFilter(updatedData);
       return (updatedData) ?? [];
     },
   });
@@ -81,7 +78,6 @@ const FindAuction = (props: IFindAuction) => {
   const {
     data: assetsTypeOptions,
     isLoading: isLoadingAssetsTypeCategory,
-    refetch: refetchAssetTypeCategory,
   } = useQuery({
     queryKey: [REACT_QUERY.ASSETS_TYPE],
     queryFn: async () => {
@@ -90,7 +86,7 @@ const FindAuction = (props: IFindAuction) => {
         getEmptyAllObject(),
         ...sanitizeReactSelectOptions(res),
       ];
-      if (currentRoute.startsWith("/category")) fillFilter(updatedData);
+      if (currentRoute.startsWith(ROUTE_CONSTANTS.ASSETS_TYPE)) fillFilter(updatedData);
       return updatedData ?? [];
     },
   });
@@ -98,7 +94,6 @@ const FindAuction = (props: IFindAuction) => {
   const {
     data: bankOptions,
     isLoading: isLoadingBank,
-    refetch: refetchBank,
   } = useQuery({
     queryKey: [REACT_QUERY.AUCTION_BANKS],
     queryFn: async () => {
@@ -107,14 +102,12 @@ const FindAuction = (props: IFindAuction) => {
         getEmptyAllObject(),
         ...sanitizeReactSelectOptions(res),
       ];
-      // console.log(updatedData, "updateadslfk");
-      if (currentRoute.startsWith("/bank")) fillFilter(updatedData);
+      if (currentRoute.startsWith(ROUTE_CONSTANTS.BANKS)) fillFilter(updatedData);
       return updatedData ?? [];
     },
-    // enabled: !currentRoute.startsWith("/bank"),
   });
 
-  const { data: locationOptions, isLoading: isLoadingLocation, refetch:refetchLocation } = useQuery({
+  const { data: locationOptions, isLoading: isLoadingLocation} = useQuery({
     queryKey: [REACT_QUERY.AUCTION_LOCATION],
     queryFn: async () => {
       const res = (await fetchLocationClient()) as unknown as ILocations[];
@@ -123,7 +116,7 @@ const FindAuction = (props: IFindAuction) => {
         getEmptyAllObject(),
         ...sanitizeReactSelectOptions(responseData),
       ];
-      if (currentRoute.startsWith("/location")) fillFilter(updatedData);
+      if (currentRoute.startsWith(ROUTE_CONSTANTS.LOCATION)) fillFilter(updatedData);
       return updatedData  ?? [];
     },
   });
@@ -139,46 +132,56 @@ const FindAuction = (props: IFindAuction) => {
     }
   );
 
-  // console.log(initialValueData, "initialValueData");
-
   useEffect(()=> {
     if (params?.slug) {
-      if (currentRoute.startsWith("/category")) {
+      if (currentRoute.startsWith(ROUTE_CONSTANTS.CATEGORY)) {
         fillFilter(categoryOptions)
         return;
       }
-      if (currentRoute.startsWith("/bank")) {
+      if (currentRoute.startsWith(ROUTE_CONSTANTS.BANKS)) {
         fillFilter(bankOptions);
         return;
       }
-      if (currentRoute.startsWith("/location")) {
+      if (currentRoute.startsWith(ROUTE_CONSTANTS.LOCATION)) {
         fillFilter(locationOptions)
+        return;
+      }
+      if (currentRoute.startsWith(ROUTE_CONSTANTS.ASSETS_TYPE)) {
+        fillFilter(assetsTypeOptions);
         return;
       }
     }
   }, [params?.slug])
 
   const fillFilter = (data: any) =>{
-    if (currentRoute.startsWith("/category")) {
+    if (currentRoute.startsWith(ROUTE_CONSTANTS.CATEGORY)) {
       const selectedOne = data?.find((item: any) => item?.slug === params?.slug);
       // console.log(selectedOne, "selectedOne");
       setInitialValueData({
         category: selectedOne ?? auctionFilter?.category ?? "",
       });
     }
-    if (currentRoute.startsWith("/location")) {
+    if (currentRoute.startsWith(ROUTE_CONSTANTS.LOCATION)) {
       const selectedOne = data?.find((item: any) => item?.slug === params?.slug);
       // console.log(selectedOne, "selectedOne");
       setInitialValueData({
         location: selectedOne ?? auctionFilter?.location ?? "",
       });
     }
-    if (currentRoute.startsWith("/bank")) {
+    if (currentRoute.startsWith(ROUTE_CONSTANTS.BANKS)) {
       const selectedOne = data?.find((item: any) => item?.slug === params?.slug);
       // console.log(selectedOne, "selectedOne", auctionFilter?.bank);
       // debugger;
       setInitialValueData({
         bank: selectedOne ?? auctionFilter?.bank ?? "",
+      });
+    }
+    if (currentRoute.startsWith(ROUTE_CONSTANTS.ASSETS_TYPE)) {
+      const selectedOne = data?.find((item: any) => item?.slug === params?.slug);
+      // console.log(selectedOne, "selectedOne", auctionFilter?.bank);
+      // debugger;
+      setInitialValueData({
+        propertyType: selectedOne ?? auctionFilter?.propertyType ?? "",
       });
     }
   }

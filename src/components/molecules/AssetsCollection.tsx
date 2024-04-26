@@ -5,32 +5,32 @@ import React from "react";
 import ImageTag from "../ui/ImageTag";
 import { COOKIES, FILTER_EMPTY } from "@/shared/Constants";
 import useLocalStorage from "@/hooks/useLocationStorage";
-import { ICategoryCollection } from "@/types";
+import { IAssetType } from "@/types";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
-interface ICategroyCollectionComp {
+interface IAssetsCollectionComp {
   item: any;
   fetchQuery?: string;
   key?: string | number;
 }
 
-const CategoryCollection = (props: ICategroyCollectionComp) => {
+const AssetsCollection = (props: IAssetsCollectionComp) => {
   const { item = "" } = props;
   const [auctionFilter, setAuctionFilter] = useLocalStorage(
     COOKIES.AUCTION_FILTER,
     FILTER_EMPTY
   );
 
-  const handleLinkClick = (category: ICategoryCollection) => {
+  const handleLinkClick = (propertyType: IAssetType) => {
     setAuctionFilter({
       ...FILTER_EMPTY,
-      category: { ...category, label: category?.name, value: category?.id },
+      propertyType: { ...propertyType, label: propertyType?.name, value: propertyType?.id },
     });
   };
   const imageUrl = sanitizeStrapiImageUrl(item);
   return (
     <>
       <Link
-        href={`${ROUTE_CONSTANTS.CATEGORY}/${item?.slug}`}
+        href={`${ROUTE_CONSTANTS.ASSETS_TYPE}/${item?.slug}`}
         onClick={() => handleLinkClick(item)}
       >
         <div className="w-full border border-gray-400 rounded-lg shadow p-4">
@@ -51,4 +51,4 @@ const CategoryCollection = (props: ICategroyCollectionComp) => {
   );
 };
 
-export default CategoryCollection;
+export default AssetsCollection;

@@ -1,9 +1,11 @@
 import CustomReactCarousel from "@/components/atoms/CustomReactCarousel";
 import HeroSection from "@/components/atoms/HeroSection";
+import AssetsCollection from "@/components/molecules/AssetsCollection";
 import BankCollection from "@/components/molecules/BankCollection";
 import CategoryCollection from "@/components/molecules/CategoryCollection";
 import { fetchBanks, fetchLocation } from "@/server/actions";
 import { getAssetType, getCarouselData, getCategoryBoxCollection } from "@/server/actions/auction";
+import { PAGE_REVALIDATE_TIME } from "@/shared/Constants";
 import { sanitizeReactSelectOptions } from "@/shared/Utilies";
 import { IAssetType, IBanks, ICategoryCollection, ILocations } from "@/types";
 
@@ -13,6 +15,8 @@ const getComponent = (componentName: string) => {
       return CategoryCollection;
     case "BankCollection":
       return BankCollection;
+    case "AssetsCollection":
+      return AssetsCollection;
     default:
       return null;
   }
@@ -61,7 +65,7 @@ export default async function Home() {
         </section>
       );
     }
-    return null;
+    return '';
   };
 
   return (
@@ -81,4 +85,4 @@ export default async function Home() {
   );
 }
 
-export const revalidate = 3600; // 1hr
+export const revalidate = PAGE_REVALIDATE_TIME; 

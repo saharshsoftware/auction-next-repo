@@ -2,6 +2,9 @@ import AllCategories from "@/components/templates/AllCategories";
 import React from "react";
 
 import type { Metadata } from "next";
+import { getCategoryBoxCollection } from "@/server/actions";
+import { ICategoryCollection } from "@/types";
+import { PAGE_REVALIDATE_TIME } from "@/shared/Constants";
 
 export const metadata: Metadata = {
   title:
@@ -57,12 +60,15 @@ export const metadata: Metadata = {
   },
 };
 
-export default function Page() {
+export default async function Page() {
+  const data = await getCategoryBoxCollection() as ICategoryCollection[];
   return (
     <>
       <section>
-        <AllCategories />
+        <AllCategories data={data}/>
       </section>
     </>
   );
 }
+
+export const revalidate = PAGE_REVALIDATE_TIME;

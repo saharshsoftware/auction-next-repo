@@ -1,6 +1,10 @@
 import AllCities from "@/components/templates/AllCities";
 import React from "react";
 import type { Metadata } from "next";
+import { fetchLocation } from "@/server/actions";
+import { ILocations } from "@/types";
+import { groupByState } from "@/shared/Utilies";
+import { PAGE_REVALIDATE_TIME } from "@/shared/Constants";
 
 export const metadata: Metadata = {
   title: "All Cities and States | Find Auctions Across India - eauctiondekho",
@@ -50,8 +54,14 @@ export const metadata: Metadata = {
   },
 };
 
-export default function Page() {
-  return <section>
-    <AllCities />
-  </section>;
+export default async function Page() {
+  const data = await fetchLocation() as ILocations[];
+
+  return (
+    <section>
+      <AllCities data={groupByState(data)} />
+    </section>
+  );
 }
+
+export const revalidate = PAGE_REVALIDATE_TIME;

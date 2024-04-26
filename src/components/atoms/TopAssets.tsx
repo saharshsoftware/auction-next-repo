@@ -1,6 +1,6 @@
 "use client";
 import useLocalStorage from "@/hooks/useLocationStorage";
-import { fetchBankTopClient } from "@/services/Home";
+import { fetchTopAssetsTypeClient } from "@/services/assetsType";
 import {
   COOKIES,
   FILTER_EMPTY,
@@ -8,41 +8,41 @@ import {
   STRING_DATA,
 } from "@/shared/Constants";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
-import { IBanks } from "@/types";
+import { IAssetType } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import React from "react";
 
-const TopBanks = () => {
+const TopAssets = () => {
   const [auctionFilter, setAuctionFilter] = useLocalStorage(
     COOKIES.AUCTION_FILTER,
     FILTER_EMPTY
   );
 
-  const { data: bankOptions, fetchStatus } = useQuery({
-    queryKey: [REACT_QUERY.AUCTION_BANKS, "top"],
+  const { data: assetsTypeData, fetchStatus } = useQuery({
+    queryKey: [REACT_QUERY.ASSETS_TYPE, "top"],
     queryFn: async () => {
-      const res = (await fetchBankTopClient()) as unknown as IBanks[];
-      console.log(res, "footertop");
+      const res = (await fetchTopAssetsTypeClient()) as unknown as IAssetType[];
+      // console.log(res, "footertop");
       return res ?? [];
     },
   });
 
-  const handleLinkClick = (bank: IBanks) => {
+  const handleLinkClick = (propertyType: IAssetType) => {
     setAuctionFilter({
       ...FILTER_EMPTY,
-      bank: {
-        ...bank,
-        label: bank?.name,
-        value: bank?.id,
+      propertyType: {
+        ...propertyType,
+        label: propertyType?.name,
+        value: propertyType?.id,
       },
     });
   };
 
-  const renderLink = (item: IBanks) => {
+  const renderLink = (item: IAssetType) => {
     return (
       <Link
-        href={`${ROUTE_CONSTANTS.BANKS}/${item?.slug}`}
+        href={`${ROUTE_CONSTANTS.ASSETS_TYPE}/${item?.slug}`}
         onClick={() => handleLinkClick(item)}
       >
         {item?.name}
@@ -70,7 +70,7 @@ const TopBanks = () => {
   }
 
   const renderer = () => {
-    if (bankOptions?.length === 0) {
+    if (assetsTypeData?.length === 0) {
       return (
         <div className="flex items-center justify-center h-full">
           No data found
@@ -79,7 +79,7 @@ const TopBanks = () => {
     }
     return (
       <>
-        {bankOptions?.map((item, index) => {
+        {assetsTypeData?.map((item, index) => {
           return (
             <div className="custom-common-header-detail-class" key={index}>
               <div className="flex flex-col gap-4 p-4  w-full min-h-12">
@@ -94,10 +94,10 @@ const TopBanks = () => {
 
   return (
     <>
-      <div className="custom-common-header-class">{STRING_DATA.TOP_BANKS}</div>
+      <div className="custom-common-header-class">{STRING_DATA.TOP_ASSETS}</div>
       {renderer()}
     </>
   );
 };
 
-export default TopBanks;
+export default TopAssets;

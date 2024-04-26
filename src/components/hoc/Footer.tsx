@@ -21,13 +21,27 @@ const Footer: React.FC = () => {
           >
             {STRING_DATA.CATEGORIES}
           </Link>
+          <Link
+            href={ROUTE_CONSTANTS.E_AUCTION_ASSETS}
+            className="link link-hover"
+          >
+            {STRING_DATA.ASSETS}
+          </Link>
         </nav>
 
         <nav className="flex md:flex-row flex-col items-center justify-center gap-4 text-sm">
-          <Link href={ROUTE_CONSTANTS.TERMS} className="link link-hover">{STRING_DATA.TERMS_CONDITIONS}</Link>
-          <Link href={ROUTE_CONSTANTS.PRIVACY} className="link link-hover">{STRING_DATA.PRIVACY_POLICY}</Link>
-          <Link href={ROUTE_CONSTANTS.ABOUT_US} className="link link-hover">{STRING_DATA.ABOUT_US}</Link>
-          <Link href={ROUTE_CONSTANTS.CONTACT} className="link link-hover">{STRING_DATA.CONTACT_US}</Link>
+          <Link href={ROUTE_CONSTANTS.TERMS} className="link link-hover">
+            {STRING_DATA.TERMS_CONDITIONS}
+          </Link>
+          <Link href={ROUTE_CONSTANTS.PRIVACY} className="link link-hover">
+            {STRING_DATA.PRIVACY_POLICY}
+          </Link>
+          <Link href={ROUTE_CONSTANTS.ABOUT_US} className="link link-hover">
+            {STRING_DATA.ABOUT_US}
+          </Link>
+          <Link href={ROUTE_CONSTANTS.CONTACT} className="link link-hover">
+            {STRING_DATA.CONTACT_US}
+          </Link>
           <Link
             href={"/sitemap.xml"}
             className="link link-hover"

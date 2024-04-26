@@ -11,10 +11,15 @@ export const ROUTE_CONSTANTS = {
   MANAGE_ALERT: "/manage-alert",
   E_CITIES_ALL: "/e-auction-in-cities",
   E_CATOGRIES_ALL: "/e-auction-categories",
+  E_AUCTION_ASSETS: "/e-auction-assets",
   E_BANKS_ALL: "/e-auction-banks",
   TERMS: "/terms",
   CONTACT: "/contact",
   PRIVACY: "/privacy",
   ABOUT_US: "/about",
-  MANAGE_FILTERS: "/manage-filter"
+  MANAGE_FILTERS: "/manage-filter",
+  CATEGORY: "/categories",
+  LOCATION: "/locations",
+  BANKS: "/banks",
+  ASSETS_TYPE: "/asset-types",
 };

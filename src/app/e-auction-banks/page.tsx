@@ -1,6 +1,10 @@
 import AllBanks from "@/components/templates/AllBanks";
 import React from "react";
 import type { Metadata } from "next";
+import { fetchBanks } from "@/server/actions";
+import { groupAndSortBanks } from "@/shared/Utilies";
+import { IBanks } from "@/types";
+import { PAGE_REVALIDATE_TIME } from "@/shared/Constants";
 
 export const metadata: Metadata = {
   title: "All Indian Banks | Auction Listings - eauctiondekho",
@@ -48,6 +52,13 @@ export const metadata: Metadata = {
   },
 };
 
-export default function Page() {
-  return <section><AllBanks /></section>;
+export default async function Page() {
+  const data = await fetchBanks() as unknown as IBanks[];
+  return (
+    <section>
+      <AllBanks data={groupAndSortBanks(data)} />
+    </section>
+  );
 }
+
+export const revalidate = PAGE_REVALIDATE_TIME;

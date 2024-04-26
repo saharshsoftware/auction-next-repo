@@ -1,44 +1,25 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 "use client"
-import { fetchBanksClient } from '@/services/bank';
-import { COOKIES, FILTER_EMPTY, REACT_QUERY } from '@/shared/Constants';
-import { groupAndSortBanks, groupByState } from '@/shared/Utilies';
-import { IBanks, ILocations } from '@/types';
-import { useQuery } from '@tanstack/react-query';
+import { COOKIES, FILTER_EMPTY } from '@/shared/Constants';
+import { IBanks } from '@/types';
 import Link from 'next/link';
 import React from 'react'
-import SkeltopAllBanks from '../skeltons/SkeltopAllBanks';
 import useLocalStorage from '@/hooks/useLocationStorage';
+import { ROUTE_CONSTANTS } from '@/shared/Routes';
 
-const AllBanks = () => {
+const AllBanks = (props: {data: any[]}) => {
+  const {data: bankData} = props
   const [auctionFilter, setAuctionFilter] = useLocalStorage(
     COOKIES.AUCTION_FILTER,
     FILTER_EMPTY
   );
 
   const handleLinkClick = (bank: IBanks) => {
-    setAuctionFilter({ ...FILTER_EMPTY, bank });
-  };
-    const {
-      data: bankData,
-      fetchStatus
-    } = useQuery({
-      queryKey: [REACT_QUERY.AUCTION_BANKS],
-      queryFn: async () => {
-        const res = (await fetchBanksClient()) as unknown as IBanks[];
-        const updatedData = groupAndSortBanks(res);
-        console.log(updatedData, "res");
-        return updatedData ?? [];
-      },
+    setAuctionFilter({
+      ...FILTER_EMPTY,
+      bank: { ...bank, label: bank?.name, value: bank?.id },
     });
-
-  if (fetchStatus === 'fetching') {
-    return (
-      <div className='common-section my-8'>
-        <SkeltopAllBanks />
-      </div>
-    )
-  }
+  };
   return (
     <div className="common-section my-8">
       <div className="flex flex-col gap-8">
@@ -58,7 +39,7 @@ const AllBanks = () => {
                     <p>
                       <Link
                         className={`text-blue-600`}
-                        href={`/bank/${bank?.slug}`}
+                        href={`${ROUTE_CONSTANTS.BANKS}/${bank?.slug}`}
                         onClick={() => handleLinkClick(bank)}
                       >
                         {bank?.name}
