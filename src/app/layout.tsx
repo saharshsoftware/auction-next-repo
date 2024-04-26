@@ -1,4 +1,3 @@
-// import { GoogleAnalytics } from "@next/third-parties/google";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
@@ -7,6 +6,7 @@ import Navbar from "@/components/hoc/Navbar";
 import AppLayout from "@/components/layouts/AppLayout";
 import Providers from "@/utilies/Providers";
 import NextTopLoader from "nextjs-toploader";
+import GoogleScriptComponent from "@/components/atoms/GoogleScriptComponent";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -80,8 +80,8 @@ export default function RootLayout({
             <Footer />
           </div>
         </Providers>
+      <GoogleScriptComponent />
       </body>
-      {/* <GoogleAnalytics gaId="G-XYZ" /> */}
     </html>
   );
 }

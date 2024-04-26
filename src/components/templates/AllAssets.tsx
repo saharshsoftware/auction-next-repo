@@ -30,7 +30,7 @@ const AllAssets = (props: { data: IAssetType[] }) => {
           return (
             <div
               key={item?.slug}
-              className="lg:col-span-3 md:col-span-4 col-span-6"
+              className="lg:col-span-3 md:col-span-4 col-span-full"
             >
               <Link
                 href={`${ROUTE_CONSTANTS.ASSETS_TYPE}/${item?.slug}`}
