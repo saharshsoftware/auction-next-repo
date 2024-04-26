@@ -68,30 +68,21 @@ const ShowAuctionList = () => {
   });
 
   const getFilterData = () => {
+    console.log(filterRef.current, "checkfilter", auctionFilter);
     const filterData = {
-      category:
-        filterRef.current?.category?.name ??
-        auctionFilter?.category?.name ??
-        "",
-      bankName:
-        filterRef.current?.bank?.name ?? auctionFilter?.bank?.name ?? "",
+      category: currentRoute.startsWith("/category") ? auctionFilter?.category?.name: filterRef.current?.category?.name ?? "",
+      bankName: currentRoute.startsWith("/bank") ? auctionFilter?.bank?.name : filterRef.current?.bank?.name ?? "",
+      location: currentRoute.startsWith("/locations") ? auctionFilter?.location?.name : filterRef.current?.location?.name ?? "",
+      propertyType: currentRoute.startsWith("/asset-types") ? auctionFilter?.propertyType?.name: filterRef.current?.propertyType?.name ?? "",
       reservePrice: filterRef.current?.price ?? "",
-      location:
-        filterRef.current?.location?.name ??
-        auctionFilter?.location?.name ??
-        "",
       locationType:
         filterRef.current?.location?.type ??
         auctionFilter?.location?.type ??
         "",
-      propertyType:
-        filterRef.current?.propertyType?.name ??
-        auctionFilter?.propertyType?.name ??
-        "",
       keyword: filterRef.current?.keyword ?? "",
       page: currentPage?.toString() ?? "",
     };
-    // console.log(filterData, "filterDAta")
+    console.log(filterData, "filterDAta")
     return filterData;
   };
 
@@ -125,15 +116,19 @@ const ShowAuctionList = () => {
     router.replace(ROUTE_CONSTANTS.AUCTION + "?q=" + encodedQuery);
   };
 
-  const debouncedRefetch = debounce(refetch, 500); // Adjust debounce time as per your requirement
+  // const debouncedRefetch = debounce(refetch, 500); // Adjust debounce time as per your requirement
 
   useEffect(() => {
     if (searchParams.get("q")) {
       const data = searchParams.get("q");
       filterRef.current = getDataFromQueryParams(data ?? "");
+      
+      // setAuctionFilter(filterRef.current);
+
       setCurrentPage(filterRef.current?.page);
-      debouncedRefetch();
-      // console.log(filterRef.current?.value, "queryData");
+      // debouncedRefetch();
+      console.log(filterRef.current, "queryData");
+      refetch()
 
       if (filterRef.current?.keyword) {
         setHasKeywordSearchValue(filterRef.current?.keyword);

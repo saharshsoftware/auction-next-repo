@@ -14,7 +14,7 @@ const BankCollection = (props: { fetchQuery?: string; item: any }) => {
   );
 
   const handleLinkClick = (bank: IBanks) => {
-    setAuctionFilter({ ...FILTER_EMPTY, bank });
+    setAuctionFilter({ ...FILTER_EMPTY, bank: {...bank, label: bank?.name, value: bank?.id} });
   };
   const { item = "" } = props;
   const imageUrl = sanitizeStrapiImageUrl(item) ?? "";

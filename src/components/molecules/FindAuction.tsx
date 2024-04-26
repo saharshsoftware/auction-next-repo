@@ -202,7 +202,7 @@ const FindAuction = (props: IFindAuction) => {
         location?.label === STRING_DATA.ALL ? STRING_DATA.EMPTY : location,
       propertyType: propertyType?.label === STRING_DATA.ALL?STRING_DATA.EMPTY :propertyType
     };
-    // console.log(filter);
+    console.log(filter);
     setAuctionFilter(filter);
     const data:any = setDataInQueryParamsMethod(filter);
     // console.log(data)
@@ -218,31 +218,6 @@ const FindAuction = (props: IFindAuction) => {
 
     hideModal?.();
   };
-
-  const handleDropdownChange = (keyname: string,value:any, values:any) => {
-    // debugger
-    const { category, bank, price, propertyType, location } = values;
-    const { type, name } = location ?? {};
-    const filter: any = {
-      page: 1,
-      price,
-      category: category?.label === STRING_DATA.ALL ? STRING_DATA.EMPTY : category,
-      bank: bank?.label === STRING_DATA.ALL ? STRING_DATA.EMPTY : bank,
-      propertyType: propertyType?.label === STRING_DATA.ALL ? STRING_DATA.EMPTY: propertyType,
-      location: location?.label === STRING_DATA.ALL ? STRING_DATA.EMPTY : location,
-      locationType: type,
-    };
-
-    filter[keyname] = value,
-    console.log(filter);
-
-    setAuctionFilter(filter);
-    const data: any = setDataInQueryParamsMethod(filter);
-    // console.log(data)
-    router.push(`${ROUTE_CONSTANTS.AUCTION}?q=${data}`)
-
-  }
-
 
   const handleResize = () => {
     setIsMobileView((prev) => ({
@@ -349,12 +324,11 @@ const FindAuction = (props: IFindAuction) => {
                             customClass="w-full "
                             onChange={(e) => {
                               if (e?.label !== STRING_DATA.ALL) {
-                                handleDropdownChange("category", e, values)
                                 setFieldValue("category", e);
                                 return;
                               }
                               setFieldValue("category", getEmptyAllObject());
-                              handleDropdownChange("category", e, values);
+                              setAuctionFilter({...auctionFilter, category: STRING_DATA.EMPTY})
                             }}
                           />
                         )}
@@ -379,7 +353,6 @@ const FindAuction = (props: IFindAuction) => {
                             onChange={(e) => {
                               // console.log(e);
                               if (e?.label !== STRING_DATA.ALL) {
-                                handleDropdownChange("propertyType", e, values);
                                 setFieldValue("propertyType", e);
                                 return;
                               }
@@ -387,7 +360,10 @@ const FindAuction = (props: IFindAuction) => {
                                 "propertyType",
                                 getEmptyAllObject()
                               );
-                              handleDropdownChange("propertyType", e, values);
+                              setAuctionFilter({
+                                ...auctionFilter,
+                                propertyType: STRING_DATA.EMPTY,
+                              });
                             }}
                           />
                         )}
@@ -410,12 +386,14 @@ const FindAuction = (props: IFindAuction) => {
                             customClass="w-full "
                             onChange={(e) => {
                               if (e?.label !== STRING_DATA.ALL) {
-                                handleDropdownChange("location", e, values);
                                 setFieldValue("location", e);
                                 return;
                               }
-                              setFieldValue("location", null);
-                              handleDropdownChange("location", e, values);
+                              setFieldValue("location", getEmptyAllObject());
+                              setAuctionFilter({
+                                ...auctionFilter,
+                                location: STRING_DATA.EMPTY,
+                              });
                             }}
                           />
                         )}
@@ -434,12 +412,14 @@ const FindAuction = (props: IFindAuction) => {
                             customClass="w-full"
                             onChange={(e: any) => {
                               if (e?.label !== STRING_DATA.ALL) {
-                                handleDropdownChange("bank", e, values);
                                 setFieldValue("bank", e);
                                 return;
                               }
-                              setFieldValue("bank", null);
-                              handleDropdownChange("bank", e, values);
+                              setFieldValue("bank", getEmptyAllObject());
+                              setAuctionFilter({
+                                ...auctionFilter,
+                                bank: STRING_DATA.EMPTY,
+                              });
                             }}
                           />
                         )}
@@ -462,7 +442,6 @@ const FindAuction = (props: IFindAuction) => {
                               onInput={(value: any, e: any) => {
                                 // console.log(value);
                                 setFieldValue("price", value);
-                                handleDropdownChange("price", value, values);
                               }}
                             />
                             {values?.price?.length ? (
