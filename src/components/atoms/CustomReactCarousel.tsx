@@ -82,7 +82,7 @@ const CustomReactCarousel = (props: ICustomReactCarousel) => {
 
   const settings = {
     dots: true,
-    infinite: false,
+    infinite: true,
     speed: 500,
     autoplay: true,
     slidesToShow: 4,

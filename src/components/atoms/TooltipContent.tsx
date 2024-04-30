@@ -17,7 +17,9 @@ const TooltipContent = () => {
           })}
         </ul>
         <hr className="bg-gray-600 " />
-        <LogoutButton />
+        <LogoutButton
+          customClass={"text-sm cursor-pointer text-error hover:underline"}
+        />
       </div>
     </>
   );

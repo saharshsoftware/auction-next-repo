@@ -235,6 +235,8 @@ export const createAlertSearch = async (body: {
   assetType: string;
   assetCategory: string;
   bankName?: string;
+  minPrice?: string,
+  maxPrice?: string,
 }) => {
   try {
     const URL = API_BASE_URL + API_ENPOINTS.ALERTS;
@@ -271,6 +273,8 @@ export const updateAlert = async (payload: {
     assetType: string;
     assetCategory: string;
     bankName?: string;
+    minPrice?: string;
+    maxPrice?: string;
   };
 }) => {
   try {

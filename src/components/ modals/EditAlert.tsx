@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import CustomModal from "../atoms/CustomModal";
 import ActionButton from "../atoms/ActionButton";
-import { ERROR_MESSAGE, REACT_QUERY, STRING_DATA } from "@/shared/Constants";
+import { ERROR_MESSAGE, RANGE_PRICE, REACT_QUERY, STRING_DATA } from "@/shared/Constants";
 import CustomFormikForm from "../atoms/CustomFormikForm";
 import TextField from "../atoms/TextField";
 import * as Yup from "yup";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { handleOnSettled, sanitizeReactSelectOptions } from "@/shared/Utilies";
+import { formatPrice, handleOnSettled, sanitizeReactSelectOptions } from "@/shared/Utilies";
 import { updateAlert } from "@/services/auction";
 import { Field, Form } from "formik";
 import ReactSelectDropdown from "../atoms/ReactSelectDropdown";
@@ -24,6 +24,7 @@ import {
 } from "@/types";
 import { fetchBanksClient } from "@/services/bank";
 import { fetchLocationClient } from "@/services/location";
+import RangeSliderCustom from "../atoms/RangeSliderCustom";
 
 interface ICreateFavList {
   openModal: boolean;
@@ -129,14 +130,17 @@ const EditAlert = (props: ICreateFavList) => {
     propertyType: IAssetType;
     category: ICategoryCollection;
     bank: IBanks;
+    price: any;
   }) => {
-    const { location, name, propertyType, category, bank } = values;
+    const { location, name, propertyType, category, bank, price } = values;
     const body = {
       name,
       location: location?.name ?? "",
       assetType: propertyType?.name ?? "",
       assetCategory: category?.name ?? "",
       bankName: bank?.name ?? "",
+      minPrice: price?.[0],
+      maxPrice: price?.[1],
     };
 
     const payload = {
@@ -175,6 +179,10 @@ const EditAlert = (props: ICreateFavList) => {
                 bank: fieldata?.bankName
                   ? renderSeletedOption(fieldata, "bankName")
                   : STRING_DATA.EMPTY,
+                price:
+                  fieldata?.minPrice || fieldata?.maxPrice
+                    ? [fieldata?.minPrice, fieldata?.maxPrice]
+                    : [0, RANGE_PRICE.MAX],
               }}
               validationSchema={validationSchema}
               handleSubmit={handleFavlist}
@@ -302,6 +310,35 @@ const EditAlert = (props: ICreateFavList) => {
                                   setFieldValue("bank", null);
                                 }}
                               />
+                            )}
+                          </Field>
+                        </TextField>
+                      </div>
+                      <div className={"col-span-full"}>
+                        <TextField
+                          label="Price range"
+                          name="price"
+                          hasChildren={true}
+                        >
+                          <Field name="price">
+                            {() => (
+                              <div className="relative w-full space-y-2">
+                                <RangeSliderCustom
+                                  value={values.price}
+                                  onInput={(value: any, e: any) => {
+                                    console.log(value);
+                                    setFieldValue("price", value);
+                                  }}
+                                />
+                                <div className="text-black flex items-center justify-between gap-4 ">
+                                  <span className="text-sm text-gray-900">
+                                    {formatPrice(values?.price?.[0])}
+                                  </span>{" "}
+                                  <span className="text-sm text-gray-900">
+                                    {formatPrice(values?.price?.[1])}
+                                  </span>
+                                </div>
+                              </div>
                             )}
                           </Field>
                         </TextField>
