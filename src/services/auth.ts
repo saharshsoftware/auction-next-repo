@@ -47,4 +47,23 @@ export async function logout() {
   deleteCookie(COOKIES.AUCTION_USER_KEY);
 };
 
+export const changePasswordServiceClient = async (body: {
+  currentPassword: string;
+  password: string;
+  passwordConfirmation: string;
+}) => {
+  try {
+    const URL = API_BASE_URL + API_ENPOINTS.CHANGE_PASSWORD;
+    console.log(URL);
+    const { data } = await postRequest({
+      API: URL,
+      DATA: body,
+    });
+    console.log(data, "change-data");
+    return data;
+  } catch (error: any) {
+    return error.response.data;
+  }
+};
+
 

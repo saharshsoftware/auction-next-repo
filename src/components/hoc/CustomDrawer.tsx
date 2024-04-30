@@ -7,6 +7,7 @@ import { getInitials } from "@/shared/Utilies";
 import LogoutButton from "../ui/LogoutButton";
 import Link from "next/link";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 interface ICustomDrawer {
   toggleTopBar: ()=> void;
@@ -22,9 +23,9 @@ const CustomDrawer = (props: ICustomDrawer) => {
   const [userInfo, setUserInfo] = useState({});
 
   useEffect(() => {
-    if (token) {
-      setMyToken(token);
-    }
+    console.log(token, "tokeneffect")
+    setMyToken(token);
+
     // userData && setUserInfo(userData);
   }, [token]);
 
@@ -41,7 +42,10 @@ const CustomDrawer = (props: ICustomDrawer) => {
               </div>
             </div>
           </div>
-          <LogoutButton />
+          <LogoutButton
+            customClass={"text-sm cursor-pointer text-error hover:underline"}
+            handleClick={toggleTopBar}
+          />
         </div>
       );
     }
@@ -54,12 +58,13 @@ const CustomDrawer = (props: ICustomDrawer) => {
       return (
         <>
           <ul className="flex flex-col gap-4">
-            {NAVBAR_NAV_LINKS.map((nav, index) => {
+            {NAVBAR_NAV_LINKS.map((nav: any, index) => {
               return (
-                <li key={index}>
+                <li key={index} className="flex justify-between gap-2">
                   <Link href={nav?.path} onClick={toggleTopBar}>
                     {nav?.label}
                   </Link>
+                  {nav?.icon ? <FontAwesomeIcon icon={nav?.icon} /> : null}
                 </li>
               );
             })}
@@ -80,32 +85,13 @@ const CustomDrawer = (props: ICustomDrawer) => {
   }
   return (
     <>
-      <div className="flex flex-col gap-4 w-full h-full">
+      <div className="flex flex-col gap-4 w-full h-full px-2">
         <div className="flex flex-col gap-4 transform transition duration-300 py-4 flex-1 ">
           {renderLinks()}
         </div>
         <hr className="bg-gray-600 "></hr>
         {renderAuthComponent()}
-        {/* <template v-if="updatedAuthenticated">
-      <hr className="bg-gray-600 ">
-      <div className="flex items-center justify-between">
-        <div className="cursor-pointer">
-          <div v-if="user?.profileImage" className="avatar">
-            <div className="w-12 rounded-full">
-              <img :src="user?.profileImage">
-            </div>
-          </div>
-          <template v-else>
-            <NxAvatar :label="getInitials(user?.name) " />
-          </template>
-        </div>
-        <AtomsIconLabel :icon="'material-symbols:logout'">
-          <div className="cursor-pointer" @click="handleLogout">
-            {{ STRING_DATA.LOGOUT }}
-          </div>
-        </AtomsIconLabel>
-      </div>
-    </template> */}
+        
       </div>
     </>
   );

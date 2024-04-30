@@ -1,3 +1,4 @@
+import { faBell, faFilter, faHeart, faList, faUser } from "@fortawesome/free-solid-svg-icons";
 import { ROUTE_CONSTANTS } from "./Routes";
 
 export const COOKIES = {
@@ -11,6 +12,10 @@ export const FILTER_EMPTY = { name: "", bank: "", location: "", category: "", pr
 export const PAGE_REVALIDATE_TIME = 86400 // 24 hr
 
 export const STRING_DATA = {
+  DELETE_ACCOUNT: "Delete account",
+  EDIT_ALERT: "Edit alert",
+  UPDATE_PASSWORD: "Update password",
+  YOUR_ALERTS: "Your alerts",
   TOP_ASSETS: "Top assets",
   ASSETS: "Assets",
   SAVED: "Saved",
@@ -90,14 +95,36 @@ export const STRING_DATA = {
   MANAGE_FILTERS: "Manage filter",
   YOUR_FILTERS: "Your filters",
   NO_SAVED_LIST_FOUND: "No saved search found",
-  DELETE_SEARCH_ITEM_MESSAGE: "Are you sure you want to delete this saved search ?",
+  NO_ALERT_FOUND: "No alert found",
+  DELETE_SEARCH_ITEM_MESSAGE:
+    "Are you sure you want to delete this saved search ?",
+  DELETE_ALERT_MESSAGE:
+    "Are you sure you want to delete this alert ?",
+  YOUR_WISHLIST: "Your wishlist",
+  YOUR_SAVED_SEARCH: "Your saved search",
 };
 
 export const NAVBAR_NAV_LINKS = [
-  { path: ROUTE_CONSTANTS.PROFILE, label: STRING_DATA.PROFILE },
-  { path: ROUTE_CONSTANTS.MANAGE_LIST, label: STRING_DATA.MANAGE_LIST },
-  { path: ROUTE_CONSTANTS.MANAGE_ALERT, label: STRING_DATA.MANAGE_ALERT },
-  { path: ROUTE_CONSTANTS.MANAGE_FILTERS, label: "Manage saved search" },
+  {
+    path: ROUTE_CONSTANTS.PROFILE,
+    label: STRING_DATA.PROFILE,
+    icon: faUser,
+  },
+  {
+    path: ROUTE_CONSTANTS.MANAGE_LIST,
+    label: STRING_DATA.YOUR_WISHLIST,
+    icon: faHeart,
+  },
+  {
+    path: ROUTE_CONSTANTS.MANAGE_ALERT,
+    label: STRING_DATA.YOUR_ALERTS,
+    icon: faBell,
+  },
+  {
+    path: ROUTE_CONSTANTS.MANAGE_FILTERS,
+    label: STRING_DATA.YOUR_SAVED_SEARCH,
+    icon: faFilter,
+  },
 ];
 
 export const INPUT_TYPE = {
@@ -115,6 +142,8 @@ export const RANGE_PRICE = {
 };
 
 export const ERROR_MESSAGE = {
+  NEW_PASSWORD_REQUIRED: "New password is required",
+  ASSET_TYPE_REQ: "Asset type is required",
   EMAIL_REQUIRED: "Email is required",
   PASSWORD_REQUIRED: "Password is required",
   CATEGORY_REQUIRED: "Category is required",
@@ -1064,7 +1093,8 @@ export const REACT_QUERY = {
   AUCTION_DETAIL: "auction-detail",
   ASSETS_TYPE: "Assets-type",
   AUCTION_LOCATION_ALL: "Auction-location-all",
-  SAVED_SEARCH: "Saved-search"
+  SAVED_SEARCH: "Saved-search",
+  ALERTS: "Alerts",
 };
 
 export const SAMPLE_CITY = [

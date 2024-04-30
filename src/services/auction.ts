@@ -6,7 +6,7 @@ import {
   sanitizedAuctionData,
   sanitizedAuctionDetail,
 } from "@/shared/Utilies";
-import { IAssetType, IAuction, ICategoryCollection } from "@/types";
+import { IAlert, IAssetType, IAuction, ICategoryCollection } from "@/types";
 
 export const getAssetTypeClient = async () => {
   // "use server";
@@ -221,6 +221,75 @@ export const deleteSavedSearch = async (props: {id: string}) => {
   const {id} = props
   try {
     const URL = API_BASE_URL + API_ENPOINTS.SAVED_SEARCH + `/${id}`;
+    const { data } = await deleteRequest({ API: URL });
+    console.log(data, "responsefetch");
+    return data;
+  } catch (e) {
+    console.log(e, "auctionDetail error collection");
+  }
+};
+
+export const createAlertSearch = async (body: {
+  name: string;
+  location: string;
+  assetType: string;
+  assetCategory: string;
+  bankName?: string;
+}) => {
+  try {
+    const URL = API_BASE_URL + API_ENPOINTS.ALERTS;
+
+    const { data } = await postRequest({ API: URL, DATA: body });
+
+    console.log(data, "responsefetch");
+    return data;
+  } catch (e: any) {
+    // return e?.response?.data?.error?.message
+    console.log(e, "auctionDetail error collection");
+    return e;
+  }
+};
+
+export const fetchAlerts = async () => {
+  try {
+    const URL = API_BASE_URL + API_ENPOINTS.ALERTS;
+    const { data } = await getRequest({ API: URL });
+    console.log(data, "responsefetch");
+    // const sanitizeData = sanitizeStrapiData(data?.data) as IAlert[];
+    // return {data: sanitizeData, meta: data?.data?.meta};
+    return data
+  } catch (e) {
+    console.log(e, "auctionDetail error collection");
+  }
+};
+
+export const updateAlert = async (payload: {
+  id: string;
+  body: {
+    name: string;
+    location: string;
+    assetType: string;
+    assetCategory: string;
+    bankName?: string;
+  };
+}) => {
+  try {
+    const { id, body } = payload;
+    const URL = API_BASE_URL + API_ENPOINTS.ALERTS + `/${id}`;
+
+    const { data } = await putRequest({ API: URL, DATA: body });
+
+    console.log(data, "responsefetch");
+    return data;
+  } catch (e) {
+    console.log(e, "auctionDetail error collection");
+  }
+};
+
+export const deleteAlert = async (props: { id: string }) => {
+  const { id } = props;
+  try {
+    const URL = API_BASE_URL + API_ENPOINTS.ALERTS + `/${id}`;
     const { data } = await deleteRequest({ API: URL });
     console.log(data, "responsefetch");
     return data;

@@ -10,29 +10,55 @@ const ShowLabelValue = dynamic(
 import { COOKIES, STRING_DATA } from "@/shared/Constants";
 import { getCookie } from "cookies-next";
 import { useEffect, useState } from "react";
+import ActionButton from "../atoms/ActionButton";
+import DeleteUserConfirmationModal from "../ modals/DeleteUserConfirmationModal";
+import useModal from "@/hooks/useModal";
+import UpdatePasswordModal from "../ modals/UpdatePasswordModal";
 
 export default function ProfileTemplate() {
+    const { showModal, openModal, hideModal } = useModal();
+    const {
+      showModal: showModalDelete,
+      openModal: openModalDelete,
+      hideModal: hideModalDelete,
+    } = useModal();
+
+
   const userData = getCookie(COOKIES.AUCTION_USER_KEY)
     ? JSON.parse(getCookie(COOKIES.AUCTION_USER_KEY) ?? "")
     : null;
 
-    // const [userInfo, setUserInfo] = useState<any>({});
-
-    // useEffect(() => {
-    //   if (userData) {
-    //     setUserInfo(userData);
-    //   }
-    //   // userData && setUserInfo(userData);
-    // }, [userData]);
-
   return (
     <>
+      {/* Delete User*/}
+      <DeleteUserConfirmationModal
+        openModal={openModalDelete}
+        hideModal={hideModalDelete}
+      />
+
+      {/* Delete User*/}
+      <UpdatePasswordModal openModal={openModal} hideModal={hideModal} />
+
       <div className="custom-common-header-class">{STRING_DATA.PROFILE}</div>
       <div className="custom-common-header-detail-class">
         <div className="flex flex-col gap-4 p-4  w-full min-h-12">
           <ShowLabelValue heading={"Full Name"} value={userData?.name ?? "-"} />
           <ShowLabelValue heading={"Email"} value={userData?.email ?? "-"} />
-          <ShowLabelValue heading={"Phone number"} value={userData?.username ?? "-"} />
+          <ShowLabelValue
+            heading={"Phone number"}
+            value={userData?.username ?? "-"}
+          />
+          <div className="flex items-center justify-start gap-4">
+            <ActionButton
+              text={STRING_DATA.UPDATE_PASSWORD.toUpperCase()}
+              onclick={showModal}
+            />
+            <ActionButton
+              text={STRING_DATA.DELETE_ACCOUNT.toUpperCase()}
+              isDeleteButton={true}
+              onclick={showModalDelete}
+            />
+          </div>
         </div>
       </div>
     </>

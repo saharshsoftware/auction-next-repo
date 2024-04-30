@@ -273,3 +273,16 @@ body :focus-within {
 .range-slider {
   height: 4px !important;
 }
+
+.slides-container .slick-slider .arrow-icon {
+  font-size: 0;
+    line-height: 0;
+    position: absolute;
+    top: 50%;
+    display: block;
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    transform: translate(0, -50%);
+    cursor: pointer;
+}

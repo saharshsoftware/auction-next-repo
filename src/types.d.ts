@@ -170,3 +170,16 @@ export interface ISavedSearch {
   filter: string;
   sitemap_exclude: boolean;
 }
+
+export interface IAlert {
+  id: string;
+  assetCategory: string;
+  assetType: string;
+  bankName: string;
+  createdAt: string;
+  location: string;
+  maxPrice: string;
+  minPrice: string;
+  name: string;
+  updatedAt: string;
+}
