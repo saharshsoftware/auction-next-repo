@@ -142,6 +142,7 @@ export const RANGE_PRICE = {
 };
 
 export const ERROR_MESSAGE = {
+  CURRENT_PASSWORD: "Current password is required",
   NEW_PASSWORD_REQUIRED: "New password is required",
   ASSET_TYPE_REQ: "Asset type is required",
   EMAIL_REQUIRED: "Email is required",

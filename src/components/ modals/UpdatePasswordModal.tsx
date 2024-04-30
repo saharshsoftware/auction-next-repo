@@ -21,7 +21,7 @@ const validationSchema = Yup.object({
     .trim()
     .min(6, ERROR_MESSAGE.MIN_6)
     .max(30, ERROR_MESSAGE.MAX_PASS_30)
-    .required(ERROR_MESSAGE.PASSWORD_REQUIRED),
+    .required(ERROR_MESSAGE.CURRENT_PASSWORD),
   newPassword: Yup.string()
     .trim()
     .min(6, ERROR_MESSAGE.MIN_6)
