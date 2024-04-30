@@ -7,6 +7,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { getCookie } from "cookies-next";
 import { Tooltip } from "@nextui-org/tooltip";
+import { Popover, PopoverTrigger, PopoverContent } from "@nextui-org/popover";
 import TooltipContent from "../atoms/TooltipContent";
 import { getInitials } from "@/shared/Utilies";
 import CustomDrawer from "./CustomDrawer";
@@ -143,7 +144,7 @@ const Navbar: React.FC = () => {
       return (
         <>
           <div className="relative">
-            <Tooltip
+            {/* <Tooltip
               shadow="lg"
               content={<TooltipContent />}
               isOpen={isOpen}
@@ -155,10 +156,27 @@ const Navbar: React.FC = () => {
                   <span>{getInitials(userData?.name)}</span>
                 </div>
               </div>
-            </Tooltip>
-            <em className="absolute bottom-[1.2rem] -right-5">
-              {isOpen ? downSvg() : upSvg()}
-            </em>
+            </Tooltip> */}
+
+            <Popover
+              placement="bottom"
+              isOpen={isOpen}
+              onOpenChange={(open) => setIsOpen(open)}
+            >
+              <PopoverTrigger>
+                <div className="avatar placeholder cursor-pointer">
+                  <div className="bg-neutral text-neutral-content rounded-full w-12">
+                    <span>{getInitials(userData?.name)}</span>
+                  </div>
+                  <em className="absolute bottom-[1.2rem] -right-5">
+                    {isOpen ? downSvg() : upSvg()}
+                  </em>
+                </div>
+              </PopoverTrigger>
+              <PopoverContent>
+                <TooltipContent />
+              </PopoverContent>
+            </Popover>
           </div>
         </>
       );
