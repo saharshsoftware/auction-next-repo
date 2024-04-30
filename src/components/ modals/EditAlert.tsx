@@ -238,7 +238,7 @@ const EditAlert = (props: ICreateFavList) => {
                                 defaultValue={values?.propertyType}
                                 options={assetsTypeOptions ?? []}
                                 loading={isLoadingAssetsTypeCategory}
-                                placeholder={"Property type"}
+                                placeholder={"Asset type"}
                                 customClass="w-full "
                                 onChange={(e) => {
                                   // console.log(e);
