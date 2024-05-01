@@ -42,7 +42,13 @@ const initialValues = {
   phoneNumber: STRING_DATA.EMPTY,
 };
 
-export default function SignupComp() {
+export default function SignupComp(props: {
+  isAuthModal?: boolean;
+  handleLinkclick?: () => void;
+  closeModal?: () => void;
+}) {
+
+  const { isAuthModal = false, handleLinkclick = () => {}, closeModal=()=>{} } = props;
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [respError, setRespError] = useState<string>("");
@@ -56,7 +62,7 @@ export default function SignupComp() {
         data,
         success: (data: IUserData) => {
           // console.log(data);
-          router.push(ROUTE_CONSTANTS.DASHBOARD);
+          if (!isAuthModal) router.push(ROUTE_CONSTANTS.DASHBOARD);
         },
         fail: (error: any) => {
           debugger;
@@ -83,7 +89,9 @@ export default function SignupComp() {
   };
   return (
     <>
-      <div className="common-auth-section-class my-4">
+      <div
+        className={`${isAuthModal ? "" : "common-auth-section-class"} my-4`}
+      >
         <CustomFormikForm
           initialValues={initialValues}
           validationSchema={validationSchema}
@@ -93,9 +101,11 @@ export default function SignupComp() {
           {({ setFieldValue, values }: any) => (
             <Form>
               <div className="flex flex-col gap-4 ">
-                <h2 className="custom-h2-class text-center text-3xl">
-                  {STRING_DATA.REGISTER}
-                </h2>
+                {!isAuthModal ? (
+                  <h2 className="custom-h2-class text-center text-3xl">
+                    {STRING_DATA.REGISTER}
+                  </h2>
+                ) : null}
                 <TextField
                   type="text"
                   name="name"
@@ -125,7 +135,7 @@ export default function SignupComp() {
                           className="bg-gray-50 border border-brand-color text-gray-900 sm:text-sm hover:bg-gray-100 block w-full p-2 ps-12 rounded"
                           autoComplete="false"
                           placeholder="Enter phone number"
-                          onChange={(e)=> {
+                          onChange={(e) => {
                             setFieldValue("phoneNumber", e.target.value);
                           }}
                         />
@@ -156,22 +166,38 @@ export default function SignupComp() {
                     {respError}
                   </span>
                 ) : null}
-                <div className="flex justify-center items-center gap-4 ">
+                <div className="flex justify-end items-center gap-4 ">
+                  {isAuthModal ? (
+                    <ActionButton
+                      text={STRING_DATA.CANCEL.toUpperCase()}
+                      onclick={closeModal}
+                      isActionButton={false}
+                    />
+                  ) : null}
                   <ActionButton
                     text={STRING_DATA.CREATE_ACCOUNT.toUpperCase()}
                     isSubmit={true}
-                    customClass="w-full"
                     isLoading={isPending}
+                    customClass={`${isAuthModal ? null : "w-full"}`}
                   />
                 </div>
-                <p className="text-sm font-semibold">
+                <p className="text-sm font-semibold flex">
                   {STRING_DATA.ALREADY_HAVE_ACCOUNT} &nbsp;
-                  <Link
-                    href={ROUTE_CONSTANTS.LOGIN}
-                    className="link link-primary"
-                  >
-                    {STRING_DATA.LOGIN}
-                  </Link>
+                  {isAuthModal ? (
+                    <div
+                      onClick={handleLinkclick}
+                      className="link link-primary"
+                    >
+                      {STRING_DATA.LOGIN}
+                    </div>
+                  ) : (
+                    <Link
+                      href={ROUTE_CONSTANTS.LOGIN}
+                      className="link link-primary"
+                    >
+                      {STRING_DATA.LOGIN}
+                    </Link>
+                  )}
                 </p>
               </div>
             </Form>

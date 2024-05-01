@@ -19,6 +19,7 @@ export const FILTER_EMPTY = {
 export const PAGE_REVALIDATE_TIME = 86400 // 24 hr
 
 export const STRING_DATA = {
+  SHOW_INTEREST: "Show interest",
   DELETE_ACCOUNT: "Delete account",
   EDIT_ALERT: "Edit alert",
   UPDATE_PASSWORD: "Update password",

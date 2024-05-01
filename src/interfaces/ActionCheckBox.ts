@@ -4,5 +4,6 @@ export interface IActionCheckBox {
   checked?: boolean;
   onChange?: React.FormEventHandler<HTMLInputElement>;
   disabled?: boolean;
+  name?: string;
   customClass?: string;
 }
