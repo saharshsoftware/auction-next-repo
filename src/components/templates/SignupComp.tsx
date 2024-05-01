@@ -62,7 +62,11 @@ export default function SignupComp(props: {
         data,
         success: (data: IUserData) => {
           // console.log(data);
-          if (!isAuthModal) router.push(ROUTE_CONSTANTS.DASHBOARD);
+          if (isAuthModal) {
+            closeModal?.();
+            return;
+          }
+          router.push(ROUTE_CONSTANTS.DASHBOARD);
         },
         fail: (error: any) => {
           debugger;

@@ -50,7 +50,11 @@ export default function LoginComp(props: {
       const response = {
         data,
         success: () => {
-          if (!isAuthModal) router.push(ROUTE_CONSTANTS.DASHBOARD);
+          if (isAuthModal) {
+            closeModal?.();
+            return;
+          }
+          router.push(ROUTE_CONSTANTS.DASHBOARD);
         },
         fail: (error: any) => {
           const { message } = error;
