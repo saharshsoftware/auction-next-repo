@@ -1,7 +1,13 @@
 import moment from "moment";
 import { IActionResponse } from "../interfaces/RequestInteface";
 import { STORE_KEY } from "../zustandStore/store";
-import { IAssetType, IAuction, IBanks, ICategoryCollection, ILocations } from "@/types";
+import {
+  IAssetType,
+  IAuction,
+  IBanks,
+  ICategoryCollection,
+  ILocations,
+} from "@/types";
 import { AxiosError } from "axios";
 import { STRING_DATA } from "./Constants";
 import { ROUTE_CONSTANTS } from "./Routes";
@@ -44,7 +50,8 @@ export const handleOnSettled = (actionResponse: IActionResponse) => {
     if (actionResponse?.fail) {
       // debugger;
       actionResponse?.fail?.(
-        actionResponse?.data?.error ?? actionResponse?.data?.response?.data?.error
+        actionResponse?.data?.error ??
+          actionResponse?.data?.response?.data?.error
       );
       return;
     }
@@ -62,15 +69,10 @@ export const formatPrice = (price: any) => {
 
   if (price >= 10000000) {
     // If price is greater than or equal to 1 crore (10,000,000)
- formattedPrice =
-   (price / 10000000).toFixed(2).toLocaleString() +
-   " Cr";
+    formattedPrice = (price / 10000000).toFixed(2).toLocaleString() + " Cr";
   } else if (price >= 100000) {
     // If price is greater than or equal to 1 lakh (100,000)
-    formattedPrice =
-      (price / 100000)
-        .toFixed(2)
-        .toLocaleString() + " Lakh";
+    formattedPrice = (price / 100000).toFixed(2).toLocaleString() + " Lakh";
   } else {
     formattedPrice = price.toLocaleString();
   }
@@ -87,11 +89,12 @@ export const sanitizedAuctionData = (data: any[]) => {
 };
 
 export const sanitizedAuctionDetail = (data: any) => {
-  const { assetCategory, assetType, contactNo, contact, area, city, state } = data?.attributes;
-  const result =  { id: data.id, ...data.attributes };
+  const { assetCategory, assetType, contactNo, contact, area, city, state } =
+    data?.attributes;
+  const result = { id: data.id, ...data.attributes };
   result.propertyType = `${assetCategory ?? "-"} - ${assetType ?? ""}`;
-  result.contact = `${contact ?? ''} ${contactNo ?? ''}`;
-  result.area = `${area ?? ''}, ${city ?? ''}, ${state ?? ''}`
+  result.contact = `${contact ?? ""} ${contactNo ?? ""}`;
+  result.area = `${area ?? ""}, ${city ?? ""}, ${state ?? ""}`;
   // console.log(result, "santizied")
   return result;
 };
@@ -149,7 +152,7 @@ export const getBankOptions = (data: IBanks[]) => {
     name: item?.name,
     slug: item?.slug,
     label: item?.name,
-    value: item?.id
+    value: item?.id,
   }));
   return sanitizeData;
 };
@@ -174,8 +177,9 @@ export const selectedAssetTypeCategory = (
   // console.log(data, "categegory");
   if (data?.length) {
     const result =
-      data?.find((item: any) => item?.name === initialValueData?.propertyType) ??
-      {};
+      data?.find(
+        (item: any) => item?.name === initialValueData?.propertyType
+      ) ?? {};
     return [result];
   }
   return [];
@@ -207,21 +211,22 @@ export const selectedBank = (
   return [];
 };
 
-
-export const sanitizeStrapiImageUrl = (item:any) => {
-  const imagelink = item?.imageURL
+export const sanitizeStrapiImageUrl = (item: any) => {
+  const imagelink = item?.imageURL;
   // console.log(item, "resultimagebank");
-  const result = imagelink ? process.env.NEXT_PUBLIC_IMAGE_CLOUDFRONT + imagelink: '';
-  return result
-}
+  const result = imagelink
+    ? process.env.NEXT_PUBLIC_IMAGE_CLOUDFRONT + imagelink
+    : "";
+  return result;
+};
 
 export const hasNonEmptyOrNullValue = (obj: any) => {
-    for (let key in obj) {
-      if (obj.hasOwnProperty(key) && (obj[key] !== "" || obj[key] !== null)) {
-        return false; // Found a non-empty and non-null value
-      }
+  for (let key in obj) {
+    if (obj.hasOwnProperty(key) && (obj[key] !== "" || obj[key] !== null)) {
+      return false; // Found a non-empty and non-null value
     }
-    return true;
+  }
+  return true;
 };
 
 export function getInitials(name: string) {
@@ -231,11 +236,11 @@ export function getInitials(name: string) {
     .join("");
 }
 
-export function capitalizeFirstLetter(str:string) {
+export function capitalizeFirstLetter(str: string) {
   return str?.charAt(0)?.toUpperCase() + str?.slice(1);
 }
 
-export function convertString(str1:string) {
+export function convertString(str1: string) {
   return str1
     .split("-")
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
@@ -247,12 +252,12 @@ export function getSharedAuctionUrl(item: any) {
   return news_share_path;
 }
 
-export function groupByState(data:ILocations[]) {
+export function groupByState(data: ILocations[]) {
   // console.log(data)
-  const stateToCitiesMap:any = {};
+  const stateToCitiesMap: any = {};
 
   const cities = data.filter((item: ILocations) => item.type === "city");
-  const states = data.filter((item:  ILocations) => item.type === "state");
+  const states = data.filter((item: ILocations) => item.type === "state");
 
   cities.forEach((city: ILocations) => {
     const stateName = city?.state;
@@ -265,7 +270,7 @@ export function groupByState(data:ILocations[]) {
   });
 
   const resultArray = states.map((state: ILocations) => {
-    const stateName = state.name || '';
+    const stateName = state.name || "";
     return {
       ...state, // spread state attributes
       cities: stateToCitiesMap[stateName] || [], // the array of cities
@@ -279,14 +284,13 @@ type GroupedBanks = {
   [key: string]: IBanks[];
 };
 
-
-export function groupAndSortBanks(data:IBanks[]) {
+export function groupAndSortBanks(data: IBanks[]) {
   // Initialize an object to group banks by the first letter of their bankName
   const bankGroups: GroupedBanks = {};
 
   // Group banks by the first letter of their bankName
-  data?.forEach((bank:IBanks, index) => {
-    const firstLetter = bank?.name?.charAt(0).toUpperCase() || '';
+  data?.forEach((bank: IBanks, index) => {
+    const firstLetter = bank?.name?.charAt(0).toUpperCase() || "";
     if (!bankGroups[firstLetter]) {
       bankGroups[firstLetter] = [];
     }
@@ -301,6 +305,27 @@ export function groupAndSortBanks(data:IBanks[]) {
   return sortedGroups;
 }
 
-export function generateQueryParamString(arr:any, paramName='fields') {
-  return arr.map((value:any, index:number) => `${paramName}[${index}]=${value}`).join("&");
+export function generateQueryParamString(arr: any, paramName = "fields") {
+  return arr
+    .map((value: any, index: number) => `${paramName}[${index}]=${value}`)
+    .join("&");
 }
+
+export const getAuctionFilterRequiredKey = (key: string) => {
+  let result = "";
+  switch (key) {
+    case "locations":
+      result = "location";
+      break;
+    case "banks":
+      result = "bank";
+      break;
+    case "categories":
+      result = "category";
+      break;
+    case "asset-types":
+      result = "propertyType";
+      break;
+  }
+  return result;
+};

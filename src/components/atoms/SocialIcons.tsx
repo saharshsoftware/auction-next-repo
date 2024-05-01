@@ -7,13 +7,21 @@ import {
   TwitterShareButton,
   TwitterIcon,
 } from "react-share";
+import WhatsappSvg from "../svgIcons/WhatsappSvg";
 
 const BUTTON_SIZE = 30;
 
 export const WhatsappShareWithIcon = (url?: any) => {
   return (
-    <WhatsappShareButton url={url?.url ?? ""}>
-      <WhatsappIcon size={BUTTON_SIZE} />
+    <WhatsappShareButton
+      url={url?.url ?? ""}
+      className="flex gap-2 items-center cursor-pointer "
+    >
+      {/* <WhatsappIcon size={BUTTON_SIZE} />  */}
+      <em>
+        <WhatsappSvg />
+      </em>
+      <span className="text-green-600 text-sm">Share</span>
     </WhatsappShareButton>
   );
 };

@@ -42,7 +42,9 @@ const AuctionCard: React.FC<IAuctionCard> = (props) => {
               Estimated Market Value {formatPrice(item?.estimatedMarketPrice)}
             </span>
           </div>
-          <div>{WhatsappShareWithIcon({ url: sharedUrl })}</div>
+          <div className="border border-green-500 rounded-lg px-2 py-1">
+            {WhatsappShareWithIcon({ url: sharedUrl })}
+          </div>
         </div>
         <p className="flex-1 line-clamp-4">
           <div

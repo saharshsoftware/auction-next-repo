@@ -3,6 +3,7 @@ import HeroSection from "@/components/atoms/HeroSection";
 import AssetsCollection from "@/components/molecules/AssetsCollection";
 import BankCollection from "@/components/molecules/BankCollection";
 import CategoryCollection from "@/components/molecules/CategoryCollection";
+import CommonCollectionComp from "@/components/molecules/CommonCollectionComp";
 import { fetchBanks, fetchLocation } from "@/server/actions";
 import { getAssetType, getCarouselData, getCategoryBoxCollection } from "@/server/actions/auction";
 import { PAGE_REVALIDATE_TIME } from "@/shared/Constants";
@@ -18,7 +19,7 @@ const getComponent = (componentName: string) => {
     case "AssetsCollection":
       return AssetsCollection;
     default:
-      return null;
+      return CommonCollectionComp;
   }
 };
 
@@ -33,7 +34,7 @@ export default async function Home() {
   const renderHomeCollection = () => {
     if (carouselResponse) {
       return (
-        <section className="common-section md:my-auto my-12">
+        <section className="md:my-auto my-12">
           {carouselResponse?.map(
             (
               item: {
@@ -43,12 +44,13 @@ export default async function Home() {
                 description?: string;
                 title?: string;
                 subTitle?: string;
+                strapiAPIQuery?: string;
               },
               index: number
             ) => {
               const ItemComponent = getComponent(item?.componentName) as any;
               return (
-                <div key={index}>
+                <div key={index} className={`${index%2 ===0 ?'bg-[#F8F9F4]' :'bg-white'}`}>
                   <CustomReactCarousel
                     desc={item?.description ?? ""}
                     ItemComponent={item?.componentName}
@@ -57,7 +59,11 @@ export default async function Home() {
                   >
                     {item?.collectionData?.map(
                       (subItem: any, index: number) => (
-                        <ItemComponent key={index} item={subItem} />
+                        <ItemComponent
+                          key={index}
+                          item={subItem}
+                          fetchQuery={item?.strapiAPIQuery}
+                        />
                       )
                     )}
                   </CustomReactCarousel>

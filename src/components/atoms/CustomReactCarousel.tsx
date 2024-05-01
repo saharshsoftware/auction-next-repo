@@ -134,7 +134,7 @@ const CustomReactCarousel = (props: ICustomReactCarousel) => {
 
   return (
     <>
-      <div className={"carousel-container mb-16"}>
+      <div className={`carousel-container mb-16 common-section py-12`}>
         <div
           className={
             "flex flex-col items-center justify-center text-center gap-4 md:w-3/5 mx-auto mb-4"

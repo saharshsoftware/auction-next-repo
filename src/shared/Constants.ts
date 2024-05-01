@@ -7,7 +7,14 @@ export const COOKIES = {
   AUCTION_FILTER: "auction-filter"
 };
 
-export const FILTER_EMPTY = { name: "", bank: "", location: "", category: "", price: "" }
+export const FILTER_EMPTY = {
+  name: "",
+  bank: "",
+  location: "",
+  category: "",
+  price: "",
+  propertyType: "",
+};
 
 export const PAGE_REVALIDATE_TIME = 86400 // 24 hr
 
