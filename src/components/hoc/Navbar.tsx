@@ -59,7 +59,7 @@ const Navbar: React.FC = () => {
   const userData = getCookie(COOKIES.AUCTION_USER_KEY) ?  JSON.parse(getCookie(COOKIES.AUCTION_USER_KEY) ?? "") : null;
   const [myToken, setMyToken] = useState("");
   const [isOpen, setIsOpen] = React.useState(false);
-
+  console.log(getCookie(COOKIES.TOKEN_KEY), "getCookie(COOKIES.TOKEN_KEY)");
   useEffect(() => {
     console.log(token);
     setMyToken(token);
@@ -140,7 +140,7 @@ const Navbar: React.FC = () => {
   };
 
   const renderAuthComponent = () => {
-    console.log(myToken, "myToken");
+    console.log(myToken, "myTokenmyToken");
     if (myToken) {
       return (
         <>
@@ -175,7 +175,7 @@ const Navbar: React.FC = () => {
                 </div>
               </PopoverTrigger>
               <PopoverContent>
-                <TooltipContent />
+                <TooltipContent closePopover={()=> setIsOpen(false)}/>
               </PopoverContent>
             </Popover>
           </div>

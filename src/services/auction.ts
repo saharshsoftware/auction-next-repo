@@ -301,3 +301,18 @@ export const deleteAlert = async (props: { id: string }) => {
     console.log(e, "auctionDetail error collection");
   }
 };
+
+export const showInterest = async (body: { user: string; ipAddress: string; notice:string }) => {
+  try {
+    const URL = API_BASE_URL + API_ENPOINTS.INTEREST;
+
+    const { data } = await postRequest({ API: URL, DATA: {data:body} });
+
+    console.log(data, "responsefetch");
+    return data;
+  } catch (e: any) {
+    // return e?.response?.data?.error?.message
+    console.log(e, "auctionDetail error collection");
+    return e;
+  }
+};

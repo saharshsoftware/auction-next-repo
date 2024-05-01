@@ -11,6 +11,8 @@ import { ROUTE_CONSTANTS } from '@/shared/Routes';
 import useModal from '@/hooks/useModal';
 import InterestModal from '../ modals/InterestModal';
 import { getCookie } from 'cookies-next';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowLeft, faHeart } from '@fortawesome/free-solid-svg-icons';
 
 const AuctionDetail = (props: { auctionDetail: IAuction }) => {
   const { auctionDetail } = props;
@@ -27,6 +29,7 @@ const AuctionDetail = (props: { auctionDetail: IAuction }) => {
           openModal={openModal}
           hideModal={hideModal}
           userData={userData}
+          auctionDetail={auctionDetail}
         />
       ) : null}
       <div className="flex flex-col gap-4 p-4 w-full">
@@ -36,11 +39,13 @@ const AuctionDetail = (props: { auctionDetail: IAuction }) => {
             <ActionButton
               text={STRING_DATA.BACK.toUpperCase()}
               isActionButton={false}
+              icon={<FontAwesomeIcon icon={faArrowLeft} />}
             />
           </Link>
           <ActionButton
             text={STRING_DATA.SHOW_INTEREST.toUpperCase()}
             onclick={showModal}
+            icon={<FontAwesomeIcon icon={faHeart} />}
           />
         </div>
         <div className="flex lg:flex-row flex-col gap-4 justify-between items-start">

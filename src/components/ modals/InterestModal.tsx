@@ -14,11 +14,16 @@ import SignupComp from "../templates/SignupComp";
 import { getCookie } from "cookies-next";
 import ActionCheckbox from "../atoms/ActionCheckbox";
 import { ErrorMessage, Field, Form } from "formik";
+import { showInterest } from "@/services/auction";
+import toast from "react-simple-toasts";
+import { useParams } from "next/navigation";
+import { IAuction } from "@/types";
 
 interface IInterestModal {
   openModal: boolean;
   hideModal?: () => void;
   userData?: any;
+  auctionDetail?: IAuction;
 }
 
 const validationSchema = Yup.object({
@@ -27,39 +32,25 @@ const validationSchema = Yup.object({
 });
 
 const InterestModal = (props: IInterestModal) => {
-  const { openModal, hideModal = () => {}, userData } = props;
+  const params = useParams();
+  const { openModal, hideModal = () => {}, userData, auctionDetail } = props;
   const [show, setShow] = useState({ login: true, signup: false });
-    const token = getCookie(COOKIES.TOKEN_KEY) ?? "";
+  // const token = getCookie(COOKIES.TOKEN_KEY) ?? "";
 
-    const [myToken, setMyToken] = useState("");
-
-    useEffect(() => {
-      // console.log(token);
-      setMyToken(token);
-    }, [token]);
-
-  const handleShowLogin = () => {
-    setShow({ login: true, signup: false })
-  };
-  
-  const handleShowRegister = () => {
-    setShow({ login: false, signup: true })
-  };
-  const queryClient = useQueryClient();
-  const [respError, setRespError] = useState<string>("");
+  const [myToken, setMyToken] = useState(getCookie(COOKIES.TOKEN_KEY) ?? "");
 
   // Mutations
   const { mutate, isPending } = useMutation({
-    mutationFn: createFavouriteListClient,
+    mutationFn: showInterest,
     onSettled: async (data) => {
       console.log(data);
       const response = {
         data,
         success: () => {
-          queryClient.invalidateQueries({
-            queryKey: [REACT_QUERY.FAVOURITE_LIST],
+          toast("Success", {
+            theme: "success",
+            position: "top-center",
           });
-          // router.push(ROUTE_CONSTANTS.DASHBOARD);
           hideModal?.();
         },
         fail: (error: any) => {
@@ -71,17 +62,24 @@ const InterestModal = (props: IInterestModal) => {
     },
   });
 
-  const handleFavlist = (values: { name: string }) => {
-    const body = {
-      name: values?.name,
-    };
-    mutate(body);
+  const handleShowLogin = () => {
+    setShow({ login: true, signup: false });
   };
+
+  const handleShowRegister = () => {
+    setShow({ login: false, signup: true });
+  };
+  const queryClient = useQueryClient();
+  const [respError, setRespError] = useState<string>("");
 
   const renderAuthComponent = () => {
     if (show?.login) {
       return (
-        <LoginComp isAuthModal={true} handleLinkclick={handleShowRegister} closeModal={hideModal}/>
+        <LoginComp
+          isAuthModal={true}
+          handleLinkclick={handleShowRegister}
+          closeModal={hideModal}
+        />
       );
     }
     if (show?.signup) {
@@ -93,7 +91,7 @@ const InterestModal = (props: IInterestModal) => {
         />
       );
     }
-  }
+  };
 
   const selectedHeading = () => {
     let heading = STRING_DATA.SHOW_INTEREST;
@@ -103,8 +101,8 @@ const InterestModal = (props: IInterestModal) => {
     if (show?.signup && !myToken) {
       heading = STRING_DATA.REGISTER;
     }
-    return heading
-  }
+    return heading;
+  };
 
   const getIPAddress = async () => {
     try {
@@ -112,17 +110,22 @@ const InterestModal = (props: IInterestModal) => {
       const response = await fetch("https://api.ipify.org?format=json");
       const data = await response.json();
       const ipAddress = data.ip;
-      return ipAddress
+      return ipAddress;
     } catch (error) {
       console.log("Error submitting form:", error);
     }
-  }
+  };
 
   const handleInterestRequest = async () => {
     const ip = await getIPAddress();
-    console.log("handleInterestRequest", ip);
+    // console.log("handleInterestRequest", ip);
+    const body = {
+      user: userData?.username,
+      ipAddress: ip,
+      notice: auctionDetail?.id ?? "",
+    };
+    mutate(body);
   };
-
 
   const renderer = () => {
     console.log(myToken, "myTokeningereste");
@@ -146,6 +149,10 @@ const InterestModal = (props: IInterestModal) => {
               <Form>
                 {/* {JSON.stringify(values)} */}
                 <div className="flex flex-col gap-4 ">
+                  <p className="text-sm text-gray-400">
+                    Please review your contact details and show name, email and
+                    phone number
+                  </p>
                   <TextField
                     value={values?.name}
                     type="text"
@@ -164,7 +171,7 @@ const InterestModal = (props: IInterestModal) => {
                     value={values?.phone}
                     type="text"
                     name="phone"
-                    label="Contact number"
+                    label="Phone number"
                     disabled={true}
                   />
                   <div className="flex flex-col gap-2 w-full items-start relative">
@@ -241,11 +248,10 @@ const InterestModal = (props: IInterestModal) => {
           </CustomFormikForm>
         </>
       );
-    }
-    else {
+    } else {
       return renderAuthComponent();
     }
-  }
+  };
 
   return (
     <>

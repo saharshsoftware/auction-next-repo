@@ -7,7 +7,7 @@ import TextField from "../atoms/TextField";
 import ActionButton from "../atoms/ActionButton";
 import { useMutation } from "@tanstack/react-query";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
-import { redirect, useRouter } from "next/navigation";
+import { redirect, useParams, useRouter } from "next/navigation";
 import { handleOnSettled } from "@/shared/Utilies";
 import { FormikValues } from "formik";
 import { login } from "@/server/actions/auth";
@@ -39,6 +39,7 @@ export default function LoginComp(props: {
     closeModal = () => {},
   } = props;
   const router = useRouter();
+  const params = useParams(); 
   const [showPassword, setShowPassword] = useState(false);
   const [respError, setRespError] = useState<string>("");
 
@@ -51,6 +52,7 @@ export default function LoginComp(props: {
         data,
         success: () => {
           if (isAuthModal) {
+            router.refresh()
             closeModal?.();
             return;
           }
