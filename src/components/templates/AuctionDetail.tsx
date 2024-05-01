@@ -39,13 +39,12 @@ const AuctionDetail = (props: { auctionDetail: IAuction }) => {
             <ActionButton
               text={STRING_DATA.BACK.toUpperCase()}
               isActionButton={false}
-              icon={<FontAwesomeIcon icon={faArrowLeft} />}
             />
           </Link>
           <ActionButton
             text={STRING_DATA.SHOW_INTEREST.toUpperCase()}
             onclick={showModal}
-            icon={<FontAwesomeIcon icon={faHeart} />}
+            // icon={<FontAwesomeIcon icon={faHeart} />}
           />
         </div>
         <div className="flex lg:flex-row flex-col gap-4 justify-between items-start">

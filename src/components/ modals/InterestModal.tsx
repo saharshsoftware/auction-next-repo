@@ -120,7 +120,7 @@ const InterestModal = (props: IInterestModal) => {
     const ip = await getIPAddress();
     // console.log("handleInterestRequest", ip);
     const body = {
-      user: userData?.username,
+      user: userData?.id,
       ipAddress: ip,
       notice: auctionDetail?.id ?? "",
     };
