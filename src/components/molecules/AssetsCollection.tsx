@@ -33,17 +33,13 @@ const AssetsCollection = (props: IAssetsCollectionComp) => {
         href={`${ROUTE_CONSTANTS.ASSETS_TYPE}/${item?.slug}`}
         onClick={() => handleLinkClick(item)}
       >
-        <div className="w-full border border-gray-400 rounded-lg shadow p-4">
+        <div className="w-full p-4 min-h-28">
           <div className="flex flex-col items-center justify-center gap-2">
-            <div className="relative w-12 h-12">
-              <ImageTag
-                imageUrl={imageUrl}
-                alt={"i"}
-                customClass="object-contain bg-contain "
-              />
+            <div className="relative rounded-full w-20 h-20 flex items-center justify-center m-auto ">
+              <ImageTag imageUrl={imageUrl} alt={"i"} />
             </div>
             <div>{item?.totalNotices}</div>
-            {item?.name}
+            <span className="text-center">{item?.name}</span>
           </div>
         </div>
       </Link>

@@ -26,16 +26,13 @@ const BankCollection = (props: { fetchQuery?: string; item: any }) => {
         href={`${ROUTE_CONSTANTS.BANKS}/${item?.slug}`}
         onClick={() => handleLinkClick(item)}
       >
-        <div className="w-full p-4 border border-gray-400 rounded-lg shadow min-h-28">
+        <div className="w-full p-4 min-h-28">
           <div className="flex flex-col items-center justify-center gap-2">
-            <div className="relative ">
-              <ImageTag
-                imageUrl={imageUrl}
-                alt={"i"}
-                customClass="object-contain bg-contain w-28 h-28"
-              />
+            {/* border border-gray-400 shadow overflow-hidden */}
+            <div className="relative rounded-full w-20 h-20 flex items-center justify-center m-auto ">
+              <ImageTag imageUrl={imageUrl} alt={"i"} />
             </div>
-            {item?.name}
+            <span className="text-center">{item?.name}</span>
           </div>
         </div>
       </Link>

@@ -286,3 +286,12 @@ body :focus-within {
     transform: translate(0, -50%);
     cursor: pointer;
 }
+
+
+.carousel-p {
+  @apply text-3xl font-bold
+}
+
+.carousel-p .title-link {
+  @apply text-brand-color 
+}

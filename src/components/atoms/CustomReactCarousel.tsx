@@ -6,13 +6,14 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowAltCircleLeft } from "@fortawesome/free-solid-svg-icons";
+import MarkdownIt from "markdown-it";
 
 interface ICustomReactCarousel {
-  homePageCollection: any;
   ItemComponent?: any;
   children: React.ReactNode | any;
-  slideCount: number;
   title: string;
+  desc: string;
+  subTitle?: string;
 }
 
 const iconClassCommon = () => "absolute top-0 cursor-pointer h-full";
@@ -78,14 +79,14 @@ const PrevArrow = (props: any)=> {
 
 
 const CustomReactCarousel = (props: ICustomReactCarousel) => {
-  const { homePageCollection, title, children, slideCount } = props;
+  const { title, children, desc, subTitle } = props;
 
   const settings = {
     dots: true,
     infinite: true,
     speed: 500,
-    autoplay: true,
-    slidesToShow: 4,
+    autoplay: false,
+    slidesToShow: 6,
     slidesToScroll: 2,
     initialSlide: 0,
     nextArrow: <NextArrow />,
@@ -123,13 +124,32 @@ const CustomReactCarousel = (props: ICustomReactCarousel) => {
     ],
   };
 
+    const renderMarkdown = (markdown: any) => {
+      const md = new MarkdownIt({
+        html: true,
+        linkify: true,
+      });
+      return md.render(markdown);
+    };
+
   return (
     <>
-      <div className={"carousel-container mb-8"}>
-        <div className={"carousel-header"}>
-          <div className={"ps-[10px] text-lg"}>
-            <span>{title ?? "-"}</span>
+      <div className={"carousel-container mb-16"}>
+        <div
+          className={
+            "flex flex-col items-center justify-center text-center gap-4 md:w-3/5 mx-auto mb-4"
+          }
+        >
+          <div className={"ps-[10px] text-lg text-gray-400 fond-semibold"}>
+            {subTitle?.toUpperCase() ?? "-"}
           </div>
+          <div
+            className="carousel-p"
+            dangerouslySetInnerHTML={{
+              __html: renderMarkdown(title),
+            }}
+          ></div>
+          <p className="text-gray-500">{desc ?? ""}</p>
         </div>
         <div className={"slides-container"}>
           <Slider {...settings}>{children}</Slider>

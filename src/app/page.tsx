@@ -40,6 +40,9 @@ export default async function Home() {
                 componentName: string;
                 name: string;
                 collectionData: any[];
+                description?: string;
+                title?: string;
+                subTitle?: string;
               },
               index: number
             ) => {
@@ -47,10 +50,10 @@ export default async function Home() {
               return (
                 <div key={index}>
                   <CustomReactCarousel
-                    homePageCollection={undefined}
+                    desc={item?.description ?? ""}
                     ItemComponent={item?.componentName}
-                    title={item?.name}
-                    slideCount={item?.collectionData?.length ?? 0}
+                    title={item?.title ?? ""}
+                    subTitle={item?.subTitle ?? ""}
                   >
                     {item?.collectionData?.map(
                       (subItem: any, index: number) => (

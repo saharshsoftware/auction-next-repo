@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { sanitizeStrapiImageUrl } from "@/shared/Utilies";
 import Link from "next/link";
 import React from "react";
@@ -33,17 +33,13 @@ const CategoryCollection = (props: ICategroyCollectionComp) => {
         href={`${ROUTE_CONSTANTS.CATEGORY}/${item?.slug}`}
         onClick={() => handleLinkClick(item)}
       >
-        <div className="w-full border border-gray-400 rounded-lg shadow p-4">
+        <div className="w-full  rounded-lg  p-4">
           <div className="flex flex-col items-center justify-center gap-2">
-            <div className="relative w-12 h-12">
-              <ImageTag
-                imageUrl={imageUrl}
-                alt={"i"}
-                customClass="object-contain bg-contain "
-              />
+            <div className="relative rounded-full w-20 h-20 flex items-center justify-center m-auto ">
+              <ImageTag imageUrl={imageUrl} alt={"i"} />
             </div>
             <div>{item?.totalNotices}</div>
-            {item?.name}
+            <span className="text-center">{item?.name}</span>
           </div>
         </div>
       </Link>
