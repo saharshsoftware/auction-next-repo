@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
@@ -80,20 +80,56 @@ const PrevArrow = (props: any)=> {
 
 const CustomReactCarousel = (props: ICustomReactCarousel) => {
   const { title, children, desc, subTitle } = props;
+  // const [slidesToShow, setSlidesToShow] = useState(4);
+  // const [isLoaded, setIsLoader] = useState(false)
+  
+  // useEffect(() => {
+  //   setIsLoader(true);
+  //   console.log(slidesToShow, "slidesToShow");
+  //   // Adjust number of slides to show based on window width
+  //   const handleResize = () => {
+  //     if (window.innerWidth < 1024) {
+  //       setSlidesToShow(window.innerWidth < 600 ? 1 : 4);
+  //     } else {
+  //       setSlidesToShow(6);
+  //     }
+  //   };
+
+  //   // Add event listener for window resize
+  //   window.addEventListener("resize", handleResize);
+
+  //   // Initial adjustment on component mount
+  //   handleResize();
+
+  //   // Cleanup on unmount
+  //   return () => {
+  //     window.removeEventListener("resize", handleResize);
+  //   };
+  // }, []);
 
   const settings = {
     dots: true,
     infinite: true,
     speed: 500,
     autoplay: false,
-    initialSlide: 0,
+    slidesToShow: 1,
     nextArrow: <NextArrow />,
     prevArrow: <PrevArrow />,
     responsive: [
       {
-        breakpoint: 1024,
+        breakpoint: 2048,
         settings: {
           slidesToShow: 6,
+          slidesToScroll: 2,
+          infinite: true,
+          dots: true,
+          arrows: true,
+        },
+      },
+      {
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: 4,
           slidesToScroll: 2,
           infinite: true,
           dots: false,
@@ -115,6 +151,7 @@ const CustomReactCarousel = (props: ICustomReactCarousel) => {
         settings: {
           slidesToShow: 1,
           slidesToScroll: 1,
+          initialSlide: 1,
           arrows: false,
           dots: false,
         },
@@ -132,6 +169,7 @@ const CustomReactCarousel = (props: ICustomReactCarousel) => {
 
   return (
     <>
+      {/* {isLoaded ?  */}
       <div className={`carousel-container mb-16 common-section py-12`}>
         <div
           className={
@@ -153,6 +191,7 @@ const CustomReactCarousel = (props: ICustomReactCarousel) => {
           <Slider {...settings}>{children}</Slider>
         </div>
       </div>
+      {/* : ''} */}
     </>
   );
 };

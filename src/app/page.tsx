@@ -50,7 +50,12 @@ export default async function Home() {
             ) => {
               const ItemComponent = getComponent(item?.componentName) as any;
               return (
-                <div key={index} className={`${index%2 ===0 ?'bg-[#F8F9F4]' :'bg-white'}`}>
+                <div
+                  key={index}
+                  className={`${
+                    index % 2 === 0 ? "bg-[#f0f1f8]" : "bg-white"
+                  }`}
+                >
                   <CustomReactCarousel
                     desc={item?.description ?? ""}
                     ItemComponent={item?.componentName}
