@@ -1,22 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import CustomModal from "../atoms/CustomModal";
 import ActionButton from "../atoms/ActionButton";
-import { COOKIES, ERROR_MESSAGE, REACT_QUERY, STRING_DATA } from "@/shared/Constants";
+import { COOKIES, STRING_DATA } from "@/shared/Constants";
 import CustomFormikForm from "../atoms/CustomFormikForm";
 import TextField from "../atoms/TextField";
-import * as Yup from "yup";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { handleOnSettled } from "@/shared/Utilies";
-import { createFavouriteList } from "@/server/actions/favouriteList";
-import { createFavouriteListClient } from "@/services/favouriteList";
 import LoginComp from "../templates/LoginComp";
 import SignupComp from "../templates/SignupComp";
 import { getCookie } from "cookies-next";
-import ActionCheckbox from "../atoms/ActionCheckbox";
-import { ErrorMessage, Field, Form } from "formik";
+import { Field, Form } from "formik";
 import { showInterest } from "@/services/auction";
 import toast from "react-simple-toasts";
-import { useParams } from "next/navigation";
 import { IAuction } from "@/types";
 
 interface IInterestModal {
@@ -26,13 +21,7 @@ interface IInterestModal {
   auctionDetail?: IAuction;
 }
 
-const validationSchema = Yup.object({
-  check1: Yup.bool().oneOf([true], "You must agree to the terms"),
-  check2: Yup.bool().oneOf([true], "You must agree to the terms"),
-});
-
 const InterestModal = (props: IInterestModal) => {
-  const params = useParams();
   const { openModal, hideModal = () => {}, userData, auctionDetail } = props;
   const [show, setShow] = useState({ login: true, signup: false });
   // const token = getCookie(COOKIES.TOKEN_KEY) ?? "";
@@ -140,7 +129,6 @@ const InterestModal = (props: IInterestModal) => {
               email: userData?.email,
               phone: userData?.username,
             }}
-            validationSchema={validationSchema}
             handleSubmit={handleInterestRequest}
             wantToUseFormikEvent={true}
             enableReinitialize={true}
@@ -150,8 +138,8 @@ const InterestModal = (props: IInterestModal) => {
                 {/* {JSON.stringify(values)} */}
                 <div className="flex flex-col gap-4 ">
                   <p className="text-sm text-gray-400">
-                    Please review your contact details and show name, email and
-                    phone number
+                    Please review your contact details here. We will use these
+                    to contact you on email and mobile
                   </p>
                   <TextField
                     value={values?.name}
@@ -195,11 +183,7 @@ const InterestModal = (props: IInterestModal) => {
                         </span>
                       </label>
                     </div>
-                    <ErrorMessage
-                      name={"check1"}
-                      component={"div"}
-                      className="text-sm text-error"
-                    />
+                    
                   </div>
                   <div className="flex flex-col gap-2 w-full items-start relative">
                     <div className="flex gap-2 w-full items-start justify-start relative">
@@ -218,11 +202,7 @@ const InterestModal = (props: IInterestModal) => {
                         </span>
                       </label>
                     </div>
-                    <ErrorMessage
-                      name={"check2"}
-                      component={"div"}
-                      className="text-sm text-error"
-                    />
+                    
                   </div>
 
                   {respError ? (
@@ -240,6 +220,7 @@ const InterestModal = (props: IInterestModal) => {
                       text={STRING_DATA.SUBMIT.toUpperCase()}
                       isSubmit={true}
                       isLoading={isPending}
+                      disabled={!(values.check1 && values.check2)}
                     />
                   </div>
                 </div>

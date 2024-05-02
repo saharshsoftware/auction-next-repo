@@ -35,6 +35,7 @@ const AllCategories = (props: { data: ICategoryCollection[] }) => {
               <Link
                 href={`${ROUTE_CONSTANTS.CATEGORY}/${item?.slug}`}
                 onClick={() => handleLinkClick(item)}
+                prefetch={false}
               >
                 <div className="w-full border border-gray-400 rounded-lg shadow p-4">
                   <div className="flex flex-col items-center justify-center gap-2">

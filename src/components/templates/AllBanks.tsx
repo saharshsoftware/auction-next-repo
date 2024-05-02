@@ -41,6 +41,7 @@ const AllBanks = (props: {data: any[]}) => {
                         className={`text-blue-600`}
                         href={`${ROUTE_CONSTANTS.BANKS}/${bank?.slug}`}
                         onClick={() => handleLinkClick(bank)}
+                        prefetch={false}
                       >
                         {bank?.name}
                       </Link>

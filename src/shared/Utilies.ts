@@ -28,7 +28,7 @@ export const setDataInQueryParams = (values: any) => {
 };
 
 export const getDataFromQueryParams = (encodedString: string) => {
-  console.log(!encodedString, "encodedString");
+  console.log(!encodedString, "encodedString", encodedString);
   const data = !!encodedString ? JSON.parse(atob(encodedString)) : "";
   return data;
 };
@@ -256,10 +256,10 @@ export function groupByState(data: ILocations[]) {
   // console.log(data)
   const stateToCitiesMap: any = {};
 
-  const cities = data.filter((item: ILocations) => item.type === "city");
-  const states = data.filter((item: ILocations) => item.type === "state");
+  const cities = data?.filter((item: ILocations) => item.type === "city");
+  const states = data?.filter((item: ILocations) => item.type === "state");
 
-  cities.forEach((city: ILocations) => {
+  cities?.forEach((city: ILocations) => {
     const stateName = city?.state;
     if (stateName) {
       if (!stateToCitiesMap[stateName]) {
@@ -269,8 +269,8 @@ export function groupByState(data: ILocations[]) {
     }
   });
 
-  const resultArray = states.map((state: ILocations) => {
-    const stateName = state.name || "";
+  const resultArray = states?.map((state: ILocations) => {
+    const stateName = state?.name || "";
     return {
       ...state, // spread state attributes
       cities: stateToCitiesMap[stateName] || [], // the array of cities

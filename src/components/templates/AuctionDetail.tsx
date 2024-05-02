@@ -3,7 +3,7 @@ import { IAuction } from '@/types';
 import React from 'react'
 import ShowLabelValue from '../atoms/ShowLabelValue';
 import { COOKIES, STRING_DATA } from '@/shared/Constants';
-import { formatPrice, formattedDateAndTime } from '@/shared/Utilies';
+import { formatPrice, formattedDateAndTime, getSharedAuctionUrl } from '@/shared/Utilies';
 import Link from 'next/link';
 import ActionButton from '../atoms/ActionButton';
 import NewTabSvg from '../svgIcons/NewTabSvg';
@@ -13,6 +13,9 @@ import InterestModal from '../ modals/InterestModal';
 import { getCookie } from 'cookies-next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faHeart } from '@fortawesome/free-solid-svg-icons';
+import { WhatsappShareWithIcon } from '../atoms/SocialIcons';
+
+const auctionLabelClass = () => "text-sm text-gray-400 font-bold";
 
 const AuctionDetail = (props: { auctionDetail: IAuction }) => {
   const { auctionDetail } = props;
@@ -21,6 +24,7 @@ const AuctionDetail = (props: { auctionDetail: IAuction }) => {
     ? JSON.parse(getCookie(COOKIES.AUCTION_USER_KEY) ?? "")
     : null;
 
+  const sharedUrl = getSharedAuctionUrl(auctionDetail);
   return (
     <>
       {/* Create alert Modal */}
@@ -36,29 +40,45 @@ const AuctionDetail = (props: { auctionDetail: IAuction }) => {
         {/* {JSON.stringify(auctionDetail)} */}
         <div className="flex justify-between items-center">
           <Link href={ROUTE_CONSTANTS.AUCTION}>
-            <ActionButton
-              text={STRING_DATA.BACK.toUpperCase()}
+            {/* <ActionButton
+              // text={STRING_DATA.BACK.toUpperCase()}
               isActionButton={false}
-            />
+              icon={}
+            /> */}
+            <em className='rounded-full bg-gray-300 px-3 py-2'>
+              <FontAwesomeIcon icon={faArrowLeft} /> 
+            </em>
           </Link>
           <ActionButton
             text={STRING_DATA.SHOW_INTEREST.toUpperCase()}
             onclick={showModal}
-            // icon={<FontAwesomeIcon icon={faHeart} />}
+            icon={<FontAwesomeIcon icon={faHeart} />}
           />
         </div>
         <div className="flex lg:flex-row flex-col gap-4 justify-between items-start">
-          <h2 className="custom-h2-class lg:w-3/5 break-words">
+          <h2 className="custom-h2-class break-words">
             {auctionDetail?.title}
           </h2>
-          <span className="custom-prize-color font-bold text-2xl">
-            {formatPrice(auctionDetail?.reservePrice)}
-          </span>
         </div>
-        <span className="border border-blue-300 bg-blue-100 text-sm rounded-full px-2 py-1 font-semibold w-fit">
-          Estimated Market Value{" "}
-          {formatPrice(auctionDetail?.estimatedMarketPrice)}
-        </span>
+        <div className="flex gap-4 justify-between items-start flex-wrap">
+          <div className="flex flex-col gap-2 items-start justify-start">
+            <span className={auctionLabelClass()}>Reserve price</span>
+            <span className="custom-prize-color font-bold text-2xl">
+              {formatPrice(auctionDetail?.reservePrice)}
+            </span>
+            <span
+              className="border border-blue-300 bg-blue-100 text-sm rounded-full px-2 py-1 font-semibold "
+              style={{ width: "max-content" }}
+            >
+              Estimated Market Value{" "}
+              {formatPrice(auctionDetail?.estimatedMarketPrice)}
+            </span>
+          </div>
+          <div className="border border-green-500 rounded-lg px-2 py-1">
+            {WhatsappShareWithIcon({ url: sharedUrl })}
+          </div>
+        </div>
+
         <p className="flex-1 ">{auctionDetail?.description}</p>
         <div className="text-2xl font-bold">{STRING_DATA.DESCRIPTION}</div>
         <hr className="border-[0.25px] border-zinc-400" />

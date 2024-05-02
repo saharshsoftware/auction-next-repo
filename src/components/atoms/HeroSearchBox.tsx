@@ -222,15 +222,6 @@ const HeroSearchBox = (props: {
                     <hr className={separatorClass()} />
                   </div>
                 </div>
-                <div className={"col-span-full"}>
-                  <TextField
-                    type="text"
-                    name="keyword"
-                    label="Keyword"
-                    placeholder="Enter keyword"
-                    value={values.keyword}
-                  />
-                </div>
                 {token?(
                   <div className={"col-span-full"}>
                     <SavedSearchList />
@@ -243,6 +234,7 @@ const HeroSearchBox = (props: {
                       // pathname: "/",
                       query: { q: getFilterQuery(values) },
                     }}
+                    prefetch={false}
                   >
                     <ActionButton
                       text={STRING_DATA.SEARCH.toUpperCase()}

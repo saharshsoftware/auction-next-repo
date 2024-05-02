@@ -11,6 +11,7 @@ import { Popover, PopoverTrigger, PopoverContent } from "@nextui-org/popover";
 import TooltipContent from "../atoms/TooltipContent";
 import { getInitials } from "@/shared/Utilies";
 import CustomDrawer from "./CustomDrawer";
+import SearchKeywordComp from "../atoms/SearchKeywordComp";
 
 const getWaveSvg = () => {
   return (
@@ -59,7 +60,7 @@ const Navbar: React.FC = () => {
   const userData = getCookie(COOKIES.AUCTION_USER_KEY) ?  JSON.parse(getCookie(COOKIES.AUCTION_USER_KEY) ?? "") : null;
   const [myToken, setMyToken] = useState("");
   const [isOpen, setIsOpen] = React.useState(false);
-  console.log(getCookie(COOKIES.TOKEN_KEY), "getCookie(COOKIES.TOKEN_KEY)");
+  // console.log(getCookie(COOKIES.TOKEN_KEY), "getCookie(COOKIES.TOKEN_KEY)");
   useEffect(() => {
     console.log(token);
     setMyToken(token);
@@ -94,44 +95,6 @@ const Navbar: React.FC = () => {
     }));
   };
 
-  const renderMobileMenu = () => {
-    if (isMobileView.mobileView && isMobileView.isOpenTopbar) {
-      return (
-        <div className="relative z-50 w-full">
-          <div className="lg:hidden flex flex-col items-center gap-4 fixed w-full top-0 bg-white py-2 shadow">
-            <div
-              className="absolute right-2 top-2 cursor-pointer"
-              onClick={toggleTopBar}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="black"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </div>
-            {/* Here, more routes menu will be added */}
-            <Link className="nav-link-class" href={ROUTE_CONSTANTS.REGISTER}>
-              {STRING_DATA.REGISTER}
-            </Link>
-            <Link className="nav-link-class" href={ROUTE_CONSTANTS.LOGIN}>
-              {STRING_DATA.LOGIN}
-            </Link>
-          </div>
-        </div>
-      );
-    }
-    return null;
-  };
-
   const setNavbarPositionClass = () => {
     if (pathname === ROUTE_CONSTANTS.DASHBOARD) {
       return false;
@@ -145,20 +108,6 @@ const Navbar: React.FC = () => {
       return (
         <>
           <div className="relative">
-            {/* <Tooltip
-              shadow="lg"
-              content={<TooltipContent />}
-              isOpen={isOpen}
-              onOpenChange={(open) => setIsOpen(open)}
-              onClose={() => setIsOpen(false)}
-            >
-              <div className="avatar placeholder">
-                <div className="bg-neutral text-neutral-content rounded-full w-12">
-                  <span>{getInitials(userData?.name)}</span>
-                </div>
-              </div>
-            </Tooltip> */}
-
             <Popover
               placement="bottom"
               isOpen={isOpen}
@@ -193,6 +142,16 @@ const Navbar: React.FC = () => {
     );
   };
 
+  const handleLogoClick = () => {
+    // debugger;
+    if (isMobileView?.isOpenTopbar) {
+      setIsMobileView((prev) => ({
+        ...prev,
+        isOpenTopbar: false,
+      })); 
+    }
+  }
+
   return (
     <>
       <div
@@ -202,13 +161,36 @@ const Navbar: React.FC = () => {
       >
         <em className="sticky top-0 left-0 right-0">{getWaveSvg()}</em>
         <div className="flex flex-row items-center justify-between px-4 w-full">
-          <div className="flex gap-8">
+          <div className="flex items-center gap-4">
             <Link
               href={ROUTE_CONSTANTS.DASHBOARD}
               className="text-xl font-bold cursor-pointer "
+              onClick={handleLogoClick}
             >
               {STRING_DATA.EAUCTION_DEKHO.toUpperCase()}{" "}
             </Link>
+            <div className="hidden lg:flex items-center gap-6">
+              <SearchKeywordComp handleClick={handleLogoClick} />
+              <Link
+                href={ROUTE_CONSTANTS.DASHBOARD}
+                className="cursor-pointer text-sm"
+              >
+                {STRING_DATA.HOME}{" "}
+              </Link>
+              <Link
+                href={ROUTE_CONSTANTS.ABOUT_US}
+                className="cursor-pointer text-sm"
+              >
+                {STRING_DATA.ABOUT_US}{" "}
+              </Link>
+              <Link
+                href={ROUTE_CONSTANTS.CONTACT}
+                className="cursor-pointer text-sm"
+              >
+                {STRING_DATA.CONTACT_US}{" "}
+              </Link>
+              {/* <SearchKeywordComp handleClick={handleLogoClick} /> */}
+            </div>
           </div>
           <div className="hidden lg:block">{renderAuthComponent()}</div>
 

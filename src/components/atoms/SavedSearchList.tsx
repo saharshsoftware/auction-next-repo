@@ -54,6 +54,7 @@ const SavedSearchList = () => {
                     pathname: ROUTE_CONSTANTS.AUCTION,
                     query: { q: item?.filter },
                   }}
+                  prefetch={false}
                   className="border bg-gray-200 min-w-fit text-sm text-gray-800 shadow px-2 py-1 rounded-lg border-brand-color "
                   key={index}
                 >
