@@ -18,7 +18,7 @@ const CustomModal = (props: props) => {
     if (customWidthClass) {
       return customWidthClass;
     }
-    return "md:w-1/2 sm:w-4/5 w-11/12";
+    return "lg:w-1/2 md:w-3/5 sm:w-4/5 w-11/12";
   }
 
   const renderer = () => {

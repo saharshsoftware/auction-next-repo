@@ -215,13 +215,7 @@ const HeroSearchBox = (props: {
                     </Field>
                   </TextField>
                 </div>
-                <div className="col-span-full">
-                  <div className="flex items-center justify-between w-full gap-2">
-                    <hr className={separatorClass()} />
-                    <span className="min-w-fit text-blue-500">OR</span>
-                    <hr className={separatorClass()} />
-                  </div>
-                </div>
+                
                 {token?(
                   <div className={"col-span-full"}>
                     <SavedSearchList />

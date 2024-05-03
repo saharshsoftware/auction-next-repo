@@ -465,12 +465,6 @@ const FindAuction = (props: IFindAuction) => {
                 </div>
                 <div className={gridElementClass()}>
                   <div className="w-full flex items-center justify-end gap-4 flex-wrap">
-                    <ActionButton
-                      isSubmit={true}
-                      text={STRING_DATA.UPDATE.toUpperCase()}
-                      isLoading={staticLoading}
-                      // customClass={"min-w-[150px]"}
-                    />
 
                     {isMobileView.mobileView ? (
                       <ActionButton
@@ -479,6 +473,13 @@ const FindAuction = (props: IFindAuction) => {
                         isActionButton={false}
                       />
                     ) : null}
+                    
+                    <ActionButton
+                      isSubmit={true}
+                      text={STRING_DATA.UPDATE.toUpperCase()}
+                      isLoading={staticLoading}
+                      // customClass={"min-w-[150px]"}
+                    />
                   </div>
                 </div>
               </div>

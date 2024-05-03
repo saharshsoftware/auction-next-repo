@@ -13,6 +13,7 @@ import { Field, Form } from "formik";
 import { showInterest } from "@/services/auction";
 import toast from "react-simple-toasts";
 import { IAuction } from "@/types";
+import WhatsappSvg from "../svgIcons/WhatsappSvg";
 
 interface IInterestModal {
   openModal: boolean;
@@ -183,7 +184,6 @@ const InterestModal = (props: IInterestModal) => {
                         </span>
                       </label>
                     </div>
-                    
                   </div>
                   <div className="flex flex-col gap-2 w-full items-start relative">
                     <div className="flex gap-2 w-full items-start justify-start relative">
@@ -194,15 +194,17 @@ const InterestModal = (props: IInterestModal) => {
                         id="check2"
                       />
                       <label
-                        className={`flex justify-between items-center w-full cursor-pointer`}
+                        className={`flex justify-start items-center w-full cursor-pointer gap-2`}
                         htmlFor="check2"
                       >
                         <span className="text-sm text-gray-900">
-                          I allow e-auctiondekho to send message on whatsapp
+                          I allow e-auctiondekho to send message on whatsapp{" "}
+                        </span>
+                        <span>
+                          <WhatsappSvg />
                         </span>
                       </label>
                     </div>
-                    
                   </div>
 
                   {respError ? (
@@ -239,7 +241,7 @@ const InterestModal = (props: IInterestModal) => {
       <CustomModal
         openModal={openModal}
         modalHeading={selectedHeading()}
-        customWidthClass="md:w-[40%] sm:w-3/5 w-11/12"
+        customWidthClass="lg:w-[40%] md:w-4/5 sm:w-3/5 w-11/12"
       >
         <div className="w-full">{renderer()}</div>
       </CustomModal>

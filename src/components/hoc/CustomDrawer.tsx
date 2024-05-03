@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import TooltipContent from "../atoms/TooltipContent";
 import { getCookie } from "cookies-next";
-import { COOKIES, NAVBAR_NAV_LINKS, STRING_DATA } from "@/shared/Constants";
+import { COOKIES, NAVBAR_NAV_LINKS, NAVICON_COLOR, STRING_DATA } from "@/shared/Constants";
 import { getInitials } from "@/shared/Utilies";
 import LogoutButton from "../ui/LogoutButton";
 import Link from "next/link";
@@ -75,7 +75,7 @@ const CustomDrawer = (props: ICustomDrawer) => {
                     customClass="flex justify-between gap-2"
                   >
                     <span>{nav?.label}</span>
-                    {nav?.icon ? <FontAwesomeIcon icon={nav?.icon} /> : null}
+                    {nav?.icon ? <FontAwesomeIcon icon={nav?.icon} color={NAVICON_COLOR}/> : null}
                   </NextLink>
                 </li>
               );
@@ -94,7 +94,7 @@ const CustomDrawer = (props: ICustomDrawer) => {
           customClass="flex justify-between gap-2"
         >
           <span>{STRING_DATA.LOGIN}</span>
-          <FontAwesomeIcon icon={faRightToBracket} />
+          <FontAwesomeIcon icon={faRightToBracket} color={NAVICON_COLOR} />
         </NextLink>
         <NextLink
           href={ROUTE_CONSTANTS.REGISTER}
@@ -103,7 +103,7 @@ const CustomDrawer = (props: ICustomDrawer) => {
           customClass="flex justify-between gap-2"
         >
           <span>{STRING_DATA.REGISTER}</span>
-          <FontAwesomeIcon icon={faUserPlus} />
+          <FontAwesomeIcon icon={faUserPlus} color={NAVICON_COLOR} />
         </NextLink>
       </>
     );
@@ -121,7 +121,7 @@ const CustomDrawer = (props: ICustomDrawer) => {
             customClass="flex justify-between gap-2"
           >
             <span>{STRING_DATA.HOME}</span>
-            <FontAwesomeIcon icon={faHome} />
+            <FontAwesomeIcon color={NAVICON_COLOR} icon={faHome} />
           </NextLink>
           <NextLink
             href={ROUTE_CONSTANTS.CONTACT}
@@ -130,7 +130,7 @@ const CustomDrawer = (props: ICustomDrawer) => {
             customClass="flex justify-between gap-2"
           >
             <span>{STRING_DATA.CONTACT_US}</span>
-            <FontAwesomeIcon icon={faPhone} />
+            <FontAwesomeIcon color={NAVICON_COLOR} icon={faPhone} />
           </NextLink>
           <NextLink
             href={ROUTE_CONSTANTS.ABOUT_US}
@@ -139,7 +139,7 @@ const CustomDrawer = (props: ICustomDrawer) => {
             customClass="flex justify-between gap-2"
           >
             <span>{STRING_DATA.ABOUT_US}</span>
-            <FontAwesomeIcon icon={faUsers} />
+            <FontAwesomeIcon color={NAVICON_COLOR} icon={faUsers} />
           </NextLink>
         </div>
         {renderAuthComponent()}

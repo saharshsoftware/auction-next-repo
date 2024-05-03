@@ -132,7 +132,7 @@ const Navbar: React.FC = () => {
       );
     }
     return (
-      <div className="lg:flex hidden items-center gap-8">
+      <div className="md:flex hidden items-center gap-8">
         <Link href={ROUTE_CONSTANTS.LOGIN}>{STRING_DATA.LOGIN}</Link>
         <ActionButton
           text={STRING_DATA.REGISTER}
@@ -160,39 +160,40 @@ const Navbar: React.FC = () => {
         }  bg-white z-50 shadow border-b-2`}
       >
         <em className="sticky top-0 left-0 right-0">{getWaveSvg()}</em>
-        <div className="flex flex-row items-center justify-between px-4 w-full">
+        <div className="flex flex-row items-center justify-between px-4 w-full gap-2">
           <div className="flex items-center gap-4">
             <Link
               href={ROUTE_CONSTANTS.DASHBOARD}
-              className="text-xl font-bold cursor-pointer "
+              className="lg:text-xl text-lg font-bold cursor-pointer "
               onClick={handleLogoClick}
             >
               {STRING_DATA.EAUCTION_DEKHO.toUpperCase()}{" "}
             </Link>
-            <div className="hidden lg:flex items-center gap-6">
-              <SearchKeywordComp handleClick={handleLogoClick} />
+            <div className="hidden md:flex items-center gap-6">
               <Link
                 href={ROUTE_CONSTANTS.DASHBOARD}
-                className="cursor-pointer text-sm"
+                className="cursor-pointer text-xs lg:text-sm"
               >
                 {STRING_DATA.HOME}{" "}
               </Link>
               <Link
                 href={ROUTE_CONSTANTS.ABOUT_US}
-                className="cursor-pointer text-sm"
+                className="cursor-pointer text-xs lg:text-sm"
               >
                 {STRING_DATA.ABOUT_US}{" "}
               </Link>
               <Link
                 href={ROUTE_CONSTANTS.CONTACT}
-                className="cursor-pointer text-sm"
+                className="cursor-pointer text-xs lg:text-sm"
               >
                 {STRING_DATA.CONTACT_US}{" "}
               </Link>
-              {/* <SearchKeywordComp handleClick={handleLogoClick} /> */}
             </div>
           </div>
-          <div className="hidden lg:block">{renderAuthComponent()}</div>
+          <div className="hidden lg:flex items-center gap-6">
+            <SearchKeywordComp handleClick={handleLogoClick} />
+            {renderAuthComponent()}
+          </div>
 
           <div className="lg:hidden cursor-pointer" onClick={toggleTopBar}>
             <svg

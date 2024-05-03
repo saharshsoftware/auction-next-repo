@@ -14,6 +14,7 @@ import { getCookie } from 'cookies-next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faHeart } from '@fortawesome/free-solid-svg-icons';
 import { WhatsappShareWithIcon } from '../atoms/SocialIcons';
+import { WishlistSvg } from '../svgIcons/WishlistSvg';
 
 const auctionLabelClass = () => "text-sm text-gray-400 font-bold";
 
@@ -52,7 +53,8 @@ const AuctionDetail = (props: { auctionDetail: IAuction }) => {
           <ActionButton
             text={STRING_DATA.SHOW_INTEREST.toUpperCase()}
             onclick={showModal}
-            icon={<FontAwesomeIcon icon={faHeart} />}
+            // icon={<FontAwesomeIcon icon={faHeart} />}
+            icon={<WishlistSvg />}
           />
         </div>
         <div className="flex lg:flex-row flex-col gap-4 justify-between items-start">

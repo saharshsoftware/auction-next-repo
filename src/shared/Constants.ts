@@ -16,6 +16,8 @@ export const FILTER_EMPTY = {
   propertyType: "",
 };
 
+export const NAVICON_COLOR = "#a6a6a6";
+
 export const PAGE_REVALIDATE_TIME = 86400 // 24 hr
 
 export const STRING_DATA = {
