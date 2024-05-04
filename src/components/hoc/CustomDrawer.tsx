@@ -2,17 +2,22 @@
 import React, { useEffect, useState } from "react";
 import TooltipContent from "../atoms/TooltipContent";
 import { getCookie } from "cookies-next";
-import { COOKIES, NAVBAR_NAV_LINKS } from "@/shared/Constants";
+import { COOKIES, NAVBAR_NAV_LINKS, NAVICON_COLOR, STRING_DATA } from "@/shared/Constants";
 import { getInitials } from "@/shared/Utilies";
 import LogoutButton from "../ui/LogoutButton";
 import Link from "next/link";
+import { ROUTE_CONSTANTS } from "@/shared/Routes";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import SearchKeywordComp from "../atoms/SearchKeywordComp";
+import NextLink from "../ui/NextLink";
+import { faHome, faPhone, faRightToBracket, faUserPlus, faUsers } from "@fortawesome/free-solid-svg-icons";
 
 interface ICustomDrawer {
   toggleTopBar: ()=> void;
 }
 
 const CustomDrawer = (props: ICustomDrawer) => {
-  const { toggleTopBar } = props;
+  const { toggleTopBar=()=>{} } = props;
   const token = getCookie(COOKIES.TOKEN_KEY) ?? "";
   const userData = getCookie(COOKIES.AUCTION_USER_KEY)
     ? JSON.parse(getCookie(COOKIES.AUCTION_USER_KEY) ?? "")
@@ -21,73 +26,123 @@ const CustomDrawer = (props: ICustomDrawer) => {
   const [userInfo, setUserInfo] = useState({});
 
   useEffect(() => {
-    if (token) {
-      setMyToken(token);
-    }
+    console.log(token, "tokeneffect")
+    setMyToken(token);
+
     // userData && setUserInfo(userData);
   }, [token]);
 
   const renderAuthComponent = () => {
     if (myToken) {
       return (
-        <div className="flex items-center justify-between">
-          <div className="cursor-pointer">
-            <div className="avatar placeholder">
-              <div className="bg-neutral text-neutral-content rounded-full w-12">
-                <span className="text-xl">
-                  {getInitials(userData?.name ?? "")}
-                </span>
+        <>
+          <hr className="bg-gray-600 "></hr>
+
+          <div className="flex items-center justify-between">
+            <div className="cursor-pointer">
+              <div className="avatar placeholder">
+                <div className="bg-neutral text-neutral-content rounded-full w-12">
+                  <span className="text-xl">
+                    {getInitials(userData?.name ?? "")}
+                  </span>
+                </div>
               </div>
             </div>
+            <LogoutButton
+              customClass={"text-sm cursor-pointer text-error hover:underline"}
+              handleClick={toggleTopBar}
+            />
           </div>
-          <LogoutButton />
-        </div>
+        </>
       );
     }
-    return (
-      <div className="lg:flex hidden items-center gap-8">
-        <LogoutButton />
-      </div>
-    );
+    return null
   };
-  return (
-    <>
-      <div className="flex flex-col gap-4 w-full h-full">
-        <div className="flex flex-col gap-4 transform transition duration-300 py-4 flex-1 overflow-y-scroll min-h-[70vh]">
+
+
+  const renderLinks = () => {
+    if (myToken) {
+      return (
+        <>
           <ul className="flex flex-col gap-4">
-            {NAVBAR_NAV_LINKS.map((nav, index) => {
+            {NAVBAR_NAV_LINKS.map((nav: any, index) => {
               return (
                 <li key={index}>
-                  <Link href={nav?.path} onClick={toggleTopBar}>
-                    {nav?.label}
-                  </Link>
+                  <NextLink
+                    href={nav?.path}
+                    onClick={toggleTopBar}
+                    hasChildren={true}
+                    customClass="flex justify-between gap-2"
+                  >
+                    <span>{nav?.label}</span>
+                    {nav?.icon ? <FontAwesomeIcon icon={nav?.icon} color={NAVICON_COLOR}/> : null}
+                  </NextLink>
                 </li>
               );
             })}
+            
           </ul>
+        </>
+      );
+    }
+    return (
+      <>
+        <NextLink
+          href={ROUTE_CONSTANTS.LOGIN}
+          onClick={toggleTopBar}
+          hasChildren={true}
+          customClass="flex justify-between gap-2"
+        >
+          <span>{STRING_DATA.LOGIN}</span>
+          <FontAwesomeIcon icon={faRightToBracket} color={NAVICON_COLOR} />
+        </NextLink>
+        <NextLink
+          href={ROUTE_CONSTANTS.REGISTER}
+          onClick={toggleTopBar}
+          hasChildren={true}
+          customClass="flex justify-between gap-2"
+        >
+          <span>{STRING_DATA.REGISTER}</span>
+          <FontAwesomeIcon icon={faUserPlus} color={NAVICON_COLOR} />
+        </NextLink>
+      </>
+    );
+  }
+  return (
+    <>
+      <div className="flex flex-col gap-4 w-full h-full px-2">
+        <div className="flex flex-col gap-4 transform transition duration-300 py-4 flex-1 ">
+          <SearchKeywordComp handleClick={toggleTopBar} />
+          {renderLinks()}
+          <NextLink
+            href={ROUTE_CONSTANTS.DASHBOARD}
+            onClick={toggleTopBar}
+            hasChildren={true}
+            customClass="flex justify-between gap-2"
+          >
+            <span>{STRING_DATA.HOME}</span>
+            <FontAwesomeIcon color={NAVICON_COLOR} icon={faHome} />
+          </NextLink>
+          <NextLink
+            href={ROUTE_CONSTANTS.CONTACT}
+            onClick={toggleTopBar}
+            hasChildren={true}
+            customClass="flex justify-between gap-2"
+          >
+            <span>{STRING_DATA.CONTACT_US}</span>
+            <FontAwesomeIcon color={NAVICON_COLOR} icon={faPhone} />
+          </NextLink>
+          <NextLink
+            href={ROUTE_CONSTANTS.ABOUT_US}
+            onClick={toggleTopBar}
+            hasChildren={true}
+            customClass="flex justify-between gap-2"
+          >
+            <span>{STRING_DATA.ABOUT_US}</span>
+            <FontAwesomeIcon color={NAVICON_COLOR} icon={faUsers} />
+          </NextLink>
         </div>
-        <hr className="bg-gray-600 "></hr>
         {renderAuthComponent()}
-        {/* <template v-if="updatedAuthenticated">
-      <hr className="bg-gray-600 ">
-      <div className="flex items-center justify-between">
-        <div className="cursor-pointer">
-          <div v-if="user?.profileImage" className="avatar">
-            <div className="w-12 rounded-full">
-              <img :src="user?.profileImage">
-            </div>
-          </div>
-          <template v-else>
-            <NxAvatar :label="getInitials(user?.name) " />
-          </template>
-        </div>
-        <AtomsIconLabel :icon="'material-symbols:logout'">
-          <div className="cursor-pointer" @click="handleLogout">
-            {{ STRING_DATA.LOGOUT }}
-          </div>
-        </AtomsIconLabel>
-      </div>
-    </template> */}
       </div>
     </>
   );

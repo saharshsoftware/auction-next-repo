@@ -4,6 +4,7 @@ import { API_BASE_URL, API_ENPOINTS } from "@/services/api";
 import { postRequest } from "@/shared/Axios";
 import { COOKIES } from "@/shared/Constants";
 import { IUserData } from "@/types";
+import { deleteCookie } from "cookies-next";
 // import { setCookie } from "cookies-next";
 import { cookies } from "next/headers";
  

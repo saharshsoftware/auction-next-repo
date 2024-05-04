@@ -1,4 +1,18 @@
 declare module 'react-slick'
+declare module "react-range-slider-input";
+declare module 'markdown-it';
+declare module "lodash/debounce";
+
+export interface IAssetType {
+  id: number;
+  createdAt: Date;
+  updatedAt: Date;
+  name: null;
+  totalNotices: number;
+  imageURL: string;
+  isPopular: bpp;eam;
+  slug: "plot";
+}
 
 export interface IAuction {
   [x: string]: any;
@@ -47,7 +61,7 @@ export interface User {
 
 export interface IBanks {
   id?: string | number;
-  bankName?: string;
+  name?: string;
   createdAt?: string;
   updatedAt?: string;
   publishedAt?: string;
@@ -68,6 +82,7 @@ export interface ILocations {
 }
 
 export interface ICategoryCollection {
+  [x: string]: ReactNode;
   id: string | number; 
   name?: string;
   collectionIcon?: string;
@@ -142,4 +157,29 @@ export interface ISpecificRoute {
   isCategoryRoute?: boolean;
   isLocationRoute?: boolean;
   isBankRoute?: boolean;
+}
+
+export interface ISavedSearch {
+  id?: string | number;
+  name?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  publishedAt?: string;
+  route?: string;
+  slug?: string;
+  filter: string;
+  sitemap_exclude: boolean;
+}
+
+export interface IAlert {
+  id: string;
+  assetCategory: string;
+  assetType: string;
+  bankName: string;
+  createdAt: string;
+  location: string;
+  maxPrice: string;
+  minPrice: string;
+  name: string;
+  updatedAt: string;
 }

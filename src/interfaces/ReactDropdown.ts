@@ -10,5 +10,6 @@ export interface IReactSelectDropdown {
   defaultValue?: any;
   resetKey?: boolean;
   clearRenderer?: any;
-  clearable?: boolean
+  clearable?: boolean;
+  menuIsOpen?: boolean;
 }

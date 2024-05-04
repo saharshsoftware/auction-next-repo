@@ -1,3 +1,4 @@
+import { faBell, faFilter, faHeart, faList, faUser } from "@fortawesome/free-solid-svg-icons";
 import { ROUTE_CONSTANTS } from "./Routes";
 
 export const COOKIES = {
@@ -6,11 +7,46 @@ export const COOKIES = {
   AUCTION_FILTER: "auction-filter"
 };
 
-export const FILTER_EMPTY = { name: "", bank: "", location: "", category: "", price: "" }
+export const FILTER_EMPTY = {
+  name: "",
+  bank: "",
+  location: "",
+  category: "",
+  price: "",
+  propertyType: "",
+};
 
+export const NAVICON_COLOR = "#a6a6a6";
+
+export const PAGE_REVALIDATE_TIME = 86400 // 24 hr
 
 export const STRING_DATA = {
+  HOME: "Home",
+  SHOW_INTEREST: "Show interest",
+  DELETE_ACCOUNT: "Delete account",
+  EDIT_ALERT: "Edit alert",
+  UPDATE_PASSWORD: "Update password",
+  YOUR_ALERTS: "Your alerts",
+  TOP_ASSETS: "Top assets",
+  ASSETS: "Assets",
+  SAVED: "Saved",
+  SAVED_SEARCH: "Saved Search",
+  SUBMIT: "Submit",
+  CONTACT_FORM: "Contact form",
+  EDIT_LIST: "Edit list",
+  BORROW_NAME: "Borrow name",
+  CONTACT: "Contact",
+  CITIES: "Cities",
+  BANKS: "Banks",
+  CATEGORIES: "Categories",
+  TERMS_CONDITIONS: "Terms and condition",
+  PRIVACY_POLICY: "Privacy policy",
+  CONTACT_US: "Contact us",
+  ABOUT_US: "About us",
+  SITEMAP: "Sitemap",
+  DELETE: "Delete",
   TOP_CATEGORIES: "Top categories",
+  CATEGORY: "Category",
   TOP_BANKS: "Top banks",
   OTHER_CATEGORIES: "Other categories",
   OTHER_LOCATIONS: "Other location",
@@ -67,12 +103,39 @@ export const STRING_DATA = {
     "No property added to the list. Please go to the property detail and add the property in your desired list",
   NO_DATA_FOUND_LIST:
     "You can organize your favorite properties by categorizing it into various lists",
+  MANAGE_FILTERS: "Manage filter",
+  YOUR_FILTERS: "Your filters",
+  NO_SAVED_LIST_FOUND: "No saved search found",
+  NO_ALERT_FOUND: "No alert found",
+  DELETE_SEARCH_ITEM_MESSAGE:
+    "Are you sure you want to delete this saved search ?",
+  DELETE_ALERT_MESSAGE:
+    "Are you sure you want to delete this alert ?",
+  YOUR_WISHLIST: "Your wishlist",
+  YOUR_SAVED_SEARCH: "Your saved search",
 };
 
 export const NAVBAR_NAV_LINKS = [
-  { path: ROUTE_CONSTANTS.PROFILE, label: STRING_DATA.PROFILE },
-  { path: ROUTE_CONSTANTS.MANAGE_LIST, label: STRING_DATA.MANAGE_LIST },
-  { path: ROUTE_CONSTANTS.MANAGE_ALERT, label: STRING_DATA.MANAGE_ALERT },
+  {
+    path: ROUTE_CONSTANTS.PROFILE,
+    label: STRING_DATA.PROFILE,
+    icon: faUser,
+  },
+  {
+    path: ROUTE_CONSTANTS.MANAGE_LIST,
+    label: STRING_DATA.YOUR_WISHLIST,
+    icon: faHeart,
+  },
+  {
+    path: ROUTE_CONSTANTS.MANAGE_ALERT,
+    label: STRING_DATA.YOUR_ALERTS,
+    icon: faBell,
+  },
+  {
+    path: ROUTE_CONSTANTS.MANAGE_FILTERS,
+    label: STRING_DATA.YOUR_SAVED_SEARCH,
+    icon: faFilter,
+  },
 ];
 
 export const INPUT_TYPE = {
@@ -85,14 +148,19 @@ export const INPUT_TYPE = {
 
 export const RANGE_PRICE = {
   MIN: "0",
-  MAX: "500000000",
+  MAX: "100000000",
   STEPS: "100000"
 };
 
 export const ERROR_MESSAGE = {
+  CURRENT_PASSWORD: "Current password is required",
+  NEW_PASSWORD_REQUIRED: "New password is required",
+  ASSET_TYPE_REQ: "Asset type is required",
   EMAIL_REQUIRED: "Email is required",
   PASSWORD_REQUIRED: "Password is required",
   CATEGORY_REQUIRED: "Category is required",
+  SUBJECT_REQUIRED: "Subject is required",
+  MESSAGE_REQUIRED: "Message is required",
   LOCATION_REQUIRED: "Location is required",
   BANK_REQUIRED: "Bank is required",
   PRICE_REQUIRED: "Price is required",
@@ -107,7 +175,11 @@ export const ERROR_MESSAGE = {
   NAME_REQUIRED: "Name is required",
   MAX_NAME_30: "Name should not exceed 30 characters",
   PASSWORDS_MUST_MATCH: "Passwords must match",
-  LIST_REQUIRED: "List is required"
+  LIST_REQUIRED: "List is required",
+  PHONE_REQUIRED: "Phone number is required",
+  PHONE_NUMERIC: "Please enter numeric value",
+  PHONE_LENGTH: "Please enter",
+  MIN_PHONE_LENGTH: "Invalid number",
 };
 
 export const NAV_LINKS = [
@@ -1029,7 +1101,12 @@ export const REACT_QUERY = {
   AUCTION_LOCATION: "Auction-location",
   FAVOURITE_LIST: "Favourite-list",
   FAVOURITE_LIST_PROPERTY: "Favourite-list-property",
-  FIND_AUCTION: "Find-auction"
+  FIND_AUCTION: "Find-auction",
+  AUCTION_DETAIL: "auction-detail",
+  ASSETS_TYPE: "Assets-type",
+  AUCTION_LOCATION_ALL: "Auction-location-all",
+  SAVED_SEARCH: "Saved-search",
+  ALERTS: "Alerts",
 };
 
 export const SAMPLE_CITY = [

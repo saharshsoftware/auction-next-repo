@@ -9,6 +9,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { handleOnSettled } from "@/shared/Utilies";
 import { updateFavouriteList } from "@/server/actions/favouriteList";
 import { Form } from "formik";
+import { updateFavouriteListClient } from "@/services/favouriteList";
 
 interface ICreateFavList {
   openModal: boolean;
@@ -33,7 +34,7 @@ const EditFavList = (props: ICreateFavList) => {
 
   // Mutations
   const { mutate, isPending } = useMutation({
-    mutationFn: updateFavouriteList,
+    mutationFn: updateFavouriteListClient,
     onSettled: async (data) => {
       console.log(data);
       const response = {
@@ -69,9 +70,10 @@ const EditFavList = (props: ICreateFavList) => {
     <>
       <CustomModal
         openModal={openModal}
+        modalHeading={STRING_DATA.EDIT_LIST}
         customWidthClass="md:w-[40%] sm:w-3/5 w-11/12"
       >
-        <div className="w-full p-2">
+        <div className="w-full">
           <div className="flex flex-col gap-4">
             <CustomFormikForm
               initialValues={{ list_name: fieldata?.name }}
@@ -82,9 +84,6 @@ const EditFavList = (props: ICreateFavList) => {
               {({ values }: any) => (
                 <Form>
                   <div className="flex flex-col gap-4 ">
-                    <h2 className="custom-h2-class text-center text-3xl">
-                      Edit List
-                    </h2>
                     <TextField
                       type="text"
                       name="list_name"
@@ -97,20 +96,19 @@ const EditFavList = (props: ICreateFavList) => {
                         {respError}
                       </span>
                     ) : null}
-                    
-                      <div className="flex justify-end items-center gap-4 flex-wrap">
-                        <ActionButton
-                          text="Close"
-                          onclick={hideModal}
-                          isActionButton={false}
-                        />
-                        <ActionButton
-                          isSubmit={true}
-                          text="Update"
-                          isLoading={isPending}
-                        />
-                      </div>
-                    
+
+                    <div className="flex justify-end items-center gap-4 flex-wrap">
+                      <ActionButton
+                        text="Close"
+                        onclick={hideModal}
+                        isActionButton={false}
+                      />
+                      <ActionButton
+                        isSubmit={true}
+                        text="Update"
+                        isLoading={isPending}
+                      />
+                    </div>
                   </div>
                 </Form>
               )}

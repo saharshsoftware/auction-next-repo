@@ -16,9 +16,23 @@ export const Skelton = () => {
   );
 };
 
+const BankSkelton = () => {
+  return (
+    <>
+      <div className="flex flex-col gap-4 w-full justify-center">
+        <div className="skeleton h-4 w-full"></div>
+      </div>
+    </>
+  );
+};
+
 const SkeltonComponent = () => {
-  const skeletons = Array.from({ length: 5 }, (_, index) => (
+  const skeletonsCategory = Array.from({ length: 5 }, (_, index) => (
     <Skelton key={index} />
+  ));
+
+  const skeletonsBank = Array.from({ length: 5 }, (_, index) => (
+    <BankSkelton key={index} />
   ));
 
   return (
@@ -30,7 +44,7 @@ const SkeltonComponent = () => {
             <div className="skeleton h-4 w-28 "></div>
           </div>
           <div className="grid lg:grid-cols-5 md:grid-cols-3 gap-5">
-            {skeletons}
+            {skeletonsCategory}
           </div>
         </div>
         <div className="flex flex-col gap-4">
@@ -38,7 +52,7 @@ const SkeltonComponent = () => {
             <div className="skeleton h-4 w-28 "></div>
           </div>
           <div className="grid lg:grid-cols-5 md:grid-cols-3 gap-5">
-            {skeletons}
+            {skeletonsBank}
           </div>
         </div>
       </div>

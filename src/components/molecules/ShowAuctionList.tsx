@@ -1,84 +1,90 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
-import React, { Suspense, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import AuctionCard from "../atoms/AuctionCard";
-import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation";
+import {
+  useParams,
+  usePathname,
+  useRouter,
+  useSearchParams,
+} from "next/navigation";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
 import { IAuction } from "@/types";
 import {
-  capitalizeFirstLetter,
   convertString,
   getDataFromQueryParams,
   setDataInQueryParams,
 } from "@/shared/Utilies";
-import { COOKIES, FILTER_EMPTY, REACT_QUERY } from "@/shared/Constants";
-import NoDataImage from "../ui/NoDataImage";
+import {
+  COOKIES,
+  FILTER_EMPTY,
+  REACT_QUERY,
+  STRING_DATA,
+} from "@/shared/Constants";
 import PaginationComp from "../atoms/PaginationComp";
 import { useQuery } from "@tanstack/react-query";
-import { getAuctionData } from "@/server/actions";
-import CustomLoading from "../atoms/Loading";
 import { getAuctionDataClient } from "@/services/auction";
 import SkeltonAuctionCard from "../skeltons/SkeltonAuctionCard";
 import useLocalStorage from "@/hooks/useLocationStorage";
+import ActionButton from "../atoms/ActionButton";
+import useModal from "@/hooks/useModal";
+import SavedSearchModal from "../ modals/SavedSearchModal";
+import { getCookie } from "cookies-next";
+import debounce from "lodash/debounce";
 
-interface IShowAuctionList {
-  isCategoryRoute?: boolean;
-  isLocationRoute?: boolean;
-  isBankRoute?: boolean;
-}
-
-const ShowAuctionList = (props: IShowAuctionList) => {
-  const {
-    isBankRoute = false,
-    isCategoryRoute = false,
-    isLocationRoute = false,
-  } = props;
+const ShowAuctionList = () => {
   const router = useRouter();
   const params = useParams();
   const searchParams = useSearchParams();
- const currentRoute = usePathname();
+  const currentRoute = usePathname();
 
+  const { showModal, openModal, hideModal } = useModal();
   const [apiResponseData, setApiResponseData] = useState<any>({
     sendResponse: [],
     meta: {},
   });
 
+  const [hasKeywordSearchValue, setHasKeywordSearchValue] =
+    useState<string>("");
+
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [auctionFilter, setAuctionFilter] = useLocalStorage(COOKIES.AUCTION_FILTER, FILTER_EMPTY);
-  console.log(auctionFilter, "auctionFilterauctionFilter");
+  const [auctionFilter, setAuctionFilter] = useLocalStorage(
+    COOKIES.AUCTION_FILTER,
+    FILTER_EMPTY
+  );
+  // console.log(auctionFilter, "auctionFilterauctionFilter");
 
   const filterRef = useRef<any>({
-    category: currentRoute.startsWith("/category")
+    category: currentRoute.startsWith(ROUTE_CONSTANTS.CATEGORY)
       ? convertString(params?.slug?.toString())
       : "",
-    bankName: currentRoute.startsWith("/bank")
-      ? auctionFilter?.bank
+    bank: currentRoute.startsWith(ROUTE_CONSTANTS.BANKS)
+      ? auctionFilter?.bank?.slug?.toString()
       : "",
-    location: currentRoute.startsWith("/location")
+    location: currentRoute.startsWith(ROUTE_CONSTANTS.LOCATION)
       ? convertString(params?.slug?.toString())
       : "",
   });
 
   const getFilterData = () => {
-    return {
-      category: filterRef.current?.category ?? "",
-      bankName: filterRef.current?.bankName ?? "",
+    console.log(filterRef.current, "checkfilter", auctionFilter);
+    const filterData = {
+      category: currentRoute.startsWith(ROUTE_CONSTANTS.CATEGORY) ? auctionFilter?.category?.name: filterRef.current?.category?.name ?? "",
+      bankName: currentRoute.startsWith(ROUTE_CONSTANTS.BANKS) ? auctionFilter?.bank?.name : filterRef.current?.bank?.name ?? "",
+      location: currentRoute.startsWith(ROUTE_CONSTANTS.LOCATION) ? auctionFilter?.location?.name : filterRef.current?.location?.name ?? "",
+      propertyType: currentRoute.startsWith(ROUTE_CONSTANTS.ASSETS_TYPE) ? auctionFilter?.propertyType?.name: filterRef.current?.propertyType?.name ?? "",
       reservePrice: filterRef.current?.price ?? "",
-      location: filterRef.current?.location ?? "",
+      locationType:
+        filterRef.current?.location?.type ??
+        auctionFilter?.location?.type ??
+        "",
+      keyword: filterRef.current?.keyword ?? "",
       page: currentPage?.toString() ?? "",
     };
+    console.log(filterData, "filterDAta")
+    return filterData;
   };
-
-  useEffect(() => {
-    if (searchParams.get("q")) {
-      const data = searchParams.get("q");
-      filterRef.current = getDataFromQueryParams(data ?? "");
-      // console.log(filterRef.current?.value, "queryData");
-      setCurrentPage(filterRef.current?.page);
-      refetch();
-    }
-  }, [searchParams.get("q")]);
 
   const {
     data: auctionData,
@@ -88,21 +94,18 @@ const ShowAuctionList = (props: IShowAuctionList) => {
     queryKey: [REACT_QUERY.FIND_AUCTION],
     queryFn: async () => {
       const res = (await getAuctionDataClient(getFilterData())) as unknown;
-      console.log(res, "apidata");
+      // console.log(res, "apidata");
       setApiResponseData(res);
       return res ?? [];
     },
-    enabled:
-      currentRoute.startsWith("/category") ||
-      currentRoute.startsWith("/bank") ||
-      currentRoute.startsWith("/location"),
+    enabled: true,
   });
 
-  // useEffect(() => {
-  //   if (auctionData) {
-  //     setApiResponseData(auctionData);
-  //   }
-  // }, [auctionData]);
+  useEffect(() => {
+    if (params?.slug) {
+      refetch();
+    }
+  }, [params?.slug]);
 
   const handlePageChange = async (event: { selected: number }) => {
     const { selected: page } = event;
@@ -113,14 +116,33 @@ const ShowAuctionList = (props: IShowAuctionList) => {
     router.replace(ROUTE_CONSTANTS.AUCTION + "?q=" + encodedQuery);
   };
 
+  // const debouncedRefetch = debounce(refetch, 500); // Adjust debounce time as per your requirement
+
+  useEffect(() => {
+    if (searchParams.get("q")) {
+      const data = searchParams.get("q");
+      filterRef.current = getDataFromQueryParams(data ?? "");
+      
+      // setAuctionFilter(filterRef.current);
+
+      setCurrentPage(filterRef.current?.page);
+      // debouncedRefetch();
+      console.log(filterRef.current, "queryData");
+      refetch()
+
+      if (filterRef.current?.keyword) {
+        setHasKeywordSearchValue(filterRef.current?.keyword);
+        return;
+      }
+      setHasKeywordSearchValue("");
+    }
+  }, [searchParams.get("q")]);
+
   const handleClick = (data: any) => {
-    router.push(
-      ROUTE_CONSTANTS.AUCTION_DETAIL +
-        "/" +
-        data?.id +
-        "?q=" +
-        searchParams.get("q")
-    );
+    const paramsValue = searchParams.get("q")
+      ? `?q=${searchParams.get("q")}`
+      : "";
+    router.push(`${ROUTE_CONSTANTS.AUCTION_DETAIL}/${data?.slug}`);
   };
 
   // console.log("fetchStatus", fetchStatus);
@@ -135,14 +157,45 @@ const ShowAuctionList = (props: IShowAuctionList) => {
   if (apiResponseData?.sendResponse?.length === 0) {
     return (
       <div className="flex items-center justify-center flex-col h-[70vh]">
-        <NoDataImage />
+        {/* <NoDataImage /> */}
+        No data found
       </div>
     );
   }
 
+  const renderKeywordSearchContainer = () => {
+    if (hasKeywordSearchValue) {
+      console.log(apiResponseData, "apiResponseData");
+      return (
+        <div className="text-sm ">
+          {" "}
+          {apiResponseData?.meta?.total} results of {hasKeywordSearchValue}
+        </div>
+      );
+    }
+    return null;
+  };
+
+  const renderSavedSearchButton = () => {
+    const token = getCookie(COOKIES.TOKEN_KEY) ?? "";
+    if (searchParams.get("q") && token) {
+      return (
+        <div className={"max-w-fit link link-primary"} onClick={showModal}>
+          {"Save this search".toUpperCase()}
+        </div>
+      );
+    }
+    return null;
+  };
+
   return (
     <>
+      {openModal ? (
+        <SavedSearchModal openModal={openModal} hideModal={hideModal} />
+      ) : null}
       <div className="flex flex-col gap-4 w-full">
+        {renderKeywordSearchContainer()}
+        {renderSavedSearchButton()}
         {apiResponseData?.sendResponse?.map((item: IAuction, index: number) => {
           return (
             <div className="w-full" key={index}>

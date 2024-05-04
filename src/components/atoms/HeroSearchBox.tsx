@@ -1,38 +1,27 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import ActionButton from "./ActionButton";
-import CustomBadge from "./CustomBadge";
 import ReactSelectDropdown from "./ReactSelectDropdown";
-import { Field, Form } from "formik";
 import CustomFormikForm from "./CustomFormikForm";
 import TextField from "./TextField";
+import { Field, Form } from "formik";
 import {
-  CATEGORIES,
   COOKIES,
-  ERROR_MESSAGE,
   FILTER_EMPTY,
-  POPULER_CITIES,
   RANGE_PRICE,
-  REACT_QUERY,
   STRING_DATA,
 } from "../../shared/Constants";
-import * as Yup from "yup";
 import { ROUTE_CONSTANTS } from "../../shared/Routes";
-import { ItemRenderer, NoDataRendererDropdown } from "./NoDataRendererDropdown";
 import {
-  getBankOptions,
-  getCategoryOptions,
-  handleQueryResponse,
-  hasNonEmptyOrNullValue,
+  formatPrice,
   setDataInQueryParams,
 } from "../../shared/Utilies";
-import { useQuery } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
-import { fetchBanks, fetchLocation, getAuctionData, getCategoryBoxCollection } from "@/server/actions";
-import { IBanks, ICategoryCollection, ILocations } from "@/types";
 import Link from "next/link";
-import { setCookie } from "cookies-next";
 import useLocalStorage from "@/hooks/useLocationStorage";
+import RangeSliderCustom from "./RangeSliderCustom";
+import SavedSearchList from "./SavedSearchList";
+import { getCookie } from "cookies-next";
+
 
 interface IFilter {
   category: string;
@@ -41,101 +30,59 @@ interface IFilter {
   location: string;
 }
 
-const validationSchema = Yup.object({
-  category: Yup.string().trim(),
-  location: Yup.string().trim(),
-  bank: Yup.string().trim(),
-  price: Yup.number()
-});
-
 const initialValues = {
+  propertyType: STRING_DATA.EMPTY,
   category: STRING_DATA.EMPTY,
   location: STRING_DATA.EMPTY,
   bank: STRING_DATA.EMPTY,
-  price: '250000000' ?? STRING_DATA.EMPTY,
+  keyword: STRING_DATA.EMPTY,
+  price: [0, RANGE_PRICE.MAX] ?? STRING_DATA.EMPTY,
 };
 
 const gridElementClass = () => "lg:col-span-6 col-span-full";
-
-const HeroSearchBox = () => {
-  const router = useRouter();
-  const [activeBadgeData, setActiveBadgeData] = useState(POPULER_CITIES?.[0]);
+const separatorClass = () => "border-dashed border-2 border-gray-300 w-full";
+const HeroSearchBox = (props: {
+  assetsTypeOptions: any;
+  categoryOptions: any;
+  bankOptions: any;
+  locationOptions: any;
+}) => {
+  const { assetsTypeOptions, bankOptions, categoryOptions, locationOptions } =
+    props;
+  const token = getCookie(COOKIES.TOKEN_KEY) ?? "";
   const [loadingSearch, setLoadingSearch] = useState(false);
-  const [auctionFilter, setAuctionFilter] = useLocalStorage(COOKIES.AUCTION_FILTER, FILTER_EMPTY);
-
-  const { data: categoryOptions, isLoading: isLoadingCategory } = useQuery({
-    queryKey: [REACT_QUERY.CATEGORY_BOX_COLLECITON_OPTIONS],
-    queryFn: async () => {
-      const res =
-        (await getCategoryBoxCollection()) as unknown as ICategoryCollection[];
-      return (res) ?? [];
-    },
-    staleTime: 0,
-  });
-
-  const { data: bankOptions, isLoading: isLoadingBank } = useQuery({
-    queryKey: [REACT_QUERY.AUCTION_BANKS],
-    queryFn: async () => {
-      const res = (await fetchBanks()) as unknown as IBanks[];
-      return getBankOptions(res) ?? [];
-    },
-  });
-
-  const { data: locationOptions, isLoading: isLoadingLocation } = useQuery({
-    queryKey: [REACT_QUERY.AUCTION_LOCATION],
-    queryFn: async () => {
-      const res = (await fetchLocation()) as unknown as ILocations[];
-      return res ?? [];
-    },
-  });
-
-  const fetchAuctionRequest = async (values: {
-    category: string;
-    price: string;
-    bank: string;
-    location: string;
-  }) => {
-    const { category, price, bank, location } = values;
-    const response = await getAuctionData({
-      category: category,
-      bankName: bank,
-      reservePrice: price,
-      location: location,
-    });
-    console.log("response> ", response);
-    if (response) {
-      const filters = { page: 1, ...values };
-      const data = setDataInQueryParams(filters);
-
-      setAuctionFilter(filters);
-      
-      // router.push(`${ROUTE_CONSTANTS.AUCTION}?q=${data}`);
-    }
-  };
+  const [auctionFilter, setAuctionFilter] = useLocalStorage(
+    COOKIES.AUCTION_FILTER,
+    FILTER_EMPTY
+  );
 
   const getFilterQuery = (values: {
-    category: string;
-    price: string;
-    bank: string;
-    location: string;
+    category: any;
+    price: any;
+    bank: any;
+    location: any;
+    propertyType: any;
+    keyword?: string;
   }) => {
-    return setDataInQueryParams({ page: 1, ...values });
+    // console.log(values, "Vakyes");
+    const { category, price, bank, location, propertyType, keyword } = values;
+    const { type, name } = location ?? {};
+    const filter = {
+      page: 1,
+      category,
+      price,
+      bank,
+      locationType: type,
+      location,
+      propertyType,
+      keyword,
+    };
+    // console.log(filter, "hero-filter");
+    // debugger
+    return setDataInQueryParams(filter);
   };
 
-  const handleSubmit = async (values: any) => {
- 
-    setLoadingSearch(true);
-
-    setTimeout(() => {
-      setLoadingSearch(false);
-    }, 1000);
-    console.log(values);
-    fetchAuctionRequest(values);
-  };
-
-  const handleBadgeClick = (data: any) => {
-    setActiveBadgeData(data);
-  };
+  const handleSubmit = (values: any) => {};
 
   const handleSearchButton = (values: IFilter) => {
     setAuctionFilter(values);
@@ -148,12 +95,35 @@ const HeroSearchBox = () => {
         <CustomFormikForm
           initialValues={initialValues}
           handleSubmit={handleSubmit}
-          validationSchema={validationSchema}
           wantToUseFormikEvent={true}
         >
           {({ setFieldValue, values }: any) => (
             <Form>
+              {/* {JSON.stringify(values?.propertyType)} */}
               <div className="grid gap-4 grid-cols-12 w-full ">
+                <div className={gridElementClass()}>
+                  <TextField
+                    label={"Asset type"}
+                    name={"propertyType"}
+                    hasChildren={true}
+                  >
+                    <Field name="propertyType">
+                      {() => (
+                        <ReactSelectDropdown
+                          defaultValue={values?.propertyType ?? null}
+                          options={assetsTypeOptions ?? []}
+                          placeholder={"Asset type"}
+                          // loading={isLoadingAssetsTypeCategory}
+                          customClass="w-full "
+                          onChange={(e: any) => {
+                            // console.log(e, "formik")
+                            setFieldValue("propertyType", e);
+                          }}
+                        />
+                      )}
+                    </Field>
+                  </TextField>
+                </div>
                 <div className={gridElementClass()}>
                   <TextField
                     label={"Categories"}
@@ -163,14 +133,13 @@ const HeroSearchBox = () => {
                     <Field name="category">
                       {() => (
                         <ReactSelectDropdown
-                          noDataRenderer={NoDataRendererDropdown}
-                          itemRenderer={ItemRenderer}
+                          defaultValue={values?.category ?? null}
                           options={categoryOptions ?? []}
                           placeholder={"Category"}
-                          loading={isLoadingCategory}
+                          // loading={isLoadingCategory}
                           customClass="w-full "
                           onChange={(e: any) => {
-                            setFieldValue("category", e?.[0]?.name);
+                            setFieldValue("category", e);
                           }}
                         />
                       )}
@@ -186,34 +155,31 @@ const HeroSearchBox = () => {
                     <Field name="location">
                       {() => (
                         <ReactSelectDropdown
-                          noDataRenderer={NoDataRendererDropdown}
-                          itemRenderer={ItemRenderer}
-                          loading={isLoadingLocation}
+                          defaultValue={values?.location ?? null}
+                          // loading={isLoadingLocation}
                           options={locationOptions}
-                          defaultValue={values?.location}
                           placeholder={"Neighborhood, City or State"}
                           customClass="w-full "
                           onChange={(e: any) => {
-                            setFieldValue("location", e?.[0]?.name);
+                            setFieldValue("location", e);
                           }}
                         />
                       )}
                     </Field>
                   </TextField>
                 </div>
-                <div className={"col-span-full"}>
+                <div className={gridElementClass()}>
                   <TextField label="Bank" name="bank" hasChildren={true}>
                     <Field name="bank">
                       {() => (
                         <ReactSelectDropdown
-                          noDataRenderer={NoDataRendererDropdown}
-                          itemRenderer={ItemRenderer}
+                          defaultValue={values?.bank ?? null}
                           options={bankOptions}
-                          loading={isLoadingBank}
+                          // loading={isLoadingBank}
                           placeholder={"Banks"}
                           customClass="w-full "
                           onChange={(e: any) => {
-                            setFieldValue("bank", e?.[0]?.name);
+                            setFieldValue("bank", e);
                           }}
                         />
                       )}
@@ -222,64 +188,59 @@ const HeroSearchBox = () => {
                 </div>
                 <div className={"col-span-full"}>
                   <TextField
-                    type="range"
+                    label="Price range"
                     name="price"
-                    label="Price"
-                    placeholder="Enter price"
-                    value={values.price}
-                    min={RANGE_PRICE.MIN}
-                    max={RANGE_PRICE.MAX}
-                    step={RANGE_PRICE.STEPS}
-                    customClass={"custom-range-class"}
-                  />
+                    hasChildren={true}
+                  >
+                    <Field name="price">
+                      {() => (
+                        <div className="relative w-full space-y-2">
+                          <RangeSliderCustom
+                            value={values.price}
+                            onInput={(value: any, e: any) => {
+                              console.log(value);
+                              setFieldValue("price", value);
+                            }}
+                          />
+                          <div className="text-black flex items-center justify-between gap-4 ">
+                            <span className="text-sm text-gray-900">
+                              {formatPrice(values?.price?.[0])}
+                            </span>{" "}
+                            <span className="text-sm text-gray-900">
+                              {formatPrice(values?.price?.[1])}
+                            </span>
+                          </div>
+                        </div>
+                      )}
+                    </Field>
+                  </TextField>
                 </div>
-
+                
+                {token?(
+                  <div className={"col-span-full"}>
+                    <SavedSearchList />
+                  </div>
+                ):null}
                 <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2">
                   <Link
                     href={{
                       pathname: ROUTE_CONSTANTS.AUCTION,
+                      // pathname: "/",
                       query: { q: getFilterQuery(values) },
                     }}
+                    prefetch={false}
                   >
                     <ActionButton
                       text={STRING_DATA.SEARCH.toUpperCase()}
                       isLoading={loadingSearch}
                       onclick={() => handleSearchButton(values)}
                       customClass={
-                        "rounded-full btn-lg px-12 py-4 min-w-[150px]"
+                        "rounded-full btn-lg lg:px-12 lg:py-4 px-10 py-6 min-w-fit lg:min-w-[150px]"
                       }
                     />
-                    {STRING_DATA.SEARCH.toUpperCase()}
                   </Link>
                 </div>
               </div>
-              {/* {JSON.stringify(values?.location)}
-              <TextField
-                label={STRING_DATA.POPULER_CITIES}
-                name="location"
-                hasChildren={true}
-              >
-                <Field name="location">
-                  {() => (
-                    <div className="flex flex-wrap gap-2">
-                      {locationOptions
-                        ?.filter((item) => item?.isPopular)
-                        .map((item, index) => (
-                          <CustomBadge
-                            key={index}
-                            item={{ label: item?.name, ...item }}
-                            activeBadge={activeBadgeData}
-                            onclick={(data)=> {
-                              console.log(data)
-                              setActiveBadgeData(data)
-                              setFieldValue('location', data?.name)
-                            }}
-                          />
-                        ))}
-                    </div>
-                  )}
-                </Field>
-              </TextField> */}
             </Form>
           )}
         </CustomFormikForm>

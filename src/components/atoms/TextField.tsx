@@ -1,3 +1,4 @@
+"use client"
 import { ErrorMessage, FieldHookConfig, useField } from "formik";
 import { INPUT_TYPE } from "../../shared/Constants";
 import { formatPrice } from "../../shared/Utilies";
@@ -20,6 +21,7 @@ interface ICustomInput {
   min?: string;
   max?: string;
   isSearch?: boolean;
+  showNumber91?: boolean;
 }
 
 const TextField: React.FC<FieldHookConfig<string> & ICustomInput> = (props) => {
@@ -40,6 +42,7 @@ const TextField: React.FC<FieldHookConfig<string> & ICustomInput> = (props) => {
     value,
     min,
     max,
+    showNumber91=false,
     isSearch = false,
   } = props;
   const [field] = useField(props);
@@ -70,6 +73,7 @@ const TextField: React.FC<FieldHookConfig<string> & ICustomInput> = (props) => {
     <textarea
       className={`${customClass || "form-controls"} `}
       id={id ?? name}
+      value={value}
       name={name || field.name}
       onChange={
         (onChange as React.ChangeEventHandler<HTMLTextAreaElement>) ||
@@ -134,6 +138,9 @@ const TextField: React.FC<FieldHookConfig<string> & ICustomInput> = (props) => {
           <line x1="21" y1="21" x2="16.65" y2="16.65" />
         </svg>
       ) : null}
+      {/* {showNumber91 ? (
+        <span className="absolute left-1 top-9 h-6 w-6 mr-2"> +91</span>
+      ) : null} */}
       {renderData()}
 
       <ErrorMessage

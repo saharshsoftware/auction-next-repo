@@ -1,15 +1,8 @@
 "use client";
+import { IReactPaginate } from "@/interfaces/Paginate";
 import React from "react";
 import ReactPaginate from "react-paginate";
-import "./style.css";
 
-interface IReactPaginate {
-  rowsPerPage?: number;
-  activePage: number;
-  totalCount?: number;
-  totalPage: number;
-  onPageChange: (selectedItem: { selected: number }) => void;
-}
 
 const ReactPagination = (props: IReactPaginate) => {
   const {
@@ -28,8 +21,8 @@ const ReactPagination = (props: IReactPaginate) => {
         nextLabel="next >"
         pageCount={totalPage}
         onPageChange={onPageChange}
-        // marginPagesDisplayed={1}
-        // pageRangeDisplayed={3}
+        marginPagesDisplayed={1}
+        pageRangeDisplayed={1}
         forcePage={activePage - 1}
         className="flex justify-center pagination"
       />
