@@ -16,6 +16,8 @@ const ImageTag = (props: {
         <Image
           width={80}
           height={80}
+          // objectFit="contain"
+          style={{ objectFit: "cover" }}
           src={imageUrl}
           alt={alt ?? "i"}
           className={customClass}

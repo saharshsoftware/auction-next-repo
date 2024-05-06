@@ -160,8 +160,8 @@ const Navbar: React.FC = () => {
         }  bg-white z-50 shadow border-b-2`}
       >
         <em className="sticky top-0 left-0 right-0">{getWaveSvg()}</em>
-        <div className="flex flex-row items-center justify-between px-4 w-full gap-2">
-          <div className="flex items-center gap-4">
+        <div className="flex flex-row items-center justify-between lg:px-4 w-full gap-4">
+          <div className="flex items-center gap-12">
             <Link
               href={ROUTE_CONSTANTS.DASHBOARD}
               className="lg:text-xl text-lg font-bold cursor-pointer "
@@ -169,7 +169,7 @@ const Navbar: React.FC = () => {
             >
               {STRING_DATA.EAUCTION_DEKHO.toUpperCase()}{" "}
             </Link>
-            <div className="hidden md:flex items-center gap-6">
+            <div className="hidden md:flex items-center gap-12">
               <Link
                 href={ROUTE_CONSTANTS.DASHBOARD}
                 className="cursor-pointer text-xs lg:text-sm"
@@ -190,8 +190,11 @@ const Navbar: React.FC = () => {
               </Link>
             </div>
           </div>
-          <div className="hidden lg:flex items-center gap-6">
+          <div className="hidden lg:flex items-center gap-12">
+            <div className="w-80">
+
             <SearchKeywordComp handleClick={handleLogoClick} />
+            </div>
             {renderAuthComponent()}
           </div>
 

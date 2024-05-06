@@ -30,10 +30,10 @@ const BankCollection = (props: { fetchQuery?: string; item: any }) => {
         <div className="w-full p-4 min-h-28">
           <div className="flex flex-col items-center justify-center gap-2">
             {/* border border-gray-400 shadow overflow-hidden */}
-            <div className="relative rounded-lg w-20 h-20 flex items-center justify-center m-auto border border-gray-400 shadow overflow-hidden">
+            <div className="relative rounded-lg w-20 h-20 flex items-center justify-center m-auto  overflow-hidden">
               <ImageTag imageUrl={imageUrl} alt={"i"} />
             </div>
-            <span className="text-center">{item?.name}</span>
+            <span className="text-center text-sm">{item?.name}</span>
           </div>
         </div>
       </Link>
