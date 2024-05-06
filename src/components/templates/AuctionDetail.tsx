@@ -46,8 +46,8 @@ const AuctionDetail = (props: { auctionDetail: IAuction }) => {
               isActionButton={false}
               icon={}
             /> */}
-            <em className='rounded-full bg-gray-300 px-3 py-2'>
-              <FontAwesomeIcon icon={faArrowLeft} /> 
+            <em className="rounded-full bg-gray-300 px-3 py-2">
+              <FontAwesomeIcon icon={faArrowLeft} />
             </em>
           </Link>
           <ActionButton
@@ -137,8 +137,18 @@ const AuctionDetail = (props: { auctionDetail: IAuction }) => {
             heading={STRING_DATA.AUCTION_END_D_AND_T}
             value={formattedDateAndTime(auctionDetail?.auctionEndDate ?? "")}
           />
+          <ShowLabelValue heading={"Documents"} hasChildren={true}>
+            <Link
+              href={`${process.env.NEXT_PUBLIC_IMAGE_CLOUDFRONT}${auctionDetail?.noticeImageURL}`}
+              target="_blank"
+              className='flex items-center gap-2 link link-primary'
+            >
+              <span>Notice link</span>
+              <NewTabSvg />
+            </Link>
+          </ShowLabelValue>
           {/* {JSON.stringify(auctionDetail)} */}
-          <Link
+          {/* <Link
             href={`${process.env.NEXT_PUBLIC_IMAGE_CLOUDFRONT}${auctionDetail?.noticeImageURL}`}
             target="_blank"
           >
@@ -147,7 +157,7 @@ const AuctionDetail = (props: { auctionDetail: IAuction }) => {
               customClass="lg:w-fit w-full mt-4"
               icon={<NewTabSvg />}
             />
-          </Link>
+          </Link> */}
         </div>
       </div>
     </>

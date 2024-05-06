@@ -7,12 +7,19 @@ export const COOKIES = {
   AUCTION_FILTER: "auction-filter"
 };
 
+
+export const RANGE_PRICE = {
+  MIN: "0",
+  MAX: "100000000",
+  STEPS: "100000",
+};
+
 export const FILTER_EMPTY = {
   name: "",
   bank: "",
   location: "",
   category: "",
-  price: "",
+  price: [RANGE_PRICE.MIN, RANGE_PRICE.MAX],
   propertyType: "",
 };
 
@@ -146,11 +153,6 @@ export const INPUT_TYPE = {
   NUMBER: "number",
 };
 
-export const RANGE_PRICE = {
-  MIN: "0",
-  MAX: "100000000",
-  STEPS: "100000"
-};
 
 export const ERROR_MESSAGE = {
   CURRENT_PASSWORD: "Current password is required",

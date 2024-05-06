@@ -79,12 +79,13 @@ const AuctionCard: React.FC<IAuctionCard> = (props) => {
               </span>
             ) : null}
           </div>
-          <div className="flex items-center justify-between gap-4 ">
+        </div>
+          <div className="flex items-center justify-end gap-4 ">
             <Link
               href={`${ROUTE_CONSTANTS.AUCTION_SLASH}/${item?.slug}`}
               target="_blank"
               prefetch={false}
-              className="w-full"
+              className="min-w-fit"
             >
               <ActionButton
                 text="View Auction"
@@ -103,7 +104,6 @@ const AuctionCard: React.FC<IAuctionCard> = (props) => {
               />
             ) : null}
           </div>
-        </div>
       </div>
     </>
   );

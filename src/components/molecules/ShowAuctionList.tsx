@@ -74,7 +74,7 @@ const ShowAuctionList = () => {
       bankName: currentRoute.startsWith(ROUTE_CONSTANTS.BANKS) ? auctionFilter?.bank?.name : filterRef.current?.bank?.name ?? "",
       location: currentRoute.startsWith(ROUTE_CONSTANTS.LOCATION) ? auctionFilter?.location?.name : filterRef.current?.location?.name ?? "",
       propertyType: currentRoute.startsWith(ROUTE_CONSTANTS.ASSETS_TYPE) ? auctionFilter?.propertyType?.name: filterRef.current?.propertyType?.name ?? "",
-      reservePrice: filterRef.current?.price ?? "",
+      reservePrice: filterRef.current?.price ?? auctionFilter?.price ??"",
       locationType:
         filterRef.current?.location?.type ??
         auctionFilter?.location?.type ??
