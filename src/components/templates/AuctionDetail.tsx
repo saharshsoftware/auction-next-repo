@@ -37,7 +37,7 @@ const AuctionDetail = (props: { auctionDetail: IAuction }) => {
           auctionDetail={auctionDetail}
         />
       ) : null}
-      <div className="flex flex-col gap-4 p-4 w-full">
+      <div className="flex flex-col gap-4 w-full">
         {/* {JSON.stringify(auctionDetail)} */}
         <div className="flex justify-between items-center">
           <Link href={ROUTE_CONSTANTS.AUCTION}>
