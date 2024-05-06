@@ -52,7 +52,7 @@ const getEmptyAllObject = () => ({
 });
 
 const mobileViewFilterClass = () =>
-  "border bg-white text-sm text-gray-800 shadow px-2 py-1 max-w-fit rounded-lg border-brand-color text-center line-clamp-1";
+  "border bg-white text-sm text-gray-800 shadow px-2 py-1 min-w-fit rounded-lg border-brand-color text-center line-clamp-1";
 
 const FindAuction = (props: IFindAuction) => {
 
@@ -271,7 +271,7 @@ const FindAuction = (props: IFindAuction) => {
     }
     return (
       <>
-        <div className="flex flex-row items-start justify-between gap-12 p-[0.5rem]">
+        <div className="flex flex-row items-start justify-between gap-12 p-4">
           <div className="flex items-start justify-start gap-2">
             <em onClick={handleBack}>
               <FontAwesomeIcon icon={faArrowLeft} />

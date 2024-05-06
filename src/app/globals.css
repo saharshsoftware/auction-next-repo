@@ -130,6 +130,11 @@ body :focus-within {
   width: 100% !important;
 }
 
+.navbar {
+  padding: 1rem !important;
+  /* @apply px-4!important */
+}
+
 .nav-link-class {
   @apply py-2 cursor-pointer w-full text-center
 }
@@ -139,7 +144,7 @@ body :focus-within {
 }
 
 .common-section {
-  @apply lg:px-32 px-[0.5rem]
+  @apply lg:px-32 px-4
 }
 
 .custom-h2-class {
