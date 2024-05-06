@@ -39,7 +39,7 @@ const CommonCollectionComp = (props: any) => {
             <div className="relative rounded-full w-20 h-20 flex items-center justify-center m-auto ">
               <ImageTag imageUrl={imageUrl} alt={"i"} />
             </div>
-            <span className="text-center">{item?.name}</span>
+            <span className="text-center text-sm">{item?.name}</span>
           </div>
         </div>
       </Link>

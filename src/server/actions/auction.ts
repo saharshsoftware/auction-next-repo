@@ -149,8 +149,12 @@ export const getCollectionData = async (props: { endpoints: string }) => {
   "use server";
   try {
     const { endpoints } = props;
-    const URL =
-      API_BASE_URL +`/api/` +endpoints + `?populate=*&filters[isPopular]=true`;
+    let filter = endpoints + `?populate=*&filters[isPopular]=true`;
+    if (endpoints === 'locations') {
+      filter += `&filters[type]=city`;
+    }
+    const URL = API_BASE_URL + `/api/` + filter;
+      console.log(URL, "URL")
     const { data } = await getRequest({ API: URL });
     const sendResponse = sanitizeStrapiData(data.data) as any;
     return sendResponse;

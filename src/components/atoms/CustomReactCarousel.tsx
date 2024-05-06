@@ -149,8 +149,8 @@ const CustomReactCarousel = (props: ICustomReactCarousel) => {
       {
         breakpoint: 480,
         settings: {
-          slidesToShow: 1,
-          slidesToScroll: 1,
+          slidesToShow: 2,
+          slidesToScroll: 2,
           initialSlide: 1,
           arrows: false,
           dots: false,
@@ -170,7 +170,7 @@ const CustomReactCarousel = (props: ICustomReactCarousel) => {
   return (
     <>
       {/* {isLoaded ?  */}
-      <div className={`carousel-container mb-16 common-section py-12`}>
+      <div className={`carousel-container common-section py-12`}>
         <div
           className={
             "flex flex-col items-center justify-center text-center gap-4 md:w-3/5 mx-auto mb-4"

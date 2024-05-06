@@ -34,7 +34,7 @@ export default async function Home() {
   const renderHomeCollection = () => {
     if (carouselResponse) {
       return (
-        <section className="md:my-auto my-12">
+        <section className="md:my-auto mt-12">
           {carouselResponse?.map(
             (
               item: {
@@ -53,7 +53,7 @@ export default async function Home() {
                 <div
                   key={index}
                   className={`${
-                    index % 2 === 0 ? "bg-[#f0f1f8]" : "bg-white"
+                    index % 2 === 0 ? "bg-[#f0f1f8]" : "bg-[#fbfbfc]"
                   }`}
                 >
                   <CustomReactCarousel
@@ -84,7 +84,7 @@ export default async function Home() {
 
   return (
     <>
-      <main className="mb-4">
+      <main className="">
         <section>
           <HeroSection
             assetsTypeOptions={sanitizeReactSelectOptions(assetsTypeOptions)}

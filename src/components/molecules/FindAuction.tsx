@@ -26,7 +26,7 @@ import { useParams, useRouter } from "next/navigation";
 import { usePathname, useSearchParams } from "next/navigation";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft, faFilter } from "@fortawesome/free-solid-svg-icons";
 
 import { IAssetType, IBanks, ICategoryCollection, ILocations } from "@/types";
 import useCustomParamsData from "@/hooks/useCustomParamsData";
@@ -50,6 +50,9 @@ const getEmptyAllObject = () => ({
   value: '',
   label: STRING_DATA.ALL,
 });
+
+const mobileViewFilterClass = () =>
+  "border bg-white text-sm text-gray-800 shadow px-2 py-1 max-w-fit rounded-lg border-brand-color text-center line-clamp-1";
 
 const FindAuction = (props: IFindAuction) => {
 
@@ -251,24 +254,44 @@ const FindAuction = (props: IFindAuction) => {
     router.back();
   }
 
+  const renderFilterTabs = (data: any) => {
+    if (data) {
+      return (
+        <div className={mobileViewFilterClass()}>
+          {data}
+        </div>
+      );
+    }
+    return null
+  }
+
   const renderData = () => {
     if (!isMobileView.mobileView) {
       return <div className="common-section p-4">{renderForm()}</div>;
     }
     return (
       <>
-        <div className="flex flex-row items-start justify-between gap-4 p-4">
-          <div className="flex items-center justify-start gap-4">
+        <div className="flex flex-row items-start justify-between gap-12 p-[0.5rem]">
+          <div className="flex items-start justify-start gap-2">
             <em onClick={handleBack}>
               <FontAwesomeIcon icon={faArrowLeft} />
             </em>
-            <div className="flex flex-col gap-2">
-              <p className="line-clamp-1">{initialValueData?.category?.name}</p>
-              <p className="line-clamp-1">{initialValueData?.location?.name}</p>
+            <div className="grid grid-cols-2 gap-2">
+              {/* {JSON.stringify(initialValueData)} */}
+              {renderFilterTabs(initialValueData?.category?.name)}
+              {renderFilterTabs(initialValueData?.location?.name)}
+              {renderFilterTabs(initialValueData?.bank?.name)}
+              {renderFilterTabs(initialValueData?.propertyType?.name)}
+              {initialValueData?.price?.length ? (
+                <div className={mobileViewFilterClass()}>
+                  Range {formatPrice(initialValueData?.price?.[0])} -{" "}
+                  {formatPrice(initialValueData?.price?.[1])}
+                </div>
+              ) : null}
             </div>
           </div>
           <span className="link primary-link" onClick={showModal}>
-            Edit
+            <FontAwesomeIcon icon={faFilter} />
           </span>
         </div>
       </>
