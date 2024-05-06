@@ -131,7 +131,7 @@ body :focus-within {
 }
 
 .navbar {
-  padding: 1rem !important;
+  padding: 0 1rem !important;
   /* @apply px-4!important */
 }
 
