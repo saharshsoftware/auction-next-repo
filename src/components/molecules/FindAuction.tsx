@@ -284,7 +284,7 @@ const FindAuction = (props: IFindAuction) => {
               {renderFilterTabs(initialValueData?.propertyType?.name)}
               {initialValueData?.price?.length ? (
                 <div className={mobileViewFilterClass()}>
-                  Range {formatPrice(initialValueData?.price?.[0])} -{" "}
+                  {formatPrice(initialValueData?.price?.[0])} -{" "}
                   {formatPrice(initialValueData?.price?.[1])}
                 </div>
               ) : null}
