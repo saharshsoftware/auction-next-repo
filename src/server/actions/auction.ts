@@ -5,6 +5,7 @@ import { cookies } from "next/headers";
 import { API_BASE_URL, API_ENPOINTS } from "@/services/api";
 import { getRequest } from "@/shared/Axios";
 import {
+  generateQueryParamString,
   sanitizeStrapiData,
   sanitizedAuctionData,
   sanitizedAuctionDetail,
@@ -149,12 +150,14 @@ export const getCollectionData = async (props: { endpoints: string }) => {
   "use server";
   try {
     const { endpoints } = props;
-    let filter = endpoints + `?populate=*&filters[isPopular]=true`;
-    if (endpoints === 'locations') {
+    const requiredkeys = generateQueryParamString(["name", "slug", 'imageURL']);
+    // console.log(requiredkeys, "requiredkeys");
+    let filter = endpoints + `?populate=*&filters[isPopular]=true&${requiredkeys}`;
+    if (endpoints === "locations") {
       filter += `&filters[type]=city`;
     }
     const URL = API_BASE_URL + `/api/` + filter;
-      console.log(URL, "URL")
+    console.log(URL, "URL");
     const { data } = await getRequest({ API: URL });
     const sendResponse = sanitizeStrapiData(data.data) as any;
     return sendResponse;

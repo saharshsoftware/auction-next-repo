@@ -2,6 +2,7 @@
 import { API_BASE_URL, API_ENPOINTS } from "@/services/api";
 import { deleteRequest, getRequest, postRequest, putRequest } from "@/shared/Axios";
 import {
+  generateQueryParamString,
   sanitizeStrapiData,
   sanitizedAuctionData,
   sanitizedAuctionDetail,
@@ -11,7 +12,8 @@ import { IAlert, IAssetType, IAuction, ICategoryCollection } from "@/types";
 export const getAssetTypeClient = async () => {
   // "use server";
   try {
-    const filter = `?sort[0]=name:asc`;
+    const requiredkeys = generateQueryParamString(["name", "slug"]);
+    const filter = `?sort[0]=name:asc&${requiredkeys}`;
     const URL = API_BASE_URL + API_ENPOINTS.ASSET_TYPES + `${filter}`;
     console.log(URL, "assetstype-detail");
     const { data } = await getRequest({ API: URL });
@@ -83,7 +85,18 @@ export const getAuctionDataClient = async (payload: {
       if (reservePrice) {
         filter += `filters[$and][${index++}][reservePrice][$gte]=${reservePrice[0]}&filters[$and][${index++}][reservePrice][$lte]=${reservePrice[1]}&`;
       }
-      URL = API_ENPOINTS.NOTICES + filter.slice(0, -1); // Remove the trailing '&' if present
+
+      const requiredkeys = generateQueryParamString([
+        "bankName",
+        "slug",
+        "assetCategory",
+        "title",
+        "estimatedMarketPrice",
+        "assetType",
+        "reservePrice",
+        "auctionDate",
+      ]);
+      URL = API_ENPOINTS.NOTICES + filter.slice(0, -1) + `&${requiredkeys}`; // Remove the trailing '&' if present
     }
 
     console.log(URL, "auction-filter");
@@ -118,7 +131,8 @@ export const getAuctionDetailClient = async ({ slug }: { slug: string }) => {
 
 export const getCategoryBoxCollectionClient = async () => {
   try {
-    const URL = API_BASE_URL + API_ENPOINTS.CATEGORY_BOX_COLLETIONS;
+    const requiredkeys = generateQueryParamString(["name", "slug"]);
+    const URL = API_BASE_URL + API_ENPOINTS.CATEGORY_BOX_COLLETIONS+`?${requiredkeys}`;
     console.log(URL, "category-url");
     const { data } = await getRequest({ API: URL });
     const sendResponse = sanitizeStrapiData(data.data) as ICategoryCollection;

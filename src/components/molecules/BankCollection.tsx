@@ -24,6 +24,7 @@ const BankCollection = (props: { fetchQuery?: string; item: any }) => {
     <>
       <Link
         className="z-20 text-center"
+        prefetch={false}
         href={`${ROUTE_CONSTANTS.BANKS}/${item?.slug}`}
         onClick={() => handleLinkClick(item)}
       >
