@@ -6,7 +6,7 @@ import { generateQueryParamString, sanitizeStrapiData } from "@/shared/Utilies";
 
 export const fetchLocation = async () => {
   try {
-    const requiredkeys = generateQueryParamString(["totalNotices", 'name', 'type', 'state']);
+    const requiredkeys = generateQueryParamString(["slug", 'name', 'type', 'state']);
     // console.log(requiredkeys, "requiredkeys");
     const filter = `?sort[0]=name:asc&pagination[page]=1&pagination[pageSize]=1000&${requiredkeys}`;
     const URL = API_BASE_URL + API_ENPOINTS.LOCATIONS+filter;
