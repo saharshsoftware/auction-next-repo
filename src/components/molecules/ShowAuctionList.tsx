@@ -68,21 +68,18 @@ const ShowAuctionList = () => {
   });
 
   const getFilterData = () => {
-    console.log(filterRef.current, "checkfilter", auctionFilter);
+    // console.log(filterRef.current, "checkfilter", auctionFilter);
     const filterData = {
-      category: currentRoute.startsWith(ROUTE_CONSTANTS.CATEGORY) ? auctionFilter?.category?.name: filterRef.current?.category?.name ?? "",
-      bankName: currentRoute.startsWith(ROUTE_CONSTANTS.BANKS) ? auctionFilter?.bank?.name : filterRef.current?.bank?.name ?? "",
-      location: currentRoute.startsWith(ROUTE_CONSTANTS.LOCATION) ? auctionFilter?.location?.name : filterRef.current?.location?.name ?? "",
-      propertyType: currentRoute.startsWith(ROUTE_CONSTANTS.ASSETS_TYPE) ? auctionFilter?.propertyType?.name: filterRef.current?.propertyType?.name ?? "",
-      reservePrice: filterRef.current?.price ?? auctionFilter?.price ??"",
-      locationType:
-        filterRef.current?.location?.type ??
-        auctionFilter?.location?.type ??
-        "",
+      category: auctionFilter?.category?.name ?? filterRef.current?.category?.name ?? "",
+      bankName: auctionFilter?.bank?.name ?? filterRef.current?.bank?.name ?? "",
+      location: auctionFilter?.location?.name ?? filterRef.current?.location?.name ?? "",
+      propertyType: auctionFilter?.propertyType?.name ?? filterRef.current?.propertyType?.name ?? "",
+      reservePrice: filterRef.current?.price ?? auctionFilter?.price ?? "",
+      locationType: filterRef.current?.location?.type ?? auctionFilter?.location?.type ?? "",
       keyword: filterRef.current?.keyword ?? "",
       page: currentPage?.toString() ?? "",
     };
-    console.log(filterData, "filterDAta")
+    // console.log(filterData, "filterDAta");
     return filterData;
   };
 
@@ -122,13 +119,13 @@ const ShowAuctionList = () => {
     if (searchParams.get("q")) {
       const data = searchParams.get("q");
       filterRef.current = getDataFromQueryParams(data ?? "");
-      
+
       // setAuctionFilter(filterRef.current);
 
       setCurrentPage(filterRef.current?.page);
       // debouncedRefetch();
       console.log(filterRef.current, "queryData");
-      refetch()
+      refetch();
 
       if (filterRef.current?.keyword) {
         setHasKeywordSearchValue(filterRef.current?.keyword);

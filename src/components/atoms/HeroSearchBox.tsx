@@ -103,6 +103,28 @@ const HeroSearchBox = (props: {
               <div className="grid gap-4 grid-cols-12 w-full ">
                 <div className={gridElementClass()}>
                   <TextField
+                    label={"Categories"}
+                    name={"category"}
+                    hasChildren={true}
+                  >
+                    <Field name="category">
+                      {() => (
+                        <ReactSelectDropdown
+                          defaultValue={values?.category ?? null}
+                          options={categoryOptions ?? []}
+                          placeholder={"Category"}
+                          // loading={isLoadingCategory}
+                          customClass="w-full "
+                          onChange={(e: any) => {
+                            setFieldValue("category", e);
+                          }}
+                        />
+                      )}
+                    </Field>
+                  </TextField>
+                </div>
+                <div className={gridElementClass()}>
+                  <TextField
                     label={"Asset type"}
                     name={"propertyType"}
                     hasChildren={true}
@@ -118,28 +140,6 @@ const HeroSearchBox = (props: {
                           onChange={(e: any) => {
                             // console.log(e, "formik")
                             setFieldValue("propertyType", e);
-                          }}
-                        />
-                      )}
-                    </Field>
-                  </TextField>
-                </div>
-                <div className={gridElementClass()}>
-                  <TextField
-                    label={"Categories"}
-                    name={"category"}
-                    hasChildren={true}
-                  >
-                    <Field name="category">
-                      {() => (
-                        <ReactSelectDropdown
-                          defaultValue={values?.category ?? null}
-                          options={categoryOptions ?? []}
-                          placeholder={"Category"}
-                          // loading={isLoadingCategory}
-                          customClass="w-full "
-                          onChange={(e: any) => {
-                            setFieldValue("category", e);
                           }}
                         />
                       )}
@@ -215,12 +215,12 @@ const HeroSearchBox = (props: {
                     </Field>
                   </TextField>
                 </div>
-                
-                {token?(
+
+                {token ? (
                   <div className={"col-span-full"}>
                     <SavedSearchList />
                   </div>
-                ):null}
+                ) : null}
                 <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2">
                   <Link
                     href={{
