@@ -19,8 +19,12 @@ import {
 import Link from "next/link";
 import useLocalStorage from "@/hooks/useLocationStorage";
 import RangeSliderCustom from "./RangeSliderCustom";
-import SavedSearchList from "./SavedSearchList";
+// import SavedSearchList from "./SavedSearchList";
+const SavedSearchList = dynamic(() => import("./SavedSearchList"), {
+  ssr: false,
+});
 import { getCookie } from "cookies-next";
+import dynamic from "next/dynamic";
 
 
 interface IFilter {
@@ -235,7 +239,7 @@ const HeroSearchBox = (props: {
                       isLoading={loadingSearch}
                       onclick={() => handleSearchButton(values)}
                       customClass={
-                        "rounded-full btn-lg lg:px-12 lg:py-4 px-10 py-6 min-w-fit lg:min-w-[150px]"
+                        "rounded-full btn-lg lg:px-12 lg:py-4 md:px-10 xs:px-8 py-6 min-w-fit lg:min-w-[150px]"
                       }
                     />
                   </Link>

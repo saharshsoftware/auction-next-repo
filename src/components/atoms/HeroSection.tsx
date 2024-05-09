@@ -1,6 +1,7 @@
 import React from "react";
 
 import waveImage from "@/assets/wave.svg";
+import auctionbg from "@/assets/images/auctionbg.jpg";
 import { STRING_DATA } from "../../shared/Constants";
 import HeroSearchBox from "./HeroSearchBox";
 
@@ -17,7 +18,7 @@ const HeroSection = (props: {
     <div
       className="hero min-h-screen"
       style={{
-        backgroundImage: `url(${waveImage?.src})`,
+        backgroundImage: `url(${auctionbg?.src})`,
       }}
     >
       <div className="bg-opacity-60"></div>
