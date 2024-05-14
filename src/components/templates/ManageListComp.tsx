@@ -107,7 +107,7 @@ const ManageListComp = () => {
     }
     return (
       <>
-        <div className="flex gap-4 min-w-full ">
+        <div className="flex gap-4 min-w-full overflow-x-scroll">
           {favouriteListData?.map((item, index) => (
             <CustomBadge
               key={index}
