@@ -18,7 +18,7 @@ const HeroSection = (props: {
     <div
       className="hero min-h-screen"
       style={{
-        backgroundImage: `url(${auctionbg?.src})`,
+        backgroundImage: `url(${waveImage?.src})`,
       }}
     >
       <div className="bg-opacity-60"></div>
