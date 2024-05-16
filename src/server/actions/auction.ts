@@ -110,7 +110,7 @@ export const getCategoryBoxCollection = async () => {
   "use server";
   try {
     const URL = API_BASE_URL + API_ENPOINTS.CATEGORY_BOX_COLLETIONS;
-    console.log(URL, "category-url");
+    // console.log(URL, "category-url");
     const { data } = await getRequest({ API: URL });
     const sendResponse = sanitizeStrapiData(data.data) as unknown;
     return sendResponse;
@@ -157,7 +157,7 @@ export const getCollectionData = async (props: { endpoints: string }) => {
       filter += `&filters[type]=city`;
     }
     const URL = API_BASE_URL + `/api/` + filter;
-    console.log(URL, "URL");
+    // console.log(URL, "URL");
     const { data } = await getRequest({ API: URL });
     const sendResponse = sanitizeStrapiData(data.data) as any;
     return sendResponse;
@@ -196,7 +196,7 @@ export const getAssetType = async () => {
   try {
     const filter = `?sort[0]=name:asc`;
     const URL = API_BASE_URL + API_ENPOINTS.ASSET_TYPES + `${filter}`;
-    console.log(URL, "assetstype-detail");
+    // console.log(URL, "assetstype-detail");
     const { data } = await getRequest({ API: URL });
     const sendResponse = sanitizeStrapiData(data.data) as IAssetType;
     return sendResponse;

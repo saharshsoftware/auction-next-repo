@@ -8,22 +8,22 @@ const Footer: React.FC = () => {
   return (
     <>
       <footer className="flex flex-col  gap-8 p-10 bg-neutral text-neutral-content rounded">
-        <nav className="flex items-center justify-center gap-4 text-sm">
-          <Link href={ROUTE_CONSTANTS.E_CITIES_ALL} className="link link-hover">
+        <nav className="flex items-center justify-center gap-4 text-sm ">
+          <Link href={ROUTE_CONSTANTS.E_CITIES_ALL} className="link link-hover min-w-fit">
             {STRING_DATA.CITIES}
           </Link>
-          <Link href={ROUTE_CONSTANTS.E_BANKS_ALL} className="link link-hover">
+          <Link href={ROUTE_CONSTANTS.E_BANKS_ALL} className="link link-hover min-w-fit">
             {STRING_DATA.BANKS}
           </Link>
           <Link
             href={ROUTE_CONSTANTS.E_CATOGRIES_ALL}
-            className="link link-hover"
+            className="link link-hover min-w-fit"
           >
             {STRING_DATA.CATEGORIES}
           </Link>
           <Link
             href={ROUTE_CONSTANTS.E_AUCTION_ASSETS}
-            className="link link-hover"
+            className="link link-hover min-w-fit"
           >
             {STRING_DATA.ASSETS}
           </Link>

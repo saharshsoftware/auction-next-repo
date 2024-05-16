@@ -68,18 +68,18 @@ const ShowAuctionList = () => {
   });
 
   const getFilterData = () => {
-    // console.log(filterRef.current, "checkfilter", auctionFilter);
+    console.log(filterRef.current, "checkfilter", auctionFilter);
     const filterData = {
-      category: auctionFilter?.category?.name ?? filterRef.current?.category?.name ?? "",
-      bankName: auctionFilter?.bank?.name ?? filterRef.current?.bank?.name ?? "",
-      location: auctionFilter?.location?.name ?? filterRef.current?.location?.name ?? "",
-      propertyType: auctionFilter?.propertyType?.name ?? filterRef.current?.propertyType?.name ?? "",
+      category:  filterRef.current?.category?.name ?? auctionFilter?.category?.name ?? "",
+      bankName: filterRef.current?.bank?.name ??auctionFilter?.bank?.name ??  "",
+      location: filterRef.current?.location?.name ??  auctionFilter?.location?.name ?? "",
+      propertyType: filterRef.current?.propertyType?.name ?? auctionFilter?.propertyType?.name ?? "",
       reservePrice: filterRef.current?.price ?? auctionFilter?.price ?? "",
       locationType: filterRef.current?.location?.type ?? auctionFilter?.location?.type ?? "",
       keyword: filterRef.current?.keyword ?? "",
       page: currentPage?.toString() ?? "",
     };
-    // console.log(filterData, "filterDAta");
+    console.log(filterData, "filterDAta");
     return filterData;
   };
 

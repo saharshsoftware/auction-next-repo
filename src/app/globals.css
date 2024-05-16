@@ -39,27 +39,27 @@ body :focus-within {
   outline: none;
 }
 
-@layer utilities {
-  .scrollbar::-webkit-scrollbar {
-    width: 1px;
-    height: 1px;
+/* @layer utilities { */
+  ::-webkit-scrollbar {
+    width: 0.8px;
+    height: 0.8px;
   }
 
-  .scrollbar::-webkit-scrollbar-track {
+  ::-webkit-scrollbar-track {
     border-radius: 100vh;
     background: #f7f4ed;
   }
 
-  .scrollbar::-webkit-scrollbar-thumb {
+  ::-webkit-scrollbar-thumb {
     background: #e0cbcb;
     border-radius: 100vh;
-    border: 3px solid #f6f7ed;
+    border: 3px solid red;
   }
 
-  .scrollbar::-webkit-scrollbar-thumb:hover {
+  ::-webkit-scrollbar-thumb:hover {
     background: #c0a0b9;
   }
-}
+/* } */
 
 .form-controls {
   @apply bg-gray-50 border border-brand-color text-gray-900 sm:text-sm hover:bg-gray-100 block w-full p-2 rounded;
@@ -90,7 +90,7 @@ body :focus-within {
 }
 
 .custom-badge-class {
-  /* @apply bg-[var(--badge-color)] px-4 py-2 max-w-fit rounded-full text-black min-w-fit cursor-pointer */
+  min-width: max-content;
   @apply inline-block p-4 border-b-2 border-transparent rounded-t-lg cursor-pointer 
 }
 

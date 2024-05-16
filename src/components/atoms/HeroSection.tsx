@@ -1,6 +1,7 @@
 import React from "react";
 
 import waveImage from "@/assets/wave.svg";
+import auctionbg from "@/assets/images/auctionbg.jpg";
 import { STRING_DATA } from "../../shared/Constants";
 import HeroSearchBox from "./HeroSearchBox";
 

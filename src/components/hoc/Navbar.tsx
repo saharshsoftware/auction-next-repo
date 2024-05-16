@@ -103,7 +103,7 @@ const Navbar: React.FC = () => {
   };
 
   const renderAuthComponent = () => {
-    console.log(myToken, "myTokenmyToken");
+    // console.log(myToken, "myTokenmyToken");
     if (myToken) {
       return (
         <>

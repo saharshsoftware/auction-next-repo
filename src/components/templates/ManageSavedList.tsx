@@ -124,10 +124,10 @@ const ManageSavedList = () => {
           {savedSearchData?.map((item, index) => (
             <div
               key={index}
-              className="flex items-center justify-between gap-4 w-full border border-brand-color shadow px-2 py-1 rounded-lg"
+              className="flex md:flex-row flex-col items-start justify-between gap-4 w-full border border-brand-color shadow px-2 py-1 rounded-lg"
             >
               <span>{item?.name}</span>
-              <div className="flex items-center justify-end gap-4">
+              <div className="flex items-center justify-end gap-4 w-full">
                 <ActionButton
                   text="Edit"
                   onclick={() => handleEditModal(item)}
