@@ -3,6 +3,7 @@ import { Metadata, ResolvingMetadata } from "next";
 import { IAuction } from "@/types";
 import NotFound from "@/app/not-found";
 import AuctionDetail from "@/components/templates/AuctionDetail";
+import BreadcrumbsSeo from "@/components/atoms/BreadCrumbsSeo";
 
 async function getAuctionDetailData(slug: string) {
   const res = await getAuctionDetail({ slug });
@@ -69,7 +70,12 @@ export default async function Page({
   const auctionDetail = (await getAuctionDetail({ slug })) as IAuction;
 
   if (auctionDetail) {
-    return <AuctionDetail auctionDetail={auctionDetail} />;
+    return (
+      <>
+        {/* <BreadcrumbsSeo /> */}
+        <AuctionDetail auctionDetail={auctionDetail} />
+      </>
+    );
   }
   if (auctionDetail == undefined) {
     return NotFound(); // Handle case where blog data is not found

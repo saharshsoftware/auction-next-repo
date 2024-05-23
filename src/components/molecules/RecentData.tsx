@@ -7,7 +7,7 @@ import { getCookie } from "cookies-next";
 import dynamic from "next/dynamic";
 import useFindUrl from "@/hooks/useFindUrl";
 
-const TopAssets = dynamic(()=> import( "../atoms/TopAssets"), {
+const TopAssets = dynamic(() => import("../atoms/TopAssets"), {
   ssr: false,
 });
 
@@ -28,7 +28,6 @@ const TopBanks = dynamic(() => import("@/components/atoms/TopBanks"), {
 });
 
 const RecentData = () => {
-
   const currentRoute = usePathname();
   const { findUrl } = useFindUrl();
   const token = getCookie(COOKIES.TOKEN_KEY) ?? "";
@@ -79,7 +78,10 @@ const RecentData = () => {
   };
 
   const renderChildren = () => {
-    if (currentRoute === ROUTE_CONSTANTS.AUCTION) {
+    if (
+      currentRoute === ROUTE_CONSTANTS.AUCTION ||
+      currentRoute === ROUTE_CONSTANTS.AUCTION_SLASH
+    ) {
       return (
         <>
           <TopCities />
