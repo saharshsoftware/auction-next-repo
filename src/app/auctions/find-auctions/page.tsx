@@ -2,6 +2,7 @@ import ShowAuctionList from "@/components/molecules/ShowAuctionList";
 import React from "react";
 
 import type { Metadata } from "next";
+import BreadcrumbsSeo from "@/components/atoms/BreadCrumbsSeo";
 
 export const metadata: Metadata = {
   title: "Search Results | eauctiondekho",
@@ -56,6 +57,7 @@ export default async function Page({
   return (
     <>
       <section>
+        {/* <BreadcrumbsSeo /> */}
         <ShowAuctionList />
       </section>
     </>

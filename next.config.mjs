@@ -10,6 +10,35 @@ const nextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      {
+        source: "/banks",
+        destination: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/e-auction-banks`,
+        permanent: true,
+      },
+      {
+        source: "/asset-types",
+        destination: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/e-auction-assets`,
+        permanent: true,
+      },
+      {
+        source: "/locations",
+        destination: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/e-auction-in-cities`,
+        permanent: true,
+      },
+      {
+        source: "/categories",
+        destination: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/e-auction-categories`,
+        permanent: true,
+      },
+      {
+        source: "/auctions",
+        destination: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/auctions/find-auctions`,
+        permanent: true,
+      },
+    ];
+  },
   async rewrites() {
     return [
       {
