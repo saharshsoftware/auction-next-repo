@@ -82,7 +82,7 @@ export const formatPrice = (price: any) => {
 export const formattedDate = (data: string | Date) =>
   moment(data)?.format("D MMM, YYYY h:mm A");
 export const formattedDateAndTime = (data: string | Date) =>
-  moment(data)?.format("MMM Do YYYY, h:mm:ss A");
+  data ? moment(data)?.format("MMM Do YYYY, h:mm:ss A") : "Not mentioned";
 
 export const sanitizedAuctionData = (data: any[]) => {
   return data.map((item: any) => ({ id: item.id, ...item.attributes }));

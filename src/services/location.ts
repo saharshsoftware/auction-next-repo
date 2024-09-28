@@ -16,9 +16,9 @@ export const fetchLocationTopClient = async () => {
 
 export const fetchLocationClient = async () => {
   try {
-    const requiredkeys = generateQueryParamString(["name", "slug"]);
+    const requiredkeys = generateQueryParamString(["name", "slug", "type"]);
     const filter = `?sort[0]=name:asc&pagination[page]=1&pagination[pageSize]=1000&${requiredkeys}`;
-    const URL = API_BASE_URL + API_ENPOINTS.LOCATIONS+filter;
+    const URL = API_BASE_URL + API_ENPOINTS.LOCATIONS + filter;
     const { data } = await getRequest({ API: URL });
     const sendResponse = sanitizeStrapiData(data?.data);
     return sendResponse;

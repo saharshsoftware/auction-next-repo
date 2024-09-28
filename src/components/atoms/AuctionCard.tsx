@@ -1,7 +1,11 @@
 "use client";
 import React from "react";
 import ActionButton from "./ActionButton";
-import { formatPrice, formattedDate, getSharedAuctionUrl } from "../../shared/Utilies";
+import {
+  formatPrice,
+  formattedDate,
+  getSharedAuctionUrl,
+} from "../../shared/Utilies";
 import { IAuction } from "@/types";
 import { WhatsappShareWithIcon } from "./SocialIcons";
 import Link from "next/link";
@@ -17,12 +21,16 @@ interface IAuctionCard {
   showRemoveButton?: boolean;
 }
 
-
 const auctionLabelClass = () => "text-sm text-gray-400 font-bold";
 
 const AuctionCard: React.FC<IAuctionCard> = (props) => {
-  const { item, handleClick = () => {}, handleRemove=()=>{},showRemoveButton } = props;
-  const sharedUrl = getSharedAuctionUrl(item)
+  const {
+    item,
+    handleClick = () => {},
+    handleRemove = () => {},
+    showRemoveButton,
+  } = props;
+  const sharedUrl = getSharedAuctionUrl(item);
   return (
     <>
       <div className="flex flex-col gap-4 p-4 border rounded shadow w-full min-h-40">
@@ -31,10 +39,17 @@ const AuctionCard: React.FC<IAuctionCard> = (props) => {
         </div>
         <div className="flex gap-4 justify-between items-start flex-wrap">
           <div className="flex flex-col gap-2 items-start justify-start">
-            <span className={auctionLabelClass()}>Reserve price</span>
-            <span className="custom-prize-color font-bold text-2xl">
-              {formatPrice(item?.reservePrice)}
-            </span>
+            {item?.assetCategory !== "Gold Auctions" ? (
+              <>
+                <span className={auctionLabelClass()}>Reserve price</span>
+                <span className="custom-prize-color font-bold text-2xl">
+                  {formatPrice(item?.reservePrice)}
+                </span>
+              </>
+            ) : (
+              ""
+            )}
+
             {item?.assetCategory !== "Vehicle Auctions" ? (
               <span
                 className="border border-blue-300 bg-blue-100 text-sm rounded-full px-2 py-1 font-semibold "
@@ -80,30 +95,30 @@ const AuctionCard: React.FC<IAuctionCard> = (props) => {
             ) : null}
           </div>
         </div>
-          <div className="flex items-center justify-end gap-4 flex-wrap">
-            <Link
-              href={`${ROUTE_CONSTANTS.AUCTION_SLASH}/${item?.slug}`}
-              target="_blank"
-              prefetch={false}
-              className="min-w-fit"
-            >
-              <ActionButton
-                text="View Auction"
-                customClass="w-full"
-                icon={<NewTabSvg />}
-                // onclick={() => handleClick(item)}
-              />
-            </Link>
-            {showRemoveButton ? (
-              <ActionButton
-                text="Remove"
-                icon={<FontAwesomeIcon icon={faX} />}
-                customClass="w-fit"
-                onclick={() => handleRemove(item)}
-                isDeleteButton={true}
-              />
-            ) : null}
-          </div>
+        <div className="flex items-center justify-end gap-4 flex-wrap">
+          <Link
+            href={`${ROUTE_CONSTANTS.AUCTION_SLASH}/${item?.slug}`}
+            target="_blank"
+            prefetch={false}
+            className="min-w-fit"
+          >
+            <ActionButton
+              text="View Auction"
+              customClass="w-full"
+              icon={<NewTabSvg />}
+              // onclick={() => handleClick(item)}
+            />
+          </Link>
+          {showRemoveButton ? (
+            <ActionButton
+              text="Remove"
+              icon={<FontAwesomeIcon icon={faX} />}
+              customClass="w-fit"
+              onclick={() => handleRemove(item)}
+              isDeleteButton={true}
+            />
+          ) : null}
+        </div>
       </div>
     </>
   );

@@ -1,20 +1,24 @@
-"use client"
-import { IAuction } from '@/types';
-import React from 'react'
-import ShowLabelValue from '../atoms/ShowLabelValue';
-import { COOKIES, STRING_DATA } from '@/shared/Constants';
-import { formatPrice, formattedDateAndTime, getSharedAuctionUrl } from '@/shared/Utilies';
-import Link from 'next/link';
-import ActionButton from '../atoms/ActionButton';
-import NewTabSvg from '../svgIcons/NewTabSvg';
-import { ROUTE_CONSTANTS } from '@/shared/Routes';
-import useModal from '@/hooks/useModal';
-import InterestModal from '../ modals/InterestModal';
-import { getCookie } from 'cookies-next';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft, faHeart } from '@fortawesome/free-solid-svg-icons';
-import { WhatsappShareWithIcon } from '../atoms/SocialIcons';
-import { WishlistSvg } from '../svgIcons/WishlistSvg';
+"use client";
+import { IAuction } from "@/types";
+import React from "react";
+import ShowLabelValue from "../atoms/ShowLabelValue";
+import { COOKIES, STRING_DATA } from "@/shared/Constants";
+import {
+  formatPrice,
+  formattedDateAndTime,
+  getSharedAuctionUrl,
+} from "@/shared/Utilies";
+import Link from "next/link";
+import ActionButton from "../atoms/ActionButton";
+import NewTabSvg from "../svgIcons/NewTabSvg";
+import { ROUTE_CONSTANTS } from "@/shared/Routes";
+import useModal from "@/hooks/useModal";
+import InterestModal from "../ modals/InterestModal";
+import { getCookie } from "cookies-next";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowLeft, faHeart } from "@fortawesome/free-solid-svg-icons";
+import { WhatsappShareWithIcon } from "../atoms/SocialIcons";
+import { WishlistSvg } from "../svgIcons/WishlistSvg";
 
 const auctionLabelClass = () => "text-sm text-gray-400 font-bold";
 
@@ -64,10 +68,16 @@ const AuctionDetail = (props: { auctionDetail: IAuction }) => {
         </div>
         <div className="flex gap-4 justify-between items-start flex-wrap">
           <div className="flex flex-col gap-2 items-start justify-start">
-            <span className={auctionLabelClass()}>Reserve price</span>
-            <span className="custom-prize-color font-bold text-2xl">
-              {formatPrice(auctionDetail?.reservePrice)}
-            </span>
+            {auctionDetail?.assetCategory !== "Gold Auctions" ? (
+              <>
+                <span className={auctionLabelClass()}>Reserve price</span>
+                <span className="custom-prize-color font-bold text-2xl">
+                  {formatPrice(auctionDetail?.reservePrice)}
+                </span>
+              </>
+            ) : (
+              ""
+            )}
             <span
               className="border border-blue-300 bg-blue-100 text-sm rounded-full px-2 py-1 font-semibold "
               style={{ width: "max-content" }}
@@ -141,7 +151,7 @@ const AuctionDetail = (props: { auctionDetail: IAuction }) => {
             <Link
               href={`${process.env.NEXT_PUBLIC_IMAGE_CLOUDFRONT}${auctionDetail?.noticeImageURL}`}
               target="_blank"
-              className='flex items-center gap-2 link link-primary'
+              className="flex items-center gap-2 link link-primary"
             >
               <span>Notice link</span>
               <NewTabSvg />
@@ -164,4 +174,4 @@ const AuctionDetail = (props: { auctionDetail: IAuction }) => {
   );
 };
 
-export default AuctionDetail
+export default AuctionDetail;

@@ -6,12 +6,13 @@ import { ROUTE_CONSTANTS } from "../../shared/Routes";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { getCookie } from "cookies-next";
-import { Tooltip } from "@nextui-org/tooltip";
+import logo from "@/assets/images/logo.png";
 import { Popover, PopoverTrigger, PopoverContent } from "@nextui-org/popover";
 import TooltipContent from "../atoms/TooltipContent";
 import { getInitials } from "@/shared/Utilies";
 import CustomDrawer from "./CustomDrawer";
 import SearchKeywordComp from "../atoms/SearchKeywordComp";
+import Image from "next/image";
 
 const getWaveSvg = () => {
   return (
@@ -37,7 +38,7 @@ const downSvg = () => {
       <path d="M11.178 19.569a.998.998 0 0 0 1.644 0l9-13A.999.999 0 0 0 21 5H3a1.002 1.002 0 0 0-.822 1.569l9 13z" />
     </svg>
   );
-}
+};
 
 const upSvg = () => {
   return (
@@ -51,13 +52,15 @@ const upSvg = () => {
       <path d="M3 19h18a1.002 1.002 0 0 0 .823-1.569l-9-13c-.373-.539-1.271-.539-1.645 0l-9 13A.999.999 0 0 0 3 19z" />
     </svg>
   );
-}
+};
 
 const Navbar: React.FC = () => {
   const router = useRouter();
   const pathname = usePathname();
   const token = getCookie(COOKIES.TOKEN_KEY) ?? "";
-  const userData = getCookie(COOKIES.AUCTION_USER_KEY) ?  JSON.parse(getCookie(COOKIES.AUCTION_USER_KEY) ?? "") : null;
+  const userData = getCookie(COOKIES.AUCTION_USER_KEY)
+    ? JSON.parse(getCookie(COOKIES.AUCTION_USER_KEY) ?? "")
+    : null;
   const [myToken, setMyToken] = useState("");
   const [isOpen, setIsOpen] = React.useState(false);
   // console.log(getCookie(COOKIES.TOKEN_KEY), "getCookie(COOKIES.TOKEN_KEY)");
@@ -124,7 +127,7 @@ const Navbar: React.FC = () => {
                 </div>
               </PopoverTrigger>
               <PopoverContent>
-                <TooltipContent closePopover={()=> setIsOpen(false)}/>
+                <TooltipContent closePopover={() => setIsOpen(false)} />
               </PopoverContent>
             </Popover>
           </div>
@@ -148,9 +151,9 @@ const Navbar: React.FC = () => {
       setIsMobileView((prev) => ({
         ...prev,
         isOpenTopbar: false,
-      })); 
+      }));
     }
-  }
+  };
 
   return (
     <>
@@ -167,7 +170,7 @@ const Navbar: React.FC = () => {
               className="lg:text-xl text-lg font-bold cursor-pointer "
               onClick={handleLogoClick}
             >
-              {STRING_DATA.EAUCTION_DEKHO.toUpperCase()}{" "}
+              <img src={logo.src} alt="logo" className="h-16" />
             </Link>
             <div className="hidden md:flex items-center gap-12">
               <Link
@@ -192,8 +195,7 @@ const Navbar: React.FC = () => {
           </div>
           <div className="hidden lg:flex items-center gap-12">
             <div className="w-80">
-
-            <SearchKeywordComp handleClick={handleLogoClick} />
+              <SearchKeywordComp handleClick={handleLogoClick} />
             </div>
             {renderAuthComponent()}
           </div>
