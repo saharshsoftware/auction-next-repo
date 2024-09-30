@@ -77,19 +77,17 @@ const ManageSavedList = () => {
     },
   });
 
-
   const handleDeleteModal = (data: any) => {
     console.log(data);
-    showModalDelete()
+    showModalDelete();
     setSelectedBadge(data);
   };
 
   const handleEditModal = (data: any) => {
     console.log(data);
-    showModalEdit()
+    showModalEdit();
     setSelectedBadge(data);
   };
-
 
   const closeDeleteModal = () => {
     setSelectedBadge("");
@@ -126,8 +124,8 @@ const ManageSavedList = () => {
               key={index}
               className="flex md:flex-row flex-col items-start justify-between gap-4 w-full border border-brand-color shadow px-2 py-1 rounded-lg"
             >
-              <span>{item?.name}</span>
-              <div className="flex items-center justify-end gap-4 w-full">
+              <div>{item?.name}</div>
+              <div className="flex items-center justify-end gap-4">
                 <ActionButton
                   text="Edit"
                   onclick={() => handleEditModal(item)}
