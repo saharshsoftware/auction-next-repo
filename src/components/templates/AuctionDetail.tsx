@@ -83,13 +83,7 @@ const AuctionDetail = (props: { auctionDetail: IAuction }) => {
             {auctionDetail?.title}
           </h2>
         </div>
-        <div
-          className={`flex gap-4 justify-between items-start flex-wrap  ${
-            auctionDetail?.assetCategory === "Gold Auctions"
-              ? "gap-0 max-w-fit"
-              : ""
-          }`}
-        >
+        <div className={`flex gap-4 justify-between items-start flex-wrap `}>
           <div className="flex flex-col gap-2 items-start justify-start">
             {renderPriceDetails()}
           </div>
