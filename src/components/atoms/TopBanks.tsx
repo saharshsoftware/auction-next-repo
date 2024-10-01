@@ -23,7 +23,6 @@ const TopBanks = () => {
     queryKey: [REACT_QUERY.AUCTION_BANKS, "top"],
     queryFn: async () => {
       const res = (await fetchBankTopClient()) as unknown as IBanks[];
-      console.log(res, "footertop");
       return res ?? [];
     },
   });

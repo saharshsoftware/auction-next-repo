@@ -30,11 +30,15 @@ import { faArrowLeft, faFilter } from "@fortawesome/free-solid-svg-icons";
 
 import { IAssetType, IBanks, ICategoryCollection, ILocations } from "@/types";
 import useCustomParamsData from "@/hooks/useCustomParamsData";
-import { getAssetTypeClient, getCategoryBoxCollectionClient } from "@/services/auction";
+import {
+  getAssetTypeClient,
+  getCategoryBoxCollectionClient,
+} from "@/services/auction";
 import useLocalStorage from "@/hooks/useLocationStorage";
 import { fetchBanksClient } from "@/services/bank";
 import { fetchLocationClient } from "@/services/location";
 import RangeSliderCustom from "../atoms/RangeSliderCustom";
+import { useFilterStore } from "@/zustandStore/filters";
 
 const gridElementClass = () => "lg:col-span-2  col-span-full";
 
@@ -47,7 +51,7 @@ interface IFindAuction {
 const getEmptyAllObject = () => ({
   // id: 0,
   // name: STRING_DATA.ALL,
-  value: '',
+  value: "",
   label: STRING_DATA.ALL,
 });
 
@@ -55,49 +59,52 @@ const mobileViewFilterClass = () =>
   "border bg-white text-sm text-gray-800 shadow px-2 py-1 min-w-fit rounded-lg border-brand-color text-center line-clamp-1";
 
 const FindAuction = (props: IFindAuction) => {
+  const filterData = useFilterStore((state) => state.filter);
+  const { setFilter } = useFilterStore();
 
-  const params = useParams()
+  const params = useParams();
   const params_search = useSearchParams();
   const router = useRouter();
   const currentRoute = usePathname();
   const { showModal, openModal, hideModal } = useModal();
-  const [auctionFilter, setAuctionFilter] = useLocalStorage(COOKIES.AUCTION_FILTER, FILTER_EMPTY);
-  
+  const [auctionFilter, setAuctionFilter] = useLocalStorage(
+    COOKIES.AUCTION_FILTER,
+    FILTER_EMPTY
+  );
+
   const { setDataInQueryParamsMethod, getDataFromQueryParamsMethod } =
     useCustomParamsData();
-  const { data: categoryOptions, isLoading: isLoadingCategory} = useQuery({
+  const { data: categoryOptions, isLoading: isLoadingCategory } = useQuery({
     queryKey: [REACT_QUERY.CATEGORY_BOX_COLLECITON_OPTIONS],
     queryFn: async () => {
-      const res = (await getCategoryBoxCollectionClient()) as unknown as ICategoryCollection[];
+      const res =
+        (await getCategoryBoxCollectionClient()) as unknown as ICategoryCollection[];
       const updatedData = [
         getEmptyAllObject(),
         ...sanitizeReactSelectOptions(res),
       ];
-      if (currentRoute.startsWith(ROUTE_CONSTANTS.CATEGORY)) fillFilter(updatedData);
-      return (updatedData) ?? [];
-    },
-  });
-
-  const {
-    data: assetsTypeOptions,
-    isLoading: isLoadingAssetsTypeCategory,
-  } = useQuery({
-    queryKey: [REACT_QUERY.ASSETS_TYPE],
-    queryFn: async () => {
-      const res = (await getAssetTypeClient()) as unknown as IAssetType[];
-      const updatedData = [
-        getEmptyAllObject(),
-        ...sanitizeReactSelectOptions(res),
-      ];
-      if (currentRoute.startsWith(ROUTE_CONSTANTS.ASSETS_TYPE)) fillFilter(updatedData);
+      if (currentRoute.startsWith(ROUTE_CONSTANTS.CATEGORY))
+        fillFilter(updatedData);
       return updatedData ?? [];
     },
   });
 
-  const {
-    data: bankOptions,
-    isLoading: isLoadingBank,
-  } = useQuery({
+  const { data: assetsTypeOptions, isLoading: isLoadingAssetsTypeCategory } =
+    useQuery({
+      queryKey: [REACT_QUERY.ASSETS_TYPE],
+      queryFn: async () => {
+        const res = (await getAssetTypeClient()) as unknown as IAssetType[];
+        const updatedData = [
+          getEmptyAllObject(),
+          ...sanitizeReactSelectOptions(res),
+        ];
+        if (currentRoute.startsWith(ROUTE_CONSTANTS.ASSETS_TYPE))
+          fillFilter(updatedData);
+        return updatedData ?? [];
+      },
+    });
+
+  const { data: bankOptions, isLoading: isLoadingBank } = useQuery({
     queryKey: [REACT_QUERY.AUCTION_BANKS],
     queryFn: async () => {
       const res = (await fetchBanksClient()) as unknown as IBanks[];
@@ -105,12 +112,13 @@ const FindAuction = (props: IFindAuction) => {
         getEmptyAllObject(),
         ...sanitizeReactSelectOptions(res),
       ];
-      if (currentRoute.startsWith(ROUTE_CONSTANTS.BANKS)) fillFilter(updatedData);
+      if (currentRoute.startsWith(ROUTE_CONSTANTS.BANKS))
+        fillFilter(updatedData);
       return updatedData ?? [];
     },
   });
 
-  const { data: locationOptions, isLoading: isLoadingLocation} = useQuery({
+  const { data: locationOptions, isLoading: isLoadingLocation } = useQuery({
     queryKey: [REACT_QUERY.AUCTION_LOCATION],
     queryFn: async () => {
       const res = (await fetchLocationClient()) as unknown as ILocations[];
@@ -119,26 +127,26 @@ const FindAuction = (props: IFindAuction) => {
         getEmptyAllObject(),
         ...sanitizeReactSelectOptions(responseData),
       ];
-      if (currentRoute.startsWith(ROUTE_CONSTANTS.LOCATION)) fillFilter(updatedData);
-      return updatedData  ?? [];
+      if (currentRoute.startsWith(ROUTE_CONSTANTS.LOCATION))
+        fillFilter(updatedData);
+      return updatedData ?? [];
     },
   });
 
   const [staticLoading, setStaticLoading] = useState(false);
 
   const [initialValueData, setInitialValueData] = useState<any>({
-      propertyType: getEmptyAllObject(),
-      bank: getEmptyAllObject(),
-      price: STRING_DATA.EMPTY,
-      location: getEmptyAllObject(),
-      category: getEmptyAllObject(),
-    }
-  );
+    propertyType: getEmptyAllObject(),
+    bank: getEmptyAllObject(),
+    price: STRING_DATA.EMPTY,
+    location: getEmptyAllObject(),
+    category: getEmptyAllObject(),
+  });
 
-  useEffect(()=> {
+  useEffect(() => {
     if (params?.slug) {
       if (currentRoute.startsWith(ROUTE_CONSTANTS.CATEGORY)) {
-        fillFilter(categoryOptions)
+        fillFilter(categoryOptions);
         return;
       }
       if (currentRoute.startsWith(ROUTE_CONSTANTS.BANKS)) {
@@ -146,7 +154,7 @@ const FindAuction = (props: IFindAuction) => {
         return;
       }
       if (currentRoute.startsWith(ROUTE_CONSTANTS.LOCATION)) {
-        fillFilter(locationOptions)
+        fillFilter(locationOptions);
         return;
       }
       if (currentRoute.startsWith(ROUTE_CONSTANTS.ASSETS_TYPE)) {
@@ -154,40 +162,52 @@ const FindAuction = (props: IFindAuction) => {
         return;
       }
     }
-  }, [params?.slug])
+  }, [params?.slug]);
 
-  const fillFilter = (data: any) =>{
+  const fillFilter = (data: any) => {
     if (currentRoute.startsWith(ROUTE_CONSTANTS.CATEGORY)) {
-      const selectedOne = data?.find((item: any) => item?.slug === params?.slug);
-      // console.log(selectedOne, "selectedOne");
+      const selectedOne = data?.find(
+        (item: any) => item?.slug === params?.slug
+      );
+      console.log(selectedOne, "selectedOne");
       setInitialValueData({
         category: selectedOne ?? auctionFilter?.category ?? "",
       });
+      setFilter({ ...FILTER_EMPTY, category: selectedOne });
     }
     if (currentRoute.startsWith(ROUTE_CONSTANTS.LOCATION)) {
-      const selectedOne = data?.find((item: any) => item?.slug === params?.slug);
+      const selectedOne = data?.find(
+        (item: any) => item?.slug === params?.slug
+      );
       // console.log(selectedOne, "selectedOne");
       setInitialValueData({
         location: selectedOne ?? auctionFilter?.location ?? "",
       });
+      setFilter({ ...FILTER_EMPTY, location: selectedOne });
     }
     if (currentRoute.startsWith(ROUTE_CONSTANTS.BANKS)) {
-      const selectedOne = data?.find((item: any) => item?.slug === params?.slug);
+      const selectedOne = data?.find(
+        (item: any) => item?.slug === params?.slug
+      );
       // console.log(selectedOne, "selectedOne", auctionFilter?.bank);
       // debugger;
       setInitialValueData({
         bank: selectedOne ?? auctionFilter?.bank ?? "",
       });
+      setFilter({ ...FILTER_EMPTY, bank: selectedOne });
     }
     if (currentRoute.startsWith(ROUTE_CONSTANTS.ASSETS_TYPE)) {
-      const selectedOne = data?.find((item: any) => item?.slug === params?.slug);
+      const selectedOne = data?.find(
+        (item: any) => item?.slug === params?.slug
+      );
       // console.log(selectedOne, "selectedOne", auctionFilter?.bank);
       // debugger;
       setInitialValueData({
         propertyType: selectedOne ?? auctionFilter?.propertyType ?? "",
       });
+      setFilter({ ...FILTER_EMPTY, propertyType: selectedOne });
     }
-  }
+  };
 
   const [isMobileView, setIsMobileView] = useState({
     mobileView: false,
@@ -200,17 +220,22 @@ const FindAuction = (props: IFindAuction) => {
     const { type, name } = location ?? {};
     const filter = {
       page: 1,
-      category: category?.label === STRING_DATA.ALL?STRING_DATA.EMPTY :category,
+      category:
+        category?.label === STRING_DATA.ALL ? STRING_DATA.EMPTY : category,
       price,
       bank: bank?.label === STRING_DATA.ALL ? STRING_DATA.EMPTY : bank,
       locationType: type,
       location:
         location?.label === STRING_DATA.ALL ? STRING_DATA.EMPTY : location,
-      propertyType: propertyType?.label === STRING_DATA.ALL?STRING_DATA.EMPTY :propertyType
+      propertyType:
+        propertyType?.label === STRING_DATA.ALL
+          ? STRING_DATA.EMPTY
+          : propertyType,
     };
     console.log(filter);
+    setFilter(filter);
     setAuctionFilter(filter);
-    const data:any = setDataInQueryParamsMethod(filter);
+    const data: any = setDataInQueryParamsMethod(filter);
     // console.log(data)
 
     // setStaticLoading(true);
@@ -219,7 +244,6 @@ const FindAuction = (props: IFindAuction) => {
     setTimeout(() => {
       setStaticLoading(false);
     }, 1000);
-    
     router.push(`${ROUTE_CONSTANTS.AUCTION}?q=${data}`);
 
     hideModal?.();
@@ -237,7 +261,8 @@ const FindAuction = (props: IFindAuction) => {
       const updateFormData = structuredClone(
         getDataFromQueryParams(params_search.get("q") ?? "")
       );
-      setInitialValueData({...updateFormData});
+      setFilter(updateFormData);
+      setInitialValueData({ ...updateFormData });
     }
   }, [params_search?.get("q")]);
 
@@ -252,18 +277,14 @@ const FindAuction = (props: IFindAuction) => {
 
   const handleBack = () => {
     router.back();
-  }
+  };
 
   const renderFilterTabs = (data: any) => {
     if (data) {
-      return (
-        <div className={mobileViewFilterClass()}>
-          {data}
-        </div>
-      );
+      return <div className={mobileViewFilterClass()}>{data}</div>;
     }
-    return null
-  }
+    return null;
+  };
 
   const renderData = () => {
     if (!isMobileView.mobileView) {
@@ -354,7 +375,10 @@ const FindAuction = (props: IFindAuction) => {
                                 return;
                               }
                               setFieldValue("category", getEmptyAllObject());
-                              setAuctionFilter({...auctionFilter, category: STRING_DATA.EMPTY})
+                              setAuctionFilter({
+                                ...auctionFilter,
+                                category: STRING_DATA.EMPTY,
+                              });
                             }}
                           />
                         )}
@@ -488,7 +512,6 @@ const FindAuction = (props: IFindAuction) => {
                 </div>
                 <div className={gridElementClass()}>
                   <div className="w-full flex items-center justify-end gap-4 flex-wrap">
-
                     {isMobileView.mobileView ? (
                       <ActionButton
                         text={STRING_DATA.CANCEL.toUpperCase()}
@@ -496,7 +519,7 @@ const FindAuction = (props: IFindAuction) => {
                         isActionButton={false}
                       />
                     ) : null}
-                    
+
                     <ActionButton
                       isSubmit={true}
                       text={STRING_DATA.UPDATE.toUpperCase()}
@@ -516,9 +539,7 @@ const FindAuction = (props: IFindAuction) => {
   return (
     <>
       <CustomModal openModal={openModal}>
-        <div className="w-full flex flex-col gap-4">
-          {renderForm()}
-          </div>
+        <div className="w-full flex flex-col gap-4">{renderForm()}</div>
       </CustomModal>
       <div className="bg-[#e3e3e3] sticky left-0 right-0 top-0  z-20">
         {renderData()}

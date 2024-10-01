@@ -20,7 +20,7 @@ export const RANGE_PRICE = {
 };
 
 export const FILTER_EMPTY = {
-  name: "",
+  // name: "",
   bank: "",
   location: "",
   category: "",

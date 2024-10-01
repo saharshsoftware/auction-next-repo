@@ -24,7 +24,6 @@ const TopCategory = () => {
     queryFn: async () => {
       const res =
         (await fetchCategoriesTopClient()) as unknown as ICategoryCollection[];
-      console.log(res, "footertop");
       return res ?? [];
     },
   });

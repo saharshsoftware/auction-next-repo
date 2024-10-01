@@ -2,7 +2,12 @@
 import React, { useEffect, useState } from "react";
 import TooltipContent from "../atoms/TooltipContent";
 import { getCookie } from "cookies-next";
-import { COOKIES, NAVBAR_NAV_LINKS, NAVICON_COLOR, STRING_DATA } from "@/shared/Constants";
+import {
+  COOKIES,
+  NAVBAR_NAV_LINKS,
+  NAVICON_COLOR,
+  STRING_DATA,
+} from "@/shared/Constants";
 import { getInitials } from "@/shared/Utilies";
 import LogoutButton from "../ui/LogoutButton";
 import Link from "next/link";
@@ -10,14 +15,20 @@ import { ROUTE_CONSTANTS } from "@/shared/Routes";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import SearchKeywordComp from "../atoms/SearchKeywordComp";
 import NextLink from "../ui/NextLink";
-import { faHome, faPhone, faRightToBracket, faUserPlus, faUsers } from "@fortawesome/free-solid-svg-icons";
+import {
+  faHome,
+  faPhone,
+  faRightToBracket,
+  faUserPlus,
+  faUsers,
+} from "@fortawesome/free-solid-svg-icons";
 
 interface ICustomDrawer {
-  toggleTopBar: ()=> void;
+  toggleTopBar: () => void;
 }
 
 const CustomDrawer = (props: ICustomDrawer) => {
-  const { toggleTopBar=()=>{} } = props;
+  const { toggleTopBar = () => {} } = props;
   const token = getCookie(COOKIES.TOKEN_KEY) ?? "";
   const userData = getCookie(COOKIES.AUCTION_USER_KEY)
     ? JSON.parse(getCookie(COOKIES.AUCTION_USER_KEY) ?? "")
@@ -26,7 +37,6 @@ const CustomDrawer = (props: ICustomDrawer) => {
   const [userInfo, setUserInfo] = useState({});
 
   useEffect(() => {
-    console.log(token, "tokeneffect")
     setMyToken(token);
 
     // userData && setUserInfo(userData);
@@ -56,9 +66,8 @@ const CustomDrawer = (props: ICustomDrawer) => {
         </>
       );
     }
-    return null
+    return null;
   };
-
 
   const renderLinks = () => {
     if (myToken) {
@@ -75,12 +84,13 @@ const CustomDrawer = (props: ICustomDrawer) => {
                     customClass="flex justify-between gap-2"
                   >
                     <span>{nav?.label}</span>
-                    {nav?.icon ? <FontAwesomeIcon icon={nav?.icon} color={NAVICON_COLOR}/> : null}
+                    {nav?.icon ? (
+                      <FontAwesomeIcon icon={nav?.icon} color={NAVICON_COLOR} />
+                    ) : null}
                   </NextLink>
                 </li>
               );
             })}
-            
           </ul>
         </>
       );
@@ -107,7 +117,7 @@ const CustomDrawer = (props: ICustomDrawer) => {
         </NextLink>
       </>
     );
-  }
+  };
   return (
     <>
       <div className="flex flex-col gap-4 w-full h-full px-2">

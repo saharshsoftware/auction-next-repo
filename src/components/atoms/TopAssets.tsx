@@ -23,7 +23,6 @@ const TopAssets = () => {
     queryKey: [REACT_QUERY.ASSETS_TYPE, "top"],
     queryFn: async () => {
       const res = (await fetchTopAssetsTypeClient()) as unknown as IAssetType[];
-      // console.log(res, "footertop");
       return res ?? [];
     },
   });

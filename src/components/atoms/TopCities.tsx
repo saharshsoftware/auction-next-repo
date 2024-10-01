@@ -31,14 +31,10 @@ const TopCities = () => {
       },
     });
   };
-  const {
-    data: locationOptions,
-    fetchStatus,
-  } = useQuery({
+  const { data: locationOptions, fetchStatus } = useQuery({
     queryKey: [REACT_QUERY.AUCTION_LOCATION, "top"],
     queryFn: async () => {
       const res = (await fetchLocationTopClient()) as unknown as ILocations[];
-      console.log(res, "footertop");
       return res ?? [];
     },
   });

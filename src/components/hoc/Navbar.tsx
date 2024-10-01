@@ -65,7 +65,6 @@ const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = React.useState(false);
   // console.log(getCookie(COOKIES.TOKEN_KEY), "getCookie(COOKIES.TOKEN_KEY)");
   useEffect(() => {
-    console.log(token);
     setMyToken(token);
   }, [token]);
 
