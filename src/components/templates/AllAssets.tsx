@@ -1,24 +1,25 @@
 "use client";
-import { COOKIES, FILTER_EMPTY } from "@/shared/Constants";
+import { FILTER_EMPTY } from "@/shared/Constants";
 import { IAssetType } from "@/types";
 import React from "react";
-import useLocalStorage from "@/hooks/useLocationStorage";
 import Link from "next/link";
 import { sanitizeStrapiImageUrl } from "@/shared/Utilies";
 import ImageTag from "../ui/ImageTag";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
+import { useFilterStore } from "@/zustandStore/filters";
 
 const AllAssets = (props: { data: IAssetType[] }) => {
   const { data: assetsType } = props;
-  const [auctionFilter, setAuctionFilter] = useLocalStorage(
-    COOKIES.AUCTION_FILTER,
-    FILTER_EMPTY
-  );
+  const { setFilter } = useFilterStore();
 
   const handleLinkClick = (propertyType: IAssetType) => {
-    setAuctionFilter({
+    setFilter({
       ...FILTER_EMPTY,
-      propertyType: { ...propertyType, label: propertyType?.name, value: propertyType?.id },
+      propertyType: {
+        ...propertyType,
+        label: propertyType?.name,
+        value: propertyType?.id,
+      } as any,
     });
   };
 

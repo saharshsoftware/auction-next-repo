@@ -4,7 +4,7 @@ import { devtools } from "zustand/middleware";
 
 const FILTER_KEY = "auction-filter"; // Key for storing filter data in localStorage
 
-interface IFilters {
+export interface IFilters {
   // name: "",
   bank: any;
   location: any;

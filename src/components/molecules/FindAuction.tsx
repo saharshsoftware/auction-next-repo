@@ -34,7 +34,6 @@ import {
   getAssetTypeClient,
   getCategoryBoxCollectionClient,
 } from "@/services/auction";
-import useLocalStorage from "@/hooks/useLocationStorage";
 import { fetchBanksClient } from "@/services/bank";
 import { fetchLocationClient } from "@/services/location";
 import RangeSliderCustom from "../atoms/RangeSliderCustom";
@@ -67,10 +66,7 @@ const FindAuction = (props: IFindAuction) => {
   const router = useRouter();
   const currentRoute = usePathname();
   const { showModal, openModal, hideModal } = useModal();
-  const [auctionFilter, setAuctionFilter] = useLocalStorage(
-    COOKIES.AUCTION_FILTER,
-    FILTER_EMPTY
-  );
+  const { setFilter: setAuctionFilter } = useFilterStore();
 
   const { setDataInQueryParamsMethod, getDataFromQueryParamsMethod } =
     useCustomParamsData();
@@ -169,9 +165,9 @@ const FindAuction = (props: IFindAuction) => {
       const selectedOne = data?.find(
         (item: any) => item?.slug === params?.slug
       );
-      console.log(selectedOne, "selectedOne");
+      // console.log(selectedOne, "selectedOne");
       setInitialValueData({
-        category: selectedOne ?? auctionFilter?.category ?? "",
+        category: selectedOne ?? filterData?.category ?? "",
       });
       setFilter({ ...FILTER_EMPTY, category: selectedOne });
     }
@@ -181,7 +177,7 @@ const FindAuction = (props: IFindAuction) => {
       );
       // console.log(selectedOne, "selectedOne");
       setInitialValueData({
-        location: selectedOne ?? auctionFilter?.location ?? "",
+        location: selectedOne ?? filterData?.location ?? "",
       });
       setFilter({ ...FILTER_EMPTY, location: selectedOne });
     }
@@ -189,10 +185,10 @@ const FindAuction = (props: IFindAuction) => {
       const selectedOne = data?.find(
         (item: any) => item?.slug === params?.slug
       );
-      // console.log(selectedOne, "selectedOne", auctionFilter?.bank);
+      // console.log(selectedOne, "selectedOne", filterData?.bank);
       // debugger;
       setInitialValueData({
-        bank: selectedOne ?? auctionFilter?.bank ?? "",
+        bank: selectedOne ?? filterData?.bank ?? "",
       });
       setFilter({ ...FILTER_EMPTY, bank: selectedOne });
     }
@@ -200,10 +196,10 @@ const FindAuction = (props: IFindAuction) => {
       const selectedOne = data?.find(
         (item: any) => item?.slug === params?.slug
       );
-      // console.log(selectedOne, "selectedOne", auctionFilter?.bank);
+      // console.log(selectedOne, "selectedOne", filterData?.bank);
       // debugger;
       setInitialValueData({
-        propertyType: selectedOne ?? auctionFilter?.propertyType ?? "",
+        propertyType: selectedOne ?? filterData?.propertyType ?? "",
       });
       setFilter({ ...FILTER_EMPTY, propertyType: selectedOne });
     }
@@ -261,7 +257,7 @@ const FindAuction = (props: IFindAuction) => {
       const updateFormData = structuredClone(
         getDataFromQueryParams(params_search.get("q") ?? "")
       );
-      setFilter(updateFormData);
+      // setFilter(updateFormData);
       setInitialValueData({ ...updateFormData });
     }
   }, [params_search?.get("q")]);
@@ -376,7 +372,7 @@ const FindAuction = (props: IFindAuction) => {
                               }
                               setFieldValue("category", getEmptyAllObject());
                               setAuctionFilter({
-                                ...auctionFilter,
+                                ...filterData,
                                 category: STRING_DATA.EMPTY,
                               });
                             }}
@@ -411,7 +407,7 @@ const FindAuction = (props: IFindAuction) => {
                                 getEmptyAllObject()
                               );
                               setAuctionFilter({
-                                ...auctionFilter,
+                                ...filterData,
                                 propertyType: STRING_DATA.EMPTY,
                               });
                             }}
@@ -441,7 +437,7 @@ const FindAuction = (props: IFindAuction) => {
                               }
                               setFieldValue("location", getEmptyAllObject());
                               setAuctionFilter({
-                                ...auctionFilter,
+                                ...filterData,
                                 location: STRING_DATA.EMPTY,
                               });
                             }}
@@ -467,7 +463,7 @@ const FindAuction = (props: IFindAuction) => {
                               }
                               setFieldValue("bank", getEmptyAllObject());
                               setAuctionFilter({
-                                ...auctionFilter,
+                                ...filterData,
                                 bank: STRING_DATA.EMPTY,
                               });
                             }}

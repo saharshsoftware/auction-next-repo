@@ -1,23 +1,15 @@
 "use client";
-import useLocalStorage from "@/hooks/useLocationStorage";
 import { fetchBankTopClient } from "@/services/Home";
-import {
-  COOKIES,
-  FILTER_EMPTY,
-  REACT_QUERY,
-  STRING_DATA,
-} from "@/shared/Constants";
+import { FILTER_EMPTY, REACT_QUERY, STRING_DATA } from "@/shared/Constants";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
 import { IBanks } from "@/types";
+import { useFilterStore } from "@/zustandStore/filters";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import React from "react";
 
 const TopBanks = () => {
-  const [auctionFilter, setAuctionFilter] = useLocalStorage(
-    COOKIES.AUCTION_FILTER,
-    FILTER_EMPTY
-  );
+  const { setFilter } = useFilterStore();
 
   const { data: bankOptions, fetchStatus } = useQuery({
     queryKey: [REACT_QUERY.AUCTION_BANKS, "top"],
@@ -28,13 +20,13 @@ const TopBanks = () => {
   });
 
   const handleLinkClick = (bank: IBanks) => {
-    setAuctionFilter({
+    setFilter({
       ...FILTER_EMPTY,
       bank: {
         ...bank,
         label: bank?.name,
         value: bank?.id,
-      },
+      } as any,
     });
   };
 

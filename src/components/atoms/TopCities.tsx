@@ -1,34 +1,24 @@
 "use client";
-import useLocalStorage from "@/hooks/useLocationStorage";
-import { fetchLocation } from "@/server/actions";
 import { fetchLocationTopClient } from "@/services/location";
-import {
-  COOKIES,
-  FILTER_EMPTY,
-  REACT_QUERY,
-  SAMPLE_CITY,
-  STRING_DATA,
-} from "@/shared/Constants";
+import { FILTER_EMPTY, REACT_QUERY, STRING_DATA } from "@/shared/Constants";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
 import { ILocations } from "@/types";
+import { useFilterStore } from "@/zustandStore/filters";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import React from "react";
 
 const TopCities = () => {
-  const [auctionFilter, setAuctionFilter] = useLocalStorage(
-    COOKIES.AUCTION_FILTER,
-    FILTER_EMPTY
-  );
+  const { setFilter } = useFilterStore();
 
   const handleLinkClick = (location: ILocations) => {
-    setAuctionFilter({
+    setFilter({
       ...FILTER_EMPTY,
       location: {
         ...location,
         label: location?.name,
         value: location?.id,
-      },
+      } as any,
     });
   };
   const { data: locationOptions, fetchStatus } = useQuery({
