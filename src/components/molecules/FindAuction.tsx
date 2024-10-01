@@ -257,10 +257,16 @@ const FindAuction = (props: IFindAuction) => {
       const updateFormData = structuredClone(
         getDataFromQueryParams(params_search.get("q") ?? "")
       );
-      // setFilter(updateFormData);
-      setInitialValueData({ ...updateFormData });
+      setFilter(updateFormData);
+      // setInitialValueData({ ...updateFormData });
     }
   }, [params_search?.get("q")]);
+
+  useEffect(() => {
+    if (filterData) {
+      setInitialValueData({ ...filterData });
+    }
+  }, [filterData]);
 
   useEffect(() => {
     handleResize();

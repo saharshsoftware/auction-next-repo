@@ -1,5 +1,5 @@
 import React from "react";
-import {STRING_DATA } from "../../shared/Constants";
+import { STRING_DATA } from "../../shared/Constants";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
@@ -9,10 +9,16 @@ const Footer: React.FC = () => {
     <>
       <footer className="flex flex-col  gap-8 p-10 bg-neutral text-neutral-content rounded">
         <nav className="flex items-center justify-center gap-4 text-sm ">
-          <Link href={ROUTE_CONSTANTS.E_CITIES_ALL} className="link link-hover min-w-fit">
+          <Link
+            href={ROUTE_CONSTANTS.E_CITIES_ALL}
+            className="link link-hover min-w-fit"
+          >
             {STRING_DATA.CITIES}
           </Link>
-          <Link href={ROUTE_CONSTANTS.E_BANKS_ALL} className="link link-hover min-w-fit">
+          <Link
+            href={ROUTE_CONSTANTS.E_BANKS_ALL}
+            className="link link-hover min-w-fit"
+          >
             {STRING_DATA.BANKS}
           </Link>
           <Link
@@ -52,10 +58,7 @@ const Footer: React.FC = () => {
         </nav>
 
         <aside className="text-center text-sm">
-          <p>
-            Copyright © {new Date().getFullYear()} - All right reserved by{" "}
-            {STRING_DATA.EAUCTION_DEKHO}
-          </p>
+          <p>© {new Date().getFullYear()} Omnistack Innovation Pvt Ltd</p>
         </aside>
       </footer>
     </>
@@ -64,4 +67,4 @@ const Footer: React.FC = () => {
 
 export default Footer;
 
-export const revalidate = 0
+export const revalidate = 0;

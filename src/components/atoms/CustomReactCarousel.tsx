@@ -25,17 +25,18 @@ function SampleNextArrow(props: any) {
 
 function SamplePrevArrow(props: any) {
   const { className, style, onClick } = props;
-  return <div className={` ${className} `} onClick={onClick} ><FontAwesomeIcon  icon={faArrowAltCircleLeft}/></div>;
+  return (
+    <div className={` ${className} `} onClick={onClick}>
+      <FontAwesomeIcon icon={faArrowAltCircleLeft} />
+    </div>
+  );
 }
 
 const NextArrow = (props: any) => {
   const { className, style, onClick } = props;
   return (
     <>
-      <em
-        className={`${iconClassCommon()} -right-12`}
-        onClick={onClick}
-      >
+      <em className={`${iconClassCommon()} -right-12`} onClick={onClick}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="2.4rem"
@@ -52,9 +53,9 @@ const NextArrow = (props: any) => {
       </em>
     </>
   );
-}
+};
 
-const PrevArrow = (props: any)=> {
+const PrevArrow = (props: any) => {
   const { className, style, onClick } = props;
   return (
     <>
@@ -75,14 +76,13 @@ const PrevArrow = (props: any)=> {
       </em>
     </>
   );
-}
-
+};
 
 const CustomReactCarousel = (props: ICustomReactCarousel) => {
   const { title, children, desc, subTitle } = props;
   // const [slidesToShow, setSlidesToShow] = useState(4);
   // const [isLoaded, setIsLoader] = useState(false)
-  
+
   // useEffect(() => {
   //   setIsLoader(true);
   //   console.log(slidesToShow, "slidesToShow");
@@ -132,7 +132,7 @@ const CustomReactCarousel = (props: ICustomReactCarousel) => {
           slidesToShow: 4,
           slidesToScroll: 2,
           infinite: true,
-          dots: false,
+          dots: true,
           arrows: false,
         },
       },
@@ -143,7 +143,7 @@ const CustomReactCarousel = (props: ICustomReactCarousel) => {
           slidesToScroll: 2,
           initialSlide: 2,
           arrows: false,
-          dots: false,
+          dots: true,
         },
       },
       {
@@ -153,19 +153,19 @@ const CustomReactCarousel = (props: ICustomReactCarousel) => {
           slidesToScroll: 2,
           initialSlide: 1,
           arrows: false,
-          dots: false,
+          dots: true,
         },
       },
     ],
   };
 
-    const renderMarkdown = (markdown: any) => {
-      const md = new MarkdownIt({
-        html: true,
-        linkify: true,
-      });
-      return md.render(markdown);
-    };
+  const renderMarkdown = (markdown: any) => {
+    const md = new MarkdownIt({
+      html: true,
+      linkify: true,
+    });
+    return md.render(markdown);
+  };
 
   return (
     <>

@@ -13,12 +13,13 @@ import ActionButton from "../atoms/ActionButton";
 import NewTabSvg from "../svgIcons/NewTabSvg";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
 import useModal from "@/hooks/useModal";
-import InterestModal from "../ modals/InterestModal";
 import { getCookie } from "cookies-next";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faHeart } from "@fortawesome/free-solid-svg-icons";
 import { WhatsappShareWithIcon } from "../atoms/SocialIcons";
 import { WishlistSvg } from "../svgIcons/WishlistSvg";
+import InterestModal from "../ modals/InterestModal";
+import { useRouter } from "next/navigation";
 
 const auctionLabelClass = () => "text-sm text-gray-400 font-bold";
 
@@ -30,6 +31,28 @@ const AuctionDetail = (props: { auctionDetail: IAuction }) => {
     : null;
 
   const sharedUrl = getSharedAuctionUrl(auctionDetail);
+
+  const renderPriceDetails = () => {
+    if (auctionDetail?.assetCategory !== "Gold Auctions") {
+      return (
+        <>
+          <span className={auctionLabelClass()}>Reserve price</span>
+          <span className="custom-prize-color font-bold text-2xl">
+            {formatPrice(auctionDetail?.reservePrice)}
+          </span>
+          <span
+            className="border border-blue-300 bg-blue-100 text-sm rounded-full px-2 py-1 font-semibold"
+            style={{ width: "max-content" }}
+          >
+            Estimated Market Value{" "}
+            {formatPrice(auctionDetail?.estimatedMarketPrice)}
+          </span>
+        </>
+      );
+    }
+    return null;
+  };
+
   return (
     <>
       {/* Create alert Modal */}
@@ -45,11 +68,6 @@ const AuctionDetail = (props: { auctionDetail: IAuction }) => {
         {/* {JSON.stringify(auctionDetail)} */}
         <div className="flex justify-between items-center">
           <Link href={ROUTE_CONSTANTS.AUCTION}>
-            {/* <ActionButton
-              // text={STRING_DATA.BACK.toUpperCase()}
-              isActionButton={false}
-              icon={}
-            /> */}
             <em className="rounded-full bg-gray-300 px-3 py-2">
               <FontAwesomeIcon icon={faArrowLeft} />
             </em>
@@ -57,7 +75,6 @@ const AuctionDetail = (props: { auctionDetail: IAuction }) => {
           <ActionButton
             text={STRING_DATA.SHOW_INTEREST.toUpperCase()}
             onclick={showModal}
-            // icon={<FontAwesomeIcon icon={faHeart} />}
             icon={<WishlistSvg />}
           />
         </div>
@@ -66,25 +83,15 @@ const AuctionDetail = (props: { auctionDetail: IAuction }) => {
             {auctionDetail?.title}
           </h2>
         </div>
-        <div className="flex gap-4 justify-between items-start flex-wrap">
+        <div
+          className={`flex gap-4 justify-between items-start flex-wrap  ${
+            auctionDetail?.assetCategory === "Gold Auctions"
+              ? "gap-0 max-w-fit"
+              : ""
+          }`}
+        >
           <div className="flex flex-col gap-2 items-start justify-start">
-            {auctionDetail?.assetCategory !== "Gold Auctions" ? (
-              <>
-                <span className={auctionLabelClass()}>Reserve price</span>
-                <span className="custom-prize-color font-bold text-2xl">
-                  {formatPrice(auctionDetail?.reservePrice)}
-                </span>
-              </>
-            ) : (
-              ""
-            )}
-            <span
-              className="border border-blue-300 bg-blue-100 text-sm rounded-full px-2 py-1 font-semibold "
-              style={{ width: "max-content" }}
-            >
-              Estimated Market Value{" "}
-              {formatPrice(auctionDetail?.estimatedMarketPrice)}
-            </span>
+            {renderPriceDetails()}
           </div>
           <div className="border border-green-500 rounded-lg px-2 py-1">
             {WhatsappShareWithIcon({ url: sharedUrl })}
@@ -157,17 +164,6 @@ const AuctionDetail = (props: { auctionDetail: IAuction }) => {
               <NewTabSvg />
             </Link>
           </ShowLabelValue>
-          {/* {JSON.stringify(auctionDetail)} */}
-          {/* <Link
-            href={`${process.env.NEXT_PUBLIC_IMAGE_CLOUDFRONT}${auctionDetail?.noticeImageURL}`}
-            target="_blank"
-          >
-            <ActionButton
-              text="View notice"
-              customClass="lg:w-fit w-full mt-4"
-              icon={<NewTabSvg />}
-            />
-          </Link> */}
         </div>
       </div>
     </>
