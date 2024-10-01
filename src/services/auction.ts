@@ -1,6 +1,11 @@
 "use client";
 import { API_BASE_URL, API_ENPOINTS } from "@/services/api";
-import { deleteRequest, getRequest, postRequest, putRequest } from "@/shared/Axios";
+import {
+  deleteRequest,
+  getRequest,
+  postRequest,
+  putRequest,
+} from "@/shared/Axios";
 import {
   generateQueryParamString,
   sanitizeStrapiData,
@@ -15,7 +20,6 @@ export const getAssetTypeClient = async () => {
     const requiredkeys = generateQueryParamString(["name", "slug"]);
     const filter = `?sort[0]=name:asc&${requiredkeys}`;
     const URL = API_BASE_URL + API_ENPOINTS.ASSET_TYPES + `${filter}`;
-    console.log(URL, "assetstype-detail");
     const { data } = await getRequest({ API: URL });
     const sendResponse = sanitizeStrapiData(data.data) as IAssetType;
     return sendResponse;
@@ -28,7 +32,7 @@ export const getAuctionDataClient = async (payload: {
   page?: string;
   category?: string;
   bankName?: string;
-  reservePrice?: string;
+  reservePrice?: any[];
   location?: string;
   keyword?: string;
   propertyType?: string;
@@ -68,12 +72,16 @@ export const getAuctionDataClient = async (payload: {
         filter += `filters[$and][${index++}][bankName]=${encodeURI(bankName)}&`;
       }
 
-      if ((locationType === 'city') && location) {
-          filter += `filters[$and][${index++}][city]=${encodeURI(location)}&`;
+      if (locationType === "city" && location) {
+        filter += `filters[$and][${index++}][city]=${encodeURI(location)}&`;
       }
 
       if (locationType === "state" && location) {
         filter += `filters[$and][${index++}][state]=${encodeURI(location)}&`;
+      }
+
+      if (!locationType && location) {
+        filter += `filters[$and][${index++}][location]=${encodeURI(location)}&`;
       }
 
       if (propertyType) {
@@ -83,7 +91,9 @@ export const getAuctionDataClient = async (payload: {
       }
 
       if (reservePrice) {
-        filter += `filters[$and][${index++}][reservePrice][$gte]=${reservePrice[0]}&filters[$and][${index++}][reservePrice][$lte]=${reservePrice[1]}&`;
+        filter += `filters[$and][${index++}][reservePrice][$gte]=${
+          reservePrice[0]
+        }&filters[$and][${index++}][reservePrice][$lte]=${reservePrice[1]}&`;
       }
 
       const requiredkeys = generateQueryParamString([
@@ -99,12 +109,10 @@ export const getAuctionDataClient = async (payload: {
       URL = API_ENPOINTS.NOTICES + filter.slice(0, -1) + `&${requiredkeys}`; // Remove the trailing '&' if present
     }
 
-    console.log(URL, "auction-filter");
     const { data } = await getRequest({ API: URL });
-    console.log(data, ">123");
-    let sendResponse;;
+    let sendResponse;
     if (keyword) {
-      sendResponse= data?.data as IAuction[]; 
+      sendResponse = data?.data as IAuction[];
       return { sendResponse, meta: data?.meta };
     }
     sendResponse = sanitizedAuctionData(data.data) as IAuction[];
@@ -132,8 +140,8 @@ export const getAuctionDetailClient = async ({ slug }: { slug: string }) => {
 export const getCategoryBoxCollectionClient = async () => {
   try {
     const requiredkeys = generateQueryParamString(["name", "slug"]);
-    const URL = API_BASE_URL + API_ENPOINTS.CATEGORY_BOX_COLLETIONS+`?${requiredkeys}`;
-    console.log(URL, "category-url");
+    const URL =
+      API_BASE_URL + API_ENPOINTS.CATEGORY_BOX_COLLETIONS + `?${requiredkeys}`;
     const { data } = await getRequest({ API: URL });
     const sendResponse = sanitizeStrapiData(data.data) as ICategoryCollection;
     return sendResponse;
@@ -169,7 +177,9 @@ export const getCollectionDataClient = async (props: { endpoints: string }) => {
   }
 };
 
-export const getCollectionDataClientFetch = async (props: { endpoints: string }) => {
+export const getCollectionDataClientFetch = async (props: {
+  endpoints: string;
+}) => {
   try {
     const { endpoints } = props;
     const URL =
@@ -178,7 +188,7 @@ export const getCollectionDataClientFetch = async (props: { endpoints: string })
       `?sort[0]=name:asc&populate=*&filters[$and][0][isPopular]=true`;
     // console.log(URL, "URLCollection")
     const response = await fetch(URL, { next: { revalidate: 3600 } });
-    const data = await response.json()
+    const data = await response.json();
     console.log(data, "responsefetch");
     const sendResponse = sanitizeStrapiData(data.data) as any;
     return sendResponse;
@@ -187,19 +197,21 @@ export const getCollectionDataClientFetch = async (props: { endpoints: string })
   }
 };
 
-export const createSavedSearch = async (props:{formData: {name: string; filter: string}}) => {
+export const createSavedSearch = async (props: {
+  formData: { name: string; filter: string };
+}) => {
   try {
-    const {formData} = props
+    const { formData } = props;
     const URL = API_BASE_URL + API_ENPOINTS.SAVED_SEARCH;
-    
+
     const { data } = await postRequest({ API: URL, DATA: formData });
-    
+
     console.log(data, "responsefetch");
     return data;
-  } catch (e:any) {
+  } catch (e: any) {
     // return e?.response?.data?.error?.message
     console.log(e, "auctionDetail error collection");
-    return e
+    return e;
   }
 };
 
@@ -231,8 +243,8 @@ export const updateSavedSearch = async (payload: {
   }
 };
 
-export const deleteSavedSearch = async (props: {id: string}) => {
-  const {id} = props
+export const deleteSavedSearch = async (props: { id: string }) => {
+  const { id } = props;
   try {
     const URL = API_BASE_URL + API_ENPOINTS.SAVED_SEARCH + `/${id}`;
     const { data } = await deleteRequest({ API: URL });
@@ -249,8 +261,8 @@ export const createAlertSearch = async (body: {
   assetType: string;
   assetCategory: string;
   bankName?: string;
-  minPrice?: string,
-  maxPrice?: string,
+  minPrice?: string;
+  maxPrice?: string;
 }) => {
   try {
     const URL = API_BASE_URL + API_ENPOINTS.ALERTS;
@@ -273,7 +285,7 @@ export const fetchAlerts = async () => {
     console.log(data, "responsefetch");
     // const sanitizeData = sanitizeStrapiData(data?.data) as IAlert[];
     // return {data: sanitizeData, meta: data?.data?.meta};
-    return data
+    return data;
   } catch (e) {
     console.log(e, "auctionDetail error collection");
   }
@@ -316,11 +328,15 @@ export const deleteAlert = async (props: { id: string }) => {
   }
 };
 
-export const showInterest = async (body: { user: string; ipAddress: string; notice:string }) => {
+export const showInterest = async (body: {
+  user: string;
+  ipAddress: string;
+  notice: string;
+}) => {
   try {
     const URL = API_BASE_URL + API_ENPOINTS.INTEREST;
 
-    const { data } = await postRequest({ API: URL, DATA: {data:body} });
+    const { data } = await postRequest({ API: URL, DATA: { data: body } });
 
     console.log(data, "responsefetch");
     return data;

@@ -1,29 +1,26 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-"use client"
-import { COOKIES, FILTER_EMPTY } from '@/shared/Constants';
-import { IBanks } from '@/types';
-import Link from 'next/link';
-import React from 'react'
-import useLocalStorage from '@/hooks/useLocationStorage';
-import { ROUTE_CONSTANTS } from '@/shared/Routes';
+"use client";
+import { COOKIES, FILTER_EMPTY } from "@/shared/Constants";
+import { IBanks } from "@/types";
+import Link from "next/link";
+import React from "react";
+import { ROUTE_CONSTANTS } from "@/shared/Routes";
+import { useFilterStore } from "@/zustandStore/filters";
 
-const AllBanks = (props: {data: any[]}) => {
-  const {data: bankData} = props
-  const [auctionFilter, setAuctionFilter] = useLocalStorage(
-    COOKIES.AUCTION_FILTER,
-    FILTER_EMPTY
-  );
+const AllBanks = (props: { data: any[] }) => {
+  const { data: bankData } = props;
+  const { setFilter } = useFilterStore();
 
   const handleLinkClick = (bank: IBanks) => {
-    setAuctionFilter({
+    setFilter({
       ...FILTER_EMPTY,
-      bank: { ...bank, label: bank?.name, value: bank?.id },
+      bank: { ...bank, label: bank?.name, value: bank?.id } as any,
     });
   };
   return (
     <div className="common-section my-8">
       <div className="flex flex-col gap-8">
-        {bankData?.map(([letter, banks])=> (
+        {bankData?.map(([letter, banks]) => (
           <div
             key={letter}
             className="rounded shadow p-2 flex flex-col border border-blue-400 gap-4"
@@ -55,6 +52,6 @@ const AllBanks = (props: {data: any[]}) => {
       </div>
     </div>
   );
-}
+};
 
 export default AllBanks;

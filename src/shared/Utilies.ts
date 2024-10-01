@@ -28,7 +28,6 @@ export const setDataInQueryParams = (values: any) => {
 };
 
 export const getDataFromQueryParams = (encodedString: string) => {
-  console.log(!encodedString, "encodedString", encodedString);
   const data = !!encodedString ? JSON.parse(atob(encodedString)) : "";
   return data;
 };

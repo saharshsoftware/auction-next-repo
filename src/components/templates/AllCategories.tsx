@@ -2,23 +2,24 @@
 import { COOKIES, FILTER_EMPTY } from "@/shared/Constants";
 import { ICategoryCollection } from "@/types";
 import React from "react";
-import useLocalStorage from "@/hooks/useLocationStorage";
 import Link from "next/link";
 import { sanitizeStrapiImageUrl } from "@/shared/Utilies";
 import ImageTag from "../ui/ImageTag";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
+import { useFilterStore } from "@/zustandStore/filters";
 
 const AllCategories = (props: { data: ICategoryCollection[] }) => {
   const { data: categoryOptions } = props;
-  const [auctionFilter, setAuctionFilter] = useLocalStorage(
-    COOKIES.AUCTION_FILTER,
-    FILTER_EMPTY
-  );
+  const { setFilter: setAuctionFilter } = useFilterStore();
 
   const handleLinkClick = (category: ICategoryCollection) => {
     setAuctionFilter({
       ...FILTER_EMPTY,
-      category: { ...category, label: category?.name, value: category?.id },
+      category: {
+        ...category,
+        label: category?.name,
+        value: category?.id,
+      } as any,
     });
   };
 

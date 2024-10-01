@@ -3,10 +3,10 @@ import { sanitizeStrapiImageUrl } from "@/shared/Utilies";
 import Link from "next/link";
 import React from "react";
 import ImageTag from "../ui/ImageTag";
-import { COOKIES, FILTER_EMPTY } from "@/shared/Constants";
-import useLocalStorage from "@/hooks/useLocationStorage";
+import { FILTER_EMPTY } from "@/shared/Constants";
 import { ICategoryCollection } from "@/types";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
+import { useFilterStore } from "@/zustandStore/filters";
 interface ICategroyCollectionComp {
   item: any;
   fetchQuery?: string;
@@ -15,15 +15,16 @@ interface ICategroyCollectionComp {
 
 const CategoryCollection = (props: ICategroyCollectionComp) => {
   const { item = "" } = props;
-  const [auctionFilter, setAuctionFilter] = useLocalStorage(
-    COOKIES.AUCTION_FILTER,
-    FILTER_EMPTY
-  );
+  const { setFilter: setAuctionFilter } = useFilterStore();
 
   const handleLinkClick = (category: ICategoryCollection) => {
     setAuctionFilter({
       ...FILTER_EMPTY,
-      category: { ...category, label: category?.name, value: category?.id },
+      category: {
+        ...category,
+        label: category?.name,
+        value: category?.id,
+      } as any,
     });
   };
   const imageUrl = sanitizeStrapiImageUrl(item);

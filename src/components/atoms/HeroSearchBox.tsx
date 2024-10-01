@@ -5,19 +5,10 @@ import ReactSelectDropdown from "./ReactSelectDropdown";
 import CustomFormikForm from "./CustomFormikForm";
 import TextField from "./TextField";
 import { Field, Form } from "formik";
-import {
-  COOKIES,
-  FILTER_EMPTY,
-  RANGE_PRICE,
-  STRING_DATA,
-} from "../../shared/Constants";
+import { COOKIES, RANGE_PRICE, STRING_DATA } from "../../shared/Constants";
 import { ROUTE_CONSTANTS } from "../../shared/Routes";
-import {
-  formatPrice,
-  setDataInQueryParams,
-} from "../../shared/Utilies";
+import { formatPrice, setDataInQueryParams } from "../../shared/Utilies";
 import Link from "next/link";
-import useLocalStorage from "@/hooks/useLocationStorage";
 import RangeSliderCustom from "./RangeSliderCustom";
 // import SavedSearchList from "./SavedSearchList";
 const SavedSearchList = dynamic(() => import("./SavedSearchList"), {
@@ -25,7 +16,7 @@ const SavedSearchList = dynamic(() => import("./SavedSearchList"), {
 });
 import { getCookie } from "cookies-next";
 import dynamic from "next/dynamic";
-
+import { IFilters, useFilterStore } from "@/zustandStore/filters";
 
 interface IFilter {
   category: string;
@@ -53,12 +44,10 @@ const HeroSearchBox = (props: {
 }) => {
   const { assetsTypeOptions, bankOptions, categoryOptions, locationOptions } =
     props;
+  const { setFilter } = useFilterStore();
+
   const token = getCookie(COOKIES.TOKEN_KEY) ?? "";
   const [loadingSearch, setLoadingSearch] = useState(false);
-  const [auctionFilter, setAuctionFilter] = useLocalStorage(
-    COOKIES.AUCTION_FILTER,
-    FILTER_EMPTY
-  );
 
   const getFilterQuery = (values: {
     category: any;
@@ -88,8 +77,8 @@ const HeroSearchBox = (props: {
 
   const handleSubmit = (values: any) => {};
 
-  const handleSearchButton = (values: IFilter) => {
-    setAuctionFilter(values);
+  const handleSearchButton = (values: IFilters) => {
+    setFilter(values);
     // const q = getFilterQuery(values);
   };
 

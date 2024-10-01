@@ -3,8 +3,8 @@ import { COOKIES, FILTER_EMPTY, REACT_QUERY } from "@/shared/Constants";
 import { ILocations } from "@/types";
 import Link from "next/link";
 import React from "react";
-import useLocalStorage from "@/hooks/useLocationStorage";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
+import { useFilterStore } from "@/zustandStore/filters";
 
 const getIcon = () => {
   return (
@@ -24,15 +24,16 @@ const getIcon = () => {
 
 const AllCities = (props: { data: ILocations[] }) => {
   const { data: locationOptions } = props;
-  const [auctionFilter, setAuctionFilter] = useLocalStorage(
-    COOKIES.AUCTION_FILTER,
-    FILTER_EMPTY
-  );
+  const { setFilter: setAuctionFilter } = useFilterStore();
 
   const handleLinkClick = (location: ILocations) => {
     setAuctionFilter({
       ...FILTER_EMPTY,
-      location: { ...location, label: location?.name, value: location?.id },
+      location: {
+        ...location,
+        label: location?.name,
+        value: location?.id,
+      } as any,
     });
   };
 

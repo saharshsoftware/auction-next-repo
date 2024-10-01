@@ -1,41 +1,32 @@
 "use client";
-import useLocalStorage from "@/hooks/useLocationStorage";
 import { fetchTopAssetsTypeClient } from "@/services/assetsType";
-import {
-  COOKIES,
-  FILTER_EMPTY,
-  REACT_QUERY,
-  STRING_DATA,
-} from "@/shared/Constants";
+import { FILTER_EMPTY, REACT_QUERY, STRING_DATA } from "@/shared/Constants";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
 import { IAssetType } from "@/types";
+import { useFilterStore } from "@/zustandStore/filters";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import React from "react";
 
 const TopAssets = () => {
-  const [auctionFilter, setAuctionFilter] = useLocalStorage(
-    COOKIES.AUCTION_FILTER,
-    FILTER_EMPTY
-  );
+  const { setFilter } = useFilterStore();
 
   const { data: assetsTypeData, fetchStatus } = useQuery({
     queryKey: [REACT_QUERY.ASSETS_TYPE, "top"],
     queryFn: async () => {
       const res = (await fetchTopAssetsTypeClient()) as unknown as IAssetType[];
-      // console.log(res, "footertop");
       return res ?? [];
     },
   });
 
   const handleLinkClick = (propertyType: IAssetType) => {
-    setAuctionFilter({
+    setFilter({
       ...FILTER_EMPTY,
       propertyType: {
         ...propertyType,
         label: propertyType?.name,
         value: propertyType?.id,
-      },
+      } as any,
     });
   };
 

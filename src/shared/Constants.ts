@@ -1,12 +1,17 @@
-import { faBell, faFilter, faHeart, faList, faUser } from "@fortawesome/free-solid-svg-icons";
+import {
+  faBell,
+  faFilter,
+  faHeart,
+  faList,
+  faUser,
+} from "@fortawesome/free-solid-svg-icons";
 import { ROUTE_CONSTANTS } from "./Routes";
 
 export const COOKIES = {
   TOKEN_KEY: "auction-token",
   AUCTION_USER_KEY: "auction-user-data",
-  AUCTION_FILTER: "auction-filter"
+  AUCTION_FILTER: "auction-filter",
 };
-
 
 export const RANGE_PRICE = {
   MIN: "0",
@@ -15,7 +20,7 @@ export const RANGE_PRICE = {
 };
 
 export const FILTER_EMPTY = {
-  name: "",
+  // name: "",
   bank: "",
   location: "",
   category: "",
@@ -25,7 +30,7 @@ export const FILTER_EMPTY = {
 
 export const NAVICON_COLOR = "#a6a6a6";
 
-export const PAGE_REVALIDATE_TIME = 86400 // 24 hr
+export const PAGE_REVALIDATE_TIME = 86400; // 24 hr
 
 export const STRING_DATA = {
   HOME: "Home",
@@ -116,8 +121,7 @@ export const STRING_DATA = {
   NO_ALERT_FOUND: "No alert found",
   DELETE_SEARCH_ITEM_MESSAGE:
     "Are you sure you want to delete this saved search ?",
-  DELETE_ALERT_MESSAGE:
-    "Are you sure you want to delete this alert ?",
+  DELETE_ALERT_MESSAGE: "Are you sure you want to delete this alert ?",
   YOUR_WISHLIST: "Your wishlist",
   YOUR_SAVED_SEARCH: "Your saved search",
 };
@@ -153,7 +157,6 @@ export const INPUT_TYPE = {
   NUMBER: "number",
 };
 
-
 export const ERROR_MESSAGE = {
   CURRENT_PASSWORD: "Current password is required",
   NEW_PASSWORD_REQUIRED: "New password is required",
@@ -182,6 +185,8 @@ export const ERROR_MESSAGE = {
   PHONE_NUMERIC: "Please enter numeric value",
   PHONE_LENGTH: "Please enter",
   MIN_PHONE_LENGTH: "Invalid number",
+  EMAIL_INVALID: "Invalid email address",
+  MOBILE_REQUIRED: "Mobile number is required",
 };
 
 export const NAV_LINKS = [

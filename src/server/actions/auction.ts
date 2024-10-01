@@ -56,8 +56,8 @@ export const getAuctionData = async (payload: {
         filter += `filters[$and][${index++}][bankName]=${encodeURI(bankName)}&`;
       }
 
-      if ((locationType === 'city') && location) {
-          filter += `filters[$and][${index++}][city]=${encodeURI(location)}&`;
+      if (locationType === "city" && location) {
+        filter += `filters[$and][${index++}][city]=${encodeURI(location)}&`;
       }
 
       if (locationType === "state" && location) {
@@ -71,17 +71,16 @@ export const getAuctionData = async (payload: {
       }
 
       if (reservePrice) {
-        filter += `filters[$and][${index++}][reservePrice][$gte]=${reservePrice[0]}&filters[$and][${index++}][reservePrice][$lte]=${reservePrice[1]}&`;
+        filter += `filters[$and][${index++}][reservePrice][$gte]=${
+          reservePrice[0]
+        }&filters[$and][${index++}][reservePrice][$lte]=${reservePrice[1]}&`;
       }
       URL = API_ENPOINTS.NOTICES + filter.slice(0, -1); // Remove the trailing '&' if present
     }
-
-    console.log(URL, "auction-filter");
     const { data } = await getRequest({ API: URL });
-    console.log(data, ">123");
-    let sendResponse;;
+    let sendResponse;
     if (keyword) {
-      sendResponse= data?.data as IAuction[]; 
+      sendResponse = data?.data as IAuction[];
       return { sendResponse, meta: data?.meta };
     }
     sendResponse = sanitizedAuctionData(data.data) as IAuction[];
@@ -119,12 +118,14 @@ export const getCategoryBoxCollection = async () => {
   }
 };
 
-export const getCategoryBoxCollectionBySlug = async (props: {slug:string}) => {
+export const getCategoryBoxCollectionBySlug = async (props: {
+  slug: string;
+}) => {
   "use server";
   try {
-    const {slug} = props
+    const { slug } = props;
     const filter = `?filters[slug][$eq]=${slug}`;
-    const URL = API_BASE_URL + API_ENPOINTS.CATEGORY_BOX_COLLETIONS+filter;
+    const URL = API_BASE_URL + API_ENPOINTS.CATEGORY_BOX_COLLETIONS + filter;
     // console.log(URL, "category-url-slug");
     const { data } = await getRequest({ API: URL });
     const sendResponse = sanitizeStrapiData(data.data) as unknown;
@@ -150,9 +151,10 @@ export const getCollectionData = async (props: { endpoints: string }) => {
   "use server";
   try {
     const { endpoints } = props;
-    const requiredkeys = generateQueryParamString(["name", "slug", 'imageURL']);
+    const requiredkeys = generateQueryParamString(["name", "slug", "imageURL"]);
     // console.log(requiredkeys, "requiredkeys");
-    let filter = endpoints + `?populate=*&filters[isPopular]=true&${requiredkeys}`;
+    let filter =
+      endpoints + `?populate=*&filters[isPopular]=true&${requiredkeys}`;
     if (endpoints === "locations") {
       filter += `&filters[type]=city`;
     }
@@ -176,7 +178,7 @@ export const getCarouselData = async () => {
     const categories = sanitizeStrapiData(data.data) as ICategoryCollection;
 
     const categorizedData = await Promise.all(
-      categories.map(async (category:any) => {
+      categories.map(async (category: any) => {
         const collectionData = await getCollectionData({
           endpoints: category.strapiAPIQuery,
         });

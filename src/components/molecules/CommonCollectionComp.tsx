@@ -1,17 +1,17 @@
-"use client"
-import useLocalStorage from '@/hooks/useLocationStorage';
-import { COOKIES, FILTER_EMPTY } from '@/shared/Constants';
-import { getAuctionFilterRequiredKey, sanitizeStrapiImageUrl } from '@/shared/Utilies';
-import Link from 'next/link';
-import React from 'react'
-import ImageTag from '../ui/ImageTag';
+"use client";
+import { FILTER_EMPTY } from "@/shared/Constants";
+import {
+  getAuctionFilterRequiredKey,
+  sanitizeStrapiImageUrl,
+} from "@/shared/Utilies";
+import Link from "next/link";
+import React from "react";
+import ImageTag from "../ui/ImageTag";
+import { useFilterStore } from "@/zustandStore/filters";
 
 const CommonCollectionComp = (props: any) => {
-  const [auctionFilter, setAuctionFilter] = useLocalStorage(
-    COOKIES.AUCTION_FILTER,
-    FILTER_EMPTY
-  );
-  
+  const { setFilter: setAuctionFilter } = useFilterStore();
+
   const { item = "", fetchQuery } = props;
   const handleLinkClick = (item: any) => {
     const collectionFilterKey = getAuctionFilterRequiredKey(fetchQuery);
@@ -47,4 +47,4 @@ const CommonCollectionComp = (props: any) => {
   );
 };
 
-export default CommonCollectionComp
+export default CommonCollectionComp;

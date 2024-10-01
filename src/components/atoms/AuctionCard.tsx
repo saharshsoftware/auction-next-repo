@@ -30,36 +30,77 @@ const AuctionCard: React.FC<IAuctionCard> = (props) => {
     handleRemove = () => {},
     showRemoveButton,
   } = props;
+
   const sharedUrl = getSharedAuctionUrl(item);
+
+  // Separate functions to handle the conditions
+  const renderReservePrice = () => {
+    if (item?.assetCategory !== "Gold Auctions") {
+      return (
+        <>
+          <span className={auctionLabelClass()}>Reserve price</span>
+          <span className="custom-prize-color font-bold text-2xl">
+            {formatPrice(item?.reservePrice)}
+          </span>
+        </>
+      );
+    }
+    return null;
+  };
+
+  const renderEstimatedMarketValue = () => {
+    if (
+      item?.assetCategory !== "Vehicle Auctions" &&
+      item?.assetCategory !== "Gold Auctions"
+    ) {
+      return (
+        <span
+          className="border border-blue-300 bg-blue-100 text-sm rounded-full px-2 py-1 font-semibold"
+          style={{ width: "max-content" }}
+        >
+          Estimated Market Value {formatPrice(item?.estimatedMarketPrice)}
+        </span>
+      );
+    }
+    return null;
+  };
+
+  const renderAuctionDetails = () => {
+    return (
+      <div className="flex items-center justify-start gap-4 flex-wrap">
+        {item?.auctionDate && (
+          <span className="font-bold text-xs">
+            {formattedDate(item?.auctionDate)}
+          </span>
+        )}
+        {item?.assetCategory && (
+          <span className="font-bold text-xs">
+            | &nbsp;&nbsp;{item?.assetCategory}
+          </span>
+        )}
+        {item?.assetType && (
+          <span className="font-bold text-xs">
+            | &nbsp;&nbsp;{item?.assetType}
+          </span>
+        )}
+      </div>
+    );
+  };
+
   return (
     <>
       <div className="flex flex-col gap-4 p-4 border rounded shadow w-full min-h-40">
         <div className="flex lg:flex-row flex-col gap-4 justify-between items-start">
-          <h2 className="custom-h2-class ">{item?.title} </h2>
+          <h2 className="custom-h2-class">{item?.title}</h2>
         </div>
-        <div className="flex gap-4 justify-between items-start flex-wrap">
+        <div
+          className={`flex gap-4 justify-between items-start flex-wrap  ${
+            item?.assetCategory === "Gold Auctions" ? "gap-0 max-w-fit" : ""
+          }`}
+        >
           <div className="flex flex-col gap-2 items-start justify-start">
-            {item?.assetCategory !== "Gold Auctions" ? (
-              <>
-                <span className={auctionLabelClass()}>Reserve price</span>
-                <span className="custom-prize-color font-bold text-2xl">
-                  {formatPrice(item?.reservePrice)}
-                </span>
-              </>
-            ) : (
-              ""
-            )}
-
-            {item?.assetCategory !== "Vehicle Auctions" ? (
-              <span
-                className="border border-blue-300 bg-blue-100 text-sm rounded-full px-2 py-1 font-semibold "
-                style={{ width: "max-content" }}
-              >
-                Estimated Market Value {formatPrice(item?.estimatedMarketPrice)}
-              </span>
-            ) : (
-              ""
-            )}
+            {renderReservePrice()}
+            {renderEstimatedMarketValue()}
           </div>
           <div className="border border-green-500 rounded-lg px-2 py-1">
             {WhatsappShareWithIcon({ url: sharedUrl })}
@@ -75,25 +116,7 @@ const AuctionCard: React.FC<IAuctionCard> = (props) => {
         </p>
         <p className="flex-1 line-clamp-4">{item?.location}</p>
         <div className="flex lg:flex-row flex-col gap-4 justify-between items-start">
-          <div className="flex items-center justify-start gap-4 flex-wrap">
-            {item?.auctionDate ? (
-              <span className="font-bold text-xs">
-                {formattedDate(item?.auctionDate)}
-              </span>
-            ) : null}
-
-            {item?.assetCategory ? (
-              <span className="font-bold text-xs">
-                | &nbsp;&nbsp;{item?.assetCategory}{" "}
-              </span>
-            ) : null}
-
-            {item?.assetType ? (
-              <span className="font-bold text-xs">
-                | &nbsp;&nbsp;{item?.assetType}
-              </span>
-            ) : null}
-          </div>
+          {renderAuctionDetails()}
         </div>
         <div className="flex items-center justify-end gap-4 flex-wrap">
           <Link
@@ -106,7 +129,6 @@ const AuctionCard: React.FC<IAuctionCard> = (props) => {
               text="View Auction"
               customClass="w-full"
               icon={<NewTabSvg />}
-              // onclick={() => handleClick(item)}
             />
           </Link>
           {showRemoveButton ? (

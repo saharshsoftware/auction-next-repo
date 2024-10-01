@@ -1,42 +1,33 @@
 "use client";
-import useLocalStorage from "@/hooks/useLocationStorage";
 import { fetchCategoriesTopClient } from "@/services/Home";
-import {
-  COOKIES,
-  FILTER_EMPTY,
-  REACT_QUERY,
-  SAMPLE_CITY,
-  STRING_DATA,
-} from "@/shared/Constants";
+import { FILTER_EMPTY, REACT_QUERY, STRING_DATA } from "@/shared/Constants";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
-import { ICategoryCollection, ILocations } from "@/types";
+import { ICategoryCollection } from "@/types";
+import { useFilterStore } from "@/zustandStore/filters";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import React from "react";
 
 const TopCategory = () => {
-  const [auctionFilter, setAuctionFilter] = useLocalStorage(
-    COOKIES.AUCTION_FILTER,
-    FILTER_EMPTY
-  );
+  const { setFilter } = useFilterStore();
+
   const { data: categoryOptions, fetchStatus } = useQuery({
     queryKey: [REACT_QUERY.CATEGORY_BOX_COLLECITON, "top"],
     queryFn: async () => {
       const res =
         (await fetchCategoriesTopClient()) as unknown as ICategoryCollection[];
-      console.log(res, "footertop");
       return res ?? [];
     },
   });
 
   const handleLinkClick = (category: ICategoryCollection) => {
-    setAuctionFilter({
+    setFilter({
       ...FILTER_EMPTY,
       category: {
         ...category,
         label: category?.name,
         value: category?.id,
-      },
+      } as any,
     });
   };
 

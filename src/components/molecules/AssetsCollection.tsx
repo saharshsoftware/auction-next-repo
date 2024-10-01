@@ -1,12 +1,12 @@
-"use client"
+"use client";
 import { sanitizeStrapiImageUrl } from "@/shared/Utilies";
 import Link from "next/link";
 import React from "react";
 import ImageTag from "../ui/ImageTag";
-import { COOKIES, FILTER_EMPTY } from "@/shared/Constants";
-import useLocalStorage from "@/hooks/useLocationStorage";
+import { FILTER_EMPTY } from "@/shared/Constants";
 import { IAssetType } from "@/types";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
+import { useFilterStore } from "@/zustandStore/filters";
 interface IAssetsCollectionComp {
   item: any;
   fetchQuery?: string;
@@ -15,15 +15,16 @@ interface IAssetsCollectionComp {
 
 const AssetsCollection = (props: IAssetsCollectionComp) => {
   const { item = "" } = props;
-  const [auctionFilter, setAuctionFilter] = useLocalStorage(
-    COOKIES.AUCTION_FILTER,
-    FILTER_EMPTY
-  );
+  const { setFilter: setAuctionFilter } = useFilterStore();
 
   const handleLinkClick = (propertyType: IAssetType) => {
     setAuctionFilter({
       ...FILTER_EMPTY,
-      propertyType: { ...propertyType, label: propertyType?.name, value: propertyType?.id },
+      propertyType: {
+        ...propertyType,
+        label: propertyType?.name,
+        value: propertyType?.id,
+      } as any,
     });
   };
   const imageUrl = sanitizeStrapiImageUrl(item);

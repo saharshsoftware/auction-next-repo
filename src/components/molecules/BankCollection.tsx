@@ -1,25 +1,25 @@
-"use client"
+"use client";
 import { sanitizeStrapiImageUrl } from "@/shared/Utilies";
 import Link from "next/link";
 import React from "react";
 import ImageTag from "../ui/ImageTag";
-import useLocalStorage from "@/hooks/useLocationStorage";
-import { COOKIES, FILTER_EMPTY } from "@/shared/Constants";
+import { FILTER_EMPTY } from "@/shared/Constants";
 import { IBanks } from "@/types";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
+import { useFilterStore } from "@/zustandStore/filters";
 
 const BankCollection = (props: { fetchQuery?: string; item: any }) => {
-  const [auctionFilter, setAuctionFilter] = useLocalStorage(
-    COOKIES.AUCTION_FILTER,
-    FILTER_EMPTY
-  );
+  const { setFilter: setAuctionFilter } = useFilterStore();
 
   const handleLinkClick = (bank: IBanks) => {
-    setAuctionFilter({ ...FILTER_EMPTY, bank: {...bank, label: bank?.name, value: bank?.id} });
+    setAuctionFilter({
+      ...FILTER_EMPTY,
+      bank: { ...bank, label: bank?.name, value: bank?.id },
+    } as any);
   };
   const { item = "", fetchQuery } = props;
   const imageUrl = sanitizeStrapiImageUrl(item) ?? "";
-  
+
   return (
     <>
       <Link
