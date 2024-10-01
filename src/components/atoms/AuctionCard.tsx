@@ -93,11 +93,7 @@ const AuctionCard: React.FC<IAuctionCard> = (props) => {
         <div className="flex lg:flex-row flex-col gap-4 justify-between items-start">
           <h2 className="custom-h2-class">{item?.title}</h2>
         </div>
-        <div
-          className={`flex gap-4 justify-between items-start flex-wrap  ${
-            item?.assetCategory === "Gold Auctions" ? "gap-0 max-w-fit" : ""
-          }`}
-        >
+        <div className={`flex gap-4 justify-between items-start flex-wrap`}>
           <div className="flex flex-col gap-2 items-start justify-start">
             {renderReservePrice()}
             {renderEstimatedMarketValue()}
