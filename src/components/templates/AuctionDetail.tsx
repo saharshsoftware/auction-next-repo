@@ -79,9 +79,9 @@ const AuctionDetail = (props: { auctionDetail: IAuction }) => {
           />
         </div>
         <div className="flex lg:flex-row flex-col gap-4 justify-between items-start">
-          <h2 className="custom-h2-class break-words">
+          <h1 className="custom-h2-class break-words">
             {auctionDetail?.title}
-          </h2>
+          </h1>
         </div>
         <div className={`flex gap-4 justify-between items-start flex-wrap `}>
           <div className="flex flex-col gap-2 items-start justify-start">
@@ -150,7 +150,7 @@ const AuctionDetail = (props: { auctionDetail: IAuction }) => {
           />
           <ShowLabelValue heading={"Documents"} hasChildren={true}>
             <Link
-              href={`${process.env.NEXT_PUBLIC_IMAGE_CLOUDFRONT}${auctionDetail?.noticeImageURL}`}
+              href={`${process.env.NEXT_PUBLIC_IMAGE_CLOUDFRONT}/${auctionDetail?.noticeImageURL}`}
               target="_blank"
               className="flex items-center gap-2 link link-primary"
             >

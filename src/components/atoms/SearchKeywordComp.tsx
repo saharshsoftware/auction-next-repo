@@ -1,55 +1,41 @@
-import React from 'react'
-import CustomFormikForm from './CustomFormikForm';
-import { Field, Form } from 'formik';
-import { STRING_DATA } from '@/shared/Constants';
-import TextField from './TextField';
-import { useRouter } from 'next/navigation';
-import { setDataInQueryParams } from '@/shared/Utilies';
-import { ROUTE_CONSTANTS } from '@/shared/Routes';
-import SearchSvg from '../svgIcons/SearchSvg';
+import React from "react";
+import CustomFormikForm from "./CustomFormikForm";
+import { Field, Form } from "formik";
+import { FILTER_EMPTY, STRING_DATA } from "@/shared/Constants";
+import TextField from "./TextField";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { ROUTE_CONSTANTS } from "@/shared/Routes";
+import SearchSvg from "../svgIcons/SearchSvg";
+import { useFilterStore } from "@/zustandStore/filters";
 
-const SearchKeywordComp = (props: {handleClick?: ()=>void }) => {
-  const { handleClick=()=>{} } = props;
+const SearchKeywordComp = (props: { handleClick?: () => void }) => {
+  const { handleClick = () => {} } = props;
+  const { setFilter } = useFilterStore();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const search =
+    pathname !== ROUTE_CONSTANTS.SEARCH ? "" : searchParams.get("q");
 
-    const getFilterQuery = (values: {
-      keyword?: string;
-    }) => {
-      // console.log(values, "Vakyes");
-      const { keyword } = values;
-      const filter = {
-        page: 1,
-        keyword,
-      };
-      // console.log(filter, "hero-filter");
-      // debugger
-      return setDataInQueryParams(filter);
-    };
+  const handleKeywordSearch = (values: { keyword: string }) => {
+    handleClick?.();
 
-  const handleKeywordSearch = (values: any) => {
-
-    handleClick?.()
-    
-    // console.log(values, "clicket")
-    const q = getFilterQuery(values);
-    console.log(q, values)
-    router.push(`${ROUTE_CONSTANTS.AUCTION}?q=${q}`);
+    console.log(values);
+    router.push(`${ROUTE_CONSTANTS.SEARCH}?q=${values?.keyword}`);
+    setFilter(FILTER_EMPTY);
   };
-  
-  
+
   return (
     <>
       <CustomFormikForm
-        initialValues={{ keyword: STRING_DATA.EMPTY }}
+        initialValues={{ keyword: search ? search : STRING_DATA.EMPTY }}
         handleSubmit={handleKeywordSearch}
         wantToUseFormikEvent={true}
+        enableReinitialize={true}
       >
         {({ setFieldValue, values }: any) => (
           <Form>
-            <TextField
-              name={"keyword"}
-              hasChildren={true}
-            >
+            <TextField name={"keyword"} hasChildren={true}>
               <Field name="keyword">
                 {() => (
                   <div className="relative w-full">
@@ -76,6 +62,6 @@ const SearchKeywordComp = (props: {handleClick?: ()=>void }) => {
       </CustomFormikForm>
     </>
   );
-}
+};
 
-export default SearchKeywordComp
+export default SearchKeywordComp;

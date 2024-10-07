@@ -328,3 +328,24 @@ export const getAuctionFilterRequiredKey = (key: string) => {
   }
   return result;
 };
+
+export const getPathType = (path: string): string | null => {
+  // Split the path into segments based on '/'
+  const segments = path.split("/").filter(Boolean);
+
+  // Check the first segment to determine the type
+  switch (segments[0]) {
+    case "locations":
+      return "location";
+    case "banks":
+      return "bank";
+    case "categories":
+      return "category";
+    case "asset-types":
+      return "propertyType";
+    case "prices":
+      return "price";
+    default:
+      return ""; // If none of the cases match
+  }
+};

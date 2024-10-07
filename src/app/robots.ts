@@ -5,9 +5,15 @@ export default function robots(): MetadataRoute.Robots {
     rules: [
       {
         userAgent: "*",
-        allow: "/"
+        allow: "/",
+        disallow: [
+          "/manage-alert",
+          "/manage-filter",
+          "/manage-list",
+          "/settings",
+        ],
       },
     ],
-    sitemap: `${process.env.NEXT_PUBLIC_BASE_URL}/sitemap.xml`,
+    sitemap: `https://www.eauctiondekho.com/sitemap.xml`,
   };
 }
