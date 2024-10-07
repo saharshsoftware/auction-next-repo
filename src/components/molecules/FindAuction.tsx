@@ -253,7 +253,7 @@ const FindAuction = (props: IFindAuction) => {
   };
 
   useEffect(() => {
-    if (params_search?.get("q")) {
+    if (params_search?.get("q") && currentRoute !== "/search") {
       const updateFormData = structuredClone(
         getDataFromQueryParams(params_search.get("q") ?? "")
       );

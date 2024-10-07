@@ -346,3 +346,16 @@ export const showInterest = async (body: {
     return e;
   }
 };
+
+export const noticeSearch = async (payload: { searchParams: string }) => {
+  try {
+    const URL =
+      API_BASE_URL + API_ENPOINTS.NOTICE_SEARCH + `?q=${payload.searchParams}`;
+    const { data } = await getRequest({ API: URL });
+    // console.log(data, "responsefetch");
+    return data;
+  } catch (e: any) {
+    console.log(e, "Notice search error");
+    return e;
+  }
+};

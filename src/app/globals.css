@@ -200,6 +200,10 @@ blockquote {
   @apply text-xl font-bold
 }
 
+.custom-h1-class{ 
+  @apply text-2xl font-bold
+}
+
 .active-badge-class {
   /* @apply bg-neutral text-neutral-content */
   @apply text-blue-600 border-b-2 border-blue-600

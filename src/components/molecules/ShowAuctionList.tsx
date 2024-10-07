@@ -3,14 +3,18 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import AuctionCard from "../atoms/AuctionCard";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
 import { IAuction } from "@/types";
-import { getDataFromQueryParams, setDataInQueryParams } from "@/shared/Utilies";
+import {
+  getDataFromQueryParams,
+  getPathType,
+  setDataInQueryParams,
+} from "@/shared/Utilies";
 import { COOKIES, REACT_QUERY } from "@/shared/Constants";
 import PaginationComp from "../atoms/PaginationComp";
 import { useQuery } from "@tanstack/react-query";
-import { getAuctionDataClient } from "@/services/auction";
+import { getAuctionDataClient, noticeSearch } from "@/services/auction";
 import SkeltonAuctionCard from "../skeltons/SkeltonAuctionCard";
 import useModal from "@/hooks/useModal";
 import SavedSearchModal from "../ modals/SavedSearchModal";
@@ -18,10 +22,12 @@ import { getCookie } from "cookies-next";
 import { useFilterStore } from "@/zustandStore/filters";
 
 const ShowAuctionList = () => {
-  const filterData = useFilterStore((state) => state.filter);
+  const filterData = useFilterStore((state) => state.filter) as any;
   const { setFilter } = useFilterStore();
   const router = useRouter();
   const searchParams = useSearchParams();
+  const pathname = usePathname(); // This will give the path without the slug
+
   const { showModal, openModal, hideModal } = useModal();
 
   const [hasKeywordSearchValue, setHasKeywordSearchValue] =
@@ -44,6 +50,13 @@ const ShowAuctionList = () => {
     return modifiedfilterData;
   };
 
+  const fetchDataQuery = async () => {
+    if (pathname !== ROUTE_CONSTANTS.SEARCH) {
+      return await getAuctionDataClient(getFilterData());
+    }
+    return await noticeSearch({ searchParams: searchParams.get("q") ?? "" });
+  };
+
   const {
     data: auctionData,
     fetchStatus,
@@ -51,7 +64,7 @@ const ShowAuctionList = () => {
   } = useQuery<any>({
     queryKey: [REACT_QUERY.FIND_AUCTION, filterData],
     queryFn: async () => {
-      const res = (await getAuctionDataClient(getFilterData())) as unknown;
+      const res = (await fetchDataQuery()) as unknown;
       return res ?? [];
     },
     staleTime: 0,
@@ -77,7 +90,7 @@ const ShowAuctionList = () => {
   // const debouncedRefetch = debounce(refetch, 500); // Adjust debounce time as per your requirement
 
   useEffect(() => {
-    if (searchParams.get("q")) {
+    if (searchParams.get("q") && pathname !== ROUTE_CONSTANTS.SEARCH) {
       const data = searchParams.get("q");
       const result = getDataFromQueryParams(data ?? "");
       // filterRef.current = result;
@@ -89,6 +102,8 @@ const ShowAuctionList = () => {
         return;
       }
       setHasKeywordSearchValue("");
+    } else {
+      console.log("hits, search api");
     }
   }, [searchParams.get("q")]);
 
@@ -141,11 +156,35 @@ const ShowAuctionList = () => {
     return null;
   };
 
+  const renderH1HeaderSEO = () => {
+    if (
+      pathname &&
+      getPathType?.(pathname) &&
+      filterData?.[getPathType?.(pathname) ?? ""]?.name
+    ) {
+      return (
+        <h1 className="custom-h1-class break-words my-4">
+          {`Find Auction Properties for ${
+            filterData?.[getPathType?.(pathname) ?? ""]?.name
+          }`}
+        </h1>
+      );
+    }
+    console.log(
+      "No data found",
+      filterData?.[getPathType?.(pathname) ?? ""]?.name
+    );
+
+    return "";
+  };
+
   return (
     <>
       {openModal ? (
         <SavedSearchModal openModal={openModal} hideModal={hideModal} />
       ) : null}
+
+      {renderH1HeaderSEO()}
       <div className="flex flex-col gap-4 w-full">
         {renderKeywordSearchContainer()}
         {renderSavedSearchButton()}

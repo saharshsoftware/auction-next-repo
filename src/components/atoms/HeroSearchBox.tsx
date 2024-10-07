@@ -31,7 +31,7 @@ const initialValues = {
   location: STRING_DATA.EMPTY,
   bank: STRING_DATA.EMPTY,
   keyword: STRING_DATA.EMPTY,
-  price: [0, RANGE_PRICE.MAX] ?? STRING_DATA.EMPTY,
+  price: [0, RANGE_PRICE.MAX],
 };
 
 const gridElementClass = () => "lg:col-span-6 col-span-full";

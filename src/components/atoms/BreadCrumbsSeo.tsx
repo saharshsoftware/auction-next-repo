@@ -1,10 +1,9 @@
 "use client";
 import { usePathname } from "next/navigation";
-import { BreadcrumbJsonLd } from "next-seo";
-import { Breadcrumbs, BreadcrumbItem } from "@nextui-org/breadcrumbs";
+import { BreadcrumbJsonLd, SiteLinksSearchBoxJsonLd } from "next-seo";
+
 const BreadcrumbsSeo = () => {
   const paths = usePathname();
-  console.log(paths);
   const pathnames = paths.split("/").filter((x) => x);
 
   const itemListElement = pathnames.map((value, index) => {
@@ -30,40 +29,36 @@ const BreadcrumbsSeo = () => {
       {
         "@type": "ListItem",
         position: 2,
-        name: "Auctions",
-        item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/auctions`,
+        name: "eauctiondekho",
+        item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/assets`,
       },
       {
         "@type": "ListItem",
         position: 3,
-        name: "Find Actions",
-        item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/auctions/find-auctions`,
+        name: "Explore Auctions in Every City and State Across India | eauctiondekhos",
+        item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/cities`,
       },
-      // ...itemListElement,
+      ...itemListElement,
     ],
-  };
-
-  const renderBreadCrumbs = () => {
-    if (false) {
-      return (
-        <>
-          <Breadcrumbs>
-            {breadcrumbSchema?.itemListElement?.map((item, index) => {
-              return <BreadcrumbItem key={index}>{item?.name}</BreadcrumbItem>;
-            })}
-          </Breadcrumbs>
-        </>
-      );
-    }
   };
 
   return (
     <>
       <BreadcrumbJsonLd
         useAppDir={true}
-        itemListElements={breadcrumbSchema?.itemListElement}
+        itemListElements={breadcrumbSchema.itemListElement}
       />
-      {renderBreadCrumbs()}
+
+      <SiteLinksSearchBoxJsonLd
+        url="https://www.eauctiondekho.com/"
+        potentialActions={[
+          {
+            target:
+              "https://www.eauctiondekho.com/search?q={search_term_string}",
+            queryInput: "required name=search_term_string",
+          },
+        ]}
+      />
     </>
   );
 };
