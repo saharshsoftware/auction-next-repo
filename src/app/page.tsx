@@ -1,4 +1,3 @@
-import BreadcrumbsSeo from "@/components/atoms/BreadCrumbsSeo";
 import CustomReactCarousel from "@/components/atoms/CustomReactCarousel";
 import HeroSection from "@/components/atoms/HeroSection";
 import AssetsCollection from "@/components/molecules/AssetsCollection";
@@ -90,8 +89,6 @@ export default async function Home() {
 
   return (
     <>
-      <BreadcrumbsSeo />
-
       <main className="">
         <section>
           <HeroSection

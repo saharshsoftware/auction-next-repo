@@ -7,7 +7,7 @@ import AppLayout from "@/components/layouts/AppLayout";
 import Providers from "@/utilies/Providers";
 import NextTopLoader from "nextjs-toploader";
 import GoogleScriptComponent from "@/components/atoms/GoogleScriptComponent";
-import Breadcrumbs from "@/components/atoms/BreadCrumbsSeo";
+import { BREADCRUMB_LIST, SITELINK_SEARCHBOX } from "@/shared/seo.constant";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -64,6 +64,20 @@ export default function RootLayout({
   return (
     <>
       <html lang="en">
+        <head>
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify(BREADCRUMB_LIST),
+            }}
+          />
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify(SITELINK_SEARCHBOX),
+            }}
+          />
+        </head>
         <body className={inter.className}>
           <Providers>
             <div className="flex flex-col h-screen">

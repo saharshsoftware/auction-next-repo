@@ -1,4 +1,3 @@
-
 import React from "react";
 import MarkdownIt from "markdown-it";
 import { getPrivacyData } from "@/server/actions/footer";
@@ -21,7 +20,7 @@ export default async function Page() {
             <div
               className="text-left text-base leading-[30px] font-normal relative self-stretch danger-blog-class"
               dangerouslySetInnerHTML={{
-                __html: renderMarkdown(res?.privacy),
+                __html: renderMarkdown(res?.privacy ?? ""),
               }}
             ></div>
           </div>

@@ -182,7 +182,7 @@ const CustomReactCarousel = (props: ICustomReactCarousel) => {
           <div
             className="carousel-p"
             dangerouslySetInnerHTML={{
-              __html: renderMarkdown(title),
+              __html: renderMarkdown(title ?? ""),
             }}
           ></div>
           <p className="text-gray-500">{desc ?? ""}</p>

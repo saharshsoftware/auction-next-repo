@@ -20,7 +20,7 @@ export default async function Page() {
             <div
               className="text-left text-base leading-[30px] font-normal relative self-stretch danger-blog-class"
               dangerouslySetInnerHTML={{
-                __html: renderMarkdown(res?.terms),
+                __html: renderMarkdown(res?.terms ?? ""),
               }}
             ></div>
           </div>

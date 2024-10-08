@@ -20,6 +20,7 @@ import useModal from "@/hooks/useModal";
 import SavedSearchModal from "../ modals/SavedSearchModal";
 import { getCookie } from "cookies-next";
 import { useFilterStore } from "@/zustandStore/filters";
+import NoDataImage from "../ui/NoDataImage";
 
 const ShowAuctionList = () => {
   const filterData = useFilterStore((state) => state.filter) as any;
@@ -92,7 +93,7 @@ const ShowAuctionList = () => {
   useEffect(() => {
     if (searchParams.get("q") && pathname !== ROUTE_CONSTANTS.SEARCH) {
       const data = searchParams.get("q");
-      const result = getDataFromQueryParams(data ?? "");
+      const result = getDataFromQueryParams(data ?? "") as any;
       // filterRef.current = result;
       setFilter(result);
       setCurrentPage(result?.page);
@@ -104,6 +105,7 @@ const ShowAuctionList = () => {
       setHasKeywordSearchValue("");
     } else {
       console.log("hits, search api");
+      refetch();
     }
   }, [searchParams.get("q")]);
 
@@ -125,8 +127,7 @@ const ShowAuctionList = () => {
   if (auctionData?.sendResponse?.length === 0) {
     return (
       <div className="flex items-center justify-center flex-col h-[70vh]">
-        {/* <NoDataImage /> */}
-        No data found
+        <NoDataImage />
       </div>
     );
   }
