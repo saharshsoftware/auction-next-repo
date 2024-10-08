@@ -106,6 +106,7 @@ const HeroSearchBox = (props: {
                           defaultValue={values?.category ?? null}
                           options={categoryOptions ?? []}
                           placeholder={"Category"}
+                          name="category-search-box"
                           // loading={isLoadingCategory}
                           customClass="w-full "
                           onChange={(e: any) => {
@@ -128,6 +129,7 @@ const HeroSearchBox = (props: {
                           defaultValue={values?.propertyType ?? null}
                           options={assetsTypeOptions ?? []}
                           placeholder={"Asset type"}
+                          name="asset-type-search-box"
                           // loading={isLoadingAssetsTypeCategory}
                           customClass="w-full "
                           onChange={(e: any) => {
@@ -150,6 +152,7 @@ const HeroSearchBox = (props: {
                         <ReactSelectDropdown
                           defaultValue={values?.location ?? null}
                           // loading={isLoadingLocation}
+                          name="location-search-box"
                           options={locationOptions}
                           placeholder={"Neighborhood, City or State"}
                           customClass="w-full "
@@ -169,6 +172,7 @@ const HeroSearchBox = (props: {
                           defaultValue={values?.bank ?? null}
                           options={bankOptions}
                           // loading={isLoadingBank}
+                          name="bank-search-box"
                           placeholder={"Banks"}
                           customClass="w-full "
                           onChange={(e: any) => {

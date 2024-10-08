@@ -29,7 +29,6 @@ export const metadata: Metadata = {
   alternates: {
     canonical: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/`,
   },
-  manifest: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/`,
   openGraph: {
     type: "website",
     url: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/`,

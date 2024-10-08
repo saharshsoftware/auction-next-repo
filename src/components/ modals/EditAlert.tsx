@@ -1,12 +1,21 @@
 import React, { useState } from "react";
 import CustomModal from "../atoms/CustomModal";
 import ActionButton from "../atoms/ActionButton";
-import { ERROR_MESSAGE, RANGE_PRICE, REACT_QUERY, STRING_DATA } from "@/shared/Constants";
+import {
+  ERROR_MESSAGE,
+  RANGE_PRICE,
+  REACT_QUERY,
+  STRING_DATA,
+} from "@/shared/Constants";
 import CustomFormikForm from "../atoms/CustomFormikForm";
 import TextField from "../atoms/TextField";
 import * as Yup from "yup";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { formatPrice, handleOnSettled, sanitizeReactSelectOptions } from "@/shared/Utilies";
+import {
+  formatPrice,
+  handleOnSettled,
+  sanitizeReactSelectOptions,
+} from "@/shared/Utilies";
 import { updateAlert } from "@/services/auction";
 import { Field, Form } from "formik";
 import ReactSelectDropdown from "../atoms/ReactSelectDropdown";
@@ -217,6 +226,7 @@ const EditAlert = (props: ICreateFavList) => {
                                 defaultValue={values?.category}
                                 options={categoryOptions ?? []}
                                 loading={isLoadingCategory}
+                                name="category-edit-alert"
                                 placeholder={"Category"}
                                 customClass="w-full "
                                 onChange={(e) => {
@@ -247,6 +257,7 @@ const EditAlert = (props: ICreateFavList) => {
                                 options={assetsTypeOptions ?? []}
                                 loading={isLoadingAssetsTypeCategory}
                                 placeholder={"Asset type"}
+                                name="asset-type-edit-alert"
                                 customClass="w-full "
                                 onChange={(e) => {
                                   // console.log(e);
@@ -277,6 +288,7 @@ const EditAlert = (props: ICreateFavList) => {
                                   defaultValue={values?.location}
                                   loading={isLoadingLocation}
                                   options={locationOptions}
+                                  name="location-edit-alert"
                                   placeholder={"Location"}
                                   customClass="w-full "
                                   onChange={(e) => {
@@ -301,6 +313,7 @@ const EditAlert = (props: ICreateFavList) => {
                                 loading={isLoadingBank}
                                 options={bankOptions}
                                 placeholder={"Banks"}
+                                name="bank-edit-alert"
                                 customClass="w-full"
                                 onChange={(e: any) => {
                                   if (e?.label !== STRING_DATA.ALL) {

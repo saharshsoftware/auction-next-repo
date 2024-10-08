@@ -1,12 +1,21 @@
 import React, { useState } from "react";
 import CustomModal from "../atoms/CustomModal";
 import ActionButton from "../atoms/ActionButton";
-import { ERROR_MESSAGE, RANGE_PRICE, REACT_QUERY, STRING_DATA } from "@/shared/Constants";
+import {
+  ERROR_MESSAGE,
+  RANGE_PRICE,
+  REACT_QUERY,
+  STRING_DATA,
+} from "@/shared/Constants";
 import CustomFormikForm from "../atoms/CustomFormikForm";
 import TextField from "../atoms/TextField";
 import * as Yup from "yup";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { formatPrice, handleOnSettled, sanitizeReactSelectOptions } from "@/shared/Utilies";
+import {
+  formatPrice,
+  handleOnSettled,
+  sanitizeReactSelectOptions,
+} from "@/shared/Utilies";
 import RangeSliderCustom from "../atoms/RangeSliderCustom";
 import { Field, Form } from "formik";
 import ReactSelectDropdown from "../atoms/ReactSelectDropdown";
@@ -33,7 +42,8 @@ interface ICreateFavList {
 const gridElementClass = () => "col-span-full";
 
 const getEmptyAllObject = () => ({
-  value: "", label: "All"
+  value: "",
+  label: "All",
 });
 
 const validationSchema = Yup.object({
@@ -48,7 +58,7 @@ const initialValues = {
   location: STRING_DATA.EMPTY,
   category: STRING_DATA.EMPTY,
   propertyType: STRING_DATA.EMPTY,
-  price: [0, RANGE_PRICE.MAX] ?? STRING_DATA.EMPTY,
+  price: [0, RANGE_PRICE.MAX],
 };
 
 const CreateAlert = (props: ICreateFavList) => {
@@ -61,7 +71,7 @@ const CreateAlert = (props: ICreateFavList) => {
     queryFn: async () => {
       const res =
         (await getCategoryBoxCollectionClient()) as unknown as ICategoryCollection[];
-      const updatedData = [ ...sanitizeReactSelectOptions(res)];
+      const updatedData = [...sanitizeReactSelectOptions(res)];
       return updatedData ?? [];
     },
   });
@@ -71,7 +81,7 @@ const CreateAlert = (props: ICreateFavList) => {
       queryKey: [REACT_QUERY.ASSETS_TYPE],
       queryFn: async () => {
         const res = (await getAssetTypeClient()) as unknown as IAssetType[];
-        const updatedData = [ ...sanitizeReactSelectOptions(res)];
+        const updatedData = [...sanitizeReactSelectOptions(res)];
         return updatedData ?? [];
       },
     });
@@ -80,7 +90,7 @@ const CreateAlert = (props: ICreateFavList) => {
     queryKey: [REACT_QUERY.AUCTION_BANKS],
     queryFn: async () => {
       const res = (await fetchBanksClient()) as unknown as IBanks[];
-      const updatedData = [ ...sanitizeReactSelectOptions(res)];
+      const updatedData = [...sanitizeReactSelectOptions(res)];
       return updatedData ?? [];
     },
   });
@@ -90,7 +100,7 @@ const CreateAlert = (props: ICreateFavList) => {
     queryFn: async () => {
       const res = (await fetchLocationClient()) as unknown as ILocations[];
       const responseData = res ?? [];
-      const updatedData = [ ...sanitizeReactSelectOptions(responseData)];
+      const updatedData = [...sanitizeReactSelectOptions(responseData)];
       return updatedData ?? [];
     },
   });
@@ -183,6 +193,7 @@ const CreateAlert = (props: ICreateFavList) => {
                                 options={categoryOptions ?? []}
                                 loading={isLoadingCategory}
                                 placeholder={"Category"}
+                                name="category-create-alert"
                                 customClass="w-full "
                                 onChange={(e) => {
                                   if (e?.label !== STRING_DATA.ALL) {
@@ -209,6 +220,7 @@ const CreateAlert = (props: ICreateFavList) => {
                                 options={assetsTypeOptions ?? []}
                                 loading={isLoadingAssetsTypeCategory}
                                 placeholder={"Asset type"}
+                                name="asset-type-create-alert"
                                 customClass="w-full "
                                 onChange={(e) => {
                                   // console.log(e);
@@ -236,6 +248,7 @@ const CreateAlert = (props: ICreateFavList) => {
                                   defaultValue={values?.location}
                                   loading={isLoadingLocation}
                                   options={locationOptions}
+                                  name="location-create-alert"
                                   placeholder={"Location"}
                                   customClass="w-full "
                                   onChange={(e) => {
@@ -260,6 +273,7 @@ const CreateAlert = (props: ICreateFavList) => {
                                 loading={isLoadingBank}
                                 options={bankOptions}
                                 placeholder={"Banks"}
+                                name="bank-create-alert"
                                 customClass="w-full"
                                 onChange={(e: any) => {
                                   if (e?.label !== STRING_DATA.ALL) {

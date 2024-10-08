@@ -25,7 +25,6 @@ export const metadata: Metadata = {
   alternates: {
     canonical: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/cities-states`,
   },
-  manifest: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/cities-states`,
   openGraph: {
     type: "website",
     url: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/cities-states`,
@@ -55,7 +54,7 @@ export const metadata: Metadata = {
 };
 
 export default async function Page() {
-  const data = await fetchLocation() as ILocations[];
+  const data = (await fetchLocation()) as ILocations[];
 
   return (
     <section>

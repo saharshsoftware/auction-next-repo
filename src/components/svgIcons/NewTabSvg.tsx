@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react";
 
 const NewTabSvg = () => {
   return (
@@ -6,8 +6,8 @@ const NewTabSvg = () => {
       xmlns="http://www.w3.org/2000/svg"
       xmlnsXlink="http://www.w3.org/1999/xlink"
       viewBox="0,0,256,256"
-      width="1.2rem"
-      height="1.2rem"
+      width="19.2px"
+      height="19.2px"
     >
       <g
         fill="#ffffff"
@@ -30,6 +30,6 @@ const NewTabSvg = () => {
       </g>
     </svg>
   );
-}
+};
 
-export default NewTabSvg
+export default NewTabSvg;

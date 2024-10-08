@@ -19,7 +19,6 @@ export const metadata: Metadata = {
   alternates: {
     canonical: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/search`,
   },
-  manifest: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/search`,
 
   openGraph: {
     type: "website",

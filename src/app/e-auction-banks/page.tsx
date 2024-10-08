@@ -25,7 +25,6 @@ export const metadata: Metadata = {
   alternates: {
     canonical: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/banks`,
   },
-  manifest: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/banks`,
   openGraph: {
     type: "website",
     url: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/banks`,
@@ -53,7 +52,7 @@ export const metadata: Metadata = {
 };
 
 export default async function Page() {
-  const data = await fetchBanks() as unknown as IBanks[];
+  const data = (await fetchBanks()) as unknown as IBanks[];
   return (
     <section>
       <AllBanks data={groupAndSortBanks(data)} />
