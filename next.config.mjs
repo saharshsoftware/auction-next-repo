@@ -13,23 +13,23 @@ const nextConfig = {
   async redirects() {
     return [
       {
-        source: "/banks",
-        destination: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/e-auction-banks`,
+        source: "/e-auction-banks",
+        destination: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/banks`,
         permanent: true,
       },
       {
-        source: "/asset-types",
-        destination: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/e-auction-assets`,
+        source: "/e-auction-assets",
+        destination: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/assets`,
         permanent: true,
       },
       {
-        source: "/locations",
-        destination: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/e-auction-in-cities`,
+        source: "/e-auction-in-cities",
+        destination: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/cities`,
         permanent: true,
       },
       {
-        source: "/categories",
-        destination: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/e-auction-categories`,
+        source: "/e-auction-categories",
+        destination: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/categories`,
         permanent: true,
       },
       {
@@ -41,6 +41,18 @@ const nextConfig = {
   },
   async rewrites() {
     return [
+      {
+        source: "/sitemapsurls/index.xml",
+        destination: `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/sitemap/index.xml`
+      },
+      {
+        source: "/sitemaps/sitemap.xml.gz",
+        destination: `https://auction-dekho.s3.ap-south-1.amazonaws.com/sitemaps/sitemap.xml.gz`
+      },
+      {
+        source: "/sitemaps/sitemap:slug*.xml.gz",
+        destination: `https://auction-dekho.s3.ap-south-1.amazonaws.com/sitemaps/sitemap:slug*.xml.gz`
+      },
       {
         source: "/categories/sitemap.xml",
         destination: `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/categories/sitemap/index.xml`,

@@ -127,7 +127,8 @@ const ShowAuctionList = () => {
   if (auctionData?.sendResponse?.length === 0) {
     return (
       <div className="flex items-center justify-center flex-col h-[70vh]">
-        <NoDataImage />
+        {/* <NoDataImage /> */}
+        No data found
       </div>
     );
   }
