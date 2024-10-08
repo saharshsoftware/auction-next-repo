@@ -10,7 +10,6 @@ export default async function Page({
   return (
     <>
       <section>
-        {/* <BreadcrumbsSeo /> */}
         <ShowAuctionList />
       </section>
     </>

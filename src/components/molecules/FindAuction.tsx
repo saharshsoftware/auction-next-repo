@@ -254,11 +254,10 @@ const FindAuction = (props: IFindAuction) => {
 
   useEffect(() => {
     if (params_search?.get("q") && currentRoute !== "/search") {
-      const updateFormData = structuredClone(
-        getDataFromQueryParams(params_search.get("q") ?? "")
+      const updateFormData = JSON.parse(
+        JSON.stringify(getDataFromQueryParams(params_search.get("q") ?? ""))
       );
       setFilter(updateFormData);
-      // setInitialValueData({ ...updateFormData });
     }
   }, [params_search?.get("q")]);
 
@@ -370,6 +369,7 @@ const FindAuction = (props: IFindAuction) => {
                             options={categoryOptions ?? []}
                             loading={isLoadingCategory}
                             placeholder={"Category"}
+                            name="category"
                             customClass="w-full "
                             onChange={(e) => {
                               if (e?.label !== STRING_DATA.ALL) {
@@ -401,6 +401,7 @@ const FindAuction = (props: IFindAuction) => {
                             options={assetsTypeOptions ?? []}
                             loading={isLoadingAssetsTypeCategory}
                             placeholder={"Property type"}
+                            name="propertyType"
                             customClass="w-full "
                             onChange={(e) => {
                               // console.log(e);
@@ -435,6 +436,7 @@ const FindAuction = (props: IFindAuction) => {
                             loading={isLoadingLocation}
                             options={locationOptions}
                             placeholder={"Location"}
+                            name="location"
                             customClass="w-full "
                             onChange={(e) => {
                               if (e?.label !== STRING_DATA.ALL) {
@@ -462,6 +464,7 @@ const FindAuction = (props: IFindAuction) => {
                             options={bankOptions}
                             placeholder={"Banks"}
                             customClass="w-full"
+                            name="bank"
                             onChange={(e: any) => {
                               if (e?.label !== STRING_DATA.ALL) {
                                 setFieldValue("bank", e);

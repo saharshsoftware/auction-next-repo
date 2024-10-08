@@ -16,7 +16,7 @@ export const ROUTE_CONSTANTS = {
   TERMS: "/terms",
   CONTACT: "/contact",
   PRIVACY: "/privacy",
-  ABOUT_US: "/about",
+  ABOUT_US: "/about-us",
   MANAGE_FILTERS: "/manage-filter",
   CATEGORY: "/categories",
   LOCATION: "/locations",

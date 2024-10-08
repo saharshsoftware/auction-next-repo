@@ -33,7 +33,6 @@ export async function generateMetadata(
       alternates: {
         canonical: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/${slug}-auctions`,
       },
-      manifest: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/${slug}-auctions`,
 
       openGraph: {
         type: "website",
@@ -63,7 +62,6 @@ export async function generateMetadata(
     return {};
   }
 }
-
 
 export default async function Page({
   params,

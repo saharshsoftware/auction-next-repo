@@ -39,6 +39,40 @@ body :focus-within {
   outline: none;
 }
 
+
+/* Dark mode styles */
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #fff; /* Dark background color */
+    color: #000; /* Light text color */
+  }
+
+  /* Adjust the background and text color of any elements that are impacted */
+  .danger-blog-class h1,
+  .danger-blog-class h2,
+  .danger-blog-class h3,
+  .danger-blog-class h4,
+  .danger-blog-class h5,
+  .danger-blog-class h6,
+  .danger-blog-class p,
+  .danger-blog-class ul,
+  .danger-blog-class li,
+  .danger-blog-class a {
+    color: inherit; /* Inherit the body text color */
+  }
+
+  .form-controls,
+  .form-controls-search,
+  .form-controls-error,
+  .search-form-controls {
+    background-color: #333; /* Adjust input background for dark mode */
+    color: #f0f0f0; /* Adjust text color for dark mode */
+    border-color: var(--brand-color);
+  }
+
+  /* Customize any other specific elements as necessary */
+}
+
 /* @layer utilities { */
   ::-webkit-scrollbar {
     width: 0.8px;

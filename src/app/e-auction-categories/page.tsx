@@ -30,7 +30,6 @@ export const metadata: Metadata = {
   alternates: {
     canonical: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/categories`,
   },
-  manifest: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/categories`,
 
   openGraph: {
     type: "website",
@@ -61,11 +60,11 @@ export const metadata: Metadata = {
 };
 
 export default async function Page() {
-  const data = await getCategoryBoxCollection() as ICategoryCollection[];
+  const data = (await getCategoryBoxCollection()) as ICategoryCollection[];
   return (
     <>
       <section>
-        <AllCategories data={data}/>
+        <AllCategories data={data} />
       </section>
     </>
   );

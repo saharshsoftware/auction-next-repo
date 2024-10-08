@@ -3,7 +3,6 @@ import { Metadata, ResolvingMetadata } from "next";
 import { IAuction } from "@/types";
 import NotFound from "@/app/not-found";
 import AuctionDetail from "@/components/templates/AuctionDetail";
-import BreadcrumbsSeo from "@/components/atoms/BreadCrumbsSeo";
 
 async function getAuctionDetailData(slug: string) {
   const res = await getAuctionDetail({ slug });
@@ -72,7 +71,6 @@ export default async function Page({
   if (auctionDetail) {
     return (
       <>
-        {/* <BreadcrumbsSeo /> */}
         <AuctionDetail auctionDetail={auctionDetail} />
       </>
     );

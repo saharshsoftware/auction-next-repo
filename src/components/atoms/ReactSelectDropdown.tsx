@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React from "react";
 import Select from "react-select";
 import { IReactSelectDropdown } from "../../interfaces/ReactDropdown";
@@ -16,16 +16,20 @@ const ReactSelectDropdown: React.FC<IReactSelectDropdown> = (props) => {
     defaultValue,
     clearRenderer,
     clearable = false,
-    menuIsOpen=false,
+    menuIsOpen = false,
   } = props;
 
   return (
     <>
-      <div className="w-full text-left ">
+      <div
+        className="w-full text-left "
+        id={`container-react-select-${name ?? ""}`}
+      >
         <Select
           // multi={false}
           // className={`custom-select-dropdown ${customClass ?? ""}`}
           className="react-select-container"
+          id={`react-select-${name ?? ""}`}
           options={options}
           isLoading={loading}
           isDisabled={loading}

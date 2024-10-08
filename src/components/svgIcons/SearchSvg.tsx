@@ -1,12 +1,12 @@
-import React from 'react'
+import React from "react";
 
 const SearchSvg = () => {
   return (
     <>
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        width="1.2rem"
-        height="1.2rem"
+        width="19.2px"
+        height="19.2px"
         viewBox="0 0 24 24"
       >
         <path
@@ -16,6 +16,6 @@ const SearchSvg = () => {
       </svg>
     </>
   );
-}
+};
 
-export default SearchSvg
+export default SearchSvg;

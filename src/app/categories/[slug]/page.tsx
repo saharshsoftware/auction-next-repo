@@ -5,7 +5,9 @@ import { Metadata, ResolvingMetadata } from "next";
 import React from "react";
 
 async function getSlugData(slug: string) {
-  const selectedCategory = (await getCategoryBoxCollectionBySlug({slug})) as unknown as ICategoryCollection[];
+  const selectedCategory = (await getCategoryBoxCollectionBySlug({
+    slug,
+  })) as unknown as ICategoryCollection[];
   return selectedCategory?.[0];
 }
 
@@ -31,14 +33,12 @@ export async function generateMetadata(
       alternates: {
         canonical: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/${slug}-auctions`,
       },
-      manifest: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/${slug}-auctions`,
 
       openGraph: {
         type: "website",
         url: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/${slug}-auctions`,
         title: `Explore Top ${name} Auctions Across India | eauctiondekho`,
-        description:
-          `Bid on and win ${subCategories} at auctions across India. eauctiondekho offers updated listings to help you find the best auction deals available. Start bidding today!`,
+        description: `Bid on and win ${subCategories} at auctions across India. eauctiondekho offers updated listings to help you find the best auction deals available. Start bidding today!`,
         images: [
           {
             url: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/${slug}-auctions-meta-image.jpg`,
@@ -62,7 +62,6 @@ export async function generateMetadata(
     return {};
   }
 }
-
 
 export default async function Page({
   params,

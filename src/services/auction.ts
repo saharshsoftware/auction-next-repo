@@ -353,7 +353,8 @@ export const noticeSearch = async (payload: { searchParams: string }) => {
       API_BASE_URL + API_ENPOINTS.NOTICE_SEARCH + `?q=${payload.searchParams}`;
     const { data } = await getRequest({ API: URL });
     // console.log(data, "responsefetch");
-    return data;
+    const sendResponse = sanitizedAuctionData(data.data) as IAuction[];
+    return { sendResponse, meta: data?.meta?.pagination };
   } catch (e: any) {
     console.log(e, "Notice search error");
     return e;
