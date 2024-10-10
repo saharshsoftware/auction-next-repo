@@ -64,6 +64,14 @@ export default function RootLayout({
     <>
       <html lang="en">
         <head>
+          {/* Add OG Image */}
+          <meta property="og:image" content="/images/logo.png" />
+          <meta property="og:image:width" content="1200" />
+          <meta property="og:image:height" content="630" />
+
+          {/* Optionally add Twitter card for rich link previews */}
+          <meta name="twitter:card" content="summary_large_image" />
+          <meta name="twitter:image" content="/images/logo.png" />
           <script
             type="application/ld+json"
             dangerouslySetInnerHTML={{
