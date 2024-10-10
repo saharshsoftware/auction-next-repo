@@ -11,7 +11,10 @@ import { IAuction, IFavouriteListProperty } from "@/types";
 import ConfirmationModal from "../ modals/ConfirmationModal";
 import useModal from "@/hooks/useModal";
 import { handleOnSettled } from "@/shared/Utilies";
-import { fetchFavoriteListPropertyClient, removePropertyFromFavoriteListClient } from "@/services/favouriteList";
+import {
+  fetchFavoriteListPropertyClient,
+  removePropertyFromFavoriteListClient,
+} from "@/services/favouriteList";
 import AuctionCard from "../atoms/AuctionCard";
 
 interface IFavouriteListPropertyComp {
@@ -50,9 +53,12 @@ const FavouriteListProperty = (props: IFavouriteListPropertyComp) => {
       console.log(data);
       const response = {
         data,
-        success: () => {
+        success: async () => {
           refetch();
           closeDeleteModal?.();
+          return await queryClient.invalidateQueries({
+            queryKey: [REACT_QUERY.FAVOURITE_LIST_PROPERTY],
+          });
         },
         fail: (error: any) => {
           const { message } = error;
@@ -82,7 +88,8 @@ const FavouriteListProperty = (props: IFavouriteListPropertyComp) => {
   };
 
   const handleDeleteAction = () => {
-    mutate({ id: selectedCard?.id });
+    // mutate({ id: selectedCard?.id });
+    mutate({ id: listId });
   };
 
   const renderFavoriteListProperty = () => {
@@ -91,7 +98,11 @@ const FavouriteListProperty = (props: IFavouriteListPropertyComp) => {
     }
 
     if (favouriteListPropertyData?.length === 0) {
-      return <div className="text-center">{STRING_DATA.NO_DATA_FOUND_LIST_PROPERTY}</div>;
+      return (
+        <div className="text-center">
+          {STRING_DATA.NO_DATA_FOUND_LIST_PROPERTY}
+        </div>
+      );
     }
     return (
       <>

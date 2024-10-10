@@ -102,14 +102,14 @@ const AuctionCard: React.FC<IAuctionCard> = (props) => {
             {WhatsappShareWithIcon({ url: sharedUrl })}
           </div>
         </div>
-        <p className="flex-1 line-clamp-4">
+        <div className="flex-1 line-clamp-4">
           <div
             className={`flex gap-2 items-center justify-start ${auctionLabelClass()}`}
           >
             <span>Seller - </span>
             <div>{item?.bankName}</div>
           </div>
-        </p>
+        </div>
         <p className="flex-1 line-clamp-4">{item?.location}</p>
         <div className="flex lg:flex-row flex-col gap-4 justify-between items-start">
           {renderAuctionDetails()}

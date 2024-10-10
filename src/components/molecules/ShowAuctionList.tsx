@@ -135,7 +135,6 @@ const ShowAuctionList = () => {
 
   const renderKeywordSearchContainer = () => {
     if (hasKeywordSearchValue) {
-      console.log(auctionData, "apiResponseData");
       return (
         <div className="text-sm ">
           {" "}
@@ -148,7 +147,7 @@ const ShowAuctionList = () => {
 
   const renderSavedSearchButton = () => {
     const token = getCookie(COOKIES.TOKEN_KEY) ?? "";
-    if (searchParams.get("q") && token) {
+    if (searchParams.get("q") && token && pathname !== ROUTE_CONSTANTS.SEARCH) {
       return (
         <div className={"max-w-fit link link-primary"} onClick={showModal}>
           {"Save this search".toUpperCase()}
@@ -159,6 +158,15 @@ const ShowAuctionList = () => {
   };
 
   const renderH1HeaderSEO = () => {
+    if (pathname === ROUTE_CONSTANTS.SEARCH) {
+      return (
+        <h1 className="custom-h1-class break-words my-4">
+          {`${
+            auctionData?.meta?.total ?? 0
+          } result found for ${searchParams.get("q")}`}
+        </h1>
+      );
+    }
     if (
       pathname &&
       getPathType?.(pathname) &&
@@ -185,7 +193,6 @@ const ShowAuctionList = () => {
       {openModal ? (
         <SavedSearchModal openModal={openModal} hideModal={hideModal} />
       ) : null}
-
       {renderH1HeaderSEO()}
       <div className="flex flex-col gap-4 w-full">
         {renderKeywordSearchContainer()}
@@ -198,11 +205,13 @@ const ShowAuctionList = () => {
           );
         })}
       </div>
-      <PaginationComp
-        totalPage={auctionData?.meta?.pageCount}
-        onPageChange={handlePageChange}
-        activePage={currentPage}
-      />
+      {auctionData?.meta?.pageCount ? (
+        <PaginationComp
+          totalPage={auctionData?.meta?.pageCount}
+          onPageChange={handlePageChange}
+          activePage={currentPage}
+        />
+      ) : null}
     </>
   );
 };
