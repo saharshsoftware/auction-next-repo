@@ -19,6 +19,7 @@ interface IAuctionCard {
   handleClick?: (data: any) => void;
   handleRemove?: (data: any) => void;
   showRemoveButton?: boolean;
+  propertyId?: string;
 }
 
 const auctionLabelClass = () => "text-sm text-gray-400 font-bold";
@@ -29,6 +30,7 @@ const AuctionCard: React.FC<IAuctionCard> = (props) => {
     handleClick = () => {},
     handleRemove = () => {},
     showRemoveButton,
+    propertyId,
   } = props;
 
   const sharedUrl = getSharedAuctionUrl(item);
@@ -132,7 +134,7 @@ const AuctionCard: React.FC<IAuctionCard> = (props) => {
               text="Remove"
               icon={<FontAwesomeIcon icon={faX} />}
               customClass="w-fit"
-              onclick={() => handleRemove(item)}
+              onclick={() => handleRemove(propertyId)}
               isDeleteButton={true}
             />
           ) : null}
