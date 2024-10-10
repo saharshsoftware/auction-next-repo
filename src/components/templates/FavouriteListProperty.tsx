@@ -89,7 +89,7 @@ const FavouriteListProperty = (props: IFavouriteListPropertyComp) => {
 
   const handleDeleteAction = () => {
     // mutate({ id: selectedCard?.id });
-    mutate({ id: listId });
+    mutate({ id: selectedCard });
   };
 
   const renderFavoriteListProperty = () => {
@@ -116,6 +116,7 @@ const FavouriteListProperty = (props: IFavouriteListPropertyComp) => {
                     showRemoveButton={true}
                     item={propertyInformation}
                     // propertyData={propertyInformation}
+                    propertyId={item?.id}
                     handleRemove={handleRemove}
                   />
                 </div>
