@@ -148,7 +148,8 @@ const AuctionDetail = (props: { auctionDetail: IAuction }) => {
             heading={STRING_DATA.AUCTION_END_D_AND_T}
             value={formattedDateAndTime(auctionDetail?.auctionEndDate ?? "")}
           />
-          <ShowLabelValue heading={"Documents"} hasChildren={true}>
+          {/* Set hasChildren props true to render link in ui */}
+          <ShowLabelValue heading={"Documents"} hasChildren={false}>
             <Link
               href={`${process.env.NEXT_PUBLIC_IMAGE_CLOUDFRONT}/${auctionDetail?.noticeImageURL}`}
               target="_blank"

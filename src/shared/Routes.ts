@@ -23,4 +23,6 @@ export const ROUTE_CONSTANTS = {
   BANKS: "/banks",
   ASSETS_TYPE: "/asset-types",
   SEARCH: "/search",
+  CITIES: "/cities",
+  ASSETS: "/assets",
 };
