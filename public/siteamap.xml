@@ -7,7 +7,7 @@
 <priority>0.8</priority>
 </url>
 <url>
-<loc>https://www.eauctiondekho.com/sitemapsurls/index.xml</loc>
+<loc>https://api.eauctiondekho.com/api/sitemap/index.xml</loc>
 <lastmod>2024-10-08T13:25:51.112Z</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.8</priority>

@@ -149,7 +149,7 @@ const AuctionDetail = (props: { auctionDetail: IAuction }) => {
             value={formattedDateAndTime(auctionDetail?.auctionEndDate ?? "")}
           />
           {/* Set hasChildren props true to render link in ui */}
-          <ShowLabelValue heading={"Documents"} hasChildren={false}>
+          {/* <ShowLabelValue heading={"Documents"} hasChildren={true}>
             <Link
               href={`${process.env.NEXT_PUBLIC_IMAGE_CLOUDFRONT}/${auctionDetail?.noticeImageURL}`}
               target="_blank"
@@ -158,7 +158,7 @@ const AuctionDetail = (props: { auctionDetail: IAuction }) => {
               <span>Notice link</span>
               <NewTabSvg />
             </Link>
-          </ShowLabelValue>
+          </ShowLabelValue> */}
         </div>
       </div>
     </>
