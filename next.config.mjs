@@ -42,7 +42,7 @@ const nextConfig = {
   async rewrites() {
     return [
       {
-        source: "/sitemapsurls/index.xml",
+        source: "/sitemap/index.xml",
         destination: `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/sitemap/index.xml`
       },
       {
