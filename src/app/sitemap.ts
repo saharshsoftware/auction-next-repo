@@ -9,7 +9,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.8,
     },
     {
-      url: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/sitemapsurls/index.xml`, // This will rewrite to strapi sitemap
+      url: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/sitemap/index.xml`, // This will rewrite to strapi sitemap
       lastModified: new Date(),
       changeFrequency: "daily",
       priority: 0.8,

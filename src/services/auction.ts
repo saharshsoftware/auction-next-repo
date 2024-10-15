@@ -105,8 +105,12 @@ export const getAuctionDataClient = async (payload: {
         "assetType",
         "reservePrice",
         "auctionDate",
+        "branchName",
       ]);
-      URL = API_ENPOINTS.NOTICES + filter.slice(0, -1) + `&${requiredkeys}`; // Remove the trailing '&' if present
+      URL =
+        API_ENPOINTS.NOTICES +
+        filter.slice(0, -1) +
+        `&${requiredkeys}&sort=auctionDate:desc`; // Remove the trailing '&' if present
     }
 
     const { data } = await getRequest({ API: URL });
@@ -350,7 +354,9 @@ export const showInterest = async (body: {
 export const noticeSearch = async (payload: { searchParams: string }) => {
   try {
     const URL =
-      API_BASE_URL + API_ENPOINTS.NOTICE_SEARCH + `?q=${payload.searchParams}`;
+      API_BASE_URL +
+      API_ENPOINTS.NOTICE_SEARCH +
+      `?q=${payload.searchParams}&sort=auctionDate:desc`;
     const { data } = await getRequest({ API: URL });
     // console.log(data, "responsefetch");
     const sendResponse = sanitizedAuctionData(data.data) as IAuction[];
