@@ -84,9 +84,9 @@ const AuctionDetail = (props: { auctionDetail: IAuction }) => {
           </h1>
         </div>
         <div className={`flex gap-4 justify-between items-start flex-wrap `}>
-          <div className="flex flex-col gap-2 items-start justify-start">
+          {/* <div className="flex flex-col gap-2 items-start justify-start">
             {renderPriceDetails()}
-          </div>
+          </div> */}
           <div className="border border-green-500 rounded-lg px-2 py-1">
             {WhatsappShareWithIcon({ url: sharedUrl })}
           </div>

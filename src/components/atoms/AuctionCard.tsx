@@ -89,6 +89,19 @@ const AuctionCard: React.FC<IAuctionCard> = (props) => {
     );
   };
 
+  const renderBranchName = () => {
+    if (item?.branchName) {
+      return (
+        <div
+          className={`flex gap-2 items-center justify-start ${auctionLabelClass()}`}
+        >
+          <span>Branch Name - </span>
+          <div>{item?.branchName}</div>
+        </div>
+      );
+    }
+  };
+
   return (
     <>
       <div className="flex flex-col gap-4 p-4 border rounded shadow w-full min-h-40">
@@ -98,19 +111,20 @@ const AuctionCard: React.FC<IAuctionCard> = (props) => {
         <div className={`flex gap-4 justify-between items-start flex-wrap`}>
           <div className="flex flex-col gap-2 items-start justify-start">
             {renderReservePrice()}
-            {renderEstimatedMarketValue()}
+            {/* {renderEstimatedMarketValue()} */}
           </div>
           <div className="border border-green-500 rounded-lg px-2 py-1">
             {WhatsappShareWithIcon({ url: sharedUrl })}
           </div>
         </div>
-        <div className="flex-1 line-clamp-4">
+        <div className="flex-1 line-clamp-4 space-y-4">
           <div
             className={`flex gap-2 items-center justify-start ${auctionLabelClass()}`}
           >
             <span>Seller - </span>
             <div>{item?.bankName}</div>
           </div>
+          {renderBranchName()}
         </div>
         <p className="flex-1 line-clamp-4">{item?.location}</p>
         <div className="flex lg:flex-row flex-col gap-4 justify-between items-start">
