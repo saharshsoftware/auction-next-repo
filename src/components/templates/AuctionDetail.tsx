@@ -25,12 +25,12 @@ const auctionLabelClass = () => "text-sm text-gray-400 font-bold";
 
 const AuctionDetail = (props: { auctionDetail: IAuction }) => {
   const { auctionDetail } = props;
+  const tokenFromCookie = getCookie(COOKIES.TOKEN_KEY);
   const [token, setToken] = useState<string | null>(null);
 
   useEffect(() => {
-    const tokenFromCookie = getCookie(COOKIES.TOKEN_KEY);
     setToken(tokenFromCookie ? String(tokenFromCookie) : null);
-  }, []);
+  }, [tokenFromCookie]);
   const { showModal, openModal, hideModal } = useModal();
   const userData = getCookie(COOKIES.AUCTION_USER_KEY)
     ? JSON.parse(getCookie(COOKIES.AUCTION_USER_KEY) ?? "")
@@ -62,9 +62,10 @@ const AuctionDetail = (props: { auctionDetail: IAuction }) => {
   const noticeLinkRenderer = () => {
     if (token === null) {
       return (
-        <div className="text-gray-400">
-          Login to download the newspaper notice
-        </div>
+        <ActionButton
+          text={STRING_DATA.LOGIN_VIEW_DOC.toUpperCase()}
+          onclick={showModal}
+        />
       );
     }
     if (token) {
