@@ -14,6 +14,7 @@ import { showInterest } from "@/services/auction";
 import toast from "react-simple-toasts";
 import { IAuction } from "@/types";
 import WhatsappSvg from "../svgIcons/WhatsappSvg";
+import { useRouter } from "next/navigation";
 
 interface IInterestModal {
   openModal: boolean;
@@ -23,6 +24,7 @@ interface IInterestModal {
 }
 
 const InterestModal = (props: IInterestModal) => {
+  const router = useRouter();
   const { openModal, hideModal = () => {}, userData, auctionDetail } = props;
   const [show, setShow] = useState({ login: true, signup: false });
   // const token = getCookie(COOKIES.TOKEN_KEY) ?? "";
@@ -58,6 +60,7 @@ const InterestModal = (props: IInterestModal) => {
 
   const handleShowRegister = () => {
     setShow({ login: false, signup: true });
+    router.refresh();
   };
   const queryClient = useQueryClient();
   const [respError, setRespError] = useState<string>("");

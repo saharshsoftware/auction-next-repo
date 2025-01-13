@@ -33,6 +33,7 @@ export const NAVICON_COLOR = "#a6a6a6";
 export const PAGE_REVALIDATE_TIME = 86400; // 24 hr
 
 export const STRING_DATA = {
+  LOGIN_VIEW_DOC: "Login to view documents",
   HOME: "Home",
   SHOW_INTEREST: "Show interest",
   DELETE_ACCOUNT: "Delete account",
