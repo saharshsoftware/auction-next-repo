@@ -1,6 +1,6 @@
 "use client";
 import { IAuction } from "@/types";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ShowLabelValue from "../atoms/ShowLabelValue";
 import { COOKIES, STRING_DATA } from "@/shared/Constants";
 import {
@@ -25,6 +25,12 @@ const auctionLabelClass = () => "text-sm text-gray-400 font-bold";
 
 const AuctionDetail = (props: { auctionDetail: IAuction }) => {
   const { auctionDetail } = props;
+  const [token, setToken] = useState<string | null>(null);
+
+  useEffect(() => {
+    const tokenFromCookie = getCookie(COOKIES.TOKEN_KEY);
+    setToken(tokenFromCookie ? String(tokenFromCookie) : null);
+  }, []);
   const { showModal, openModal, hideModal } = useModal();
   const userData = getCookie(COOKIES.AUCTION_USER_KEY)
     ? JSON.parse(getCookie(COOKIES.AUCTION_USER_KEY) ?? "")
@@ -51,6 +57,28 @@ const AuctionDetail = (props: { auctionDetail: IAuction }) => {
       );
     }
     return null;
+  };
+
+  const noticeLinkRenderer = () => {
+    if (token === null) {
+      return (
+        <div className="text-gray-400">
+          Login to download the newspaper notice
+        </div>
+      );
+    }
+    if (token) {
+      return (
+        <Link
+          href={`${process.env.NEXT_PUBLIC_IMAGE_CLOUDFRONT}/${auctionDetail?.noticeImageURL}`}
+          target="_blank"
+          className="flex items-center gap-2 link link-primary"
+        >
+          <span>Notice link</span>
+          <NewTabSvg />
+        </Link>
+      );
+    }
   };
 
   return (
@@ -149,16 +177,9 @@ const AuctionDetail = (props: { auctionDetail: IAuction }) => {
             value={formattedDateAndTime(auctionDetail?.auctionEndDate ?? "")}
           />
           {/* Set hasChildren props true to render link in ui */}
-          {/* <ShowLabelValue heading={"Documents"} hasChildren={true}>
-            <Link
-              href={`${process.env.NEXT_PUBLIC_IMAGE_CLOUDFRONT}/${auctionDetail?.noticeImageURL}`}
-              target="_blank"
-              className="flex items-center gap-2 link link-primary"
-            >
-              <span>Notice link</span>
-              <NewTabSvg />
-            </Link>
-          </ShowLabelValue> */}
+          <ShowLabelValue heading={"Documents"} hasChildren={true}>
+            {noticeLinkRenderer()}
+          </ShowLabelValue>
         </div>
       </div>
     </>
