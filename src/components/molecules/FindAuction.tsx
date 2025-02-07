@@ -38,6 +38,15 @@ import { fetchBanksClient } from "@/services/bank";
 import { fetchLocationClient } from "@/services/location";
 import RangeSliderCustom from "../atoms/RangeSliderCustom";
 import { useFilterStore } from "@/zustandStore/filters";
+import {
+  applyFilters,
+  fillFilterHelper,
+  fillFilterWithBanksAndAssets,
+  fillFilterWithBanksAndCategories,
+  fillFilterWithCategoriesAndAssets,
+  fillFilterWithLocationsAndAssets,
+  fillFilterWithLocationsAndCategories,
+} from "@/helpers/RoutingHelper";
 
 const gridElementClass = () => "lg:col-span-2  col-span-full";
 
@@ -61,7 +70,11 @@ const FindAuction = (props: IFindAuction) => {
   const filterData = useFilterStore((state) => state.filter);
   const { setFilter } = useFilterStore();
 
-  const params = useParams();
+  const params = useParams() as {
+    slug: string;
+    slugasset: string;
+    slugcategory: string;
+  };
   const params_search = useSearchParams();
   const router = useRouter();
   const currentRoute = usePathname();
@@ -140,69 +153,105 @@ const FindAuction = (props: IFindAuction) => {
   });
 
   useEffect(() => {
-    if (params?.slug) {
-      if (currentRoute.startsWith(ROUTE_CONSTANTS.CATEGORY)) {
-        fillFilter(categoryOptions);
-        return;
-      }
-      if (currentRoute.startsWith(ROUTE_CONSTANTS.BANKS)) {
-        fillFilter(bankOptions);
-        return;
-      }
+    applyFilters(
+      params,
+      currentRoute,
+      locationOptions,
+      assetsTypeOptions,
+      bankOptions,
+      categoryOptions,
+      fillFilter,
+      fillFilterWithTwoSlug
+    );
+  }, [
+    params,
+    locationOptions,
+    bankOptions,
+    assetsTypeOptions,
+    categoryOptions,
+  ]);
+
+  const fillFilterWithTwoSlug = (slug1List: any, slug2List: any) => {
+    const { slug, slugasset, slugcategory } = params;
+    // console.log("(fillFilterWithTwoSlug)", {
+    //   slug,
+    //   slugasset,
+    //   slugcategory,
+    // });
+
+    if (slug && slugasset) {
       if (currentRoute.startsWith(ROUTE_CONSTANTS.LOCATION)) {
-        fillFilter(locationOptions);
-        return;
+        fillFilterWithLocationsAndAssets(
+          slug1List, // locations
+          slug2List, // asssetTypes
+          params,
+          filterData,
+          setInitialValueData,
+          setFilter,
+          FILTER_EMPTY
+        );
       }
-      if (currentRoute.startsWith(ROUTE_CONSTANTS.ASSETS_TYPE)) {
-        fillFilter(assetsTypeOptions);
-        return;
+
+      if (currentRoute.startsWith(ROUTE_CONSTANTS.BANKS)) {
+        fillFilterWithBanksAndAssets(
+          slug1List, // banks
+          slug2List, // asssetTypes
+          params,
+          filterData,
+          setInitialValueData,
+          setFilter,
+          FILTER_EMPTY
+        );
+      }
+
+      if (currentRoute.startsWith(ROUTE_CONSTANTS.CATEGORY)) {
+        fillFilterWithCategoriesAndAssets(
+          slug1List, // categories
+          slug2List, // asssetTypes
+          params,
+          filterData,
+          setInitialValueData,
+          setFilter,
+          FILTER_EMPTY
+        );
+      }
+    } else if (slug && slugcategory) {
+      if (currentRoute.startsWith(ROUTE_CONSTANTS.LOCATION)) {
+        fillFilterWithLocationsAndCategories(
+          slug1List, // categoryList
+          slug2List, // asssetTypes
+          params,
+          filterData,
+          setInitialValueData,
+          setFilter,
+          FILTER_EMPTY
+        );
+      }
+
+      if (currentRoute.startsWith(ROUTE_CONSTANTS.BANKS)) {
+        fillFilterWithBanksAndCategories(
+          slug1List, // categoryList
+          slug2List, // asssetTypes
+          params,
+          filterData,
+          setInitialValueData,
+          setFilter,
+          FILTER_EMPTY
+        );
       }
     }
-  }, [params?.slug]);
+  };
 
   const fillFilter = (data: any) => {
-    if (currentRoute.startsWith(ROUTE_CONSTANTS.CATEGORY)) {
-      const selectedOne = data?.find(
-        (item: any) => item?.slug === params?.slug
-      );
-      // console.log(selectedOne, "selectedOne");
-      setInitialValueData({
-        category: selectedOne ?? filterData?.category ?? "",
-      });
-      setFilter({ ...FILTER_EMPTY, category: selectedOne });
-    }
-    if (currentRoute.startsWith(ROUTE_CONSTANTS.LOCATION)) {
-      const selectedOne = data?.find(
-        (item: any) => item?.slug === params?.slug
-      );
-      // console.log(selectedOne, "selectedOne");
-      setInitialValueData({
-        location: selectedOne ?? filterData?.location ?? "",
-      });
-      setFilter({ ...FILTER_EMPTY, location: selectedOne });
-    }
-    if (currentRoute.startsWith(ROUTE_CONSTANTS.BANKS)) {
-      const selectedOne = data?.find(
-        (item: any) => item?.slug === params?.slug
-      );
-      // console.log(selectedOne, "selectedOne", filterData?.bank);
-      // debugger;
-      setInitialValueData({
-        bank: selectedOne ?? filterData?.bank ?? "",
-      });
-      setFilter({ ...FILTER_EMPTY, bank: selectedOne });
-    }
-    if (currentRoute.startsWith(ROUTE_CONSTANTS.ASSETS_TYPE)) {
-      const selectedOne = data?.find(
-        (item: any) => item?.slug === params?.slug
-      );
-      // console.log(selectedOne, "selectedOne", filterData?.bank);
-      // debugger;
-      setInitialValueData({
-        propertyType: selectedOne ?? filterData?.propertyType ?? "",
-      });
-      setFilter({ ...FILTER_EMPTY, propertyType: selectedOne });
-    }
+    fillFilterHelper(
+      data,
+      currentRoute,
+      params,
+      filterData,
+      setInitialValueData,
+      setFilter,
+      FILTER_EMPTY
+    );
   };
 
   const [isMobileView, setIsMobileView] = useState({
