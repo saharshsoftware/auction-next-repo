@@ -43,7 +43,7 @@ const FavouriteListProperty = (props: IFavouriteListPropertyComp) => {
       })) as unknown as IFavouriteListProperty[];
       return res ?? [];
     },
-    enabled: false,
+    enabled: !!listId,
   });
 
   // Mutations
@@ -68,13 +68,6 @@ const FavouriteListProperty = (props: IFavouriteListPropertyComp) => {
       handleOnSettled(response);
     },
   });
-
-  useEffect(() => {
-    if (listId) {
-      refetch();
-      console.log(listId);
-    }
-  }, [listId]);
 
   const handleRemove = (data: IFavouriteListProperty) => {
     console.log(data);
