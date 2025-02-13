@@ -21,9 +21,12 @@ import SavedSearchModal from "../ modals/SavedSearchModal";
 import { getCookie } from "cookies-next";
 import { useFilterStore } from "@/zustandStore/filters";
 import NoDataImage from "../ui/NoDataImage";
+import { isEqual } from "lodash";
+import RenderH1SeoHeader from "../atoms/RenderH1SeoHeader";
 
 const ShowAuctionList = () => {
   const filterData = useFilterStore((state) => state.filter) as any;
+  const prevFilterData = useRef();
   const { setFilter } = useFilterStore();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -73,9 +76,16 @@ const ShowAuctionList = () => {
   });
 
   useEffect(() => {
-    if (filterData) {
+    const hasDifference = !isEqual(prevFilterData.current, filterData);
+    // console.log("hasDifference", {
+    //   hasDifference,
+    //   prevFilterData: prevFilterData.current,
+    //   filterData,
+    // });
+    if (hasDifference) {
       console.log("API HIT 🚀 with", filterData);
       refetch();
+      prevFilterData.current = filterData; // Update the stored value
     }
   }, [filterData]);
 
@@ -91,21 +101,25 @@ const ShowAuctionList = () => {
   // const debouncedRefetch = debounce(refetch, 500); // Adjust debounce time as per your requirement
 
   useEffect(() => {
-    if (searchParams.get("q") && pathname !== ROUTE_CONSTANTS.SEARCH) {
-      const data = searchParams.get("q");
-      const result = getDataFromQueryParams(data ?? "") as any;
-      // filterRef.current = result;
-      setFilter(result);
-      setCurrentPage(result?.page);
+    const query = searchParams.get("q");
+    // console.log("query", query);
+    if (query) {
+      if (pathname !== ROUTE_CONSTANTS.SEARCH) {
+        const data = query;
+        const result = getDataFromQueryParams(data ?? "") as any;
+        // filterRef.current = result;
+        setFilter(result);
+        setCurrentPage(result?.page);
 
-      if (result?.keyword) {
-        setHasKeywordSearchValue(result?.keyword);
-        return;
+        if (result?.keyword) {
+          setHasKeywordSearchValue(result?.keyword);
+          return;
+        }
+        setHasKeywordSearchValue("");
+      } else {
+        console.log("hits, search api");
+        refetch();
       }
-      setHasKeywordSearchValue("");
-    } else {
-      console.log("hits, search api");
-      refetch();
     }
   }, [searchParams.get("q")]);
 
@@ -157,43 +171,13 @@ const ShowAuctionList = () => {
     return null;
   };
 
-  const renderH1HeaderSEO = () => {
-    if (pathname === ROUTE_CONSTANTS.SEARCH) {
-      return (
-        <h1 className="custom-h1-class break-words my-4">
-          {`${
-            auctionData?.meta?.total ?? 0
-          } result found for ${searchParams.get("q")}`}
-        </h1>
-      );
-    }
-    if (
-      pathname &&
-      getPathType?.(pathname) &&
-      filterData?.[getPathType?.(pathname) ?? ""]?.name
-    ) {
-      return (
-        <h1 className="custom-h1-class break-words my-4">
-          {`Find Auction Properties for ${
-            filterData?.[getPathType?.(pathname) ?? ""]?.name
-          }`}
-        </h1>
-      );
-    }
-    console.log(
-      "No data found",
-      filterData?.[getPathType?.(pathname) ?? ""]?.name
-    );
-
-    return "";
-  };
-
   return (
     <>
       {openModal ? (
         <SavedSearchModal openModal={openModal} hideModal={hideModal} />
       ) : null}
-      {renderH1HeaderSEO()}
+
+      <RenderH1SeoHeader total={auctionData?.meta?.total} />
       <div className="flex flex-col gap-4 w-full">
         {renderKeywordSearchContainer()}
         {renderSavedSearchButton()}

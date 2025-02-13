@@ -20,18 +20,29 @@ import { WhatsappShareWithIcon } from "../atoms/SocialIcons";
 import { WishlistSvg } from "../svgIcons/WishlistSvg";
 import InterestModal from "../ modals/InterestModal";
 import { useRouter } from "next/navigation";
+import FullScreenImageModal from "../ modals/FullScreenImageModal";
+import Image from "next/image";
 
 const auctionLabelClass = () => "text-sm text-gray-400 font-bold";
 
 const AuctionDetail = (props: { auctionDetail: IAuction }) => {
   const { auctionDetail } = props;
+  const noticeImageUrl = auctionDetail?.noticeImageURL
+    ? `${process.env.NEXT_PUBLIC_IMAGE_CLOUDFRONT}/${auctionDetail?.noticeImageURL}`
+    : "";
   const tokenFromCookie = getCookie(COOKIES.TOKEN_KEY);
   const [token, setToken] = useState<string | null>(null);
+  const [hasError, setHasError] = useState(false);
 
   useEffect(() => {
     setToken(tokenFromCookie ? String(tokenFromCookie) : null);
   }, [tokenFromCookie]);
   const { showModal, openModal, hideModal } = useModal();
+  const {
+    showModal: showImageModal,
+    openModal: openImageModal,
+    hideModal: hideImageModal,
+  } = useModal();
   const userData = getCookie(COOKIES.AUCTION_USER_KEY)
     ? JSON.parse(getCookie(COOKIES.AUCTION_USER_KEY) ?? "")
     : null;
@@ -70,14 +81,35 @@ const AuctionDetail = (props: { auctionDetail: IAuction }) => {
     }
     if (token) {
       return (
-        <Link
-          href={`${process.env.NEXT_PUBLIC_IMAGE_CLOUDFRONT}/${auctionDetail?.noticeImageURL}`}
-          target="_blank"
-          className="flex items-center gap-2 link link-primary"
-        >
-          <span>Notice link</span>
-          <NewTabSvg />
-        </Link>
+        // <Link
+        //   // href={`${process.env.NEXT_PUBLIC_IMAGE_CLOUDFRONT}/${auctionDetail?.noticeImageURL}`}
+        //   target="_blank"
+        //   className="flex items-center gap-2 link link-primary"
+        //   onClick={showImageModal}
+        // >
+        //   <span>Notice link</span>
+        //   <NewTabSvg />
+        // </Link>
+        <>
+          <div
+            className="flex items-center gap-2 link link-primary"
+            onClick={showImageModal}
+          >
+            <span>Notice link</span>
+            <NewTabSvg />
+          </div>
+          <div className="relative">
+            <Image
+              src={noticeImageUrl}
+              width={120}
+              height={60}
+              alt="no-data"
+              onError={() => {
+                setHasError(true);
+              }}
+            />
+          </div>
+        </>
       );
     }
   };
@@ -91,6 +123,13 @@ const AuctionDetail = (props: { auctionDetail: IAuction }) => {
           hideModal={hideModal}
           userData={userData}
           auctionDetail={auctionDetail}
+        />
+      ) : null}
+      {openImageModal ? (
+        <FullScreenImageModal
+          openModal={openImageModal}
+          hideModal={hideImageModal}
+          imageUrl={noticeImageUrl}
         />
       ) : null}
       <div className="flex flex-col gap-4 w-full">
@@ -178,9 +217,11 @@ const AuctionDetail = (props: { auctionDetail: IAuction }) => {
             value={formattedDateAndTime(auctionDetail?.auctionEndDate ?? "")}
           />
           {/* Set hasChildren props true to render link in ui */}
-          <ShowLabelValue heading={"Documents"} hasChildren={true}>
-            {noticeLinkRenderer()}
-          </ShowLabelValue>
+          {!hasError && auctionDetail?.noticeImageURL ? (
+            <ShowLabelValue heading={"Documents"} hasChildren={true}>
+              {noticeLinkRenderer()}
+            </ShowLabelValue>
+          ) : null}
         </div>
       </div>
     </>

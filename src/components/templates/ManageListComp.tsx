@@ -2,12 +2,15 @@
 import CustomBadge from "@/components/atoms/CustomBadge";
 import { POPULER_CITIES, REACT_QUERY, STRING_DATA } from "@/shared/Constants";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CreateFavList from "../ modals/CreateFavList";
 import useModal from "@/hooks/useModal";
 import ActionButton from "../atoms/ActionButton";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { deleteFavoriteList, fetchFavoriteList } from "@/server/actions/favouriteList";
+import {
+  deleteFavoriteList,
+  fetchFavoriteList,
+} from "@/server/actions/favouriteList";
 import { IFavouriteList } from "@/types";
 import FavouriteListProperty from "./FavouriteListProperty";
 import ConfirmationModal from "../ modals/ConfirmationModal";
@@ -17,37 +20,47 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons/faPlus";
 import { faTrash } from "@fortawesome/free-solid-svg-icons/faTrash";
 import { faPencil } from "@fortawesome/free-solid-svg-icons/faPencil";
-import { deleteFavoriteListClient, fetchFavoriteListClient } from "@/services/favouriteList";
+import {
+  deleteFavoriteListClient,
+  fetchFavoriteListClient,
+} from "@/services/favouriteList";
 
 const ManageListComp = () => {
   const queryClient = useQueryClient();
   const [activeBadgeData, setActiveBadgeData] = useState<IFavouriteList>();
   const [selectedBadge, setSelectedBadge] = useState<any>();
-    const { showModal, openModal, hideModal } = useModal();
-    const {
-      showModal: showModalDelete,
-      openModal: openModalDelete,
-      hideModal: hideModalDelete,
-    } = useModal();
+  const { showModal, openModal, hideModal } = useModal();
+  const {
+    showModal: showModalDelete,
+    openModal: openModalDelete,
+    hideModal: hideModalDelete,
+  } = useModal();
 
-    const {
-      showModal: showModalEdit,
-      openModal: openModalEdit,
-      hideModal: hideModalEdit,
-    } = useModal();
+  const {
+    showModal: showModalEdit,
+    openModal: openModalEdit,
+    hideModal: hideModalEdit,
+  } = useModal();
   const {
     data: favouriteListData,
     isLoading: isLoadingFavourite,
     fetchStatus,
+    refetch,
   } = useQuery({
     queryKey: [REACT_QUERY.FAVOURITE_LIST],
     queryFn: async () => {
       const res =
         (await fetchFavoriteListClient()) as unknown as IFavouriteList[];
-      setActiveBadgeData(res?.[0]);
       return res ?? [];
     },
+    staleTime: 0,
   });
+
+  useEffect(() => {
+    if ((favouriteListData?.length ?? 0) > 0) {
+      setActiveBadgeData(favouriteListData?.[0]);
+    }
+  }, [favouriteListData]);
 
   // Mutations
   const { mutate, isPending } = useMutation({
@@ -71,8 +84,6 @@ const ManageListComp = () => {
     },
   });
 
-
-
   const handleBadgeClick = (data: any) => {
     console.log(data);
     setActiveBadgeData(data);
@@ -90,8 +101,12 @@ const ManageListComp = () => {
   const handleDeleteAction = () => {
     // refetch();
 
-    mutate({ id: activeBadgeData?.id ?? '' });
+    mutate({ id: activeBadgeData?.id ?? "" });
   };
+
+  // useEffect(() => {
+  //   refetch();
+  // }, [refetch]);
 
   const renderData = () => {
     if (isLoadingFavourite) {
@@ -141,7 +156,9 @@ const ManageListComp = () => {
   return (
     <>
       {/* Create List Modal */}
-      {openModal? <CreateFavList openModal={openModal} hideModal={hideModal} />: null}
+      {openModal ? (
+        <CreateFavList openModal={openModal} hideModal={hideModal} />
+      ) : null}
 
       {/* Create List Modal */}
       <EditFavList
