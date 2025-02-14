@@ -45,6 +45,7 @@ import {
   fillFilterWithBanksAndCategories,
   fillFilterWithCategoriesAndAssets,
   fillFilterWithLocationsAndAssets,
+  fillFilterWithLocationsAndBanks,
   fillFilterWithLocationsAndCategories,
 } from "@/helpers/RoutingHelper";
 
@@ -74,6 +75,7 @@ const FindAuction = (props: IFindAuction) => {
     slug: string;
     slugasset: string;
     slugcategory: string;
+    slugbank: string;
   };
   const params_search = useSearchParams();
   const router = useRouter();
@@ -172,7 +174,7 @@ const FindAuction = (props: IFindAuction) => {
   ]);
 
   const fillFilterWithTwoSlug = (slug1List: any, slug2List: any) => {
-    const { slug, slugasset, slugcategory } = params;
+    const { slug, slugasset, slugcategory, slugbank } = params;
     // console.log("(fillFilterWithTwoSlug)", {
     //   slug,
     //   slugasset,
@@ -232,6 +234,18 @@ const FindAuction = (props: IFindAuction) => {
         fillFilterWithBanksAndCategories(
           slug1List, // categoryList
           slug2List, // asssetTypes
+          params,
+          filterData,
+          setInitialValueData,
+          setFilter,
+          FILTER_EMPTY
+        );
+      }
+    } else if (slug && slugbank) {
+      if (currentRoute.startsWith(ROUTE_CONSTANTS.LOCATION)) {
+        fillFilterWithLocationsAndBanks(
+          slug1List, // locations
+          slug2List, // bankslist
           params,
           filterData,
           setInitialValueData,

@@ -28,11 +28,24 @@ export async function generateMetadata(
     // console.log(bankData, "bank-slug");
     const { name } = bankData;
     return {
-      title: `${name} Auctions | Discover Bank-Owned Properties and More - eauctiondekho`,
-      description: `Explore ${name}'s auction listings for bank-owned properties, vehicles, and machinery across India. Find comprehensive and updated auction details on eauctiondekho and secure the best deals today.`,
+      title: `${name} Auction Properties | eAuctionDekho - Residential, Commercial, Vehicle, and Gold`,
+      description: `Discover ${name}'s auction properties on eAuctionDekho, featuring a diverse selection of asset types including flats, houses, plots, residential units, agricultural land, bungalows, cars, vehicles, commercial buildings, offices, shops, factory and building lands, godowns, industrial buildings, lands, machinery, non-agricultural lands, scrap, and sheds. Secure the best deals today on assets tailored to meet diverse investment needs.`,
       alternates: {
         canonical: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/${slug}-auctions`,
       },
+
+      keywords: [
+        `${name} auction properties`,
+        `${name} flats auctions`,
+        `${name} houses for sale`,
+        `${name} vehicle auctions`,
+        `${name} commercial property auctions`,
+        `Agricultural land auctions ${name}`,
+        `${name} machinery auctions`,
+        `${name} plots for sale`,
+        `${name} residential units`,
+        `eAuctionDekho ${name} listings`,
+      ],
 
       openGraph: {
         type: "website",

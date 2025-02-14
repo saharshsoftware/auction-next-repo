@@ -28,11 +28,24 @@ export async function generateMetadata(
     // console.log(locationData, "location-slug");
     const { name } = locationData;
     return {
-      title: `Auctions in ${name} | Find Local Deals - eauctiondekho`,
-      description: `Discover auctions in ${name} with eauctiondekho. Browse comprehensive listings of properties, vehicles, and machinery available for auction in ${name}. Secure the best deals in your local area or state today.`,
+      title: `Bank Auction Properties in ${name} | eAuctionDekho - Explore Residential, Commercial, Vehicle, and Gold Auctions`,
+      description: `Explore bank auction properties in ${name} on eAuctionDekho. Find diverse asset types including flats, houses, plots, residential units, agricultural land, bungalows, cars, vehicles, commercial buildings, offices, shops, factory lands, godowns, industrial buildings, lands, machinery, non-agricultural lands, scrap, and sheds. Secure the best deals today tailored to your investment needs`,
       alternates: {
         canonical: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/${slug}-auctions`,
       },
+
+      keywords: [
+        `bank auction property in ${name}`,
+        `flat bank auctions in ${name}`,
+        `house auctions in ${name}`,
+        `vehicle auctions in ${name}`,
+        `commercial property auctions in ${name}`,
+        `agricultural land auctions in ${name}`,
+        `machinery auctions in ${name}`,
+        `plot auctions in ${name}`,
+        `residential unit auctions in ${name}`,
+        `eAuctionDekho ${name} listings`,
+      ],
 
       openGraph: {
         type: "website",

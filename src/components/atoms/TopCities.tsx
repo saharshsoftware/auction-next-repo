@@ -84,7 +84,7 @@ const TopCities = () => {
 
   return (
     <>
-      <div className="custom-common-header-class">{STRING_DATA.TOP_CITY}</div>
+      <div className="custom-common-header-class">{STRING_DATA.TOP_CITIES}</div>
       {renderer()}
     </>
   );

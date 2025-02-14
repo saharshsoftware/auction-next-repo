@@ -2,7 +2,14 @@ import { ROUTE_CONSTANTS } from "@/shared/Routes";
 import { getPathType } from "@/shared/Utilies";
 
 export const applyFilters = (
-  params: { slug: string; slugasset: string; slugcategory: string } | undefined,
+  params:
+    | {
+        slug: string;
+        slugasset: string;
+        slugcategory: string;
+        slugbank: string;
+      }
+    | undefined,
   currentRoute: string,
   locationOptions: any,
   assetsTypeOptions: any,
@@ -13,8 +20,8 @@ export const applyFilters = (
 ) => {
   if (!params) return;
 
-  const { slug, slugasset, slugcategory } = params;
-  console.log("(applyFilters)", { slug, slugasset, slugcategory });
+  const { slug, slugasset, slugcategory, slugbank } = params;
+  console.log("(applyFilters)", { slug, slugasset, slugcategory, slugbank });
 
   if (slug && slugcategory) {
     if (
@@ -40,6 +47,16 @@ export const applyFilters = (
       categoryOptions
     ) {
       fillFilterWithTwoSlug(categoryOptions, categoryOptions);
+      return;
+    }
+  } else if (slug && slugbank) {
+    if (
+      currentRoute.startsWith(ROUTE_CONSTANTS.LOCATION) &&
+      locationOptions &&
+      bankOptions
+    ) {
+      // console.log("(applyFilters) 1");
+      fillFilterWithTwoSlug(locationOptions, bankOptions);
       return;
     }
   } else if (slug && slugasset) {
@@ -190,6 +207,37 @@ export const fillFilterWithCategoriesAndAssets = (
     ...FILTER_EMPTY,
     category: selectedCategory,
     propertyType: selectedAssetType,
+  });
+};
+
+export const fillFilterWithLocationsAndBanks = (
+  locations: any,
+  bankslist: any,
+  params: { slug: string; slugbank: string },
+  filterData: any,
+  setInitialValueData: (data: any) => void,
+  setFilter: (filter: any) => void,
+  FILTER_EMPTY: any
+) => {
+  console.log("(fillFilterWithLocationsAndBanks)");
+  if (!locations || !bankslist || !params) return;
+
+  const selectedLocation = locations.find(
+    (item: any) => item?.slug === params?.slug
+  );
+  const selectedBank = bankslist.find(
+    (item: any) => item?.slug === params?.slugbank
+  );
+
+  setInitialValueData({
+    location: selectedLocation ?? filterData?.location ?? "",
+    bank: selectedBank ?? filterData?.bank ?? "",
+  });
+
+  setFilter({
+    ...FILTER_EMPTY,
+    location: selectedLocation,
+    bank: selectedBank,
   });
 };
 

@@ -349,3 +349,20 @@ export const getPathType = (path: string): string | null => {
       return ""; // If none of the cases match
   }
 };
+
+export function extractKeywords(
+  items: any[],
+  label: string,
+  slugCategoryName: string
+): string[] {
+  const result =
+    items.find((item: any) => {
+      const categoryName = item?.category?.data?.attributes?.name || "";
+
+      if (categoryName === slugCategoryName) {
+        return item;
+      }
+    })?.name ?? "";
+  console.log(result, "result");
+  return result ? [`${result} ${label}`] : [];
+}

@@ -12,18 +12,21 @@ import { BREADCRUMB_LIST, SITELINK_SEARCHBOX } from "@/shared/seo.constant";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "eauctiondekho | Vehicle, Property & Industrial Auctions in India",
+  title:
+    "Find Bank Auction Properties in India | eAuctionDekho - Residential, Commercial, Vehicles, Gold & More",
   description:
-    "Find the best deals at eauctiondekho with auctions across India for vehicles, residential flats, commercial shops, industrial plots, machinery, and gold. Your one-stop shop for bank-auctioned assets.",
+    "Find bank auction properties across India on eAuctionDekho. Find your ideal property from banks like ICICI, SBI, BOB, and more. Residential flats, plots, commercial buildings, vehicles, gold, and many more.",
   keywords: [
+    "bank auction properties",
+    "auction properties",
+    "residential auctions",
+    "commercial auctions",
     "vehicle auctions",
-    "property auctions",
-    "flat auctions",
-    "commercial property",
-    "industrial plots",
-    "machinery auctions",
     "gold auctions",
-    "India",
+    "bank repossessed properties",
+    "SBI property auctions",
+    "ICICI property auctions",
+    "HDFC auction properties",
   ],
   robots: "index, follow",
   alternates: {
