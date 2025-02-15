@@ -1,5 +1,8 @@
 import ShowAuctionList from "@/components/molecules/ShowAuctionList";
+import { fetchAssetTypes } from "@/server/actions/assetTypes";
 import { getCategoryBoxCollectionBySlug } from "@/server/actions/auction";
+import { getAssetTypeClient } from "@/services/auction";
+import { extractKeywords } from "@/shared/Utilies";
 import { ICategoryCollection } from "@/types";
 import { Metadata, ResolvingMetadata } from "next";
 import React from "react";
@@ -26,13 +29,18 @@ export async function generateMetadata(
   try {
     const categoryData = await getSlugData(slug);
     const { name, subCategories } = categoryData;
-    // console.log(subCategories, "category-slug");
+    let keywordsAll: string[] = [];
+    if (name) {
+      const allSssetTypeData = await fetchAssetTypes();
+      keywordsAll = extractKeywords(allSssetTypeData, "bank auction", name);
+    }
     return {
-      title: `${name} Auctions Across India | Updated Listings - eauctiondekho`,
-      description: `Discover the latest ${name} auction across India. Explore a wide range of ${subCategories} available for auction with eauctiondekho. Find great deals through our updated and comprehensive listings.`,
+      title: `${name} Bank Auction Properties in India | eAuctionDekho`,
+      description: `Find ${name} bank auction properties on eAuctionDekho. Find diverse asset types including <asset types comma separated list>. Secure the best deals today tailored to your investment needs`,
       alternates: {
         canonical: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/${slug}-auctions`,
       },
+      keywords: [`${name} bank auction properties`, ...keywordsAll],
 
       openGraph: {
         type: "website",

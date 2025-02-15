@@ -107,6 +107,7 @@ export const STRING_DATA = {
   AUCTION_END_D_AND_T: "Auction End Date & Time",
   SIMILER_PROPERTIES: "Similer Properties",
   TOP_CITY: "Top City",
+  TOP_CITIES: "Top Cities",
   SERVICE_PROVIDER: "Service provider",
   BRANCH_NAME: "Branch name",
   MANAGE_LIST: "Manage list",

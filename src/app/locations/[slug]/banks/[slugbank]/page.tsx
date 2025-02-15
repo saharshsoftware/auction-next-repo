@@ -1,27 +1,25 @@
 import ShowAuctionList from "@/components/molecules/ShowAuctionList";
-import { fetchAssetTypes } from "@/server/actions/assetTypes";
-import { getCategoryBoxCollectionBySlug } from "@/server/actions/auction";
+import { fetchBanksBySlug } from "@/server/actions/banks";
 import { fetchLocationBySlug } from "@/server/actions/location";
-import { extractKeywords } from "@/shared/Utilies";
-import { ICategoryCollection, ILocations } from "@/types";
+import { IBanks, ILocations } from "@/types";
 import { Metadata, ResolvingMetadata } from "next";
 import React from "react";
 
 async function getSlugData(
   slug: string,
-  slugcategory: string
-): Promise<{ location: ILocations; category: ICategoryCollection }> {
+  slugbank: string
+): Promise<{ location: ILocations; bank: IBanks }> {
   const [selectedCategory, selectedLocation] = await Promise.all([
-    getCategoryBoxCollectionBySlug({
-      slug: slugcategory,
-    }) as Promise<ICategoryCollection[]>,
+    fetchBanksBySlug({
+      slug: slugbank,
+    }) as Promise<IBanks[]>,
     fetchLocationBySlug({
       slug,
     }) as Promise<ILocations[]>,
   ]);
   return {
     location: selectedLocation?.[0] as ILocations,
-    category: selectedCategory?.[0] as ICategoryCollection,
+    bank: selectedCategory?.[0] as IBanks,
   };
 }
 
@@ -30,37 +28,45 @@ export async function generateMetadata(
     params,
     searchParams,
   }: {
-    params: { slug: string; slugcategory: string };
+    params: { slug: string; slugbank: string };
     searchParams: { [key: string]: string | string[] | undefined };
   },
   parent: ResolvingMetadata
 ): Promise<Metadata> {
-  const { slug, slugcategory } = params;
+  const { slug, slugbank } = params;
 
   try {
-    const { location: locationData, category: categoryData } =
-      await getSlugData(slug, slugcategory);
+    const { location: locationData, bank: bankData } = await getSlugData(
+      slug,
+      slugbank
+    );
 
     const { name: nameLocation } = locationData;
-    const { name: nameCategory } = categoryData;
+    const { name: nameBank } = bankData;
 
-    let keywordsAll: string[] = [];
-    if (nameCategory) {
-      const allSssetTypeData = await fetchAssetTypes();
-      keywordsAll = extractKeywords(
-        allSssetTypeData,
-        "bank auction",
-        nameCategory
-      );
-    }
+    // console.log("(INFO:: ) bankData-slug ", {
+    //   nameLocation,
+    //   nameAssetType,
+    // });
     return {
-      title: `${nameCategory} Bank Auction Properties in ${nameLocation} | eAuctionDekho`,
-      description: `Find ${nameCategory} bank auction properties in ${nameLocation} on eAuctionDekho. Find diverse asset types including <asset types comma separated list>. Secure the best deals today tailored to your investment needs`,
+      title: `${nameBank} Auction Properties in ${nameLocation} | Explore Residential, Commercial, Vehicle, and Gold Auctions`,
+      description: `Discover ${nameBank}'s auction properties in ${nameLocation} on eAuctionDekho, featuring a diverse selection of asset types including flats, houses, plots, residential units, agricultural land, bungalows, cars, vehicles, commercial buildings, offices, shops, factory and building lands, godowns, industrial buildings, lands, machinery, non-agricultural lands, scrap, and sheds. Secure the best deals today on assets tailored to meet diverse investment needs.`,
       alternates: {
         canonical: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/${slug}-auctions`,
       },
 
-      keywords: [`${nameCategory} bank auction properties`, ...keywordsAll],
+      keywords: [
+        `${nameBank} auction properties in ${nameLocation}`,
+        `${nameBank} flat bank auctions in ${nameLocation}`,
+        `${nameBank} house bank auctions in ${nameLocation}`,
+        `${nameBank} vehicle bank auctions in ${nameLocation}`,
+        `${nameBank} commercial property bank auctions in ${nameLocation}`,
+        `Agricultural land bank auctions in ${nameLocation}`,
+        `${nameBank} machinery bank auctions in ${nameLocation}`,
+        `${nameBank} plot bank auctions in ${nameLocation}`,
+        `${nameBank} residential unit bank auctions in ${nameLocation}`,
+        `eAuctionDekho ${nameBank} listings in ${nameLocation}`,
+      ],
 
       openGraph: {
         type: "website",
@@ -95,7 +101,7 @@ export default async function Page({
   params,
   searchParams,
 }: {
-  params: { slug: string; slugcategory: string };
+  params: { slug: string; slugbank: string };
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
   console.log("(INFO) :: params", params, searchParams);

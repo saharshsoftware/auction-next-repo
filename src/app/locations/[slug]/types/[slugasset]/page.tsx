@@ -1,5 +1,86 @@
 import ShowAuctionList from "@/components/molecules/ShowAuctionList";
+import { fetchAssetTypeBySlug } from "@/server/actions/assetTypes";
+import { fetchLocationBySlug } from "@/server/actions/location";
+import { IAssetType, ILocations } from "@/types";
+import { Metadata, ResolvingMetadata } from "next";
 import React from "react";
+
+async function getSlugData(
+  slug: string,
+  slugasset: string
+): Promise<{ location: ILocations; assetType: IAssetType }> {
+  const [selectedCategory, selectedLocation] = await Promise.all([
+    fetchAssetTypeBySlug({
+      slug: slugasset,
+    }) as Promise<IAssetType[]>,
+    fetchLocationBySlug({
+      slug,
+    }) as Promise<ILocations[]>,
+  ]);
+  return {
+    location: selectedLocation?.[0] as ILocations,
+    assetType: selectedCategory?.[0] as IAssetType,
+  };
+}
+
+export async function generateMetadata(
+  {
+    params,
+    searchParams,
+  }: {
+    params: { slug: string; slugasset: string };
+    searchParams: { [key: string]: string | string[] | undefined };
+  },
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const { slug, slugasset } = params;
+
+  try {
+    const { location: locationData, assetType: assetTypeData } =
+      await getSlugData(slug, slugasset);
+
+    const { name: nameLocation } = locationData;
+    const { name: nameAssetType } = assetTypeData;
+
+    // console.log("(INFO:: ) assetType-slug ", {
+    //   nameLocation,
+    //   nameAssetType,
+    // });
+    return {
+      title: `Bank Auction ${nameAssetType} in ${nameLocation} | eAuctionDekho`,
+      description: `Find ${nameAssetType} in ${nameLocation} for auction. Also find flats, houses, plots, residential units, agricultural land, bungalows, cars, vehicles, commercial buildings, offices, shops, factory lands, godowns, industrial buildings, lands, machinery, non-agricultural lands, scrap, and sheds. Secure the best deals today tailored to your investment needs`,
+      alternates: {
+        canonical: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/${slug}-auctions`,
+      },
+
+      openGraph: {
+        type: "website",
+        url: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/${slug}-auctions`,
+        title: `Explore Auctions in ${nameLocation} | eauctiondekho`,
+        description: `Looking for auctions in ${nameLocation}? eauctiondekho offers a detailed list of auctions for properties, vehicles, and more. Start bidding in ${nameLocation} and make successful investments with ease.`,
+        images: [
+          {
+            url: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/${slug}-auctions-meta-image.jpg`,
+          },
+        ],
+      },
+      twitter: {
+        site: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/${slug}-auctions`,
+        card: "summary_large_image",
+        title: `${nameLocation} Auctions in India | eauctiondekho Listings`,
+        description: `Join the dynamic auction market in ${nameLocation} with eauctiondekho. Discover and bid on a variety of high-quality assets in ${nameLocation}, and secure valuable deals today.`,
+        images: [
+          {
+            url: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/${slug}-auctions-twitter-meta-image.jpg`,
+          },
+        ],
+      },
+    };
+  } catch (error) {
+    console.log("Error fetching metadata:", error);
+    return {};
+  }
+}
 
 export default async function Page({
   params,
