@@ -355,14 +355,15 @@ export function extractKeywords(
   label: string,
   slugCategoryName: string
 ): string[] {
+  if (!items) return [];
   const result =
-    items.find((item: any) => {
+    items?.find((item: any) => {
       const categoryName = item?.category?.data?.attributes?.name || "";
 
       if (categoryName === slugCategoryName) {
         return item;
       }
     })?.name ?? "";
-  console.log(result, "result");
+  console.log(result, "result", { items });
   return result ? [`${result} ${label}`] : [];
 }
