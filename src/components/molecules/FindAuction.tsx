@@ -1,6 +1,6 @@
 "use client";
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import {
   COOKIES,
   FILTER_EMPTY,
@@ -10,8 +10,11 @@ import {
 } from "../../shared/Constants";
 
 import {
+  doesAssetTypeExistInFilteredAssetType,
   formatPrice,
   getDataFromQueryParams,
+  handleFilterAssetTypeChange,
+  resetFormValues,
   sanitizeReactSelectOptions,
 } from "../../shared/Utilies";
 import useModal from "../../hooks/useModal";
@@ -82,6 +85,7 @@ const FindAuction = (props: IFindAuction) => {
   const currentRoute = usePathname();
   const { showModal, openModal, hideModal } = useModal();
   const { setFilter: setAuctionFilter } = useFilterStore();
+  const [filteredAssetsType, setFilterAssetsType] = useState<IAssetType[]>([]);
 
   const { setDataInQueryParamsMethod, getDataFromQueryParamsMethod } =
     useCustomParamsData();
@@ -146,6 +150,17 @@ const FindAuction = (props: IFindAuction) => {
 
   const [staticLoading, setStaticLoading] = useState(false);
 
+  function handleFilterAssetTypesDropdownData(
+    slugcategory: string
+  ): IAssetType[] {
+    const result = handleFilterAssetTypeChange(
+      slugcategory,
+      assetsTypeOptions ?? []
+    );
+    setFilterAssetsType(result);
+    return result;
+  }
+
   const [initialValueData, setInitialValueData] = useState<any>({
     propertyType: getEmptyAllObject(),
     bank: getEmptyAllObject(),
@@ -155,6 +170,9 @@ const FindAuction = (props: IFindAuction) => {
   });
 
   useEffect(() => {
+    if (currentRoute.startsWith(ROUTE_CONSTANTS.CATEGORY) && params.slug) {
+      handleFilterAssetTypesDropdownData(params.slug);
+    }
     applyFilters(
       params,
       currentRoute,
@@ -219,6 +237,8 @@ const FindAuction = (props: IFindAuction) => {
       }
     } else if (slug && slugcategory) {
       if (currentRoute.startsWith(ROUTE_CONSTANTS.LOCATION)) {
+        handleFilterAssetTypesDropdownData(slugcategory);
+
         fillFilterWithLocationsAndCategories(
           slug1List, // categoryList
           slug2List, // asssetTypes
@@ -434,9 +454,31 @@ const FindAuction = (props: IFindAuction) => {
                             placeholder={"Category"}
                             name="category"
                             customClass="w-full "
-                            onChange={(e) => {
+                            onChange={(e: IAssetType) => {
                               if (e?.label !== STRING_DATA.ALL) {
                                 setFieldValue("category", e);
+                                const result =
+                                  handleFilterAssetTypesDropdownData(e?.slug);
+                                const isFound = result?.length
+                                  ? doesAssetTypeExistInFilteredAssetType(
+                                      result,
+                                      values?.propertyType
+                                    )
+                                  : true;
+
+                                // console.log("RESULT: ", {
+                                //   result,
+                                //   propertyType: values?.propertyType,
+                                //   isFound,
+                                // });
+                                if (!isFound) {
+                                  resetFormValues(
+                                    "propertyType",
+                                    setFieldValue,
+                                    setAuctionFilter,
+                                    filterData
+                                  );
+                                }
                                 return;
                               }
                               setFieldValue("category", getEmptyAllObject());
@@ -461,7 +503,11 @@ const FindAuction = (props: IFindAuction) => {
                         {() => (
                           <ReactSelectDropdown
                             defaultValue={values?.propertyType}
-                            options={assetsTypeOptions ?? []}
+                            options={
+                              filteredAssetsType?.length
+                                ? filteredAssetsType
+                                : assetsTypeOptions ?? []
+                            }
                             loading={isLoadingAssetsTypeCategory}
                             placeholder={"Property type"}
                             name="propertyType"

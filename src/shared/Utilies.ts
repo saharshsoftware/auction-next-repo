@@ -9,7 +9,7 @@ import {
   ILocations,
 } from "@/types";
 import { AxiosError } from "axios";
-import { STRING_DATA } from "./Constants";
+import { getEmptyAllObject, STRING_DATA } from "./Constants";
 import { ROUTE_CONSTANTS } from "./Routes";
 
 export const getDataFromLocalStorage = () => {
@@ -367,3 +367,38 @@ export function extractKeywords(
   console.log(result, "result", { items });
   return result ? [`${result} ${label}`] : [];
 }
+
+export const handleFilterAssetTypeChange = (
+  selectedCategorySlug: string,
+  AssetTypeData: IAssetType[]
+) => {
+  const result = AssetTypeData?.filter(
+    (item: IAssetType) =>
+      item?.category?.data?.attributes?.slug === selectedCategorySlug
+  );
+  return result;
+};
+
+export const resetFormValues = (
+  keyName: string,
+  setFieldValue: any,
+  setAuctionFilter: any,
+  filterData: any
+) => {
+  setFieldValue(keyName, getEmptyAllObject());
+  setAuctionFilter({
+    ...filterData,
+    keyName: STRING_DATA.EMPTY,
+  });
+};
+
+export const doesAssetTypeExistInFilteredAssetType = (
+  assetsTypes: IAssetType[],
+  selectedAssetType: IAssetType
+) => {
+  return (
+    assetsTypes?.findIndex(
+      (item: IAssetType) => item?.name === selectedAssetType?.name
+    ) !== -1
+  );
+};

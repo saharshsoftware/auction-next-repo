@@ -1130,3 +1130,8 @@ export const SAMPLE_CITY = [
   { id: 9, label: "Lucknow", value: "Lucknow" },
   { id: 10, label: "Mumbai", value: "Mumbai" },
 ];
+
+export const getEmptyAllObject = () => ({
+  value: "",
+  label: STRING_DATA.ALL,
+});

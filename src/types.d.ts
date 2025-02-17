@@ -1,6 +1,6 @@
-declare module 'react-slick'
+declare module "react-slick";
 declare module "react-range-slider-input";
-declare module 'markdown-it';
+declare module "markdown-it";
 declare module "lodash/debounce";
 
 export interface IAssetType {
@@ -10,8 +10,10 @@ export interface IAssetType {
   name: null;
   totalNotices: number;
   imageURL: string;
-  isPopular: bpp;eam;
+  isPopular: boolean;
   slug: "plot";
+  category: any;
+  label?: string;
 }
 
 export interface IAuction {
@@ -83,7 +85,7 @@ export interface ILocations {
 
 export interface ICategoryCollection {
   [x: string]: ReactNode;
-  id: string | number; 
+  id: string | number;
   name?: string;
   collectionIcon?: string;
   totalAuctions?: number;
@@ -105,7 +107,6 @@ export interface IHomeBoxCollection {
   publishedAt: Date;
   active: boolean;
 }
-
 
 export interface IFavouriteList {
   id: string;
