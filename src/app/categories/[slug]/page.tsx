@@ -2,7 +2,7 @@ import ShowAuctionList from "@/components/molecules/ShowAuctionList";
 import { fetchAssetTypes } from "@/server/actions/assetTypes";
 import { getCategoryBoxCollectionBySlug } from "@/server/actions/auction";
 import { getAssetTypeClient } from "@/services/auction";
-import { extractKeywords } from "@/shared/Utilies";
+import { extractOnlyKeywords } from "@/shared/Utilies";
 import { ICategoryCollection } from "@/types";
 import { Metadata, ResolvingMetadata } from "next";
 import React from "react";
@@ -32,15 +32,18 @@ export async function generateMetadata(
     let keywordsAll: string[] = [];
     if (name) {
       const allSssetTypeData = await fetchAssetTypes();
-      keywordsAll = extractKeywords(allSssetTypeData, "bank auction", name);
+      keywordsAll = extractOnlyKeywords(allSssetTypeData, name);
     }
     return {
       title: `${name} Bank Auction Properties in India | eAuctionDekho`,
-      description: `Find ${name} bank auction properties on eAuctionDekho. Find diverse asset types including <asset types comma separated list>. Secure the best deals today tailored to your investment needs`,
+      description: `Find ${name} bank auction properties on eAuctionDekho. Find diverse asset types including ${keywordsAll}. Secure the best deals today tailored to your investment needs`,
       alternates: {
         canonical: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/${slug}-auctions`,
       },
-      keywords: [`${name} bank auction properties`, ...keywordsAll],
+      keywords: [
+        `${name} bank auction properties`,
+        ...keywordsAll.map((k) => `${k} bank auction`),
+      ],
 
       openGraph: {
         type: "website",

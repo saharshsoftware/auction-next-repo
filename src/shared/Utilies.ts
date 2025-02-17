@@ -368,6 +368,25 @@ export function extractKeywords(
   return result ? [`${result} ${label}`] : [];
 }
 
+export function extractOnlyKeywords(
+  items: any[] = [],
+  slugCategoryName: string
+): string[] {
+  if (!Array.isArray(items) || !slugCategoryName) return [];
+
+  const result = items
+    .filter(
+      (item) => item?.category?.data?.attributes?.name === slugCategoryName
+    )
+    .map((item) => item?.name);
+
+  // console.log(result, "resultextractOnlyKeywords", {
+  //   itemslength: result.length,
+  //   items,
+  // });
+  return result;
+}
+
 export const handleFilterAssetTypeChange = (
   selectedCategorySlug: string,
   AssetTypeData: IAssetType[]
