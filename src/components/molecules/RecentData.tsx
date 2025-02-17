@@ -6,6 +6,7 @@ import { COOKIES } from "@/shared/Constants";
 import { getCookie } from "cookies-next";
 import dynamic from "next/dynamic";
 import useFindUrl from "@/hooks/useFindUrl";
+import CategorySpecificAssets from "../atoms/CategorySpecificAssets";
 
 const TopAssets = dynamic(() => import("../atoms/TopAssets"), {
   ssr: false,
@@ -32,6 +33,23 @@ const RecentData = () => {
   const { findUrl } = useFindUrl();
   const token = getCookie(COOKIES.TOKEN_KEY) ?? "";
 
+  const renderSpecificTwoSlugRoutes = () => {
+    if (findUrl?.isBankTypesRoute) {
+      return (
+        <div className="mb-4">
+          <TopAssets isBankTypesRoute={true} />
+        </div>
+      );
+    }
+    if (findUrl?.isBankCategoriesRoute) {
+      return (
+        <div className="mb-4">
+          <CategorySpecificAssets isBankCategoriesRoute={true} />
+        </div>
+      );
+    }
+  };
+
   const renderSpecificRoutes = () => {
     // console.log(findUrl, "findUrlfindUrl");
     if (findUrl?.isCategoryRoute) {
@@ -44,14 +62,14 @@ const RecentData = () => {
     if (findUrl?.isBankRoute) {
       return (
         <div className="mb-4">
-          <TopBanks />
+          <TopCities isBankRoute={true} />
         </div>
       );
     }
     if (findUrl?.isLocationRoute) {
       return (
         <div className="mb-4">
-          <TopCities />
+          <TopBanks isLocationRoute={true} />
         </div>
       );
     }
@@ -92,6 +110,7 @@ const RecentData = () => {
       <>
         {showAddToWishlist()}
         {renderSpecificRoutes()}
+        {renderSpecificTwoSlugRoutes()}
       </>
     );
   };

@@ -52,6 +52,7 @@ export const STRING_DATA = {
   CITIES: "Cities",
   BANKS: "Banks",
   CATEGORIES: "Categories",
+  CATEGORIES_LOWER: "categories",
   TERMS_CONDITIONS: "Terms and condition",
   PRIVACY_POLICY: "Privacy policy",
   CONTACT_US: "Contact us",
@@ -126,6 +127,9 @@ export const STRING_DATA = {
   DELETE_ALERT_MESSAGE: "Are you sure you want to delete this alert ?",
   YOUR_WISHLIST: "Your wishlist",
   YOUR_SAVED_SEARCH: "Your saved search",
+  LOCATIONS: "locations",
+  ASSETS_TYPE: "asset-types",
+  TYPES: "types",
 };
 
 export const NAVBAR_NAV_LINKS = [
@@ -1116,6 +1120,7 @@ export const REACT_QUERY = {
   AUCTION_LOCATION_ALL: "Auction-location-all",
   SAVED_SEARCH: "Saved-search",
   ALERTS: "Alerts",
+  CATEGORY_ASSETS_TYPE: "Category-Assets-type",
 };
 
 export const SAMPLE_CITY = [

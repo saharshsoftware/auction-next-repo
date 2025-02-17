@@ -1,4 +1,5 @@
 "use client";
+import { fetchAssetTypes } from "@/server/actions/assetTypes";
 import { fetchTopAssetsTypeClient } from "@/services/assetsType";
 import { FILTER_EMPTY, REACT_QUERY, STRING_DATA } from "@/shared/Constants";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
@@ -9,8 +10,8 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import React from "react";
 
-const TopAssets = (props: { isBankTypesRoute?: boolean }) => {
-  const { isBankTypesRoute = false } = props;
+const CategorySpecificAssets = (props: { isBankCategoriesRoute?: boolean }) => {
+  const { isBankCategoriesRoute = false } = props;
   const { setFilter } = useFilterStore();
   const params = useParams() as {
     slug: string;
@@ -20,10 +21,19 @@ const TopAssets = (props: { isBankTypesRoute?: boolean }) => {
   };
 
   const { data: assetsTypeData, fetchStatus } = useQuery({
-    queryKey: [REACT_QUERY.ASSETS_TYPE, "top"],
+    queryKey: [REACT_QUERY.CATEGORY_ASSETS_TYPE],
     queryFn: async () => {
-      const res = (await fetchTopAssetsTypeClient()) as unknown as IAssetType[];
-      return res ?? [];
+      const response = (await fetchAssetTypes()) as unknown as IAssetType[];
+      const result =
+        response?.filter((item: any) => {
+          const categoryName = item?.category?.data?.attributes?.slug || "";
+
+          if (categoryName === params?.slugcategory) {
+            return item;
+          }
+        }) ?? [];
+      console.log("INFO:: (result)", { result, response });
+      return result;
     },
   });
 
@@ -39,23 +49,17 @@ const TopAssets = (props: { isBankTypesRoute?: boolean }) => {
   };
 
   const renderLink = (item: IAssetType) => {
-    const URL = `${ROUTE_CONSTANTS.BANKS}/${params.slug}/${STRING_DATA.TYPES}/${item?.slug}`;
+    const URL = `${ROUTE_CONSTANTS.BANKS}/${
+      params.slug
+    }/${STRING_DATA.TYPES?.toLowerCase()}/${item?.slug}`;
     // console.log("INFO:: (URL)", { URL, params });
-    if (isBankTypesRoute) {
+    if (isBankCategoriesRoute) {
       return (
         <Link href={URL} onClick={() => handleLinkClick(item)}>
           {item?.name}
         </Link>
       );
     }
-    return (
-      <Link
-        href={`${ROUTE_CONSTANTS.ASSETS_TYPE}/${item?.slug}`}
-        onClick={() => handleLinkClick(item)}
-      >
-        {item?.name}
-      </Link>
-    );
   };
 
   if (fetchStatus === "fetching") {
@@ -108,4 +112,4 @@ const TopAssets = (props: { isBankTypesRoute?: boolean }) => {
   );
 };
 
-export default TopAssets;
+export default CategorySpecificAssets;

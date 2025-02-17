@@ -236,9 +236,8 @@ const FindAuction = (props: IFindAuction) => {
         );
       }
     } else if (slug && slugcategory) {
+      handleFilterAssetTypesDropdownData(slugcategory);
       if (currentRoute.startsWith(ROUTE_CONSTANTS.LOCATION)) {
-        handleFilterAssetTypesDropdownData(slugcategory);
-
         fillFilterWithLocationsAndCategories(
           slug1List, // categoryList
           slug2List, // asssetTypes

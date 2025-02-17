@@ -364,7 +364,7 @@ export function extractKeywords(
         return item;
       }
     })?.name ?? "";
-  console.log(result, "result", { items });
+  // console.log(result, "result", { items });
   return result ? [`${result} ${label}`] : [];
 }
 
