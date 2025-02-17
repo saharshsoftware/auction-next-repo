@@ -53,6 +53,14 @@ export async function generateMetadata(
         nameCategory
       );
     }
+    // Ensure the image URL is absolute and has a fallback
+    const sanitizeImageUrl =
+      (process.env.NEXT_PUBLIC_IMAGE_CLOUDFRONT || "") +
+      (locationData?.imageURL || "default-image.jpg");
+
+    console.log("Generated Image URL:", sanitizeImageUrl); // Debugging
+
+    const previousImages = (await parent).openGraph?.images || [];
     return {
       title: `${nameCategory} Bank Auction Properties in ${nameLocation} | eAuctionDekho`,
       description: `Find ${nameCategory} bank auction properties in ${nameLocation} on eAuctionDekho. Find diverse asset types including <asset types comma separated list>. Secure the best deals today tailored to your investment needs`,
@@ -67,22 +75,14 @@ export async function generateMetadata(
         url: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/${slug}-auctions`,
         title: `Explore Auctions in ${nameLocation} | eauctiondekho`,
         description: `Looking for auctions in ${nameLocation}? eauctiondekho offers a detailed list of auctions for properties, vehicles, and more. Start bidding in ${nameLocation} and make successful investments with ease.`,
-        images: [
-          {
-            url: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/${slug}-auctions-meta-image.jpg`,
-          },
-        ],
+        images: [sanitizeImageUrl, ...previousImages],
       },
       twitter: {
         site: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/${slug}-auctions`,
         card: "summary_large_image",
         title: `${nameLocation} Auctions in India | eauctiondekho Listings`,
         description: `Join the dynamic auction market in ${nameLocation} with eauctiondekho. Discover and bid on a variety of high-quality assets in ${nameLocation}, and secure valuable deals today.`,
-        images: [
-          {
-            url: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/${slug}-auctions-twitter-meta-image.jpg`,
-          },
-        ],
+        images: [sanitizeImageUrl, ...previousImages],
       },
     };
   } catch (error) {

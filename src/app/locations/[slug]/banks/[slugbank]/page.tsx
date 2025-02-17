@@ -43,11 +43,11 @@ export async function generateMetadata(
 
     const { name: nameLocation } = locationData;
     const { name: nameBank } = bankData;
+    const sanitizeImageUrl =
+      (process.env.NEXT_PUBLIC_IMAGE_CLOUDFRONT || "") + locationData?.imageURL;
 
-    // console.log("(INFO:: ) bankData-slug ", {
-    //   nameLocation,
-    //   nameAssetType,
-    // });
+    const previousImages = (await parent).openGraph?.images || [];
+
     return {
       title: `${nameBank} Auction Properties in ${nameLocation} | Explore Residential, Commercial, Vehicle, and Gold Auctions`,
       description: `Discover ${nameBank}'s auction properties in ${nameLocation} on eAuctionDekho, featuring a diverse selection of asset types including flats, houses, plots, residential units, agricultural land, bungalows, cars, vehicles, commercial buildings, offices, shops, factory and building lands, godowns, industrial buildings, lands, machinery, non-agricultural lands, scrap, and sheds. Secure the best deals today on assets tailored to meet diverse investment needs.`,
@@ -73,22 +73,14 @@ export async function generateMetadata(
         url: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/${slug}-auctions`,
         title: `Explore Auctions in ${nameLocation} | eauctiondekho`,
         description: `Looking for auctions in ${nameLocation}? eauctiondekho offers a detailed list of auctions for properties, vehicles, and more. Start bidding in ${nameLocation} and make successful investments with ease.`,
-        images: [
-          {
-            url: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/${slug}-auctions-meta-image.jpg`,
-          },
-        ],
+        images: [sanitizeImageUrl, ...previousImages],
       },
       twitter: {
         site: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/${slug}-auctions`,
         card: "summary_large_image",
         title: `${nameLocation} Auctions in India | eauctiondekho Listings`,
         description: `Join the dynamic auction market in ${nameLocation} with eauctiondekho. Discover and bid on a variety of high-quality assets in ${nameLocation}, and secure valuable deals today.`,
-        images: [
-          {
-            url: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/${slug}-auctions-twitter-meta-image.jpg`,
-          },
-        ],
+        images: [sanitizeImageUrl, ...previousImages],
       },
     };
   } catch (error) {

@@ -81,6 +81,7 @@ export interface ILocations {
   publishedAt?: string;
   route?: string;
   slug?: string;
+  imageURL?: string;
 }
 
 export interface ICategoryCollection {
