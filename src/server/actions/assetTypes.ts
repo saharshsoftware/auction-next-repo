@@ -13,7 +13,7 @@ export const fetchAssetTypeBySlug = async (props: { slug: string }) => {
     const sendResponse = sanitizeStrapiData(data?.data);
     return sendResponse;
   } catch (e) {
-    console.log(e, "location-detail error");
+    console.log(e, "fetchAssetTypeBySlug error");
   }
 };
 
@@ -22,12 +22,12 @@ export const fetchAssetTypes = async () => {
     const URL =
       API_BASE_URL +
       API_ENPOINTS.ASSET_TYPES +
-      `pagination[page]=1&pagination[pageSize]=50&fields[0]=name&fields[1]=slug&populate=category`;
+      `?pagination[page]=1&pagination[pageSize]=50&fields[0]=name&fields[1]=slug&populate=category`;
     console.log("URL", URL);
     const { data } = await getRequest({ API: URL });
     const sendResponse = sanitizeStrapiData(data?.data);
     return sendResponse;
   } catch (e) {
-    console.log(e, "location-detail error");
+    console.log(e, "fetchAssetTypes error");
   }
 };
