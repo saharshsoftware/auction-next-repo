@@ -48,6 +48,13 @@ const RecentData = () => {
         </div>
       );
     }
+    if (findUrl?.isCategoryRoute) {
+      return (
+        <div className="mb-4">
+          <CategorySpecificAssets isCategoryRoute={true} />
+        </div>
+      );
+    }
   };
 
   const renderSpecificRoutes = () => {

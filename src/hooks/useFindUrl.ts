@@ -16,6 +16,7 @@ export default function useFindUrl() {
     isBankTypesRoute: false,
     isBankCategoriesRoute: false,
     isTypesRoute: false,
+    isCategoryTypesRoute: false,
   });
 
   useEffect(() => {
@@ -44,6 +45,9 @@ export default function useFindUrl() {
       isBankCategoriesRoute:
         routeType === STRING_DATA.BANKS?.toLowerCase() &&
         subRoute === STRING_DATA.CATEGORIES_LOWER?.toLowerCase(),
+      isCategoryTypesRoute:
+        routeType === STRING_DATA.CATEGORIES?.toLowerCase() &&
+        subRoute === STRING_DATA.TYPES?.toLowerCase(),
     };
 
     // console.log("newState", newState);

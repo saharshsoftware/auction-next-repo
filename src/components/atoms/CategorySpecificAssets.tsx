@@ -8,10 +8,13 @@ import { useFilterStore } from "@/zustandStore/filters";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import React from "react";
+import React, { useEffect } from "react";
 
-const CategorySpecificAssets = (props: { isBankCategoriesRoute?: boolean }) => {
-  const { isBankCategoriesRoute = false } = props;
+const CategorySpecificAssets = (props: {
+  isBankCategoriesRoute?: boolean;
+  isCategoryRoute?: boolean;
+}) => {
+  const { isBankCategoriesRoute = false, isCategoryRoute = false } = props;
   const { setFilter } = useFilterStore();
   const params = useParams() as {
     slug: string;
@@ -20,7 +23,11 @@ const CategorySpecificAssets = (props: { isBankCategoriesRoute?: boolean }) => {
     slugbank: string;
   };
 
-  const { data: assetsTypeData, fetchStatus } = useQuery({
+  const {
+    data: assetsTypeData,
+    fetchStatus,
+    refetch,
+  } = useQuery({
     queryKey: [REACT_QUERY.CATEGORY_ASSETS_TYPE],
     queryFn: async () => {
       const response = (await fetchAssetTypes()) as unknown as IAssetType[];
@@ -28,7 +35,11 @@ const CategorySpecificAssets = (props: { isBankCategoriesRoute?: boolean }) => {
         response?.filter((item: any) => {
           const categoryName = item?.category?.data?.attributes?.slug || "";
 
-          if (categoryName === params?.slugcategory) {
+          if (categoryName === params?.slugcategory && isBankCategoriesRoute) {
+            return item;
+          }
+
+          if (categoryName === params?.slug && isCategoryRoute) {
             return item;
           }
         }) ?? [];
@@ -36,6 +47,11 @@ const CategorySpecificAssets = (props: { isBankCategoriesRoute?: boolean }) => {
       return result;
     },
   });
+
+  useEffect(() => {
+    // This useEffect can be used for additional logic if needed when `slug` or `slugcategory` changes
+    refetch();
+  }, [params.slug, params.slugcategory, refetch]);
 
   const handleLinkClick = (propertyType: IAssetType) => {
     setFilter({
@@ -49,7 +65,18 @@ const CategorySpecificAssets = (props: { isBankCategoriesRoute?: boolean }) => {
   };
 
   const renderLink = (item: IAssetType) => {
-    const URL = `${ROUTE_CONSTANTS.BANKS}/${
+    let URL = "";
+    URL = `${ROUTE_CONSTANTS.CATEGORY}/${
+      params.slug
+    }/${STRING_DATA.TYPES?.toLowerCase()}/${item?.slug}`;
+    if (isCategoryRoute) {
+      return (
+        <Link href={URL} onClick={() => handleLinkClick(item)}>
+          {item?.name}
+        </Link>
+      );
+    }
+    URL = `${ROUTE_CONSTANTS.BANKS}/${
       params.slug
     }/${STRING_DATA.TYPES?.toLowerCase()}/${item?.slug}`;
     // console.log("INFO:: (URL)", { URL, params });
