@@ -1,5 +1,6 @@
 import ShowAuctionList from "@/components/molecules/ShowAuctionList";
 import { fetchBanksBySlug } from "@/server/actions/banks";
+import { handleOgImageUrl } from "@/shared/Utilies";
 import { IBanks } from "@/types";
 import { Metadata, ResolvingMetadata } from "next";
 import React from "react";
@@ -26,9 +27,7 @@ export async function generateMetadata(
     const bankData = await getSlugData(slug);
     // console.log(bankData, "bank-slug");
     const { name } = bankData;
-    const sanitizeImageUrl =
-      (process.env.NEXT_PUBLIC_IMAGE_CLOUDFRONT || "") + bankData?.imageURL;
-
+    const sanitizeImageUrl = await handleOgImageUrl(bankData?.imageURL ?? "");
     console.log("Generated Image URL:", { sanitizeImageUrl }); // Debugging
 
     return {

@@ -421,3 +421,27 @@ export const doesAssetTypeExistInFilteredAssetType = (
     ) !== -1
   );
 };
+
+export async function isImageAccessible(url: string): Promise<boolean> {
+  try {
+    const response = await fetch(url, { method: "HEAD" });
+    return response.ok;
+  } catch (error) {
+    console.error("Error checking image URL:", error);
+    return false;
+  }
+}
+
+export const handleOgImageUrl = async (imageUrl: string) => {
+  const cloudfrontBase = process.env.NEXT_PUBLIC_IMAGE_CLOUDFRONT || "";
+  const actualImageUrl = `${cloudfrontBase}${imageUrl}`;
+
+  // Fallback image URL
+  const fallbackImageUrl = `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/images/logo.png`;
+
+  // Check if actualImageUrl is accessible
+  const isAccessible = await isImageAccessible(actualImageUrl);
+  const sanitizeImageUrl = isAccessible ? actualImageUrl : fallbackImageUrl;
+
+  return sanitizeImageUrl;
+};

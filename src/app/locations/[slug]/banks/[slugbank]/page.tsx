@@ -1,6 +1,7 @@
 import ShowAuctionList from "@/components/molecules/ShowAuctionList";
 import { fetchBanksBySlug } from "@/server/actions/banks";
 import { fetchLocationBySlug } from "@/server/actions/location";
+import { handleOgImageUrl } from "@/shared/Utilies";
 import { IBanks, ILocations } from "@/types";
 import { Metadata, ResolvingMetadata } from "next";
 import React from "react";
@@ -43,8 +44,9 @@ export async function generateMetadata(
 
     const { name: nameLocation } = locationData;
     const { name: nameBank } = bankData;
-    const sanitizeImageUrl =
-      (process.env.NEXT_PUBLIC_IMAGE_CLOUDFRONT || "") + locationData?.imageURL;
+    const sanitizeImageUrl = await handleOgImageUrl(
+      locationData?.imageURL ?? ""
+    );
 
     return {
       title: `${nameBank} Auction Properties in ${nameLocation} | Explore Residential, Commercial, Vehicle, and Gold Auctions`,

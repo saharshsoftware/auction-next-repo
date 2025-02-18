@@ -2,7 +2,7 @@ import ShowAuctionList from "@/components/molecules/ShowAuctionList";
 import { fetchAssetTypes } from "@/server/actions/assetTypes";
 import { getCategoryBoxCollectionBySlug } from "@/server/actions/auction";
 import { fetchLocationBySlug } from "@/server/actions/location";
-import { extractOnlyKeywords } from "@/shared/Utilies";
+import { extractOnlyKeywords, handleOgImageUrl } from "@/shared/Utilies";
 import { ICategoryCollection, ILocations } from "@/types";
 import { Metadata, ResolvingMetadata } from "next";
 import React from "react";
@@ -49,11 +49,9 @@ export async function generateMetadata(
       const allSssetTypeData = await fetchAssetTypes();
       keywordsAll = extractOnlyKeywords(allSssetTypeData, nameCategory);
     }
-    // Ensure the image URL is absolute and has a fallback
-    const sanitizeImageUrl =
-      (process.env.NEXT_PUBLIC_IMAGE_CLOUDFRONT || "") +
-      (locationData?.imageURL || "default-image.jpg");
-
+    const sanitizeImageUrl = await handleOgImageUrl(
+      locationData?.imageURL ?? ""
+    );
     console.log("Generated Image URL:", { sanitizeImageUrl }); // Debugging
 
     return {
