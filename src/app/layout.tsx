@@ -40,7 +40,9 @@ export const metadata: Metadata = {
       "Discover the best bank auctions for properties, vehicles, and machinery in any Indian city. Explore comprehensive listings from all major Indian banks. Secure your next investment with eauctiondekho today!",
     images: [
       {
-        url: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/meta-image.jpg`,
+        url: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/images/logo.png`,
+        width: 1200,
+        height: 630,
       },
     ],
   },
@@ -52,7 +54,7 @@ export const metadata: Metadata = {
       "Find the best deals at eauctiondekho with auctions across India for vehicles, residential flats, commercial shops, industrial plots, machinery, and gold. Your one-stop shop for bank-auctioned assets.",
     images: [
       {
-        url: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/twitter-meta-image.jpg`,
+        url: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/images/logo.png`,
       },
     ],
   },
@@ -67,14 +69,6 @@ export default function RootLayout({
     <>
       <html lang="en">
         <head>
-          {/* Add OG Image */}
-          <meta property="og:image" content="/images/logo.png" />
-          <meta property="og:image:width" content="1200" />
-          <meta property="og:image:height" content="630" />
-
-          {/* Optionally add Twitter card for rich link previews */}
-          <meta name="twitter:card" content="summary_large_image" />
-          <meta name="twitter:image" content="/images/logo.png" />
           <script
             type="application/ld+json"
             dangerouslySetInnerHTML={{

@@ -22,16 +22,20 @@ export async function generateMetadata(
   parent: ResolvingMetadata
 ): Promise<Metadata> {
   const { slug } = params;
-
   try {
     const bankData = await getSlugData(slug);
     // console.log(bankData, "bank-slug");
     const { name } = bankData;
+    const sanitizeImageUrl =
+      (process.env.NEXT_PUBLIC_IMAGE_CLOUDFRONT || "") + bankData?.imageURL;
+
+    console.log("Generated Image URL:", { sanitizeImageUrl }); // Debugging
+
     return {
       title: `${name} Auction Properties | eAuctionDekho - Residential, Commercial, Vehicle, and Gold`,
       description: `Discover ${name}'s auction properties on eAuctionDekho, featuring a diverse selection of asset types including flats, houses, plots, residential units, agricultural land, bungalows, cars, vehicles, commercial buildings, offices, shops, factory and building lands, godowns, industrial buildings, lands, machinery, non-agricultural lands, scrap, and sheds. Secure the best deals today on assets tailored to meet diverse investment needs.`,
       alternates: {
-        canonical: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/${slug}-auctions`,
+        canonical: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/banks/${slug}`,
       },
 
       keywords: [
@@ -49,25 +53,17 @@ export async function generateMetadata(
 
       openGraph: {
         type: "website",
-        url: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/${slug}-auctions`,
+        url: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/banks/${slug}`,
         title: `${name} Auctions | Explore Bank-Owned Auction Listings - eauctiondekho`,
         description: `Participate in ${name} auctions and gain access to a wide selection of properties, vehicles, and industrial equipment. eauctiondekho provides up-to-date listings to help you make the best investment decisions.`,
-        images: [
-          {
-            url: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/${slug}-auctions-meta-image.jpg`,
-          },
-        ],
+        images: sanitizeImageUrl,
       },
       twitter: {
-        site: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/${slug}-auctions`,
+        site: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/banks/${slug}`,
         card: "summary_large_image",
         title: `${name} Auctions | eauctiondekho Listings`,
         description: `Discover ${name}'s bank-owned properties and more through our detailed and accessible auction listings. Bid now and secure valuable assets at competitive prices with eauctiondekho.`,
-        images: [
-          {
-            url: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/${slug}-auctions-twitter-meta-image.jpg`,
-          },
-        ],
+        images: sanitizeImageUrl,
       },
     };
   } catch (error) {

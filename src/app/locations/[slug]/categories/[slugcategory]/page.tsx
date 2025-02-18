@@ -60,7 +60,7 @@ export async function generateMetadata(
       title: `${nameCategory} Bank Auction Properties in ${nameLocation} | eAuctionDekho`,
       description: `Find ${nameCategory} bank auction properties in ${nameLocation} on eAuctionDekho. Find diverse asset types including ${keywordsAll}. Secure the best deals today tailored to your investment needs`,
       alternates: {
-        canonical: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/${slug}-auctions`,
+        canonical: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/locations/${slug}/banks/${slugcategory}`,
       },
 
       keywords: [
@@ -70,13 +70,13 @@ export async function generateMetadata(
 
       openGraph: {
         type: "website",
-        url: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/${slug}-auctions`,
+        url: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/locations/${slug}/categories/${slugcategory}`,
         title: `Explore Auctions in ${nameLocation} | eauctiondekho`,
         description: `Looking for auctions in ${nameLocation}? eauctiondekho offers a detailed list of auctions for properties, vehicles, and more. Start bidding in ${nameLocation} and make successful investments with ease.`,
         images: sanitizeImageUrl,
       },
       twitter: {
-        site: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/${slug}-auctions`,
+        site: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/locations/${slug}/categories/${slugcategory}`,
         card: "summary_large_image",
         title: `${nameLocation} Auctions in India | eauctiondekho Listings`,
         description: `Join the dynamic auction market in ${nameLocation} with eauctiondekho. Discover and bid on a variety of high-quality assets in ${nameLocation}, and secure valuable deals today.`,
@@ -96,7 +96,6 @@ export default async function Page({
   params: { slug: string; slugcategory: string };
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
-  console.log("(INFO) :: params", params, searchParams);
   return (
     <>
       <ShowAuctionList />

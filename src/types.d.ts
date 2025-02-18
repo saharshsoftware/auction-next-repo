@@ -69,6 +69,7 @@ export interface IBanks {
   publishedAt?: string;
   route?: string;
   slug?: string;
+  imageURL?: string;
 }
 
 export interface ILocations {
