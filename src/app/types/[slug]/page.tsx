@@ -50,15 +50,15 @@ export async function generateMetadata(
       openGraph: {
         type: "website",
         url: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/types/${slug}`,
-        title: `${name} Auctions | Explore Bank-Owned Auction Listings - eauctiondekho`,
-        description: `Participate in ${name} auctions and gain access to a wide selection of properties, vehicles, and industrial equipment. eauctiondekho provides up-to-date listings to help you make the best investment decisions.`,
+        title: `Bank Auction ${name} in India | eAuctionDekho`,
+        description: `Find ${name} in bank auction. Also find flats, houses, plots, residential units, agricultural land, bungalows, cars, vehicles, commercial buildings, offices, shops, factory lands, godowns, industrial buildings, lands, machinery, non-agricultural lands, scrap, and sheds. Secure the best deals today tailored to your investment needs`,
         images: sanitizeImageUrl,
       },
       twitter: {
         site: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/types/${slug}`,
         card: "summary_large_image",
-        title: `${name} Auctions | eauctiondekho Listings`,
-        description: `Discover ${name}'s bank-owned properties and more through our detailed and accessible auction listings. Bid now and secure valuable assets at competitive prices with eauctiondekho.`,
+        title: `Bank Auction ${name} in India | eAuctionDekho`,
+        description: `Find ${name} in bank auction. Also find flats, houses, plots, residential units, agricultural land, bungalows, cars, vehicles, commercial buildings, offices, shops, factory lands, godowns, industrial buildings, lands, machinery, non-agricultural lands, scrap, and sheds. Secure the best deals today tailored to your investment needs`,
         images: sanitizeImageUrl,
       },
     };

@@ -52,15 +52,15 @@ export async function generateMetadata(
       openGraph: {
         type: "website",
         url: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/categories/${slug}`,
-        title: `Explore Top ${name} Auctions Across India | eauctiondekho`,
-        description: `Bid on and win ${subCategories} at auctions across India. eauctiondekho offers updated listings to help you find the best auction deals available. Start bidding today!`,
+        title: `${name} Bank Auction Properties in India | eAuctionDekho`,
+        description: `Find ${name} bank auction properties on eAuctionDekho. Find diverse asset types including ${keywordsAll}. Secure the best deals today tailored to your investment needs`,
         images: sanitizeImageUrl,
       },
       twitter: {
         site: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/categories/${slug}`,
         card: "summary_large_image",
-        title: `${name} Auctions in India | eauctiondekho Listings`,
-        description: `Looking for your next ${subCategories}? Check out our comprehensive listings of ${name} auctions across India. Find and bid on ${subCategories} with eauctiondekho.`,
+        title: `${name} Bank Auction Properties in India | eAuctionDekho`,
+        description: `Find ${name} bank auction properties on eAuctionDekho. Find diverse asset types including ${keywordsAll}. Secure the best deals today tailored to your investment needs`,
         images: sanitizeImageUrl,
       },
     };

@@ -50,12 +50,12 @@ const RenderH1SeoHeader = (props: IRenderH1SeoHeader) => {
       currentRoute === STRING_DATA.LOCATIONS?.toLowerCase() &&
       subRoute === STRING_DATA.TYPES?.toLowerCase()
     ) {
-      title = `${propertyPluralizeName} for Auction in ${locationName}`;
+      title = `Bank Auction ${propertyPluralizeName}  in ${locationName}`;
     } else if (
       currentRoute === STRING_DATA.LOCATIONS?.toLowerCase() &&
       subRoute === STRING_DATA.CATEGORIES_LOWER?.toLowerCase()
     ) {
-      title = `${category} Properties for Bank Auction in ${locationName}`;
+      title = `${category} Bank Properties in ${locationName}`;
     } else if (currentRoute === STRING_DATA.BANKS?.toLowerCase()) {
       title = `${bankName} Auction Properties`;
     } else if (currentRoute === STRING_DATA.TYPES?.toLowerCase()) {
@@ -64,9 +64,9 @@ const RenderH1SeoHeader = (props: IRenderH1SeoHeader) => {
       currentRoute === STRING_DATA.CATEGORIES?.toLowerCase() &&
       subRoute === STRING_DATA.TYPES?.toLowerCase()
     ) {
-      title = `${propertyPluralizeName} and ${titlename} Bank Auction in India`;
+      title = `Bank Auction ${propertyPluralizeName}  in India`;
     } else if (currentRoute === STRING_DATA.CATEGORIES?.toLowerCase()) {
-      title = `${titlename} Bank Auction  in India`;
+      title = `${titlename} Bank Auction Properties  in India`;
     } else {
       title = `Auction Properties in ${titlename}`;
     }
