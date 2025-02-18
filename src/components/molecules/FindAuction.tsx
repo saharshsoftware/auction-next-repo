@@ -113,7 +113,7 @@ const FindAuction = (props: IFindAuction) => {
           getEmptyAllObject(),
           ...sanitizeReactSelectOptions(res),
         ];
-        if (currentRoute.startsWith(ROUTE_CONSTANTS.ASSETS_TYPE))
+        if (currentRoute.startsWith(ROUTE_CONSTANTS.TYPES))
           fillFilter(updatedData);
         return updatedData ?? [];
       },

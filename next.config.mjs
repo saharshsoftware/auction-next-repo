@@ -43,15 +43,15 @@ const nextConfig = {
     return [
       {
         source: "/sitemap/index.xml",
-        destination: `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/sitemap/index.xml`
+        destination: `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/sitemap/index.xml`,
       },
       {
         source: "/sitemaps/sitemap.xml.gz",
-        destination: `https://auction-dekho.s3.ap-south-1.amazonaws.com/sitemaps/sitemap.xml.gz`
+        destination: `https://auction-dekho.s3.ap-south-1.amazonaws.com/sitemaps/sitemap.xml.gz`,
       },
       {
         source: "/sitemaps/sitemap:slug*.xml.gz",
-        destination: `https://auction-dekho.s3.ap-south-1.amazonaws.com/sitemaps/sitemap:slug*.xml.gz`
+        destination: `https://auction-dekho.s3.ap-south-1.amazonaws.com/sitemaps/sitemap:slug*.xml.gz`,
       },
       {
         source: "/categories/sitemap.xml",
@@ -66,12 +66,12 @@ const nextConfig = {
         destination: `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/banks/sitemap/index.xml`,
       },
       {
-        source: "/asset-types/sitemap.xml",
-        destination: `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/asset-types/sitemap/index.xml`,
+        source: "/types/sitemap.xml",
+        destination: `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/types/sitemap/index.xml`,
       },
       {
-        source: "/asset-types/sitemap.xml",
-        destination: `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/asset-types/:slug*/sitemap.xml`,
+        source: "/types/sitemap.xml",
+        destination: `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/types/:slug*/sitemap.xml`,
       },
       {
         source: "/banks/:slug*/sitemap.xml",

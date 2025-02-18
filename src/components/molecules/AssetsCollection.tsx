@@ -31,7 +31,7 @@ const AssetsCollection = (props: IAssetsCollectionComp) => {
   return (
     <>
       <Link
-        href={`${ROUTE_CONSTANTS.ASSETS_TYPE}/${item?.slug}`}
+        href={`${ROUTE_CONSTANTS.TYPES}/${item?.slug}`}
         onClick={() => handleLinkClick(item)}
       >
         <div className="w-full p-4 min-h-28">

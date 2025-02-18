@@ -6,11 +6,7 @@ import AuctionCard from "../atoms/AuctionCard";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
 import { IAuction } from "@/types";
-import {
-  getDataFromQueryParams,
-  getPathType,
-  setDataInQueryParams,
-} from "@/shared/Utilies";
+import { getDataFromQueryParams, setDataInQueryParams } from "@/shared/Utilies";
 import { COOKIES, REACT_QUERY } from "@/shared/Constants";
 import PaginationComp from "../atoms/PaginationComp";
 import { useQuery } from "@tanstack/react-query";

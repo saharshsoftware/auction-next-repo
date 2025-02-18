@@ -322,7 +322,7 @@ export const getAuctionFilterRequiredKey = (key: string) => {
     case "categories":
       result = "category";
       break;
-    case "asset-types":
+    case "types":
       result = "propertyType";
       break;
   }
@@ -341,7 +341,7 @@ export const getPathType = (path: string): string | null => {
       return "bank";
     case "categories":
       return "category";
-    case "asset-types":
+    case "types":
       return "propertyType";
     case "prices":
       return "price";

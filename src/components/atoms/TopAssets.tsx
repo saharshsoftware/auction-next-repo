@@ -50,7 +50,7 @@ const TopAssets = (props: { isBankTypesRoute?: boolean }) => {
     }
     return (
       <Link
-        href={`${ROUTE_CONSTANTS.ASSETS_TYPE}/${item?.slug}`}
+        href={`${ROUTE_CONSTANTS.TYPES}/${item?.slug}`}
         onClick={() => handleLinkClick(item)}
       >
         {item?.name}

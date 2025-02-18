@@ -98,10 +98,7 @@ export const applyFilters = (
       fillFilter(locationOptions);
       return;
     }
-    if (
-      currentRoute.startsWith(ROUTE_CONSTANTS.ASSETS_TYPE) &&
-      assetsTypeOptions
-    ) {
+    if (currentRoute.startsWith(ROUTE_CONSTANTS.TYPES) && assetsTypeOptions) {
       fillFilter(assetsTypeOptions);
       return;
     }
@@ -336,7 +333,7 @@ export const fillFilterHelper = (
     [ROUTE_CONSTANTS.CATEGORY]: ["categories"],
     [ROUTE_CONSTANTS.LOCATION]: ["locations"],
     [ROUTE_CONSTANTS.BANKS]: ["banks"],
-    [ROUTE_CONSTANTS.ASSETS_TYPE]: ["asset-types"],
+    [ROUTE_CONSTANTS.TYPES]: ["types"],
   };
 
   const stateKeys = filterKeyMap[baseRoute];

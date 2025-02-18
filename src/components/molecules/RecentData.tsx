@@ -73,7 +73,7 @@ const RecentData = () => {
         </div>
       );
     }
-    if (findUrl?.isAssetsRoute) {
+    if (findUrl?.isTypesRoute) {
       return (
         <div className="mb-4">
           <TopAssets />
