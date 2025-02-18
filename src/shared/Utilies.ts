@@ -9,7 +9,7 @@ import {
   ILocations,
 } from "@/types";
 import { AxiosError } from "axios";
-import { STRING_DATA } from "./Constants";
+import { getEmptyAllObject, STRING_DATA } from "./Constants";
 import { ROUTE_CONSTANTS } from "./Routes";
 
 export const getDataFromLocalStorage = () => {
@@ -322,7 +322,7 @@ export const getAuctionFilterRequiredKey = (key: string) => {
     case "categories":
       result = "category";
       break;
-    case "asset-types":
+    case "types":
       result = "propertyType";
       break;
   }
@@ -341,7 +341,7 @@ export const getPathType = (path: string): string | null => {
       return "bank";
     case "categories":
       return "category";
-    case "asset-types":
+    case "types":
       return "propertyType";
     case "prices":
       return "price";
@@ -364,6 +364,84 @@ export function extractKeywords(
         return item;
       }
     })?.name ?? "";
-  console.log(result, "result", { items });
+  // console.log(result, "result", { items });
   return result ? [`${result} ${label}`] : [];
 }
+
+export function extractOnlyKeywords(
+  items: any[] = [],
+  slugCategoryName: string
+): string[] {
+  if (!Array.isArray(items) || !slugCategoryName) return [];
+
+  const result = items
+    .filter(
+      (item) => item?.category?.data?.attributes?.name === slugCategoryName
+    )
+    .map((item) => item?.name);
+
+  // console.log(result, "resultextractOnlyKeywords", {
+  //   itemslength: result.length,
+  //   items,
+  // });
+  return result;
+}
+
+export const handleFilterAssetTypeChange = (
+  selectedCategorySlug: string,
+  AssetTypeData: IAssetType[]
+) => {
+  const result = AssetTypeData?.filter(
+    (item: IAssetType) =>
+      item?.category?.data?.attributes?.slug === selectedCategorySlug
+  );
+  return result;
+};
+
+export const resetFormValues = (
+  keyName: string,
+  setFieldValue: any,
+  setAuctionFilter: any,
+  filterData: any
+) => {
+  setFieldValue(keyName, getEmptyAllObject());
+  setAuctionFilter({
+    ...filterData,
+    keyName: STRING_DATA.EMPTY,
+  });
+};
+
+export const doesAssetTypeExistInFilteredAssetType = (
+  assetsTypes: IAssetType[],
+  selectedAssetType: IAssetType
+) => {
+  return (
+    assetsTypes?.findIndex(
+      (item: IAssetType) => item?.name === selectedAssetType?.name
+    ) !== -1
+  );
+};
+
+export async function isImageAccessible(url: string): Promise<boolean> {
+  try {
+    const response = await fetch(url, { method: "HEAD" });
+    return response.ok;
+  } catch (error) {
+    console.error("Error checking image URL:", error);
+    return false;
+  }
+}
+
+export const handleOgImageUrl = async (imageUrl: string) => {
+  const cloudfrontBase = process.env.NEXT_PUBLIC_IMAGE_CLOUDFRONT || "";
+  const actualImageUrl = `${cloudfrontBase}${imageUrl}`;
+
+  // Fallback image URL
+  const fallbackImageUrl = `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/images/logo.png`;
+
+  // Check if actualImageUrl is accessible
+  const isAccessible = await isImageAccessible(actualImageUrl);
+  const sanitizeImageUrl = isAccessible ? actualImageUrl : fallbackImageUrl;
+
+  return sanitizeImageUrl;
+};

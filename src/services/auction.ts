@@ -17,8 +17,12 @@ import { IAlert, IAssetType, IAuction, ICategoryCollection } from "@/types";
 export const getAssetTypeClient = async () => {
   // "use server";
   try {
-    const requiredkeys = generateQueryParamString(["name", "slug"]);
-    const filter = `?sort[0]=name:asc&${requiredkeys}`;
+    const requiredkeys = generateQueryParamString([
+      "name",
+      "slug",
+      "pluralizeName",
+    ]);
+    const filter = `?sort[0]=name:asc&${requiredkeys}&populate=category&pagination[page]=1&pagination[pageSize]=50`;
     const URL = API_BASE_URL + API_ENPOINTS.ASSET_TYPES + `${filter}`;
     const { data } = await getRequest({ API: URL });
     const sendResponse = sanitizeStrapiData(data.data) as IAssetType;

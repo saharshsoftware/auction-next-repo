@@ -25,4 +25,5 @@ export const ROUTE_CONSTANTS = {
   SEARCH: "/search",
   CITIES: "/cities",
   ASSETS: "/assets",
+  TYPES: "/types",
 };

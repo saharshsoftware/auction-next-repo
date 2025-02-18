@@ -1,3 +1,4 @@
+import { STRING_DATA } from "@/shared/Constants";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
 import { getPathType } from "@/shared/Utilies";
 import { useFilterStore } from "@/zustandStore/filters";
@@ -19,6 +20,8 @@ const RenderH1SeoHeader = (props: IRenderH1SeoHeader) => {
   const searchParams = useSearchParams();
   const titlename =
     filterData?.[getPathType?.(pathname) as keyof typeof filterData]?.name;
+  const propertyPluralizeName =
+    filterData?.["propertyType"]?.pluralizeName ?? "";
 
   const [pageTitle, setPageTitle] = useState<string>("Auction Properties");
 
@@ -38,16 +41,32 @@ const RenderH1SeoHeader = (props: IRenderH1SeoHeader) => {
     // Generate dynamic title
     let title = "Auction Properties";
 
-    if (currentRoute === "locations" && subRoute === "banks") {
+    if (
+      currentRoute === STRING_DATA.LOCATIONS?.toLowerCase() &&
+      subRoute === STRING_DATA.BANKS?.toLowerCase()
+    ) {
       title = `${bankName} Auction Properties in ${locationName}`;
-    } else if (currentRoute === "locations" && subRoute === "types") {
-      title = `${propertyTypeName} for Auction in ${locationName}`;
-    } else if (currentRoute === "locations" && subRoute === "categories") {
-      title = `${category} Properties for Bank Auction in ${locationName}`;
-    } else if (currentRoute === "banks") {
+    } else if (
+      currentRoute === STRING_DATA.LOCATIONS?.toLowerCase() &&
+      subRoute === STRING_DATA.TYPES?.toLowerCase()
+    ) {
+      title = `Bank Auction ${propertyPluralizeName}  in ${locationName}`;
+    } else if (
+      currentRoute === STRING_DATA.LOCATIONS?.toLowerCase() &&
+      subRoute === STRING_DATA.CATEGORIES_LOWER?.toLowerCase()
+    ) {
+      title = `${category} Bank Properties in ${locationName}`;
+    } else if (currentRoute === STRING_DATA.BANKS?.toLowerCase()) {
       title = `${bankName} Auction Properties`;
-    } else if (currentRoute === "asset-types") {
-      title = `Bank Auction ${titlename} in India`;
+    } else if (currentRoute === STRING_DATA.TYPES?.toLowerCase()) {
+      title = `Bank Auction ${propertyPluralizeName} in India`;
+    } else if (
+      currentRoute === STRING_DATA.CATEGORIES?.toLowerCase() &&
+      subRoute === STRING_DATA.TYPES?.toLowerCase()
+    ) {
+      title = `Bank Auction ${propertyPluralizeName}  in India`;
+    } else if (currentRoute === STRING_DATA.CATEGORIES?.toLowerCase()) {
+      title = `${titlename} Bank Auction Properties  in India`;
     } else {
       title = `Auction Properties in ${titlename}`;
     }
@@ -66,14 +85,7 @@ const RenderH1SeoHeader = (props: IRenderH1SeoHeader) => {
       );
     }
     if (pathname && getPathType?.(pathname) && titlename) {
-      return (
-        <h1 className="custom-h1-class break-words my-4">
-          {/* {`Auction Properties ${
-            propertyTypeName ? ` and ${propertyTypeName}` : ""
-          } ${category ? ` and ${category}` : ""} in ${titlename}`} */}
-          {pageTitle}
-        </h1>
-      );
+      return <h1 className="custom-h1-class break-words my-4">{pageTitle}</h1>;
     }
     console.log("No data found", titlename);
 

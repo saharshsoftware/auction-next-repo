@@ -2,7 +2,7 @@ import ShowAuctionList from "@/components/molecules/ShowAuctionList";
 import { fetchAssetTypes } from "@/server/actions/assetTypes";
 import { getCategoryBoxCollectionBySlug } from "@/server/actions/auction";
 import { getAssetTypeClient } from "@/services/auction";
-import { extractKeywords } from "@/shared/Utilies";
+import { extractOnlyKeywords } from "@/shared/Utilies";
 import { ICategoryCollection } from "@/types";
 import { Metadata, ResolvingMetadata } from "next";
 import React from "react";
@@ -32,37 +32,36 @@ export async function generateMetadata(
     let keywordsAll: string[] = [];
     if (name) {
       const allSssetTypeData = await fetchAssetTypes();
-      keywordsAll = extractKeywords(allSssetTypeData, "bank auction", name);
+      keywordsAll = extractOnlyKeywords(allSssetTypeData, name);
     }
+    const sanitizeImageUrl =
+      (process.env.NEXT_PUBLIC_IMAGE_CLOUDFRONT || "") + categoryData?.imageURL;
+
+    console.log("Generated Image URL:", { sanitizeImageUrl }); // Debugging
     return {
       title: `${name} Bank Auction Properties in India | eAuctionDekho`,
-      description: `Find ${name} bank auction properties on eAuctionDekho. Find diverse asset types including <asset types comma separated list>. Secure the best deals today tailored to your investment needs`,
+      description: `Find ${name} bank auction properties on eAuctionDekho. Find diverse asset types including ${keywordsAll}. Secure the best deals today tailored to your investment needs`,
       alternates: {
-        canonical: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/${slug}-auctions`,
+        canonical: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/categories/${slug}`,
       },
-      keywords: [`${name} bank auction properties`, ...keywordsAll],
+      keywords: [
+        `${name} bank auction properties`,
+        ...keywordsAll.map((k) => `${k} bank auction`),
+      ],
 
       openGraph: {
         type: "website",
-        url: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/${slug}-auctions`,
-        title: `Explore Top ${name} Auctions Across India | eauctiondekho`,
-        description: `Bid on and win ${subCategories} at auctions across India. eauctiondekho offers updated listings to help you find the best auction deals available. Start bidding today!`,
-        images: [
-          {
-            url: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/${slug}-auctions-meta-image.jpg`,
-          },
-        ],
+        url: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/categories/${slug}`,
+        title: `${name} Bank Auction Properties in India | eAuctionDekho`,
+        description: `Find ${name} bank auction properties on eAuctionDekho. Find diverse asset types including ${keywordsAll}. Secure the best deals today tailored to your investment needs`,
+        images: sanitizeImageUrl,
       },
       twitter: {
-        site: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/${slug}-auctions`,
+        site: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/categories/${slug}`,
         card: "summary_large_image",
-        title: `${name} Auctions in India | eauctiondekho Listings`,
-        description: `Looking for your next ${subCategories}? Check out our comprehensive listings of ${name} auctions across India. Find and bid on ${subCategories} with eauctiondekho.`,
-        images: [
-          {
-            url: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/${slug}-auctions-twitter-meta-image.jpg`,
-          },
-        ],
+        title: `${name} Bank Auction Properties in India | eAuctionDekho`,
+        description: `Find ${name} bank auction properties on eAuctionDekho. Find diverse asset types including ${keywordsAll}. Secure the best deals today tailored to your investment needs`,
+        images: sanitizeImageUrl,
       },
     };
   } catch (error) {

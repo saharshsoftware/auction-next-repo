@@ -34,7 +34,7 @@ const AllAssets = (props: { data: IAssetType[] }) => {
               className="lg:col-span-3 md:col-span-4 col-span-full"
             >
               <Link
-                href={`${ROUTE_CONSTANTS.ASSETS_TYPE}/${item?.slug}`}
+                href={`${ROUTE_CONSTANTS.TYPES}/${item?.slug}`}
                 onClick={() => handleLinkClick(item)}
                 prefetch={false}
               >

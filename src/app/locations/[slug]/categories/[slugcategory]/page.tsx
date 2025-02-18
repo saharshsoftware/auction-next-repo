@@ -2,7 +2,7 @@ import ShowAuctionList from "@/components/molecules/ShowAuctionList";
 import { fetchAssetTypes } from "@/server/actions/assetTypes";
 import { getCategoryBoxCollectionBySlug } from "@/server/actions/auction";
 import { fetchLocationBySlug } from "@/server/actions/location";
-import { extractKeywords } from "@/shared/Utilies";
+import { extractOnlyKeywords, handleOgImageUrl } from "@/shared/Utilies";
 import { ICategoryCollection, ILocations } from "@/types";
 import { Metadata, ResolvingMetadata } from "next";
 import React from "react";
@@ -47,42 +47,38 @@ export async function generateMetadata(
     let keywordsAll: string[] = [];
     if (nameCategory) {
       const allSssetTypeData = await fetchAssetTypes();
-      keywordsAll = extractKeywords(
-        allSssetTypeData,
-        "bank auction",
-        nameCategory
-      );
+      keywordsAll = extractOnlyKeywords(allSssetTypeData, nameCategory);
     }
+    const sanitizeImageUrl = await handleOgImageUrl(
+      locationData?.imageURL ?? ""
+    );
+    console.log("Generated Image URL:", { sanitizeImageUrl }); // Debugging
+
     return {
       title: `${nameCategory} Bank Auction Properties in ${nameLocation} | eAuctionDekho`,
-      description: `Find ${nameCategory} bank auction properties in ${nameLocation} on eAuctionDekho. Find diverse asset types including <asset types comma separated list>. Secure the best deals today tailored to your investment needs`,
+      description: `Find ${nameCategory} bank auction properties in ${nameLocation} on eAuctionDekho. Find diverse asset types including ${keywordsAll}. Secure the best deals today tailored to your investment needs`,
       alternates: {
-        canonical: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/${slug}-auctions`,
+        canonical: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/locations/${slug}/banks/${slugcategory}`,
       },
 
-      keywords: [`${nameCategory} bank auction properties`, ...keywordsAll],
+      keywords: [
+        `${nameCategory} bank auction properties`,
+        ...keywordsAll.map((k) => `${k} bank auction`),
+      ],
 
       openGraph: {
         type: "website",
-        url: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/${slug}-auctions`,
-        title: `Explore Auctions in ${nameLocation} | eauctiondekho`,
-        description: `Looking for auctions in ${nameLocation}? eauctiondekho offers a detailed list of auctions for properties, vehicles, and more. Start bidding in ${nameLocation} and make successful investments with ease.`,
-        images: [
-          {
-            url: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/${slug}-auctions-meta-image.jpg`,
-          },
-        ],
+        url: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/locations/${slug}/categories/${slugcategory}`,
+        title: `${nameCategory} Bank Auction Properties in ${nameLocation} | eAuctionDekho`,
+        description: `Find ${nameCategory} bank auction properties in ${nameLocation} on eAuctionDekho. Find diverse asset types including ${keywordsAll}. Secure the best deals today tailored to your investment needs`,
+        images: sanitizeImageUrl,
       },
       twitter: {
-        site: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/${slug}-auctions`,
+        site: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/locations/${slug}/categories/${slugcategory}`,
         card: "summary_large_image",
-        title: `${nameLocation} Auctions in India | eauctiondekho Listings`,
-        description: `Join the dynamic auction market in ${nameLocation} with eauctiondekho. Discover and bid on a variety of high-quality assets in ${nameLocation}, and secure valuable deals today.`,
-        images: [
-          {
-            url: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/${slug}-auctions-twitter-meta-image.jpg`,
-          },
-        ],
+        title: `${nameCategory} Bank Auction Properties in ${nameLocation} | eAuctionDekho`,
+        description: `Find ${nameCategory} bank auction properties in ${nameLocation} on eAuctionDekho. Find diverse asset types including ${keywordsAll}. Secure the best deals today tailored to your investment needs`,
+        images: sanitizeImageUrl,
       },
     };
   } catch (error) {
@@ -98,7 +94,6 @@ export default async function Page({
   params: { slug: string; slugcategory: string };
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
-  console.log("(INFO) :: params", params, searchParams);
   return (
     <>
       <ShowAuctionList />

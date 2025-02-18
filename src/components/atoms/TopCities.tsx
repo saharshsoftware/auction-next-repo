@@ -6,10 +6,18 @@ import { ILocations } from "@/types";
 import { useFilterStore } from "@/zustandStore/filters";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import React from "react";
 
-const TopCities = () => {
+const TopCities = (props: { isBankRoute?: boolean }) => {
+  const { isBankRoute = false } = props;
   const { setFilter } = useFilterStore();
+  const params = useParams() as {
+    slug: string;
+    slugasset: string;
+    slugcategory: string;
+    slugbank: string;
+  };
 
   const handleLinkClick = (location: ILocations) => {
     setFilter({
@@ -30,6 +38,17 @@ const TopCities = () => {
   });
 
   const renderLink = (item: ILocations) => {
+    const URL = `/${STRING_DATA.LOCATIONS?.toLowerCase()}/${item?.slug}${
+      ROUTE_CONSTANTS.BANKS
+    }/${params.slug}`;
+    if (isBankRoute) {
+      return (
+        <Link href={URL} onClick={() => handleLinkClick(item)}>
+          {item?.name}
+        </Link>
+      );
+    }
+
     return (
       <Link
         href={`${ROUTE_CONSTANTS.LOCATION}/${item?.slug}`}

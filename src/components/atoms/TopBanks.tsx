@@ -6,10 +6,21 @@ import { IBanks } from "@/types";
 import { useFilterStore } from "@/zustandStore/filters";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import React from "react";
 
-const TopBanks = () => {
+const TopBanks = (props: {
+  isLocationCategoriesRoute?: boolean;
+  isLocationRoute?: boolean;
+}) => {
+  const { isLocationCategoriesRoute = false, isLocationRoute = false } = props;
   const { setFilter } = useFilterStore();
+  const params = useParams() as {
+    slug: string;
+    slugasset: string;
+    slugcategory: string;
+    slugbank: string;
+  };
 
   const { data: bankOptions, fetchStatus } = useQuery({
     queryKey: [REACT_QUERY.AUCTION_BANKS, "top"],
@@ -31,6 +42,16 @@ const TopBanks = () => {
   };
 
   const renderLink = (item: IBanks) => {
+    if (isLocationCategoriesRoute || isLocationRoute) {
+      return (
+        <Link
+          href={`${ROUTE_CONSTANTS.LOCATION}/${params.slug}/${ROUTE_CONSTANTS.BANKS}/${item?.slug}`}
+          onClick={() => handleLinkClick(item)}
+        >
+          {item?.name}
+        </Link>
+      );
+    }
     return (
       <Link
         href={`${ROUTE_CONSTANTS.BANKS}/${item?.slug}`}
