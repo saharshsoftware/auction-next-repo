@@ -22,6 +22,7 @@ import InterestModal from "../ modals/InterestModal";
 import { useRouter } from "next/navigation";
 import FullScreenImageModal from "../ modals/FullScreenImageModal";
 import Image from "next/image";
+import AuctionDetailRelatedBubbles from "./AuctionDetailRelatedBubbles";
 
 const auctionLabelClass = () => "text-sm text-gray-400 font-bold";
 
@@ -223,6 +224,10 @@ const AuctionDetail = (props: { auctionDetail: IAuction }) => {
             </ShowLabelValue>
           ) : null}
         </div>
+        <AuctionDetailRelatedBubbles
+          cityName={auctionDetail?.city}
+          bankName={auctionDetail.bankName}
+        />
       </div>
     </>
   );
