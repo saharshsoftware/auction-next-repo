@@ -2,38 +2,63 @@
 import { REACT_QUERY, STRING_DATA } from "@/shared/Constants";
 import React, { useEffect, useState } from "react";
 import BubbleButton from "../atoms/BubbleButton";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { IBanks, ILocations } from "@/types";
+import { fetchBanksClient } from "@/services/bank";
+import { fetchLocationClient } from "@/services/location";
 
 const AuctionDetailRelatedBubbles = (props: {
   cityName: string;
   bankName: string;
 }) => {
   const { cityName, bankName } = props;
-  const queryClient = useQueryClient();
-  const cachedData: any = queryClient.getQueryData([REACT_QUERY.AUCTION_BANKS]);
+
   const [bankData, setBankData] = useState<IBanks | null>(null);
   const [locationData, setLocationData] = useState<ILocations | null>(null);
-  const cachedLocationData: any = queryClient.getQueryData([
-    REACT_QUERY.AUCTION_LOCATION,
-  ]);
+
+  const { data: bankOptions, isLoading: isLoadingBank } = useQuery({
+    queryKey: [REACT_QUERY.AUCTION_BANKS],
+    queryFn: async () => {
+      const res = (await fetchBanksClient()) as unknown as IBanks[];
+
+      return res ?? [];
+    },
+  });
+
+  const { data: locationOptions, isLoading: isLoadingLocation } = useQuery({
+    queryKey: [REACT_QUERY.AUCTION_LOCATION],
+    queryFn: async () => {
+      const res = (await fetchLocationClient()) as unknown as ILocations[];
+
+      return res ?? [];
+    },
+  });
 
   useEffect(() => {
-    if (cachedData?.length > 0 && cachedLocationData?.length > 0) {
-      const resultBankData = cachedData.find(
+    if (
+      bankOptions &&
+      locationOptions &&
+      bankOptions?.length > 0 &&
+      locationOptions?.length > 0
+    ) {
+      const resultBankData = bankOptions.find(
         (data: any) => data.name === bankName
-      );
-      const resultLocationData = cachedLocationData.find(
+      ) as IBanks;
+      const resultLocationData = locationOptions.find(
         (data: any) => data.name === cityName
-      );
+      ) as ILocations;
+      console.log("resultBankData, resultLocationData", {
+        resultBankData,
+        resultLocationData,
+      });
       setBankData(resultBankData);
       setLocationData(resultLocationData);
     }
-  }, [bankName, cachedData, cachedLocationData, cityName]);
+  }, [bankName, cityName, bankOptions, locationOptions]);
   const renderer = () => {
     return (
       <>
-        {cityName && bankName && (
+        {cityName && bankName && bankData?.slug && locationData?.slug && (
           <BubbleButton
             path={`/${STRING_DATA.LOCATIONS?.toLowerCase()}/${
               locationData?.slug
@@ -41,13 +66,13 @@ const AuctionDetailRelatedBubbles = (props: {
             label={`More ${bankName} Auctions Properties in ${cityName}`}
           />
         )}
-        {bankName && (
+        {bankName && bankData?.slug && (
           <BubbleButton
             path={`/${STRING_DATA.BANKS?.toLowerCase()}/${bankData?.slug}`}
             label={`More ${bankName} Auctions Properties `}
           />
         )}
-        {cityName && (
+        {cityName && locationData?.slug && (
           <BubbleButton
             path={`/${STRING_DATA.LOCATIONS?.toLowerCase()}/${
               locationData?.slug
