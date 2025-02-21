@@ -1,4 +1,5 @@
 import React from "react";
+import BlurredFieldWrapper from "./BlurredFieldWrapper";
 
 interface IShowData {
   hasChildren?: boolean;
@@ -8,6 +9,7 @@ interface IShowData {
   headingClass?: string;
   value?: any;
   children?: React.ReactNode;
+  isBlurred?: boolean; // New flag to blur the field
 }
 
 const ShowLabelValue: React.FC<IShowData> = (props) => {
@@ -19,7 +21,18 @@ const ShowLabelValue: React.FC<IShowData> = (props) => {
     headingClass,
     value,
     children,
+    isBlurred = false, // Default to false
   } = props;
+
+  const renderValueContainer = () => {
+    if (hasChildren) {
+      return children;
+    }
+    return (
+      <BlurredFieldWrapper isBlurred={isBlurred}>{value}</BlurredFieldWrapper>
+    );
+  };
+
   return (
     <div className={`grid grid-cols-12 ${sizeClass ? sizeClass : ""}`}>
       <div
@@ -30,7 +43,7 @@ const ShowLabelValue: React.FC<IShowData> = (props) => {
         {heading}
       </div>
       <div className={`${valueClass ?? "lg:col-span-8 col-span-full"}`}>
-        {hasChildren ? children : value}
+        {renderValueContainer()}
       </div>
     </div>
   );

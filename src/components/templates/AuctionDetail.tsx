@@ -19,15 +19,16 @@ import { faArrowLeft, faHeart } from "@fortawesome/free-solid-svg-icons";
 import { WhatsappShareWithIcon } from "../atoms/SocialIcons";
 import { WishlistSvg } from "../svgIcons/WishlistSvg";
 import InterestModal from "../ modals/InterestModal";
-import { useRouter } from "next/navigation";
 import FullScreenImageModal from "../ modals/FullScreenImageModal";
 import Image from "next/image";
-import AuctionDetailRelatedBubbles from "./AuctionDetailRelatedBubbles";
+import { useAuctionDetailsStore } from "@/zustandStore/auctionDetails";
+import BlurredFieldWrapper from "../atoms/BlurredFieldWrapper";
 
 const auctionLabelClass = () => "text-sm text-gray-400 font-bold";
 
 const AuctionDetail = (props: { auctionDetail: IAuction }) => {
   const { auctionDetail } = props;
+  const { setAuctionDetailData } = useAuctionDetailsStore();
   const noticeImageUrl = auctionDetail?.noticeImageURL
     ? `${process.env.NEXT_PUBLIC_IMAGE_CLOUDFRONT}/${auctionDetail?.noticeImageURL}`
     : "";
@@ -74,10 +75,12 @@ const AuctionDetail = (props: { auctionDetail: IAuction }) => {
   const noticeLinkRenderer = () => {
     if (token === null) {
       return (
-        <ActionButton
-          text={STRING_DATA.LOGIN_VIEW_DOC.toUpperCase()}
-          onclick={showModal}
-        />
+        <button
+          onClick={showModal}
+          className="flex items-center justify-center cursor-pointer  link link-primary font-semibold underline rounded "
+        >
+          {STRING_DATA.LOGIN_VIEW_DOC.toUpperCase()}
+        </button>
       );
     }
     if (token) {
@@ -114,6 +117,12 @@ const AuctionDetail = (props: { auctionDetail: IAuction }) => {
       );
     }
   };
+
+  useEffect(() => {
+    if (auctionDetail) {
+      setAuctionDetailData(auctionDetail);
+    }
+  }, [auctionDetail, setAuctionDetailData]);
 
   return (
     <>
@@ -161,7 +170,11 @@ const AuctionDetail = (props: { auctionDetail: IAuction }) => {
           </div>
         </div>
 
-        <p className="flex-1 ">{auctionDetail?.description}</p>
+        {auctionDetail?.description && (
+          <BlurredFieldWrapper isBlurred={token === null}>
+            <p className="flex-1 ">{auctionDetail?.description}</p>
+          </BlurredFieldWrapper>
+        )}
         <div className="text-2xl font-bold">{STRING_DATA.DESCRIPTION}</div>
         <hr className="border-[0.25px] border-zinc-400" />
         <div className="space-y-4 w-full">
@@ -190,6 +203,7 @@ const AuctionDetail = (props: { auctionDetail: IAuction }) => {
             value={auctionDetail?.borrowerName}
           />
           <ShowLabelValue
+            isBlurred={token === null}
             heading={STRING_DATA.CONTACT}
             value={auctionDetail?.contact}
           />
@@ -224,10 +238,6 @@ const AuctionDetail = (props: { auctionDetail: IAuction }) => {
             </ShowLabelValue>
           ) : null}
         </div>
-        <AuctionDetailRelatedBubbles
-          cityName={auctionDetail?.city}
-          bankName={auctionDetail.bankName}
-        />
       </div>
     </>
   );

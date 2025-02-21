@@ -6,12 +6,11 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { IBanks, ILocations } from "@/types";
 import { fetchBanksClient } from "@/services/bank";
 import { fetchLocationClient } from "@/services/location";
+import { useAuctionDetailsStore } from "@/zustandStore/auctionDetails";
 
-const AuctionDetailRelatedBubbles = (props: {
-  cityName: string;
-  bankName: string;
-}) => {
-  const { cityName, bankName } = props;
+const AuctionDetailRelatedBubbles = () => {
+  const auctionDetailStoredata =
+    useAuctionDetailsStore((state) => state.auctionDetailsData) ?? null;
 
   const [bankData, setBankData] = useState<IBanks | null>(null);
   const [locationData, setLocationData] = useState<ILocations | null>(null);
@@ -35,6 +34,7 @@ const AuctionDetailRelatedBubbles = (props: {
   });
 
   useEffect(() => {
+    console.log("auctionDetailStoredata", auctionDetailStoredata);
     if (
       bankOptions &&
       locationOptions &&
@@ -42,10 +42,10 @@ const AuctionDetailRelatedBubbles = (props: {
       locationOptions?.length > 0
     ) {
       const resultBankData = bankOptions.find(
-        (data: any) => data.name === bankName
+        (data: any) => data.name === auctionDetailStoredata?.bankName
       ) as IBanks;
       const resultLocationData = locationOptions.find(
-        (data: any) => data.name === cityName
+        (data: any) => data.name === auctionDetailStoredata?.city
       ) as ILocations;
       console.log("resultBankData, resultLocationData", {
         resultBankData,
@@ -54,30 +54,33 @@ const AuctionDetailRelatedBubbles = (props: {
       setBankData(resultBankData);
       setLocationData(resultLocationData);
     }
-  }, [bankName, cityName, bankOptions, locationOptions]);
+  }, [auctionDetailStoredata, bankOptions, locationOptions]);
   const renderer = () => {
     return (
       <>
-        {cityName && bankName && bankData?.slug && locationData?.slug && (
-          <BubbleButton
-            path={`/${STRING_DATA.LOCATIONS?.toLowerCase()}/${
-              locationData?.slug
-            }/${STRING_DATA.BANKS?.toLowerCase()}/${bankData?.slug}`}
-            label={`More ${bankName} Auctions Properties in ${cityName}`}
-          />
-        )}
-        {bankName && bankData?.slug && (
+        {auctionDetailStoredata?.city &&
+          auctionDetailStoredata?.bankName &&
+          bankData?.slug &&
+          locationData?.slug && (
+            <BubbleButton
+              path={`/${STRING_DATA.LOCATIONS?.toLowerCase()}/${
+                locationData?.slug
+              }/${STRING_DATA.BANKS?.toLowerCase()}/${bankData?.slug}`}
+              label={`More ${auctionDetailStoredata?.bankName} Auctions Properties in ${auctionDetailStoredata?.city}`}
+            />
+          )}
+        {auctionDetailStoredata?.bankName && bankData?.slug && (
           <BubbleButton
             path={`/${STRING_DATA.BANKS?.toLowerCase()}/${bankData?.slug}`}
-            label={`More ${bankName} Auctions Properties `}
+            label={`More ${auctionDetailStoredata?.bankName} Auctions Properties `}
           />
         )}
-        {cityName && locationData?.slug && (
+        {auctionDetailStoredata?.city && locationData?.slug && (
           <BubbleButton
             path={`/${STRING_DATA.LOCATIONS?.toLowerCase()}/${
               locationData?.slug
             }`}
-            label={`More Auction Properties in ${cityName}`}
+            label={`More Auction Properties in ${auctionDetailStoredata?.city}`}
           />
         )}
       </>
