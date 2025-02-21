@@ -50,8 +50,10 @@ const nextConfig = {
         destination: `https://auction-dekho.s3.ap-south-1.amazonaws.com/sitemaps/sitemap.xml.gz`,
       },
       {
-        source: "/sitemaps/sitemap:slug*.xml.gz",
-        destination: `https://auction-dekho.s3.ap-south-1.amazonaws.com/sitemaps/sitemap:slug*.xml.gz`,
+        // Matches any file in /sitemaps/ that ends with .xml.gz
+        source: "/sitemaps/:slug(.*\\.xml\\.gz)",
+        destination:
+          "https://auction-dekho.s3.ap-south-1.amazonaws.com/sitemaps/:slug",
       },
       {
         source: "/categories/sitemap.xml",
