@@ -48,7 +48,7 @@ const SurveyModal = ({ openModal, hideModal = () => {} }: ISurveyModal) => {
                   | "multiple-choice"
                   | "open-ended"
               }
-              response={responses[currentQuestion.id]}
+              response={responses[currentQuestion.question]}
               onChange={handleChange}
             />
 
@@ -57,7 +57,7 @@ const SurveyModal = ({ openModal, hideModal = () => {} }: ISurveyModal) => {
                 text={currentIndex < 8 ? "Next" : "Finish"}
                 onclick={handleNextHandler}
                 isActionButton={true}
-                disabled={!responses[currentQuestion.id]}
+                disabled={!responses[currentQuestion.question]}
               />
             </div>
           </div>

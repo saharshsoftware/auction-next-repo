@@ -21,4 +21,5 @@ export const API_ENPOINTS = {
   ALERTS: "/api/custom-alert",
   INTEREST: "/api/user-interest/create",
   NOTICE_SEARCH: "/api/notices/search",
+  USER_SURVEYS: "/api/user-surveys",
 };
