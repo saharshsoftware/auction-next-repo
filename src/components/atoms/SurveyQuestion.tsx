@@ -16,10 +16,10 @@ const SurveyQuestion: React.FC<SurveyQuestionProps> = ({
   onChange,
 }) => {
   return (
-    <div className="text-left">
+    <div className="text-left min-h-[250px]">
       <p className="text-lg font-semibold">{question}</p>
 
-      <div className="mt-4">
+      <div className="mt-4 min-h-[200px] ">
         {type === "single-choice" && options && (
           <div className="flex flex-col gap-2">
             {options.map((option) => (

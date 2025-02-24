@@ -2,7 +2,7 @@
 import { IAuction } from "@/types";
 import React, { useEffect, useState } from "react";
 import ShowLabelValue from "../atoms/ShowLabelValue";
-import { COOKIES, STRING_DATA } from "@/shared/Constants";
+import { COOKIES, STORAGE_KEYS, STRING_DATA } from "@/shared/Constants";
 import {
   formatPrice,
   formattedDateAndTime,
@@ -145,6 +145,7 @@ const AuctionDetail = (props: { auctionDetail: IAuction }) => {
     // const exist = true;
 
     // if (exist) {
+    // localStorage.setItem(STORAGE_KEYS.SURVEY_SHOWN_KEY, "true");
     //   console.log(
     //     "(AuctionDetail INFO ::) Ip addres has already given survey",
     //     exist

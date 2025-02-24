@@ -47,7 +47,6 @@ export async function shouldShowSurvey(): Promise<boolean> {
       return false; // Don't show survey if views < 5 or survey was already shown
     }
 
-    localStorage.setItem(STORAGE_KEYS.SURVEY_SHOWN_KEY, "true"); // Prevent multiple surveys
     return true;
   } catch (error) {
     console.error("Error checking survey conditions:", error);
@@ -72,5 +71,17 @@ export function removeAuctionViewTrack() {
     localStorage.removeItem(STORAGE_KEYS.AUCTION_VIEW_KEY);
   } catch (error) {
     console.error("Error while clear tracking auction views:", error);
+  }
+}
+
+/**
+ * Handle "Remind Me Later" by resetting auction view count.
+ */
+export function handleRemindMeLater() {
+  try {
+    localStorage.removeItem(STORAGE_KEYS.AUCTION_VIEW_KEY); // Reset auction view tracking
+    localStorage.removeItem(STORAGE_KEYS.SURVEY_SHOWN_KEY); // Allow survey to show after 5 new views
+  } catch (error) {
+    console.error("Error setting remind me later:", error);
   }
 }

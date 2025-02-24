@@ -1,17 +1,21 @@
+import { handleRemindMeLater } from "@/helpers/SurveyHelper";
 import { STORAGE_KEYS } from "@/shared/Constants";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 export function useSurveyModal() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleContinue = () => {
-    // window.location.href = "/survey"; // Redirect to survey page
-    // alert("Redirecting to survey page");
+    localStorage.setItem(STORAGE_KEYS.SURVEY_SHOWN_KEY, "true"); // Set survey shown flag
   };
 
   const handleSkip = () => {
     localStorage.setItem(STORAGE_KEYS.SURVEY_DISMISS_KEY, "true");
     setIsModalOpen(false);
+  };
+
+  const handleReminder = () => {
+    handleRemindMeLater();
   };
 
   const hideModal = () => {
@@ -28,5 +32,6 @@ export function useSurveyModal() {
     handleSkip,
     hideModal,
     openModal,
+    handleReminder,
   };
 }

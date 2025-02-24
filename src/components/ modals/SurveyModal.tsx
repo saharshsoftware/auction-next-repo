@@ -11,14 +11,14 @@ interface ISurveyModal {
 }
 
 const SurveyModal = ({ openModal, hideModal = () => {} }: ISurveyModal) => {
-  const { handleContinue, handleSkip } = useSurveyModal();
+  const { handleContinue, handleReminder } = useSurveyModal();
   const { currentQuestion, currentIndex, responses, handleNext, handleChange } =
     useSurvey();
   const [showSurvey, setShowSurvey] = useState(false);
 
-  const skiphandler = () => {
+  const remainderHandler = () => {
     hideModal();
-    handleSkip();
+    handleReminder();
   };
 
   const continueHandler = () => {
@@ -77,8 +77,8 @@ const SurveyModal = ({ openModal, hideModal = () => {} }: ISurveyModal) => {
             isActionButton={true}
           />
           <ActionButton
-            text="Skip"
-            onclick={skiphandler}
+            text="Remind me later"
+            onclick={remainderHandler}
             isActionButton={false}
           />
         </div>
