@@ -1140,3 +1140,9 @@ export const getEmptyAllObject = () => ({
   value: "",
   label: STRING_DATA.ALL,
 });
+
+export const STORAGE_KEYS = {
+  AUCTION_VIEW_KEY: "auctionViews",
+  SURVEY_SHOWN_KEY: "surveyShown",
+  SURVEY_DISMISS_KEY: "dismissedSurvey",
+};

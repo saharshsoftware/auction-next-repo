@@ -23,11 +23,20 @@ import FullScreenImageModal from "../ modals/FullScreenImageModal";
 import Image from "next/image";
 import { useAuctionDetailsStore } from "@/zustandStore/auctionDetails";
 import BlurredFieldWrapper from "../atoms/BlurredFieldWrapper";
+import SurveyModal from "../ modals/SurveyModal";
+import { useSurveyModal } from "@/hooks/useSurveyModal";
+import { useParams } from "next/navigation";
+import {
+  getSurveyDismissedStatus,
+  shouldShowSurvey,
+  trackAuctionView,
+} from "@/helpers/SurveyHelper";
 
 const auctionLabelClass = () => "text-sm text-gray-400 font-bold";
 
 const AuctionDetail = (props: { auctionDetail: IAuction }) => {
   const { auctionDetail } = props;
+  const { slug } = useParams() as { slug: string };
   const { setAuctionDetailData } = useAuctionDetailsStore();
   const noticeImageUrl = auctionDetail?.noticeImageURL
     ? `${process.env.NEXT_PUBLIC_IMAGE_CLOUDFRONT}/${auctionDetail?.noticeImageURL}`
@@ -45,6 +54,11 @@ const AuctionDetail = (props: { auctionDetail: IAuction }) => {
     openModal: openImageModal,
     hideModal: hideImageModal,
   } = useModal();
+  const {
+    isModalOpen,
+    hideModal: hideSurveyModal,
+    openModal: openSurveyModal,
+  } = useSurveyModal();
   const userData = getCookie(COOKIES.AUCTION_USER_KEY)
     ? JSON.parse(getCookie(COOKIES.AUCTION_USER_KEY) ?? "")
     : null;
@@ -99,8 +113,10 @@ const AuctionDetail = (props: { auctionDetail: IAuction }) => {
             className="flex items-center gap-2 link link-primary"
             onClick={showImageModal}
           >
-            <span>Notice link</span>
-            <NewTabSvg />
+            <>
+              <span>Notice link</span>
+              <NewTabSvg />
+            </>
           </div>
           <div className="relative">
             <Image
@@ -124,8 +140,44 @@ const AuctionDetail = (props: { auctionDetail: IAuction }) => {
     }
   }, [auctionDetail, setAuctionDetailData]);
 
+  const checkSurvey = async () => {
+    // (will api call to check news ip exist or not for survery)
+    // const exist = true;
+
+    // if (exist) {
+    //   console.log(
+    //     "(AuctionDetail INFO ::) Ip addres has already given survey",
+    //     exist
+    //   );
+    //   return;
+    // }
+
+    const shouldShow = await shouldShowSurvey();
+    const dismissedStatus = await getSurveyDismissedStatus();
+    console.log("(AuctionDetail INFO ::) shouldShow-dismissedStatus", {
+      shouldShow,
+      dismissedStatus,
+    });
+    if (shouldShow && !dismissedStatus) {
+      openSurveyModal();
+    }
+  };
+
+  useEffect(() => {
+    trackAuctionView(slug); // Track the auction view
+
+    checkSurvey();
+  }, [slug]);
+
+  console.log("isModalOpen", { isModalOpen });
+
   return (
     <>
+      {/* Survey Modal */}
+      {isModalOpen ? (
+        <SurveyModal openModal={isModalOpen} hideModal={hideSurveyModal} />
+      ) : null}
+
       {/* Create alert Modal */}
       {openModal ? (
         <InterestModal
