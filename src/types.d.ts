@@ -186,3 +186,32 @@ export interface IAlert {
   name: string;
   updatedAt: string;
 }
+
+export interface ISurvey {
+  title: string;
+  id: string;
+  questions: Question[];
+  createdAt: Date;
+  updatedAt: Date;
+  publishedAt: Date;
+  isActive: boolean;
+}
+
+export interface Question {
+  id: string;
+  type: Type;
+  options: string[];
+  question: string;
+  condition?: Condition;
+  allowCustomInput?: boolean;
+}
+
+export interface Condition {
+  answer: string;
+  questionId: string;
+}
+
+export enum Type {
+  MultipleChoice = "multiple-choice",
+  SingleChoice = "single-choice",
+}

@@ -1121,6 +1121,8 @@ export const REACT_QUERY = {
   SAVED_SEARCH: "Saved-search",
   ALERTS: "Alerts",
   CATEGORY_ASSETS_TYPE: "Category-Assets-type",
+  SURVEYS: "Surveys",
+  USERS_SURVEYS: "Users-surveys",
 };
 
 export const SAMPLE_CITY = [
