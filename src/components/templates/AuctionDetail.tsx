@@ -28,9 +28,11 @@ import { useSurveyModal } from "@/hooks/useSurveyModal";
 import { useParams } from "next/navigation";
 import {
   getSurveyDismissedStatus,
+  removeAuctionViewTrack,
   shouldShowSurvey,
   trackAuctionView,
 } from "@/helpers/SurveyHelper";
+import { useSurveyStore } from "@/zustandStore/surveyStore";
 
 const auctionLabelClass = () => "text-sm text-gray-400 font-bold";
 
@@ -38,6 +40,7 @@ const AuctionDetail = (props: { auctionDetail: IAuction }) => {
   const { auctionDetail } = props;
   const { slug } = useParams() as { slug: string };
   const { setAuctionDetailData } = useAuctionDetailsStore();
+  const surveyStatus = useSurveyStore((state) => state.ipAdderssStatus);
   const noticeImageUrl = auctionDetail?.noticeImageURL
     ? `${process.env.NEXT_PUBLIC_IMAGE_CLOUDFRONT}/${auctionDetail?.noticeImageURL}`
     : "";
@@ -140,35 +143,40 @@ const AuctionDetail = (props: { auctionDetail: IAuction }) => {
     }
   }, [auctionDetail, setAuctionDetailData]);
 
-  const checkSurvey = async () => {
-    // (will api call to check news ip exist or not for survery)
-    // const exist = true;
-
-    // if (exist) {
-    // localStorage.setItem(STORAGE_KEYS.SURVEY_SHOWN_KEY, "true");
-    //   console.log(
-    //     "(AuctionDetail INFO ::) Ip addres has already given survey",
-    //     exist
-    //   );
-    //   return;
-    // }
-
+  const checkSurvey = async (
+    slug: string,
+    surveyStatus: "COMPLETED" | "REMIND_LATER" | null
+  ) => {
     const shouldShow = await shouldShowSurvey();
-    const dismissedStatus = await getSurveyDismissedStatus();
-    console.log("(AuctionDetail INFO ::) shouldShow-dismissedStatus", {
-      shouldShow,
-      dismissedStatus,
-    });
-    if (shouldShow && !dismissedStatus) {
-      openSurveyModal();
+    console.log("MODAL STATUS------------");
+    console.table({ surveyStatus, slug, shouldShow });
+
+    switch (surveyStatus) {
+      case "COMPLETED":
+        removeAuctionViewTrack();
+
+        break;
+      case "REMIND_LATER":
+        trackAuctionView(slug);
+
+        if (shouldShow) {
+          openSurveyModal();
+        }
+
+        break;
+      default:
+        trackAuctionView(slug);
+        if (shouldShow) {
+          openSurveyModal();
+        }
+
+        break;
     }
   };
 
   useEffect(() => {
-    trackAuctionView(slug); // Track the auction view
-
-    checkSurvey();
-  }, [slug]);
+    checkSurvey(slug, surveyStatus);
+  }, [slug, surveyStatus]);
 
   console.log("isModalOpen", { isModalOpen });
 

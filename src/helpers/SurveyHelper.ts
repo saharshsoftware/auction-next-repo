@@ -35,15 +35,8 @@ export async function shouldShowSurvey(): Promise<boolean> {
     const views = JSON.parse(
       localStorage.getItem(STORAGE_KEYS.AUCTION_VIEW_KEY) || "[]"
     );
-    const surveyAlreadyShown = localStorage.getItem(
-      STORAGE_KEYS.SURVEY_SHOWN_KEY
-    );
 
-    if (surveyAlreadyShown) {
-      removeAuctionViewTrack(); // Clear the auction view track
-    }
-
-    if (!Array.isArray(views) || views.length < 5 || surveyAlreadyShown) {
+    if (!Array.isArray(views) || views.length < 5) {
       return false; // Don't show survey if views < 5 or survey was already shown
     }
 
@@ -80,7 +73,6 @@ export function removeAuctionViewTrack() {
 export function handleRemindMeLater() {
   try {
     localStorage.removeItem(STORAGE_KEYS.AUCTION_VIEW_KEY); // Reset auction view tracking
-    localStorage.removeItem(STORAGE_KEYS.SURVEY_SHOWN_KEY); // Allow survey to show after 5 new views
   } catch (error) {
     console.error("Error setting remind me later:", error);
   }

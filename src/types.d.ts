@@ -197,6 +197,15 @@ export interface ISurvey {
   isActive: boolean;
 }
 
+export interface IUserSurvey {
+  id: string;
+  answers: any[];
+  createdAt: Date;
+  updatedAt: Date;
+  publishedAt: Date;
+  status: "COMPLETED" | "REMIND_LATER" | null;
+}
+
 export interface Question {
   id: string;
   type: Type;
