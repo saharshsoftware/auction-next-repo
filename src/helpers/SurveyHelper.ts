@@ -36,7 +36,9 @@ export async function shouldShowSurvey(): Promise<boolean> {
       localStorage.getItem(STORAGE_KEYS.AUCTION_VIEW_KEY) || "[]"
     );
 
-    if (!Array.isArray(views) || views.length < 5) {
+    const MIN_AUCTION_VIEWS = 5;
+
+    if (!Array.isArray(views) || views.length < MIN_AUCTION_VIEWS) {
       return false; // Don't show survey if views < 5 or survey was already shown
     }
 

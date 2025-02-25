@@ -53,14 +53,12 @@ export function useSurveyModal() {
 
   const handleSkip = () => {
     setIsModalOpen(false);
-    const payload = getPayloadData();
-    console.log("(useSurvey :: ) payload data:", payload);
-    handleSurveyApiCall(payload);
   };
 
-  const handleReminder = () => {
+  const handleReminder = async () => {
     handleRemindMeLater();
-    const payload = getPayloadData();
+    const payload = await getPayloadData();
+    console.log("(useSurvey :: ) payload data:", payload);
     handleSurveyApiCall(payload);
   };
 

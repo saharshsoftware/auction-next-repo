@@ -70,10 +70,9 @@ export function useSurvey() {
     };
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     console.log("Survey Responses:", responses);
-    // Send responses to API or handle submission logic
-    const payload = getPayloadData();
+    const payload = await getPayloadData();
     console.log("(useSurvey :: ) payload data:", payload);
     handleSurveyApiCall(payload);
   };

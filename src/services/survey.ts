@@ -1,8 +1,8 @@
 "use client";
-
 import { getRequest, postRequest, putRequest } from "@/shared/Axios";
 import { API_BASE_URL, API_ENPOINTS } from "./api";
 import { getIPAddress } from "@/shared/Utilies";
+import axios from "axios";
 
 export const userSurveys = async (body: {
   ipAddress: string;
@@ -12,11 +12,10 @@ export const userSurveys = async (body: {
   status: "COMPLETED" | "REMIND_LATER";
 }) => {
   try {
-    // const URL = API_BASE_URL + API_ENPOINTS.INTEREST;
-    const URL = "http://localhost:1009" + API_ENPOINTS.USER_SURVEYS;
-    const { data } = await postRequest({ API: URL, DATA: { data: body } });
+    const URL = API_BASE_URL + API_ENPOINTS.USER_SURVEYS;
+    const { data } = await axios.post(URL, { data: body });
 
-    console.log(data, "responsefetch");
+    // console.log(data, "responsefetch");
     return data;
   } catch (e: any) {
     // return e?.response?.data?.error?.message
@@ -37,10 +36,8 @@ export const updateUserSurveys = async (payload: {
 }) => {
   const { body, userSurveyId } = payload;
   try {
-    // const URL = API_BASE_URL + API_ENPOINTS.USER_SURVEYS + `/${userSurveyId}`;
-    const URL =
-      "http://localhost:1009" + API_ENPOINTS.USER_SURVEYS + `/${userSurveyId}`;
-    const { data } = await putRequest({ API: URL, DATA: { data: body } });
+    const URL = API_BASE_URL + API_ENPOINTS.USER_SURVEYS + `/${userSurveyId}`;
+    const { data } = await axios.put(URL, { data: body });
 
     // console.log(data, "responsefetch");
     return data;
@@ -53,10 +50,9 @@ export const updateUserSurveys = async (payload: {
 
 export const getActiveSurvey = async () => {
   try {
-    const filter = `?filters[isActive][$eq]=true`;
-    // const URL = API_BASE_URL + API_ENPOINTS.INTEREST+filter;
-    const URL = "http://localhost:1009" + API_ENPOINTS.SURVEYS + filter;
-    const { data } = await getRequest({ API: URL });
+    const filter = `?filters[isActive][$eq]=true&pagination[page]=1&pagination[pageSize]=1`;
+    const URL = API_BASE_URL + API_ENPOINTS.SURVEYS + filter;
+    const { data } = await axios.get(URL);
 
     // console.log(data, "responsefetch");
     return data;
@@ -67,13 +63,27 @@ export const getActiveSurvey = async () => {
   }
 };
 
-export const getIPAddressSurveyStatus = async (surveyId: string) => {
+export const getIPAddressSurveyStatus = async (props: {
+  surveyId: string;
+  isAuthenticated: boolean;
+  userId: string | null;
+}) => {
   try {
+    const { surveyId, isAuthenticated, userId } = props;
     const ipAddress = await getIPAddress();
-    const filter = `?filters[ipAddress][$eq]=${ipAddress}&filters[survey][id][$eq]=${surveyId}`;
-    // const URL = API_BASE_URL + API_ENPOINTS.INTEREST+filter;
-    const URL = "http://localhost:1009" + API_ENPOINTS.USER_SURVEYS + filter;
-    const { data } = await getRequest({ API: URL });
+    // filters[user][id][$eq]=1
+    let filter = `?pagination[page]=1&pagination[pageSize]=1&filters[survey][id][$eq]=${encodeURI(
+      surveyId
+    )}&`;
+
+    if (isAuthenticated) {
+      filter += `filters[user][id][$eq]=${encodeURI(userId || "")}`;
+    } else {
+      filter += `filters[ipAddress][$eq]=${encodeURI(ipAddress)}`;
+    }
+
+    const URL = API_BASE_URL + API_ENPOINTS.USER_SURVEYS + filter;
+    const { data } = await axios.get(URL);
 
     // console.log(data, "responsefetch");
     return data;
