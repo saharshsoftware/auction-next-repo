@@ -79,7 +79,7 @@ const ShowAuctionList = () => {
     //   filterData,
     // });
     if (hasDifference) {
-      console.log("API HIT 🚀 with", filterData);
+      // console.log(filterData);
       refetch();
       prevFilterData.current = filterData; // Update the stored value
     }

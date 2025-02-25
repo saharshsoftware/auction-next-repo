@@ -19,6 +19,8 @@ export const API_ENPOINTS = {
   CONTACT_USER: "/api/contact-users",
   SAVED_SEARCH: "/api/saved-search",
   ALERTS: "/api/custom-alert",
-  INTEREST: "/api/user-interests",
+  INTEREST: "/api/user-interest/create",
   NOTICE_SEARCH: "/api/notices/search",
+  USER_SURVEYS: "/api/user-surveys",
+  SURVEYS: "/api/surveys",
 };

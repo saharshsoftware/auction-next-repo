@@ -69,12 +69,14 @@ const AuctionDetailRelatedBubbles = () => {
               label={`More ${auctionDetailStoredata?.bankName} Auctions Properties in ${auctionDetailStoredata?.city}`}
             />
           )}
+        <div className="md:hidden border-[0.5px] border-gray-200  w-full" />
         {auctionDetailStoredata?.bankName && bankData?.slug && (
           <BubbleButton
             path={`/${STRING_DATA.BANKS?.toLowerCase()}/${bankData?.slug}`}
             label={`More ${auctionDetailStoredata?.bankName} Auctions Properties `}
           />
         )}
+        <div className="md:hidden border-[0.5px] border-gray-200  w-full" />
         {auctionDetailStoredata?.city && locationData?.slug && (
           <BubbleButton
             path={`/${STRING_DATA.LOCATIONS?.toLowerCase()}/${

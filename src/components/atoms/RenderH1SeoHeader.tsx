@@ -34,10 +34,10 @@ const RenderH1SeoHeader = (props: IRenderH1SeoHeader) => {
     const locationSlug = pathSegments[1] || ""; // 'agra'
     const subRoute = pathSegments[2];
     const bankSlug = pathSegments[3] || ""; // 'icici-home-finance'
-    console.log("pathname", {
-      currentRoute,
-      subRoute,
-    });
+    // console.log("pathname", {
+    //   currentRoute,
+    //   subRoute,
+    // });
     // Generate dynamic title
     let title = "Auction Properties";
 
@@ -87,7 +87,7 @@ const RenderH1SeoHeader = (props: IRenderH1SeoHeader) => {
     if (pathname && getPathType?.(pathname) && titlename) {
       return <h1 className="custom-h1-class break-words my-4">{pageTitle}</h1>;
     }
-    console.log("No data found", titlename);
+    // console.log("No data found", titlename);
 
     return "";
   };
