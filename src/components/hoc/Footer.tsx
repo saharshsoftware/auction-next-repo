@@ -60,7 +60,7 @@ const Footer: React.FC = () => {
                 {STRING_DATA.CONTACT_US}
               </Link>
               <Link
-                href={"/sitemap.xml"}
+                href={"/sitemap.xml.gz"}
                 className="link link-hover"
                 target="_blank"
               >
