@@ -42,11 +42,7 @@ const nextConfig = {
   async rewrites() {
     return [
       {
-        source: "/sitemap/index.xml",
-        destination: `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/sitemap/index.xml`,
-      },
-      {
-        source: "/sitemaps/sitemap.xml.gz",
+        source: "/sitemap.xml.gz",
         destination: `https://auction-dekho.s3.ap-south-1.amazonaws.com/sitemaps/sitemap.xml.gz`,
       },
       {

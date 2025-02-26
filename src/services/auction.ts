@@ -337,14 +337,13 @@ export const deleteAlert = async (props: { id: string }) => {
 };
 
 export const showInterest = async (body: {
-  user: string;
   ipAddress: string;
   notice: string;
 }) => {
   try {
     const URL = API_BASE_URL + API_ENPOINTS.INTEREST;
 
-    const { data } = await postRequest({ API: URL, DATA: { data: body } });
+    const { data } = await postRequest({ API: URL, DATA: body });
 
     console.log(data, "responsefetch");
     return data;

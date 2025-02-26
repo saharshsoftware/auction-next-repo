@@ -1121,6 +1121,8 @@ export const REACT_QUERY = {
   SAVED_SEARCH: "Saved-search",
   ALERTS: "Alerts",
   CATEGORY_ASSETS_TYPE: "Category-Assets-type",
+  SURVEYS: "Surveys",
+  USERS_SURVEYS: "Users-surveys",
 };
 
 export const SAMPLE_CITY = [
@@ -1140,3 +1142,9 @@ export const getEmptyAllObject = () => ({
   value: "",
   label: STRING_DATA.ALL,
 });
+
+export const STORAGE_KEYS = {
+  AUCTION_VIEW_KEY: "auctionViews",
+  SURVEY_SHOWN_KEY: "surveyShown",
+  SURVEY_DISMISS_KEY: "dismissedSurvey",
+};

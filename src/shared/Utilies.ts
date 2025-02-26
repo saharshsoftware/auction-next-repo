@@ -445,3 +445,15 @@ export const handleOgImageUrl = async (imageUrl: string) => {
 
   return sanitizeImageUrl;
 };
+
+export const getIPAddress = async () => {
+  try {
+    // Get user's IP address using ipify
+    const response = await fetch("https://api.ipify.org?format=json");
+    const data = await response.json();
+    const ipAddress = data.ip;
+    return ipAddress;
+  } catch (error) {
+    console.log("Error submitting form:", error);
+  }
+};

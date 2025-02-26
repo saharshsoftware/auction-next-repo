@@ -21,7 +21,7 @@ export const applyFilters = (
   if (!params) return;
 
   const { slug, slugasset, slugcategory, slugbank } = params;
-  console.log("(applyFilters)", { slug, slugasset, slugcategory, slugbank });
+  // console.log("(applyFilters)", { slug, slugasset, slugcategory, slugbank });
 
   if (slug && slugcategory) {
     if (
