@@ -37,9 +37,7 @@ const CustomModal = ({
           </button>
         )}
         {modalHeading && (
-          <h2 className="text-center text-2xl font-bold mb-4">
-            {modalHeading}
-          </h2>
+          <h2 className="custom-h2-class text-left text-3xl">{modalHeading}</h2>
         )}
         <div className="flex flex-col items-center">{children}</div>
       </div>
