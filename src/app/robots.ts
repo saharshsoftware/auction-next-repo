@@ -14,6 +14,6 @@ export default function robots(): MetadataRoute.Robots {
         ],
       },
     ],
-    sitemap: `https://www.eauctiondekho.com/sitemaps/sitemap.xml.gz`,
+    sitemap: `https://www.eauctiondekho.com/sitemap.xml.gz`,
   };
 }
