@@ -42,7 +42,7 @@ export function useSurvey() {
     mutate(payload);
   };
 
-  const currentQuestion = questions[currentIndex];
+  const currentQuestion = questions?.[currentIndex] ?? "";
 
   const handleNext = () => {
     if (currentIndex < questions.length - 1) {
@@ -51,6 +51,15 @@ export function useSurvey() {
       handleSubmit();
       localStorage.removeItem(STORAGE_KEYS.AUCTION_VIEW_KEY);
     }
+  };
+
+  const handlePrevious = () => {
+    setCurrentIndex((prev) => {
+      if (prev === 0) {
+        return 0;
+      }
+      return prev - 1;
+    });
   };
 
   const handleChange = (value: any) => {
@@ -77,5 +86,12 @@ export function useSurvey() {
     handleSurveyApiCall(payload);
   };
 
-  return { currentQuestion, currentIndex, responses, handleNext, handleChange };
+  return {
+    currentQuestion,
+    currentIndex,
+    responses,
+    handleNext,
+    handleChange,
+    handlePrevious,
+  };
 }
