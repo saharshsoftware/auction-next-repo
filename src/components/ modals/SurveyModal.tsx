@@ -130,7 +130,7 @@ const SurveyModal = ({ openModal, hideModal = () => {} }: ISurveyModal) => {
       isCrossVisible={true}
       onClose={hideModal}
       // modalHeading={showSurvey ? "Quick Survey" : "We Value Your Opinion!"}
-      customWidthClass="lg:w-[40%] md:w-4/5 sm:w-3/5 w-11/12 relative p-0 "
+      customWidthClass="lg:w-[40%] md:w-4/5 sm:w-3/5 w-11/12 relative !p-0 "
     >
       <div className="flex flex-col gap-4 w-full">
         <div className="bg-brand-color flex items-center justify-center h-40 rounded-t-lg relative">
