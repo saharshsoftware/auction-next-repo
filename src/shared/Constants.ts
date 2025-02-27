@@ -1147,4 +1147,5 @@ export const STORAGE_KEYS = {
   AUCTION_VIEW_KEY: "auctionViews",
   SURVEY_SHOWN_KEY: "surveyShown",
   SURVEY_DISMISS_KEY: "dismissedSurvey",
+  DEVICE_ID: "deviceId",
 };

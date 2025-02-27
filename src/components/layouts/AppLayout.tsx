@@ -4,10 +4,18 @@ import { usePathname } from "next/navigation";
 import { AUTH_ROUTES } from "@/routes/AuthRoutes";
 import { useQuerySurvey } from "@/hooks/useQuerySurvey";
 import { useSurveyStore } from "@/zustandStore/surveyStore";
-import { sanitizeStrapiData } from "@/shared/Utilies";
+import { getOrCreateDeviceId, sanitizeStrapiData } from "@/shared/Utilies";
 import { useQueryIpAddressSurvey } from "@/hooks/useQueryIpAddressSurvey";
+import { getCookie } from "cookies-next";
+import { COOKIES } from "@/shared/Constants";
+import { updateActiveSurveyStorageStatus } from "@/helpers/SurveyHelper";
 
 const AppLayout = (props: { children: React.ReactNode }) => {
+  const userData = getCookie(COOKIES.AUCTION_USER_KEY)
+    ? JSON.parse(getCookie(COOKIES.AUCTION_USER_KEY) ?? "")
+    : null;
+
+  const isAuthenticated = !!userData;
   const { data } = useQuerySurvey();
   const { setSurveyData, updateIpAddressStatus, updateUserSurveyData } =
     useSurveyStore();
@@ -19,6 +27,7 @@ const AppLayout = (props: { children: React.ReactNode }) => {
   const { data: dataIpAddressSurvey } = useQueryIpAddressSurvey(surveyId);
 
   useEffect(() => {
+    getOrCreateDeviceId();
     if (data?.data) {
       const result = sanitizeStrapiData(data.data);
       setSurveyData(result);
@@ -33,9 +42,16 @@ const AppLayout = (props: { children: React.ReactNode }) => {
       // console.log("dataIpAddressSurvey", { resultStatus, response });
 
       updateIpAddressStatus(resultStatus);
+      updateActiveSurveyStorageStatus(surveyId, resultStatus);
       updateUserSurveyData(response);
     }
-  }, [dataIpAddressSurvey, updateIpAddressStatus, updateUserSurveyData]);
+  }, [
+    dataIpAddressSurvey,
+    updateIpAddressStatus,
+    updateUserSurveyData,
+    isAuthenticated,
+    surveyId,
+  ]);
 
   const { children } = props;
   const pathname = usePathname();

@@ -6,6 +6,7 @@ import { useSurvey } from "@/hooks/useSurvey";
 import SurveyQuestion from "../atoms/SurveyQuestion";
 import logo from "@/assets/images/logo.png";
 import _ from "lodash";
+import Image from "next/image";
 
 interface ISurveyModal {
   openModal: boolean;
@@ -13,7 +14,8 @@ interface ISurveyModal {
 }
 
 const SurveyModal = ({ openModal, hideModal = () => {} }: ISurveyModal) => {
-  const { handleContinue, handleReminder } = useSurveyModal();
+  const { handleReminder, isPendingFinished, isPendingRemainLater } =
+    useSurveyModal(hideModal);
   const {
     currentQuestion,
     currentIndex,
@@ -25,7 +27,7 @@ const SurveyModal = ({ openModal, hideModal = () => {} }: ISurveyModal) => {
   const [showSurvey, setShowSurvey] = useState(false);
 
   const remainderHandler = () => {
-    hideModal();
+    // hideModal();
     handleReminder();
   };
 
@@ -35,7 +37,6 @@ const SurveyModal = ({ openModal, hideModal = () => {} }: ISurveyModal) => {
       return;
     }
     // hideModal();
-    handleContinue();
     setShowSurvey(true);
   };
 
@@ -89,6 +90,7 @@ const SurveyModal = ({ openModal, hideModal = () => {} }: ISurveyModal) => {
                 text={currentIndex < 8 ? "Next" : "Finish"}
                 onclick={handleNextHandler}
                 isActionButton={true}
+                isLoading={isPendingFinished || isPendingRemainLater}
                 disabled={!responses[currentQuestion.question]}
               />
             </div>
@@ -117,6 +119,7 @@ const SurveyModal = ({ openModal, hideModal = () => {} }: ISurveyModal) => {
           <ActionButton
             text="Remind me later"
             onclick={remainderHandler}
+            isLoading={isPendingRemainLater}
             isActionButton={false}
           />
         </div>
@@ -134,11 +137,13 @@ const SurveyModal = ({ openModal, hideModal = () => {} }: ISurveyModal) => {
     >
       <div className="flex flex-col gap-4 w-full">
         <div className="bg-brand-color flex items-center justify-center h-40 rounded-t-lg relative">
-          <img
+          <Image
             src={logo.src}
             alt="logo"
-            // className="h-16 absolute -bottom-[25px]"
-            className="h-16"
+            width={200}
+            height={100}
+            objectFit="contain"
+            objectPosition="center"
           />
         </div>
         {showSurvey && (

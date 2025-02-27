@@ -30,7 +30,7 @@ const SurveyQuestion: React.FC<SurveyQuestionProps> = ({
                 <label
                   key={option}
                   className={`flex justify-center items-center border border-blue-500 text-blue-500 font-medium px-4 py-2 rounded-lg cursor-pointer transition-all hover:bg-blue-100 peer-checked:bg-blue-500 peer-checked:text-white  ${
-                    response === option ? "bg-blue-100" : ""
+                    response === option ? "bg-blue-400 text-white" : ""
                   }`}
                 >
                   <input
@@ -56,7 +56,7 @@ const SurveyQuestion: React.FC<SurveyQuestionProps> = ({
                 <label
                   key={option}
                   className={`flex justify-center items-center border border-blue-500 text-blue-500 font-medium px-4 py-2 rounded-lg cursor-pointer transition-all hover:bg-blue-100 peer-checked:bg-blue-500 peer-checked:text-white ${
-                    response?.includes(option) ? "bg-blue-100" : ""
+                    response?.includes(option) ? "bg-blue-400 text-white" : ""
                   }`}
                 >
                   <input

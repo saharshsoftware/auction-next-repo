@@ -1,8 +1,10 @@
 "use client";
 import { getRequest, postRequest, putRequest } from "@/shared/Axios";
-import { API_BASE_URL, API_ENPOINTS } from "./api";
-import { getIPAddress } from "@/shared/Utilies";
+import { API_ENPOINTS } from "./api";
+import { getIPAddress, getOrCreateDeviceId } from "@/shared/Utilies";
 import axios from "axios";
+
+const API_BASE_URL = "http://localhost:1009";
 
 export const userSurveys = async (body: {
   ipAddress: string;
@@ -70,7 +72,8 @@ export const getIPAddressSurveyStatus = async (props: {
 }) => {
   try {
     const { surveyId, isAuthenticated, userId } = props;
-    const ipAddress = await getIPAddress();
+    // const ipAddress = await getIPAddress();
+    const deviceId = getOrCreateDeviceId();
     // filters[user][id][$eq]=1
     let filter = `?pagination[page]=1&pagination[pageSize]=1&filters[survey][id][$eq]=${encodeURI(
       surveyId
@@ -79,8 +82,11 @@ export const getIPAddressSurveyStatus = async (props: {
     if (isAuthenticated) {
       filter += `filters[user][id][$eq]=${encodeURI(userId || "")}`;
     } else {
-      filter += `filters[ipAddress][$eq]=${encodeURI(ipAddress)}`;
+      filter += `filters[deviceId][$eq]=${encodeURI(deviceId)}`;
     }
+    // else {
+    //   filter += `filters[ipAddress][$eq]=${encodeURI(ipAddress)}`;
+    // }
 
     const URL = API_BASE_URL + API_ENPOINTS.USER_SURVEYS + filter;
     const { data } = await axios.get(URL);

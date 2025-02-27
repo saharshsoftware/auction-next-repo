@@ -9,7 +9,7 @@ import {
   ILocations,
 } from "@/types";
 import { AxiosError } from "axios";
-import { getEmptyAllObject, STRING_DATA } from "./Constants";
+import { getEmptyAllObject, STORAGE_KEYS, STRING_DATA } from "./Constants";
 import { ROUTE_CONSTANTS } from "./Routes";
 
 export const getDataFromLocalStorage = () => {
@@ -457,3 +457,12 @@ export const getIPAddress = async () => {
     console.log("Error submitting form:", error);
   }
 };
+
+export function getOrCreateDeviceId() {
+  let deviceId = localStorage.getItem(STORAGE_KEYS.DEVICE_ID);
+  if (!deviceId) {
+    deviceId = crypto.randomUUID(); // Generates a unique ID
+    localStorage.setItem(STORAGE_KEYS.DEVICE_ID, deviceId);
+  }
+  return deviceId;
+}

@@ -40,6 +40,7 @@ const AuctionDetail = (props: { auctionDetail: IAuction }) => {
   const { auctionDetail } = props;
   const { slug } = useParams() as { slug: string };
   const { setAuctionDetailData } = useAuctionDetailsStore();
+  const surveyStoreData = useSurveyStore((state) => state.surveyData) ?? null;
   const surveyStatus = useSurveyStore((state) => state.ipAdderssStatus);
   const noticeImageUrl = auctionDetail?.noticeImageURL
     ? `${process.env.NEXT_PUBLIC_IMAGE_CLOUDFRONT}/${auctionDetail?.noticeImageURL}`
@@ -145,9 +146,11 @@ const AuctionDetail = (props: { auctionDetail: IAuction }) => {
 
   const checkSurvey = async (
     slug: string,
-    surveyStatus: "COMPLETED" | "REMIND_LATER" | null
+    surveyStatus: "COMPLETED" | "REMIND_LATER" | null,
+    surveyStoreDataParams: any
   ) => {
-    const shouldShow = await shouldShowSurvey();
+    const surveyId = surveyStoreDataParams?.[0]?.id ?? "";
+    const shouldShow = await shouldShowSurvey(surveyId);
     console.log("MODAL STATUS------------");
     console.table({ surveyStatus, slug, shouldShow });
 
@@ -175,8 +178,8 @@ const AuctionDetail = (props: { auctionDetail: IAuction }) => {
   };
 
   useEffect(() => {
-    checkSurvey(slug, surveyStatus);
-  }, [slug, surveyStatus]);
+    checkSurvey(slug, surveyStatus, surveyStoreData);
+  }, [slug, surveyStatus, surveyStoreData]);
 
   console.log("isModalOpen", { isModalOpen });
 
