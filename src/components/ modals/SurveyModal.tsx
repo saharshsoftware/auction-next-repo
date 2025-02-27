@@ -14,8 +14,7 @@ interface ISurveyModal {
 }
 
 const SurveyModal = ({ openModal, hideModal = () => {} }: ISurveyModal) => {
-  const { handleReminder, isPendingFinished, isPendingRemainLater } =
-    useSurveyModal(hideModal);
+  const { handleReminder, isPendingRemainLater } = useSurveyModal(hideModal);
   const {
     currentQuestion,
     currentIndex,
@@ -23,7 +22,8 @@ const SurveyModal = ({ openModal, hideModal = () => {} }: ISurveyModal) => {
     handleNext,
     handleChange,
     handlePrevious,
-  } = useSurvey();
+    isPendingFinished,
+  } = useSurvey(hideModal);
   const [showSurvey, setShowSurvey] = useState(false);
 
   const remainderHandler = () => {
@@ -42,9 +42,9 @@ const SurveyModal = ({ openModal, hideModal = () => {} }: ISurveyModal) => {
 
   const handleNextHandler = () => {
     handleNext();
-    if (currentIndex === 8) {
-      hideModal();
-    }
+    // if (currentIndex === 8) {
+    //   hideModal();
+    // }
   };
 
   const renderSurveyQuestionContainer = () => {

@@ -1,10 +1,10 @@
 "use client";
 import { getRequest, postRequest, putRequest } from "@/shared/Axios";
-import { API_ENPOINTS } from "./api";
+import { API_BASE_URL, API_ENPOINTS } from "./api";
 import { getIPAddress, getOrCreateDeviceId } from "@/shared/Utilies";
 import axios from "axios";
 
-const API_BASE_URL = "http://localhost:1009";
+// const API_BASE_URL = "http://localhost:1009";
 
 export const userSurveys = async (body: {
   ipAddress: string;
@@ -14,8 +14,9 @@ export const userSurveys = async (body: {
   status: "COMPLETED" | "REMIND_LATER";
 }) => {
   try {
+    const ipAddress = await getIPAddress();
     const URL = API_BASE_URL + API_ENPOINTS.USER_SURVEYS;
-    const { data } = await axios.post(URL, { data: body });
+    const { data } = await axios.post(URL, { data: { ...body, ipAddress } });
 
     // console.log(data, "responsefetch");
     return data;
@@ -38,8 +39,9 @@ export const updateUserSurveys = async (payload: {
 }) => {
   const { body, userSurveyId } = payload;
   try {
+    const ipAddress = await getIPAddress();
     const URL = API_BASE_URL + API_ENPOINTS.USER_SURVEYS + `/${userSurveyId}`;
-    const { data } = await axios.put(URL, { data: body });
+    const { data } = await axios.put(URL, { data: { ...body, ipAddress } });
 
     // console.log(data, "responsefetch");
     return data;

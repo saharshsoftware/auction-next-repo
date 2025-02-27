@@ -2,7 +2,7 @@ import { use, useState } from "react";
 import { COOKIES, STORAGE_KEYS } from "@/shared/Constants";
 import { useMutation } from "@tanstack/react-query";
 import { updateUserSurveys, userSurveys } from "@/services/survey";
-import { getIPAddress, getOrCreateDeviceId } from "@/shared/Utilies";
+import { getOrCreateDeviceId } from "@/shared/Utilies";
 import { getCookie } from "cookies-next";
 import { useSurveyStore } from "@/zustandStore/surveyStore";
 import {
@@ -12,7 +12,7 @@ import {
 } from "@/helpers/SurveyHelper";
 import { useRouter } from "next/navigation";
 
-export function useSurvey() {
+export function useSurvey(hideModalFn?: () => void) {
   const router = useRouter();
   // const { questions } = surveyData;
   const surveyStoreData = useSurveyStore((state) => state.surveyData) ?? null;
@@ -28,7 +28,7 @@ export function useSurvey() {
   const [responses, setResponses] = useState<Record<string, any>>({});
 
   // Mutations
-  const { mutate } = useMutation({
+  const { mutate, isPending: isPendingFinished } = useMutation({
     mutationFn: userSurveys,
     onSuccess: (data: any) => {
       // console.log("(INFO:: onSuccess)", data);
@@ -37,28 +37,29 @@ export function useSurvey() {
         surveyStoreData?.[0]?.id ?? "",
         survey_status
       );
-      router.refresh();
+      hideModalFn?.();
     },
     onSettled: async (data) => {
       console.log(data);
     },
   });
 
-  const { mutate: mutateUserSurveys } = useMutation({
-    mutationFn: updateUserSurveys,
-    onSuccess: (data: any) => {
-      // console.log("(INFO:: onSuccess)", data);
-      const survey_status = data?.data?.attributes?.status ?? null;
-      updateActiveSurveyStorageStatus(
-        surveyStoreData?.[0]?.id ?? "",
-        survey_status
-      );
-      router.refresh();
-    },
-    onSettled: async (data) => {
-      console.log(data);
-    },
-  });
+  const { mutate: mutateUserSurveys, isPending: isPendingRemainLater } =
+    useMutation({
+      mutationFn: updateUserSurveys,
+      onSuccess: (data: any) => {
+        // console.log("(INFO:: onSuccess)", data);
+        const survey_status = data?.data?.attributes?.status ?? null;
+        updateActiveSurveyStorageStatus(
+          surveyStoreData?.[0]?.id ?? "",
+          survey_status
+        );
+        hideModalFn?.();
+      },
+      onSettled: async (data) => {
+        console.log(data);
+      },
+    });
 
   const handleSurveyApiCall = async (payload: any) => {
     if (isAuthenticated) {
@@ -106,10 +107,8 @@ export function useSurvey() {
   };
 
   const getPayloadData = async () => {
-    const ipAddress = await getIPAddress();
     const deviceId = getOrCreateDeviceId();
     return {
-      ipAddress,
       user: userData?.id,
       answers: Object.values(responses),
       survey: surveyStoreData?.[0]?.id ?? "",
@@ -135,5 +134,7 @@ export function useSurvey() {
     handleNext,
     handleChange,
     handlePrevious,
+    isPendingRemainLater,
+    isPendingFinished,
   };
 }

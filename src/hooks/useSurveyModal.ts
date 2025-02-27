@@ -5,7 +5,7 @@ import {
 } from "@/helpers/SurveyHelper";
 import { updateUserSurveys, userSurveys } from "@/services/survey";
 import { COOKIES } from "@/shared/Constants";
-import { getIPAddress, getOrCreateDeviceId } from "@/shared/Utilies";
+import { getOrCreateDeviceId } from "@/shared/Utilies";
 import { useSurveyStore } from "@/zustandStore/surveyStore";
 import { useMutation } from "@tanstack/react-query";
 import { getCookie } from "cookies-next";
@@ -69,10 +69,8 @@ export function useSurveyModal(hideModalFn?: () => void) {
   };
 
   const getPayloadData = async () => {
-    const ipAddress = await getIPAddress();
     const deviceId = getOrCreateDeviceId();
     return {
-      ipAddress,
       user: userData?.id,
       survey: surveyStoreData?.[0]?.id ?? "",
       status: "REMIND_LATER" as "COMPLETED" | "REMIND_LATER",
@@ -95,6 +93,7 @@ export function useSurveyModal(hideModalFn?: () => void) {
         surveyStoreData?.[0]?.id ?? "",
         "REMIND_LATER"
       );
+      hideModalFn?.();
     }
   };
 
