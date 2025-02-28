@@ -95,7 +95,7 @@ const SurveyModal = ({ openModal, hideModal = () => {} }: ISurveyModal) => {
           </div>
           <div className={`${showContactForm ? "" : "hidden"}`}>
             <EmailPhoneSurveyForm
-              hideModalFn={hideModal}
+              isSubmitting={isPendingFinished}
               handleSubmit={handleNext}
             />
             ;

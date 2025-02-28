@@ -21,10 +21,10 @@ const validationSchema = Yup.object()
   );
 
 const EmailPhoneSurveyForm = (props: {
-  hideModalFn?: () => void;
   handleSubmit: (email: string, phone: string) => void;
+  isSubmitting: boolean;
 }) => {
-  const { handleSubmit } = props;
+  const { handleSubmit, isSubmitting } = props;
 
   const handleFormSubmit = (values: any) => {
     console.log("Form Submitted", values);
@@ -62,7 +62,7 @@ const EmailPhoneSurveyForm = (props: {
             <ActionButton
               text={STRING_DATA.SUBMIT.toUpperCase()}
               isSubmit={true}
-              isLoading={false}
+              isLoading={isSubmitting}
               disabled={
                 (values?.email === "" && values?.phone === "") || !isValid
               }

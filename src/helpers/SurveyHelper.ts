@@ -189,6 +189,16 @@ export function isRemindLaterValid(surveyId: string): boolean {
     const oneWeekInMs = 7 * 24 * 60 * 60 * 1000;
     const isExpired = Date.now() >= remindLaterTimestamp + oneWeekInMs;
     return isExpired;
+
+    // const onMinutes = 1 * 60 * 1000;
+    // const currentDateInMs = Date.now();
+    // const isExpired = currentDateInMs >= remindLaterTimestamp + onMinutes;
+    // console.table({
+    //   isExpired,
+    //   checkValue: remindLaterTimestamp + onMinutes,
+    //   current: currentDateInMs,
+    // });
+    // return isExpired;
   } catch (error) {
     console.error("Error checking remind later validity:", error);
     return true;
