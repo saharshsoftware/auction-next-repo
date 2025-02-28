@@ -110,7 +110,7 @@ export function useSurvey(hideModalFn?: () => void) {
     const deviceId = getOrCreateDeviceId();
     return {
       user: userData?.id,
-      answers: Object.values(responses),
+      answers: responses,
       survey: surveyStoreData?.[0]?.id ?? "",
       status: "COMPLETED" as "COMPLETED" | "REMIND_LATER",
       deviceId,
