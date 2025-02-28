@@ -6,6 +6,10 @@ import { useSurvey } from "@/hooks/useSurvey";
 import SurveyQuestion from "../atoms/SurveyQuestion";
 import logo from "@/assets/images/logo.png";
 import _ from "lodash";
+import Image from "next/image";
+import EmailPhoneSurveyForm from "../molecules/EmailPhoneSurveyForm";
+import { COOKIES } from "@/shared/Constants";
+import { getCookie } from "cookies-next";
 
 interface ISurveyModal {
   openModal: boolean;
@@ -13,7 +17,7 @@ interface ISurveyModal {
 }
 
 const SurveyModal = ({ openModal, hideModal = () => {} }: ISurveyModal) => {
-  const { handleContinue, handleReminder } = useSurveyModal();
+  const { handleReminder, isPendingRemainLater } = useSurveyModal(hideModal);
   const {
     currentQuestion,
     currentIndex,
@@ -21,11 +25,16 @@ const SurveyModal = ({ openModal, hideModal = () => {} }: ISurveyModal) => {
     handleNext,
     handleChange,
     handlePrevious,
-  } = useSurvey();
+    isPendingFinished,
+  } = useSurvey(hideModal);
   const [showSurvey, setShowSurvey] = useState(false);
+  const [showContactForm, setShowContactForm] = useState(false);
+  const userData = getCookie(COOKIES.AUCTION_USER_KEY)
+    ? JSON.parse(getCookie(COOKIES.AUCTION_USER_KEY) ?? "")
+    : null;
+  const isAuthenticated = !!userData;
 
   const remainderHandler = () => {
-    hideModal();
     handleReminder();
   };
 
@@ -34,28 +43,22 @@ const SurveyModal = ({ openModal, hideModal = () => {} }: ISurveyModal) => {
       hideModal();
       return;
     }
-    // hideModal();
-    handleContinue();
     setShowSurvey(true);
   };
 
   const handleNextHandler = () => {
-    handleNext();
-    if (currentIndex === 8) {
-      hideModal();
+    if (currentIndex < 8) {
+      handleNext();
+    } else {
+      isAuthenticated ? handleNext() : setShowContactForm(true);
     }
   };
 
   const renderSurveyQuestionContainer = () => {
-    console.log("currentQuestion", {
-      currentQuestion,
-      cq: _.isObject(currentQuestion),
-    });
-
     if (showSurvey && _.isObject(currentQuestion)) {
       return (
         <>
-          <div className="p-6">
+          <div className={`p-6 ${showContactForm ? "hidden" : ""}`}>
             <SurveyQuestion
               question={currentQuestion.question ?? ""}
               options={currentQuestion.options}
@@ -68,30 +71,34 @@ const SurveyModal = ({ openModal, hideModal = () => {} }: ISurveyModal) => {
               response={responses[currentQuestion.question ?? ""]}
               onChange={handleChange}
             />
-
             <div
               className={`flex ${
                 currentIndex !== 0 ? "justify-between" : "justify-end"
               } mt-6`}
             >
-              {currentIndex !== 0 ? (
+              {currentIndex !== 0 && (
                 <div
                   className="link text-brand-color underline"
                   onClick={handlePrevious}
                 >
                   Back
                 </div>
-              ) : (
-                ""
               )}
-
               <ActionButton
                 text={currentIndex < 8 ? "Next" : "Finish"}
                 onclick={handleNextHandler}
                 isActionButton={true}
+                isLoading={isPendingFinished || isPendingRemainLater}
                 disabled={!responses[currentQuestion.question]}
               />
             </div>
+          </div>
+          <div className={`${showContactForm ? "" : "hidden"}`}>
+            <EmailPhoneSurveyForm
+              isSubmitting={isPendingFinished}
+              handleSubmit={handleNext}
+            />
+            ;
           </div>
         </>
       );
@@ -117,6 +124,7 @@ const SurveyModal = ({ openModal, hideModal = () => {} }: ISurveyModal) => {
           <ActionButton
             text="Remind me later"
             onclick={remainderHandler}
+            isLoading={isPendingRemainLater}
             isActionButton={false}
           />
         </div>
@@ -129,16 +137,17 @@ const SurveyModal = ({ openModal, hideModal = () => {} }: ISurveyModal) => {
       openModal={openModal}
       isCrossVisible={true}
       onClose={hideModal}
-      // modalHeading={showSurvey ? "Quick Survey" : "We Value Your Opinion!"}
-      customWidthClass="lg:w-[40%] md:w-4/5 sm:w-3/5 w-11/12 relative p-0 "
+      customWidthClass="lg:w-[40%] md:w-4/5 sm:w-3/5 w-11/12 relative !p-0"
     >
       <div className="flex flex-col gap-4 w-full">
         <div className="bg-brand-color flex items-center justify-center h-40 rounded-t-lg relative">
-          <img
+          <Image
             src={logo.src}
             alt="logo"
-            // className="h-16 absolute -bottom-[25px]"
-            className="h-16"
+            width={200}
+            height={100}
+            objectFit="contain"
+            objectPosition="center"
           />
         </div>
         {showSurvey && (

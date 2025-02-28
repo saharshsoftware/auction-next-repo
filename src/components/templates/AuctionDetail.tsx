@@ -27,7 +27,9 @@ import SurveyModal from "../ modals/SurveyModal";
 import { useSurveyModal } from "@/hooks/useSurveyModal";
 import { useParams } from "next/navigation";
 import {
+  getOrCreateSurveyStorageData,
   getSurveyDismissedStatus,
+  isRemindLaterValid,
   removeAuctionViewTrack,
   shouldShowSurvey,
   trackAuctionView,
@@ -40,7 +42,7 @@ const AuctionDetail = (props: { auctionDetail: IAuction }) => {
   const { auctionDetail } = props;
   const { slug } = useParams() as { slug: string };
   const { setAuctionDetailData } = useAuctionDetailsStore();
-  const surveyStatus = useSurveyStore((state) => state.ipAdderssStatus);
+  const surveyStoreData = useSurveyStore((state) => state.surveyData) ?? null;
   const noticeImageUrl = auctionDetail?.noticeImageURL
     ? `${process.env.NEXT_PUBLIC_IMAGE_CLOUDFRONT}/${auctionDetail?.noticeImageURL}`
     : "";
@@ -143,13 +145,14 @@ const AuctionDetail = (props: { auctionDetail: IAuction }) => {
     }
   }, [auctionDetail, setAuctionDetailData]);
 
-  const checkSurvey = async (
-    slug: string,
-    surveyStatus: "COMPLETED" | "REMIND_LATER" | null
-  ) => {
-    const shouldShow = await shouldShowSurvey();
-    console.log("MODAL STATUS------------");
-    console.table({ surveyStatus, slug, shouldShow });
+  const checkSurvey = async (slug: string, surveyStoreDataParams: any) => {
+    const surveyId = surveyStoreDataParams?.[0]?.id ?? "";
+    const surveyStatus = surveyId
+      ? getOrCreateSurveyStorageData(surveyId)
+      : null;
+    const shouldShow = await shouldShowSurvey(surveyId);
+
+    console.table({ surveyStatus, slug });
 
     switch (surveyStatus) {
       case "COMPLETED":
@@ -157,8 +160,12 @@ const AuctionDetail = (props: { auctionDetail: IAuction }) => {
 
         break;
       case "REMIND_LATER":
-        trackAuctionView(slug);
+        const isRemaidLaterExpired = isRemindLaterValid(surveyId);
 
+        if (isRemaidLaterExpired) {
+          trackAuctionView(slug);
+          // removeAuctionViewTrack();
+        }
         if (shouldShow) {
           openSurveyModal();
         }
@@ -175,8 +182,8 @@ const AuctionDetail = (props: { auctionDetail: IAuction }) => {
   };
 
   useEffect(() => {
-    checkSurvey(slug, surveyStatus);
-  }, [slug, surveyStatus]);
+    checkSurvey(slug, surveyStoreData);
+  }, [slug, surveyStoreData]);
 
   console.log("isModalOpen", { isModalOpen });
 

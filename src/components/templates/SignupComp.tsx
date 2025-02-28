@@ -47,8 +47,11 @@ export default function SignupComp(props: {
   handleLinkclick?: () => void;
   closeModal?: () => void;
 }) {
-
-  const { isAuthModal = false, handleLinkclick = () => {}, closeModal=()=>{} } = props;
+  const {
+    isAuthModal = false,
+    handleLinkclick = () => {},
+    closeModal = () => {},
+  } = props;
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [respError, setRespError] = useState<string>("");
@@ -69,7 +72,6 @@ export default function SignupComp(props: {
           router.push(ROUTE_CONSTANTS.DASHBOARD);
         },
         fail: (error: any) => {
-          debugger;
           const { message } = error;
           setRespError(message);
         },
@@ -93,9 +95,7 @@ export default function SignupComp(props: {
   };
   return (
     <>
-      <div
-        className={`${isAuthModal ? "" : "common-auth-section-class"} my-4`}
-      >
+      <div className={`${isAuthModal ? "" : "common-auth-section-class"} my-4`}>
         <CustomFormikForm
           initialValues={initialValues}
           validationSchema={validationSchema}
