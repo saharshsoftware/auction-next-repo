@@ -32,13 +32,16 @@ export function trackAuctionView(auctionId: string) {
  */
 export async function shouldShowSurvey(surveyId: string): Promise<boolean> {
   try {
-    // if (!isAuthenticated) {
     const SURVEY_STATUS = getActiveSurveyStorageStatus(surveyId);
 
     if (SURVEY_STATUS === "COMPLETED") {
       return false;
     }
-    // }
+
+    if (SURVEY_STATUS === "REMIND_LATER" && !isRemindLaterValid(surveyId)) {
+      return false;
+    }
+
     const views = JSON.parse(
       localStorage.getItem(STORAGE_KEYS.AUCTION_VIEW_KEY) || "[]"
     );
@@ -46,7 +49,7 @@ export async function shouldShowSurvey(surveyId: string): Promise<boolean> {
     const MIN_AUCTION_VIEWS = 5;
 
     if (!Array.isArray(views) || views.length < MIN_AUCTION_VIEWS) {
-      return false; // Don't show survey if views < 5 or survey was already shown
+      return false;
     }
 
     return true;
@@ -118,7 +121,12 @@ export function setActiveSurveyStorageStatus(
   status: "COMPLETED" | "REMIND_LATER" | "null"
 ) {
   try {
-    const data = { status };
+    const data: any = { status };
+
+    if (status === "REMIND_LATER") {
+      data.remindLaterTimestamp = Date.now(); // Store current timestamp
+    }
+
     localStorage.setItem(`SurveyId_${storageKey}`, JSON.stringify(data));
   } catch (error) {
     console.error(
@@ -159,5 +167,61 @@ export function deleteActiveSurveyStorageStatus(storageKey: string) {
       `Error deleting status for key SurveyId_${storageKey}:`,
       error
     );
+  }
+}
+
+/**
+ * Checks if the "REMIND_LATER" status is still valid or expired.
+ * @param {string} storageKey - The key to check.
+ * @returns {boolean} - Returns true if "REMIND_LATER" is still valid, false if expired.
+ */
+export function isRemindLaterValid(surveyId: string): boolean {
+  try {
+    const surveyData = JSON.parse(
+      localStorage.getItem(`SurveyId_${surveyId}`) || "{}"
+    );
+    const remindLaterTimestamp = surveyData?.remindLaterTimestamp;
+
+    if (!remindLaterTimestamp) {
+      return true; // No timestamp means the reminder is valid
+    }
+
+    const oneWeekInMs = 7 * 24 * 60 * 60 * 1000;
+    const isExpired = Date.now() >= remindLaterTimestamp + oneWeekInMs;
+    return isExpired;
+  } catch (error) {
+    console.error("Error checking remind later validity:", error);
+    return true;
+  }
+}
+
+/**
+ * Retrieves the status from localStorage for a given surveyId.
+ * If no status exists, it initializes the storage with a default status of `null`.
+ *
+ * @param {string} storageKey - The base key for storage.
+ * @param {string} surveyId - The unique ID of the survey.
+ * @returns {string | null} - The status ('COMPLETED', 'REMIND_LATER', or null).
+ */
+export function getOrCreateSurveyStorageData(surveyId: string): string | null {
+  try {
+    const fullKey = `SurveyId_${surveyId}`;
+    const data = localStorage.getItem(fullKey);
+
+    if (data) {
+      const parsed = JSON.parse(data);
+      return parsed.status || null;
+    }
+
+    // Initialize storage with null status if not found
+    const defaultData = { status: null };
+    localStorage.setItem(fullKey, JSON.stringify(defaultData));
+    return null;
+  } catch (error) {
+    console.error(
+      `Error getting or creating storage for key SurveyId_${surveyId} and SurveyId_${surveyId}:`,
+      error
+    );
+    return null;
   }
 }

@@ -1,10 +1,7 @@
 "use client";
-import { getRequest, postRequest, putRequest } from "@/shared/Axios";
 import { API_BASE_URL, API_ENPOINTS } from "./api";
 import { getIPAddress, getOrCreateDeviceId } from "@/shared/Utilies";
 import axios from "axios";
-
-// const API_BASE_URL = "http://localhost:1009";
 
 export const userSurveys = async (body: {
   ipAddress: string;

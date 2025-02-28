@@ -1,4 +1,4 @@
-import { use, useState } from "react";
+import { useState } from "react";
 import { COOKIES, STORAGE_KEYS } from "@/shared/Constants";
 import { useMutation } from "@tanstack/react-query";
 import { updateUserSurveys, userSurveys } from "@/services/survey";
@@ -82,11 +82,11 @@ export function useSurvey(hideModalFn?: () => void) {
 
   const currentQuestion = questions?.[currentIndex] ?? "";
 
-  const handleNext = () => {
+  const handleNext = (email?: string, phone?: string) => {
     if (currentIndex < questions.length - 1) {
       setCurrentIndex((prev) => prev + 1);
     } else {
-      handleSubmit();
+      handleSubmit(email ?? "", phone ?? "");
       localStorage.removeItem(STORAGE_KEYS.AUCTION_VIEW_KEY);
     }
   };
@@ -106,7 +106,7 @@ export function useSurvey(hideModalFn?: () => void) {
     setResponses((prev) => ({ ...prev, [currentQuestion.question]: value }));
   };
 
-  const getPayloadData = async () => {
+  const getPayloadData = async (email: string, phone: string) => {
     const deviceId = getOrCreateDeviceId();
     return {
       user: userData?.id,
@@ -114,12 +114,14 @@ export function useSurvey(hideModalFn?: () => void) {
       survey: surveyStoreData?.[0]?.id ?? "",
       status: "COMPLETED" as "COMPLETED" | "REMIND_LATER",
       deviceId,
+      ...(email && { email }),
+      ...(phone && { phone }),
     };
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (email?: string, phone?: string) => {
     console.log("Survey Responses:", responses);
-    const payload = await getPayloadData();
+    const payload = await getPayloadData(email ?? "", phone ?? "");
     console.log("(useSurvey :: ) payload data:", payload);
     handleSurveyApiCall(payload);
     if (!isAuthenticated) {
