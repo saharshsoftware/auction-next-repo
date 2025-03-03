@@ -25,6 +25,7 @@ const SurveyModal = ({ openModal, hideModal = () => {} }: ISurveyModal) => {
     handleNext,
     handleChange,
     handlePrevious,
+    handleSubmit,
     isPendingFinished,
   } = useSurvey(hideModal);
   const [showSurvey, setShowSurvey] = useState(false);
@@ -132,11 +133,16 @@ const SurveyModal = ({ openModal, hideModal = () => {} }: ISurveyModal) => {
     );
   };
 
+  const handleCrossClick = () => {
+    handleSubmit();
+    hideModal();
+  };
+
   return (
     <CustomModal
       openModal={openModal}
       isCrossVisible={true}
-      onClose={hideModal}
+      onClose={handleCrossClick}
       customWidthClass="lg:w-[40%] md:w-4/5 sm:w-3/5 w-11/12 relative !p-0"
     >
       <div className="flex flex-col gap-4 w-full">

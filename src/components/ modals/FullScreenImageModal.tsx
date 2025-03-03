@@ -44,7 +44,7 @@ const FullScreenImageModal: React.FC<IFullScreenImageModal> = ({
             layout="intrinsic"
             width={800}
             height={600}
-            className="max-w-full max-h-full object-contain shadow-lg rounded-lg"
+            className="max-w-full max-h-[90vh] object-contain shadow-lg rounded-lg"
             onLoad={() => setIsLoading(false)}
             onError={() => {
               setHasError(true);
