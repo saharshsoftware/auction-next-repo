@@ -26,6 +26,9 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
   const surveyId = data?.data?.[0]?.id || null;
 
   useEffect(() => {
+    if (surveyId) {
+      getOrCreateSurveyStorageData(surveyId);
+    }
     const surveyKey = `${STORAGE_KEYS.SURVEY_SHOWN}${surveyId}`; // Unique key per survey
     let surveyStatus = JSON.parse(localStorage.getItem(surveyKey) || "{}") as {
       status: "COMPLETED" | "REMIND_LATER" | "null";

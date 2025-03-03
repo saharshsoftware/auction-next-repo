@@ -69,6 +69,11 @@ export function useSurvey(hideModalFn?: () => void) {
     // I want to check if response if empty object using lodash
     if (_.isEmpty(responses)) {
       console.log("Question-response is empty", responses);
+      setActiveSurveyStorageStatus(
+        surveyStoreData?.[0]?.id ?? "",
+        "REMIND_LATER"
+      );
+      hideModalFn?.();
       return;
     }
     mutate(payload);
@@ -118,9 +123,9 @@ export function useSurvey(hideModalFn?: () => void) {
     const payload = await getPayloadData(email ?? "", phone ?? "");
     console.log("(useSurvey :: ) payload data:", payload);
     handleSurveyApiCall(payload);
-    if (!isAuthenticated) {
-      setActiveSurveyStorageStatus(surveyStoreData?.[0]?.id ?? "", "COMPLETED");
-    }
+    // if (!isAuthenticated) {
+    //   setActiveSurveyStorageStatus(surveyStoreData?.[0]?.id ?? "", "COMPLETED");
+    // }
   };
 
   return {

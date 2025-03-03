@@ -87,18 +87,24 @@ export function useSurveyModal(hideModalFn?: () => void) {
   };
 
   const handleReminder = async () => {
-    handleRemindMeLater();
-    const payload = await getPayloadData();
-    console.log("(useSurvey :: ) payload data:", payload);
-    if (isAuthenticated) {
-      handleSurveyApiCall(payload);
-    } else {
-      setActiveSurveyStorageStatus(
-        surveyStoreData?.[0]?.id ?? "",
-        "REMIND_LATER"
-      );
-      hideModalFn?.();
-    }
+    // handleRemindMeLater();
+    // const payload = await getPayloadData();
+    // console.log("(useSurvey :: ) payload data:", payload);
+    // if (isAuthenticated) {
+    //   handleSurveyApiCall(payload);
+    // } else {
+    //   setActiveSurveyStorageStatus(
+    //     surveyStoreData?.[0]?.id ?? "",
+    //     "REMIND_LATER"
+    //   );
+    //   hideModalFn?.();
+    // }
+
+    setActiveSurveyStorageStatus(
+      surveyStoreData?.[0]?.id ?? "",
+      "REMIND_LATER"
+    );
+    hideModalFn?.();
   };
 
   const hideModal = () => {
