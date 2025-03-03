@@ -1151,7 +1151,8 @@ export const STORAGE_KEYS = {
   PAGE_VIEWS: "user_page_views",
   SEARCH_COUNT: "user_search_count",
   SESSION_TIME: "page_session_time",
-  SURVEY_SHOWN: "survey_shown",
+  SURVEY_SHOWN: "SurveyId_",
   LAST_SURVEY_ID: "last_survey_id",
   LAST_PAGE_VIEWS_UPDATE: "last_page_views_update",
+  SURVEY_TRIGGER_TIME: "survey_trigger_time",
 };

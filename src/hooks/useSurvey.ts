@@ -11,6 +11,7 @@ import {
   updateActiveSurveyStorageStatus,
 } from "@/helpers/SurveyHelper";
 import { useRouter } from "next/navigation";
+import _ from "lodash";
 
 export function useSurvey(hideModalFn?: () => void) {
   const router = useRouter();
@@ -62,22 +63,15 @@ export function useSurvey(hideModalFn?: () => void) {
     });
 
   const handleSurveyApiCall = async (payload: any) => {
-    if (isAuthenticated) {
-      if (userSurveyData?.id) {
-        mutateUserSurveys({ body: payload, userSurveyId: userSurveyData?.id });
-        return;
-      }
-      mutate(payload);
-    } else {
-      const hasEntryExist =
-        getActiveSurveyStorageStatus(surveyStoreData?.[0]?.id ?? "") !== null;
-      console.log("hasEntryExist", hasEntryExist);
-      if (hasEntryExist && userSurveyData?.id) {
-        mutateUserSurveys({ body: payload, userSurveyId: userSurveyData?.id });
-        return;
-      }
-      mutate(payload);
+    const hasEntryExist =
+      getActiveSurveyStorageStatus(surveyStoreData?.[0]?.id ?? "") !== null;
+    console.log("hasEntryExist", hasEntryExist, responses);
+    // I want to check if response if empty object using lodash
+    if (_.isEmpty(responses)) {
+      console.log("Question-response is empty", responses);
+      return;
     }
+    mutate(payload);
   };
 
   const currentQuestion = questions?.[currentIndex] ?? "";
@@ -135,6 +129,7 @@ export function useSurvey(hideModalFn?: () => void) {
     responses,
     handleNext,
     handleChange,
+    handleSubmit,
     handlePrevious,
     isPendingRemainLater,
     isPendingFinished,

@@ -36,7 +36,8 @@ const SurveyModal = ({ openModal, hideModal = () => {} }: ISurveyModal) => {
   const isAuthenticated = !!userData;
 
   const remainderHandler = () => {
-    handleReminder();
+    // handleReminder();
+    hideModal();
   };
 
   const continueHandler = () => {
@@ -135,7 +136,7 @@ const SurveyModal = ({ openModal, hideModal = () => {} }: ISurveyModal) => {
 
   const handleCrossClick = () => {
     handleSubmit();
-    hideModal();
+    // hideModal();
   };
 
   return (

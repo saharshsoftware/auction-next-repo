@@ -2,7 +2,7 @@
 import { IAuction } from "@/types";
 import React, { useEffect, useState } from "react";
 import ShowLabelValue from "../atoms/ShowLabelValue";
-import { COOKIES, STORAGE_KEYS, STRING_DATA } from "@/shared/Constants";
+import { COOKIES, STRING_DATA } from "@/shared/Constants";
 import {
   formatPrice,
   formattedDateAndTime,
@@ -23,26 +23,12 @@ import FullScreenImageModal from "../ modals/FullScreenImageModal";
 import Image from "next/image";
 import { useAuctionDetailsStore } from "@/zustandStore/auctionDetails";
 import BlurredFieldWrapper from "../atoms/BlurredFieldWrapper";
-import SurveyModal from "../ modals/SurveyModal";
-import { useSurveyModal } from "@/hooks/useSurveyModal";
-import { useParams } from "next/navigation";
-import {
-  getOrCreateSurveyStorageData,
-  getSurveyDismissedStatus,
-  isRemindLaterValid,
-  removeAuctionViewTrack,
-  shouldShowSurvey,
-  trackAuctionView,
-} from "@/helpers/SurveyHelper";
-import { useSurveyStore } from "@/zustandStore/surveyStore";
 
 const auctionLabelClass = () => "text-sm text-gray-400 font-bold";
 
 const AuctionDetail = (props: { auctionDetail: IAuction }) => {
   const { auctionDetail } = props;
-  const { slug } = useParams() as { slug: string };
   const { setAuctionDetailData } = useAuctionDetailsStore();
-  const surveyStoreData = useSurveyStore((state) => state.surveyData) ?? null;
   const noticeImageUrl = auctionDetail?.noticeImageURL
     ? `${process.env.NEXT_PUBLIC_IMAGE_CLOUDFRONT}/${auctionDetail?.noticeImageURL}`
     : "";
@@ -59,11 +45,7 @@ const AuctionDetail = (props: { auctionDetail: IAuction }) => {
     openModal: openImageModal,
     hideModal: hideImageModal,
   } = useModal();
-  const {
-    isModalOpen,
-    hideModal: hideSurveyModal,
-    openModal: openSurveyModal,
-  } = useSurveyModal();
+
   const userData = getCookie(COOKIES.AUCTION_USER_KEY)
     ? JSON.parse(getCookie(COOKIES.AUCTION_USER_KEY) ?? "")
     : null;
@@ -145,55 +127,8 @@ const AuctionDetail = (props: { auctionDetail: IAuction }) => {
     }
   }, [auctionDetail, setAuctionDetailData]);
 
-  const checkSurvey = async (slug: string, surveyStoreDataParams: any) => {
-    const surveyId = surveyStoreDataParams?.[0]?.id ?? "";
-    const surveyStatus = surveyId
-      ? getOrCreateSurveyStorageData(surveyId)
-      : null;
-    const shouldShow = await shouldShowSurvey(surveyId);
-
-    console.table({ surveyStatus, slug });
-
-    switch (surveyStatus) {
-      case "COMPLETED":
-        removeAuctionViewTrack();
-
-        break;
-      case "REMIND_LATER":
-        const isRemaidLaterExpired = isRemindLaterValid(surveyId);
-
-        if (isRemaidLaterExpired) {
-          trackAuctionView(slug);
-          // removeAuctionViewTrack();
-        }
-        if (shouldShow) {
-          openSurveyModal();
-        }
-
-        break;
-      default:
-        trackAuctionView(slug);
-        if (shouldShow) {
-          openSurveyModal();
-        }
-
-        break;
-    }
-  };
-
-  useEffect(() => {
-    checkSurvey(slug, surveyStoreData);
-  }, [slug, surveyStoreData]);
-
-  console.log("isModalOpen", { isModalOpen });
-
   return (
     <>
-      {/* Survey Modal */}
-      {isModalOpen ? (
-        <SurveyModal openModal={isModalOpen} hideModal={hideSurveyModal} />
-      ) : null}
-
       {/* Create alert Modal */}
       {openModal ? (
         <InterestModal
