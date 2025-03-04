@@ -295,3 +295,57 @@ export function trackSearch() {
 export function getStorageKeyData(key: any) {
   return JSON.parse(localStorage.getItem(key) || "null");
 }
+
+// Helper function to recursively get descendant question IDs
+function getDescendants(
+  qid: string,
+  questions: any,
+  visited = new Set<string>()
+) {
+  let descendants: any = [];
+  if (!questions[qid] || visited.has(qid)) return descendants;
+  visited.add(qid);
+  const options = questions[qid].options;
+  options.forEach((option: any) => {
+    if (option.next) {
+      descendants.push(option.next);
+      descendants = descendants.concat(
+        getDescendants(option.next, questions, visited)
+      );
+    }
+  });
+  return descendants;
+}
+
+// Main function to remove downstream responses
+export function removeDownstreamResponses(
+  currentQuestion: any,
+  responses: any,
+  questions: any
+) {
+  // Find the ID of the current question (assuming question texts are unique)
+  let currentQId = null;
+  for (const id in questions) {
+    if (questions[id].question === currentQuestion.question) {
+      currentQId = id;
+      break;
+    }
+  }
+  // If not found, nothing to remove; return original responses
+  if (!currentQId) return responses;
+
+  // Get all descendant question IDs from the current question
+  const descendantIds = getDescendants(currentQId, questions);
+
+  // Remove responses for all descendant questions based on their text
+  descendantIds.forEach((qid: string) => {
+    if (questions[qid]) {
+      const qText = questions[qid].question;
+      if (responses.hasOwnProperty(qText)) {
+        delete responses[qText];
+      }
+    }
+  });
+
+  return responses;
+}

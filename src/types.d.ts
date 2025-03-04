@@ -190,7 +190,7 @@ export interface IAlert {
 export interface ISurvey {
   title: string;
   id: string;
-  questions: Question[];
+  questions: { [key: string]: Question };
   createdAt: Date;
   updatedAt: Date;
   publishedAt: Date;
@@ -209,12 +209,17 @@ export interface IUserSurvey {
 export interface Question {
   id: string;
   type: Type;
-  options: string[];
+  options: ISurveyOptions[];
   question: string;
   condition?: Condition;
   allowCustomInput?: boolean;
 }
 
+export interface ISurveyOptions {
+  label: string;
+  next: string;
+  prev: string;
+}
 export interface Condition {
   answer: string;
   questionId: string;
