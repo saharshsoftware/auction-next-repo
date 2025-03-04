@@ -78,7 +78,6 @@ export function useSurvey(hideModalFn?: () => void) {
         surveyStoreData?.[0]?.id ?? "",
         "REMIND_LATER"
       );
-      hideModalFn?.();
       return;
     }
     mutate(payload);
@@ -145,7 +144,8 @@ export function useSurvey(hideModalFn?: () => void) {
       setQuestionKey(nextQuestionKey); // Update questionKey instead of currentIndex
     } else if (nextQuestionKey === "end") {
       console.log("Survey Completed - API will hit");
-      // handleSubmit(email ?? "", phone ?? "");
+      handleSubmit(email ?? "", phone ?? "");
+      localStorage.removeItem(STORAGE_KEYS.AUCTION_VIEW_KEY);
     } else {
       console.log("Survey nextQuestionKey", { nextQuestionKey });
     }
@@ -215,6 +215,7 @@ export function useSurvey(hideModalFn?: () => void) {
     console.log("(useSurvey :: ) payload data:", payload);
 
     handleSurveyApiCall(payload);
+    hideModalFn?.();
     // if (!isAuthenticated) {
     //   setActiveSurveyStorageStatus(surveyStoreData?.[0]?.id ?? "", "COMPLETED");
     // }
