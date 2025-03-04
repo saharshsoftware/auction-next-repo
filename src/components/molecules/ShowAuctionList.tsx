@@ -7,7 +7,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
 import { IAuction } from "@/types";
 import { getDataFromQueryParams, setDataInQueryParams } from "@/shared/Utilies";
-import { COOKIES, REACT_QUERY } from "@/shared/Constants";
+import { COOKIES, REACT_QUERY, STRING_DATA } from "@/shared/Constants";
 import PaginationComp from "../atoms/PaginationComp";
 import { useQuery } from "@tanstack/react-query";
 import { getAuctionDataClient, noticeSearch } from "@/services/auction";
@@ -19,6 +19,9 @@ import { useFilterStore } from "@/zustandStore/filters";
 import NoDataImage from "../ui/NoDataImage";
 import { isEqual } from "lodash";
 import RenderH1SeoHeader from "../atoms/RenderH1SeoHeader";
+import LoginModal from "../ modals/LoginModal";
+import LoginComp from "../templates/LoginComp";
+import CustomModal from "../atoms/CustomModal";
 
 const ShowAuctionList = () => {
   const filterData = useFilterStore((state) => state.filter) as any;
@@ -29,6 +32,11 @@ const ShowAuctionList = () => {
   const pathname = usePathname(); // This will give the path without the slug
 
   const { showModal, openModal, hideModal } = useModal();
+  const {
+    showModal: showModalLogin,
+    openModal: openModalLogin,
+    hideModal: hideModalLogin,
+  } = useModal();
 
   const [hasKeywordSearchValue, setHasKeywordSearchValue] =
     useState<string>("");
@@ -155,11 +163,23 @@ const ShowAuctionList = () => {
     return null;
   };
 
+  const handleSaveSearchClick = () => {
+    const token = getCookie(COOKIES.TOKEN_KEY) ?? "";
+    if (token) {
+      showModal();
+      return;
+    }
+    showModalLogin();
+  };
+
   const renderSavedSearchButton = () => {
     const token = getCookie(COOKIES.TOKEN_KEY) ?? "";
-    if (searchParams.get("q") && token && pathname !== ROUTE_CONSTANTS.SEARCH) {
+    if (searchParams.get("q") && pathname !== ROUTE_CONSTANTS.SEARCH) {
       return (
-        <div className={"max-w-fit link link-primary"} onClick={showModal}>
+        <div
+          className={"max-w-fit link link-primary"}
+          onClick={handleSaveSearchClick}
+        >
           {"Save this search".toUpperCase()}
         </div>
       );
@@ -169,6 +189,18 @@ const ShowAuctionList = () => {
 
   return (
     <>
+      {/* Create alert Modal */}
+      {openModalLogin ? (
+        <CustomModal
+          openModal={openModalLogin}
+          modalHeading={STRING_DATA.LOGIN}
+          customWidthClass="lg:w-[40%] md:w-4/5 sm:w-3/5 w-11/12"
+        >
+          <div className="w-full">
+            <LoginComp isAuthModal={true} closeModal={hideModalLogin} />
+          </div>
+        </CustomModal>
+      ) : null}
       {openModal ? (
         <SavedSearchModal openModal={openModal} hideModal={hideModal} />
       ) : null}

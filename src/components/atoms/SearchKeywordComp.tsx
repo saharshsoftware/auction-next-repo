@@ -7,6 +7,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
 import SearchSvg from "../svgIcons/SearchSvg";
 import { useFilterStore } from "@/zustandStore/filters";
+import { trackSearch } from "@/helpers/SurveyHelper";
 
 const SearchKeywordComp = (props: { handleClick?: () => void }) => {
   const { handleClick = () => {} } = props;
@@ -23,6 +24,7 @@ const SearchKeywordComp = (props: { handleClick?: () => void }) => {
     console.log(values);
     router.push(`${ROUTE_CONSTANTS.SEARCH}?q=${values?.keyword}`);
     setFilter(FILTER_EMPTY);
+    trackSearch();
   };
 
   return (

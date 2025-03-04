@@ -235,3 +235,117 @@ export function getOrCreateSurveyStorageData(surveyId: string): string | null {
     return null;
   }
 }
+
+export function checkSurveyTrigger(
+  surveyId: string,
+  showSurveyPopup: () => void
+) {
+  const surveyKey = `${STORAGE_KEYS.SURVEY_SHOWN}${surveyId}`;
+  const DELAY_TIME = 5000; // 5 seconds delay
+  const PAGE_VIEWS_THRESHOLD = 10;
+  const SEARCH_COUNT_THRESHOLD = 3;
+
+  let pageVisits = parseInt(
+    localStorage.getItem(STORAGE_KEYS.PAGE_VIEWS) || "0"
+  );
+  let searchCount = parseInt(
+    localStorage.getItem(STORAGE_KEYS.SEARCH_COUNT) || "0"
+  );
+  let tabOpenedTime = parseInt(
+    sessionStorage.getItem(STORAGE_KEYS.SESSION_TIME) || "0"
+  );
+
+  // If conditions are met, check the delay
+  if (
+    pageVisits >= PAGE_VIEWS_THRESHOLD &&
+    searchCount >= SEARCH_COUNT_THRESHOLD
+  ) {
+    const currentTime = Date.now();
+
+    // If no time is set, store the tab open time
+    if (!tabOpenedTime) {
+      sessionStorage.setItem(STORAGE_KEYS.SESSION_TIME, currentTime.toString());
+      tabOpenedTime = currentTime;
+    }
+
+    console.log("Waiting for 5 seconds before showing survey popup.", {
+      tabOpenedTime,
+      currentTime,
+    });
+    // Show survey after 5 seconds
+    setTimeout(() => {
+      showSurveyPopup();
+      localStorage.removeItem(STORAGE_KEYS.PAGE_VIEWS);
+      localStorage.removeItem(STORAGE_KEYS.SEARCH_COUNT);
+      sessionStorage.removeItem(STORAGE_KEYS.SESSION_TIME);
+    }, Math.max(0, DELAY_TIME - (currentTime - tabOpenedTime)));
+  }
+}
+
+// Store the page visits and searches in localStorage
+export function incrementCounter(key: string) {
+  let count = localStorage.getItem(key) || "0";
+  localStorage.setItem(key, (parseInt(count) + 1).toString());
+}
+
+// Call this function when a search is made
+export function trackSearch() {
+  incrementCounter(STORAGE_KEYS.SEARCH_COUNT);
+}
+export function getStorageKeyData(key: any) {
+  return JSON.parse(localStorage.getItem(key) || "null");
+}
+
+// Helper function to recursively get descendant question IDs
+function getDescendants(
+  qid: string,
+  questions: any,
+  visited = new Set<string>()
+) {
+  let descendants: any = [];
+  if (!questions[qid] || visited.has(qid)) return descendants;
+  visited.add(qid);
+  const options = questions[qid].options;
+  options.forEach((option: any) => {
+    if (option.next) {
+      descendants.push(option.next);
+      descendants = descendants.concat(
+        getDescendants(option.next, questions, visited)
+      );
+    }
+  });
+  return descendants;
+}
+
+// Main function to remove downstream responses
+export function removeDownstreamResponses(
+  currentQuestion: any,
+  responses: any,
+  questions: any
+) {
+  // Find the ID of the current question (assuming question texts are unique)
+  let currentQId = null;
+  for (const id in questions) {
+    if (questions[id].question === currentQuestion.question) {
+      currentQId = id;
+      break;
+    }
+  }
+  // If not found, nothing to remove; return original responses
+  if (!currentQId) return responses;
+
+  // Get all descendant question IDs from the current question
+  const descendantIds = getDescendants(currentQId, questions);
+
+  // Remove responses for all descendant questions based on their text
+  descendantIds.forEach((qid: string) => {
+    if (questions[qid]) {
+      const qText = questions[qid].question;
+      if (responses.hasOwnProperty(qText)) {
+        delete responses[qText];
+      }
+    }
+  });
+
+  return responses;
+}

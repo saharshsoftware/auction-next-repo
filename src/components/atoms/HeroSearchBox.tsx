@@ -17,6 +17,7 @@ const SavedSearchList = dynamic(() => import("./SavedSearchList"), {
 import { getCookie } from "cookies-next";
 import dynamic from "next/dynamic";
 import { IFilters, useFilterStore } from "@/zustandStore/filters";
+import { trackSearch } from "@/helpers/SurveyHelper";
 
 interface IFilter {
   category: string;
@@ -79,6 +80,7 @@ const HeroSearchBox = (props: {
 
   const handleSearchButton = (values: IFilters) => {
     setFilter(values);
+    trackSearch();
     // const q = getFilterQuery(values);
   };
 

@@ -1,108 +1,93 @@
 {
-    "surveyId": "auction_site_survey_1",
-    "title": "Survey Questions for Auction Site Users",
-    "questions": [
-      {
-        "id": "q1",
-        "question": "Are you finding auction properties relevant to your needs?",
-        "type": "single-choice",
-        "options": [
-          "Yes, most of them",
-          "Somewhat relevant",
-          "No, not really"
-        ]
-      },
-      {
-        "id": "q2",
-        "question": "What type of auction properties are you primarily interested in?",
-        "type": "multiple-choice",
-        "options": [
-          "Residential (Flats, Houses, Plots, etc.)",
-          "Commercial (Shops, Offices, etc.)",
-          "Industrial (Factories, Warehouses, etc.)",
-          "Vehicles",
-          "Gold & Other assets"
-        ]
-      },
-      {
-        "id": "q3",
-        "question": "Are you actively looking to buy a property through an auction?",
-        "type": "single-choice",
-        "options": [
-          "Yes, within the next 1-3 months",
-          "Yes, but in the long term (3+ months)",
-          "No, just exploring options"
-        ]
-      },
-      {
-        "id": "q4",
-        "question": "If we introduce a trusted/verified broker network, would you be interested in their services?",
-        "type": "single-choice",
-        "options": [
-          "Yes, I need professional guidance",
-          "Maybe, depending on the broker’s credibility",
-          "No, I prefer handling auctions myself"
-        ]
-      },
-      {
-        "id": "q5",
-        "question": "Would you be willing to pay a fee to get connected with a verified broker?",
-        "type": "single-choice",
-        "options": [
-          "Yes",
-          "No"
-        ]
-      },
-      {
-        "id": "q6",
-        "question": "If yes, how much would you be comfortable paying?",
-        "type": "single-choice",
-        "options": [
-          "₹100 - ₹200",
-          "₹200 - ₹500",
-          "₹500 - ₹1000",
-          "₹1000 - ₹1500"
-        ],
-        "condition": {
-          "questionId": "q5",
-          "answer": "Yes"
-        }
-      },
-      {
-        "id": "q7",
-        "question": "What is your biggest challenge in buying auction properties?",
-        "type": "multiple-choice",
-        "options": [
-          "Lack of information about the process",
-          "Difficulty in finding relevant listings",
-          "Legal and documentation concerns",
-          "Competition from other bidders",
-          "Difficulty in financing the property",
-          "Other"
-        ],
-        "allowCustomInput": true
-      },
-      {
-        "id": "q8",
-        "question": "How did you find our website?",
-        "type": "single-choice",
-        "options": [
-          "Google Search",
-          "Social Media",
-          "Recommendation",
-          "Other"
-        ]
-      },
-      {
-        "id": "q9",
-        "question": "Would you like to receive updates on upcoming auctions?",
-        "type": "single-choice",
-        "options": [
-          "Yes, via Email",
-          "Yes, via WhatsApp",
-          "No"
-        ]
-      }
-    ]
+  "questions": {
+    "q1": {
+      "question": "Are you finding auction properties relevant to your needs?",
+      "type": "single-choice",
+      "options": [
+        { "label": "Yes, most of them", "next": "q2"  },
+        { "label": "Somewhat relevant", "next": "q2" },
+        { "label": "No, not really", "next": "q2" }
+      ]
+    },
+    "q2": {
+      "question": "What type of auction properties are you primarily interested in?",
+      "type": "multiple-choice",
+      "options": [
+        { "label": "Residential (Flats, Houses, Plots, etc.)", "next": "q3", "prev": "q1" },
+        { "label": "Commercial (Shops, Offices, etc.)", "next": "q3","prev": "q1" },
+        { "label": "Industrial (Factories, Warehouses, etc.)", "next": "q3","prev": "q1" },
+        { "label": "Vehicles", "next": "q3","prev": "q1" },
+        { "label": "Gold & Other assets", "next": "q3","prev": "q1" }
+      ]
+    },
+    "q3": {
+      "question": "Are you actively looking to buy a property through an auction?",
+      "type": "single-choice",
+      "options": [
+        { "label": "Yes, within the next 1-3 months", "next": "q4","prev": "q2" },
+        { "label": "Yes, but in the long term (3+ months)", "next": "q4","prev": "q2" },
+        { "label": "No, just exploring options", "next": "q4","prev": "q2" }
+      ]
+    },
+    "q4": {
+      "question": "If we introduce a trusted/verified broker network, would you be interested in their services?",
+      "type": "single-choice",
+      "options": [
+        { "label": "Yes, I need professional guidance", "next": "q5","prev": "q3" },
+        { "label": "Maybe, depending on the broker’s credibility", "next": "q5","prev": "q3" },
+        { "label": "No, I prefer handling auctions myself", "next": "q7","prev": "q3" }
+      ]
+    },
+    "q5": {
+      "question": "Would you be willing to pay a fee to get connected with a verified broker?",
+      "type": "single-choice",
+      "options": [
+        { "label": "Yes", "next": "q6","prev": "q4" },
+        { "label": "No", "next": "q7","prev": "q4" }
+      ]
+    },
+    "q6": {
+      "question": "If yes, how much would you be comfortable paying?",
+      "type": "single-choice",
+      "options": [
+        { "label": "₹100 - ₹200", "next": "q7","prev": "q5" },
+        { "label": "₹200 - ₹500", "next": "q7","prev": "q5" },
+        { "label": "₹500 - ₹1000", "next": "q7","prev": "q5" },
+        { "label": "₹1000 - ₹1500", "next": "q7","prev": "q5" }
+      ],
+      "condition": { "answer": "Yes", "questionId": "q5" }
+    },
+    "q7": {
+      "question": "What is your biggest challenge in buying auction properties?",
+      "type": "multiple-choice",
+      "options": [
+        { "label": "Lack of information about the process", "next": "q8","prev": "q5" },
+        { "label": "Difficulty in finding relevant listings", "next": "q8","prev": "q5" },
+        { "label": "Legal and documentation concerns", "next": "q8","prev": "q5" },
+        { "label": "Competition from other bidders", "next": "q8","prev": "q5" },
+        { "label": "Difficulty in financing the property", "next": "q8","prev": "q5" },
+        { "label": "Other", "next": "q8","prev": "q5" }
+      ],
+      "allowCustomInput": true
+    },
+    "q8": {
+      "question": "How did you find our website?",
+      "type": "single-choice",
+      "options": [
+        { "label": "Google Search", "next": "q9","prev": "q7" },
+        { "label": "Social Media", "next": "q9","prev": "q7" },
+        { "label": "Recommendation", "next": "q9","prev": "q7" },
+        { "label": "Other", "next": "q9","prev": "q7" }
+      ]
+    },
+    "q9": {
+      "question": "Would you like to receive updates on upcoming auctions?",
+      "type": "single-choice",
+      "options": [
+        { "label": "Yes, via Email", "next": "end","prev": "q8" },
+        { "label": "Yes, via WhatsApp", "next": "end","prev": "q8" },
+        { "label": "No", "next": "end","prev": "q8" }
+      ]
+    }
   }
-  
+}

@@ -25,7 +25,10 @@ const SurveyModal = ({ openModal, hideModal = () => {} }: ISurveyModal) => {
     handleNext,
     handleChange,
     handlePrevious,
+    handleSubmit,
     isPendingFinished,
+    questionKey,
+    currentQuestionData,
   } = useSurvey(hideModal);
   const [showSurvey, setShowSurvey] = useState(false);
   const [showContactForm, setShowContactForm] = useState(false);
@@ -47,7 +50,7 @@ const SurveyModal = ({ openModal, hideModal = () => {} }: ISurveyModal) => {
   };
 
   const handleNextHandler = () => {
-    if (currentIndex < 8) {
+    if (currentQuestionData.next !== "end") {
       handleNext();
     } else {
       isAuthenticated ? handleNext() : setShowContactForm(true);
@@ -55,41 +58,48 @@ const SurveyModal = ({ openModal, hideModal = () => {} }: ISurveyModal) => {
   };
 
   const renderSurveyQuestionContainer = () => {
+    // console.log("currentQuestion", {
+    //   currentQuestion,
+    //   responses,
+    //   res: responses[currentQuestion?.question ?? ""] ?? [],
+    // });
     if (showSurvey && _.isObject(currentQuestion)) {
       return (
         <>
           <div className={`p-6 ${showContactForm ? "hidden" : ""}`}>
             <SurveyQuestion
+              questionKey={questionKey}
               question={currentQuestion.question ?? ""}
-              options={currentQuestion.options}
+              // options={currentQuestion?.options?.map((option) => option.label)}
+              optionsData={currentQuestion?.options}
               type={
                 currentQuestion.type as
                   | "single-choice"
                   | "multiple-choice"
                   | "open-ended"
               }
-              response={responses[currentQuestion.question ?? ""]}
+              response={responses[currentQuestion?.question ?? ""]}
               onChange={handleChange}
             />
             <div
               className={`flex ${
-                currentIndex !== 0 ? "justify-between" : "justify-end"
+                questionKey !== "q1" ? "justify-between" : "justify-end"
               } mt-6`}
             >
-              {currentIndex !== 0 && (
+              {questionKey !== "q1" && (
                 <div
                   className="link text-brand-color underline"
-                  onClick={handlePrevious}
+                  onClick={() => handlePrevious(questionKey)}
                 >
                   Back
                 </div>
               )}
               <ActionButton
-                text={currentIndex < 8 ? "Next" : "Finish"}
+                text={currentQuestionData.next !== "end" ? "Next" : "Finish"}
                 onclick={handleNextHandler}
                 isActionButton={true}
                 isLoading={isPendingFinished || isPendingRemainLater}
-                disabled={!responses[currentQuestion.question]}
+                disabled={!responses[currentQuestion?.question ?? ""]}
               />
             </div>
           </div>
@@ -132,11 +142,16 @@ const SurveyModal = ({ openModal, hideModal = () => {} }: ISurveyModal) => {
     );
   };
 
+  const handleCrossClick = () => {
+    hideModal();
+    handleSubmit();
+  };
+
   return (
     <CustomModal
       openModal={openModal}
       isCrossVisible={true}
-      onClose={hideModal}
+      onClose={handleCrossClick}
       customWidthClass="lg:w-[40%] md:w-4/5 sm:w-3/5 w-11/12 relative !p-0"
     >
       <div className="flex flex-col gap-4 w-full">

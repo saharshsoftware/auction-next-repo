@@ -1,4 +1,5 @@
 import {
+  getActiveSurveyStorageStatus,
   handleRemindMeLater,
   setActiveSurveyStorageStatus,
   updateActiveSurveyStorageStatus,
@@ -61,11 +62,14 @@ export function useSurveyModal(hideModalFn?: () => void) {
   };
 
   const handleSurveyApiCall = async (payload: any) => {
-    if (userSurveyData?.id) {
-      mutateUserSurveys({ body: payload, userSurveyId: userSurveyData?.id });
-      return;
-    }
-    mutate(payload);
+    const hasEntryExist =
+      getActiveSurveyStorageStatus(surveyStoreData?.[0]?.id ?? "") !== null;
+    console.log("hasEntryExist", hasEntryExist, userSurveyData);
+    // if (userSurveyData?.id) {
+    //   mutateUserSurveys({ body: payload, userSurveyId: userSurveyData?.id });
+    //   return;
+    // }
+    // mutate(payload);
   };
 
   const getPayloadData = async () => {
@@ -83,18 +87,24 @@ export function useSurveyModal(hideModalFn?: () => void) {
   };
 
   const handleReminder = async () => {
-    handleRemindMeLater();
-    const payload = await getPayloadData();
-    console.log("(useSurvey :: ) payload data:", payload);
-    if (isAuthenticated) {
-      handleSurveyApiCall(payload);
-    } else {
-      setActiveSurveyStorageStatus(
-        surveyStoreData?.[0]?.id ?? "",
-        "REMIND_LATER"
-      );
-      hideModalFn?.();
-    }
+    // handleRemindMeLater();
+    // const payload = await getPayloadData();
+    // console.log("(useSurvey :: ) payload data:", payload);
+    // if (isAuthenticated) {
+    //   handleSurveyApiCall(payload);
+    // } else {
+    //   setActiveSurveyStorageStatus(
+    //     surveyStoreData?.[0]?.id ?? "",
+    //     "REMIND_LATER"
+    //   );
+    //   hideModalFn?.();
+    // }
+
+    setActiveSurveyStorageStatus(
+      surveyStoreData?.[0]?.id ?? "",
+      "REMIND_LATER"
+    );
+    hideModalFn?.();
   };
 
   const hideModal = () => {

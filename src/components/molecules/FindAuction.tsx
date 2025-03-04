@@ -51,6 +51,7 @@ import {
   fillFilterWithLocationsAndBanks,
   fillFilterWithLocationsAndCategories,
 } from "@/helpers/RoutingHelper";
+import { trackSearch } from "@/helpers/SurveyHelper";
 
 const gridElementClass = () => "lg:col-span-2  col-span-full";
 
@@ -312,6 +313,7 @@ const FindAuction = (props: IFindAuction) => {
     };
     console.log(filter);
     setFilter(filter);
+    trackSearch();
     setAuctionFilter(filter);
     const data: any = setDataInQueryParamsMethod(filter);
     // console.log(data)

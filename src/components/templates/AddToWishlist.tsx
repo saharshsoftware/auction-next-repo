@@ -1,7 +1,12 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Select from "react-select";
-import { ERROR_MESSAGE, REACT_QUERY, STRING_DATA } from "@/shared/Constants";
+import {
+  COOKIES,
+  ERROR_MESSAGE,
+  REACT_QUERY,
+  STRING_DATA,
+} from "@/shared/Constants";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { IFavouriteList } from "@/types";
 import { handleOnSettled } from "@/shared/Utilies";
@@ -15,10 +20,22 @@ import { getAuctionDetailClient } from "@/services/auction";
 import Link from "next/link";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
 import toast from "react-simple-toasts";
+import CustomModal from "../atoms/CustomModal";
+import LoginComp from "./LoginComp";
+import useModal from "@/hooks/useModal";
+import { getCookie } from "cookies-next";
 
 const AddToWishlist = () => {
   const params = useParams<{ slug: string; item: string }>();
-
+  const userData = getCookie(COOKIES.AUCTION_USER_KEY)
+    ? JSON.parse(getCookie(COOKIES.AUCTION_USER_KEY) ?? "")
+    : null;
+  const isAuthenticated = !!userData;
+  const {
+    showModal: showModalLogin,
+    openModal: openModalLogin,
+    hideModal: hideModalLogin,
+  } = useModal();
   const [selectedOption, setSelectedOption] = useState<any>(null);
 
   const { data: auctionData, fetchStatus } = useQuery({
@@ -33,7 +50,11 @@ const AddToWishlist = () => {
 
   // console.log(auctionData, "auctionData-favourite");
 
-  const { data: favouriteListData, isLoading: isLoadingFavourite } = useQuery({
+  const {
+    data: favouriteListData,
+    isLoading: isLoadingFavourite,
+    refetch,
+  } = useQuery({
     queryKey: [REACT_QUERY.FAVOURITE_LIST],
     queryFn: async () => {
       const res =
@@ -47,6 +68,12 @@ const AddToWishlist = () => {
     },
   });
 
+  useEffect(() => {
+    if (isAuthenticated) {
+      refetch();
+    }
+  }, [isAuthenticated]);
+
   // const queryClient = useQueryClient();
   const [respError, setRespError] = useState<string>("");
 
@@ -57,7 +84,7 @@ const AddToWishlist = () => {
       const response = {
         data,
         success: () => {
-          setRespError('');
+          setRespError("");
           setSelectedOption(null);
           toast("Successfully Added", {
             theme: "success",
@@ -90,6 +117,10 @@ const AddToWishlist = () => {
 
   const handleSubmit = (event: any) => {
     event.preventDefault();
+    if (!isAuthenticated) {
+      showModalLogin();
+      return;
+    }
     // toast("Hello, World!", { theme: "success", position: "top-center" });
     // addToast("Saved Successfully", { appearance: "success" });
     if (!selectedOption) {
@@ -102,7 +133,15 @@ const AddToWishlist = () => {
 
   const renderer = () => {
     if (favouriteListData?.length === 0) {
-      return <Link href={ROUTE_CONSTANTS.MANAGE_LIST} className="link link-primary text-center"> Create your list</Link>;
+      return (
+        <Link
+          href={ROUTE_CONSTANTS.MANAGE_LIST}
+          className="link link-primary text-center"
+        >
+          {" "}
+          Create your list
+        </Link>
+      );
     }
     return (
       <form
@@ -115,7 +154,8 @@ const AddToWishlist = () => {
           name="wishlist"
           value={selectedOption}
           onChange={setSelectedOption}
-          options={favouriteListData}
+          options={isAuthenticated ? favouriteListData : []}
+          isDisabled={!isAuthenticated}
         />
 
         {respError ? (
@@ -125,7 +165,7 @@ const AddToWishlist = () => {
           isSubmit={true}
           text="Add"
           isLoading={isPending}
-          disabled={isLoadingFavourite}
+          disabled={isAuthenticated ? isLoadingFavourite : false}
           customClass="w-full"
         />
       </form>
@@ -133,6 +173,17 @@ const AddToWishlist = () => {
   };
   return (
     <>
+      {openModalLogin ? (
+        <CustomModal
+          openModal={openModalLogin}
+          modalHeading={STRING_DATA.LOGIN}
+          customWidthClass="lg:w-[40%] md:w-4/5 sm:w-3/5 w-11/12"
+        >
+          <div className="w-full">
+            <LoginComp isAuthModal={true} closeModal={hideModalLogin} />
+          </div>
+        </CustomModal>
+      ) : null}
       <div className="custom-common-header-class">
         {STRING_DATA.ADD_TO_LIST}
       </div>
