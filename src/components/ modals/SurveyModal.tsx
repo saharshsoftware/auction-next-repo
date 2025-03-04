@@ -143,8 +143,8 @@ const SurveyModal = ({ openModal, hideModal = () => {} }: ISurveyModal) => {
   };
 
   const handleCrossClick = () => {
+    hideModal();
     handleSubmit();
-    // hideModal();
   };
 
   return (

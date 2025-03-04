@@ -215,7 +215,6 @@ export function useSurvey(hideModalFn?: () => void) {
     console.log("(useSurvey :: ) payload data:", payload);
 
     handleSurveyApiCall(payload);
-    hideModalFn?.();
     // if (!isAuthenticated) {
     //   setActiveSurveyStorageStatus(surveyStoreData?.[0]?.id ?? "", "COMPLETED");
     // }
