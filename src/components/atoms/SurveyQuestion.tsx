@@ -34,7 +34,7 @@ const SurveyQuestion: React.FC<SurveyQuestionProps> = ({
               {optionsData.map((option) => (
                 <label
                   key={option.label}
-                  className={`flex justify-center items-center border border-blue-500 text-blue-500 font-medium px-4 py-2 rounded-lg cursor-pointer transition-all hover:bg-blue-100 peer-checked:bg-blue-500 peer-checked:text-white  ${
+                  className={`flex justify-center items-center border border-blue-500 text-blue-500 font-medium px-4 py-2 rounded-lg cursor-pointer transition-all md:hover:bg-blue-100 peer-checked:bg-blue-500 peer-checked:text-white  ${
                     response === option.label ? "bg-blue-400 text-white" : ""
                   }`}
                 >
@@ -60,7 +60,7 @@ const SurveyQuestion: React.FC<SurveyQuestionProps> = ({
               {optionsData.map((option) => (
                 <label
                   key={option.label}
-                  className={`flex justify-center items-center border border-blue-500 text-blue-500 font-medium px-4 py-2 rounded-lg cursor-pointer transition-all hover:bg-blue-100 ${
+                  className={`flex justify-center items-center border border-blue-500 text-blue-500 font-medium px-4 py-2 rounded-lg cursor-pointer transition-all md:hover:bg-blue-100 ${
                     response?.includes(option.label)
                       ? "bg-blue-400 text-white"
                       : ""
