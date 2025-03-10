@@ -116,7 +116,7 @@ const ShowAuctionList = () => {
   };
 
   // Inside the component
-  const debouncedFetchAuctionDataRef = useRef(debounce(fetchAuctionData, 300));
+  const debouncedFetchAuctionDataRef = useRef(debounce(fetchAuctionData, 1000));
 
   useEffect(() => {
     debouncedFetchAuctionDataRef.current(filterParams);
