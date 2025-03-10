@@ -15,6 +15,7 @@ import { ROUTE_CONSTANTS } from "@/shared/Routes";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { IUserData } from "@/types";
+import { signupClient } from "@/services/auth";
 
 const validationSchema = Yup.object({
   name: Yup.string().trim().required(ERROR_MESSAGE.NAME_REQUIRED),
@@ -58,7 +59,7 @@ export default function SignupComp(props: {
 
   // Mutations
   const { mutate, isPending, error } = useMutation({
-    mutationFn: signup,
+    mutationFn: signupClient,
     onSettled: async (data) => {
       console.log(data);
       const response = {

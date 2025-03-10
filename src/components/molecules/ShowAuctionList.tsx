@@ -1,35 +1,46 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
-
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { debounce, isEqual } from "lodash";
 import AuctionCard from "../atoms/AuctionCard";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
 import { IAuction } from "@/types";
 import { getDataFromQueryParams, setDataInQueryParams } from "@/shared/Utilies";
-import { COOKIES, REACT_QUERY, STRING_DATA } from "@/shared/Constants";
+import { COOKIES, STRING_DATA } from "@/shared/Constants";
 import PaginationComp from "../atoms/PaginationComp";
-import { useQuery } from "@tanstack/react-query";
-import { getAuctionDataClient, noticeSearch } from "@/services/auction";
 import SkeltonAuctionCard from "../skeltons/SkeltonAuctionCard";
 import useModal from "@/hooks/useModal";
 import SavedSearchModal from "../ modals/SavedSearchModal";
 import { getCookie } from "cookies-next";
 import { useFilterStore } from "@/zustandStore/filters";
-import NoDataImage from "../ui/NoDataImage";
-import { isEqual } from "lodash";
 import RenderH1SeoHeader from "../atoms/RenderH1SeoHeader";
-import LoginModal from "../ modals/LoginModal";
 import LoginComp from "../templates/LoginComp";
 import CustomModal from "../atoms/CustomModal";
+import { getAuctionDataClient, noticeSearch } from "@/services/auction";
+import { useAuctionStore } from "@/zustandStore/auctionStore";
+
+interface IPaginationData {
+  page: number;
+  pageCount: number;
+  pageSize: number;
+  total: number;
+}
 
 const ShowAuctionList = () => {
-  const filterData = useFilterStore((state) => state.filter) as any;
-  const prevFilterData = useRef();
+  const { filter, prevParams, setPrevParams } = useFilterStore();
   const { setFilter } = useFilterStore();
+  const { auctionList, page, setAuctions, setPage, resetAuctions } =
+    useAuctionStore();
+  const [paginationMeta, setPaginationMeta] = useState<IPaginationData>({
+    page: 1,
+    pageCount: 0,
+    pageSize: 10,
+    total: 0,
+  });
   const router = useRouter();
   const searchParams = useSearchParams();
-  const pathname = usePathname(); // This will give the path without the slug
+  const pathname = usePathname();
 
   const { showModal, openModal, hideModal } = useModal();
   const {
@@ -40,80 +51,88 @@ const ShowAuctionList = () => {
 
   const [hasKeywordSearchValue, setHasKeywordSearchValue] =
     useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const [currentPage, setCurrentPage] = useState<number>(1);
-
-  const getFilterData = () => {
-    const modifiedfilterData = {
-      category: filterData.category?.name ?? "",
-      bankName: filterData?.bank?.name ?? "",
-      location: filterData?.location?.name ?? "",
-      propertyType: filterData?.propertyType?.name ?? "",
-      reservePrice: [filterData?.price?.[0] - 0, filterData?.price?.[1] - 0],
-      locationType: filterData?.location?.type ?? "",
+  // Memoizing filter params to prevent unnecessary re-renders
+  const filterParams = useMemo(
+    () => ({
+      category: filter.category?.name ?? "",
+      bankName: filter?.bank?.name ?? "",
+      location: filter?.location?.name ?? "",
+      propertyType: filter?.propertyType?.name ?? "",
+      reservePrice: filter?.price ?? [],
+      locationType: filter?.location?.type ?? "",
       keyword: "",
-      page: currentPage?.toString() ?? "",
-    };
-    // console.log("Sending data ....", modifiedfilterData);
-    return modifiedfilterData;
-  };
+      page: page.toString(),
+    }),
+    [
+      filter.category?.name,
+      filter?.bank?.name,
+      filter?.location?.name,
+      filter?.propertyType?.name,
+      filter?.price,
+      filter?.location?.type,
+      page,
+    ]
+  );
 
-  const fetchDataQuery = async () => {
-    if (pathname !== ROUTE_CONSTANTS.SEARCH) {
-      return await getAuctionDataClient(getFilterData());
+  // Fetch auction data function
+  const fetchAuctionData = async (params: any) => {
+    console.log("FETCHING_API:  ");
+    console.table({
+      prevParams,
+      params,
+    });
+    if (isEqual(prevParams, params)) {
+      console.log("(INFO):: Same params, skipping API call");
+      return;
     }
-    return await noticeSearch({ searchParams: searchParams.get("q") ?? "" });
+    setIsLoading(true);
+
+    try {
+      let res;
+      console.log("(INFO):: params", params);
+      if (pathname !== ROUTE_CONSTANTS.SEARCH) {
+        res = await getAuctionDataClient(params);
+      } else {
+        res = await noticeSearch({ searchParams: searchParams.get("q") ?? "" });
+      }
+      setAuctions(res.sendResponse);
+      setPaginationMeta(res.meta);
+      setPrevParams(params);
+    } catch (error) {
+      console.error("Error fetching auction data:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const {
-    data: auctionData,
-    fetchStatus,
-    refetch,
-  } = useQuery<any>({
-    queryKey: [REACT_QUERY.FIND_AUCTION, filterData],
-    queryFn: async () => {
-      const res = (await fetchDataQuery()) as unknown;
-      return res ?? [];
-    },
-    staleTime: 0,
-    enabled: false,
-  });
+  // Inside the component
+  const debouncedFetchAuctionDataRef = useRef(debounce(fetchAuctionData, 1000));
 
   useEffect(() => {
-    const hasDifference = !isEqual(prevFilterData.current, filterData);
-    // console.log("hasDifference", {
-    //   hasDifference,
-    //   prevFilterData: prevFilterData.current,
-    //   filterData,
-    // });
-    if (hasDifference) {
-      // console.log(filterData);
-      refetch();
-      prevFilterData.current = filterData; // Update the stored value
-    }
-  }, [filterData]);
+    debouncedFetchAuctionDataRef.current(filterParams);
+    return () => {
+      debouncedFetchAuctionDataRef.current.cancel();
+    };
+  }, [filterParams]);
 
   const handlePageChange = async (event: { selected: number }) => {
     const { selected: page } = event;
     const pageValue = page + 1;
-    setCurrentPage(pageValue);
-    const newParams = { ...filterData, page: pageValue };
+    setPage(pageValue);
+    const newParams = { ...filter, page: pageValue };
     const encodedQuery = setDataInQueryParams(newParams);
     router.replace(ROUTE_CONSTANTS.AUCTION + "?q=" + encodedQuery);
   };
 
-  // const debouncedRefetch = debounce(refetch, 500); // Adjust debounce time as per your requirement
-
   useEffect(() => {
     const query = searchParams.get("q");
-    // console.log("query", query);
     if (query) {
       if (pathname !== ROUTE_CONSTANTS.SEARCH) {
         const data = query;
         const result = getDataFromQueryParams(data ?? "") as any;
-        // filterRef.current = result;
         setFilter(result);
-        setCurrentPage(result?.page);
 
         if (result?.keyword) {
           setHasKeywordSearchValue(result?.keyword);
@@ -122,7 +141,6 @@ const ShowAuctionList = () => {
         setHasKeywordSearchValue("");
       } else {
         console.log("hits, search api");
-        refetch();
       }
     }
   }, [searchParams.get("q")]);
@@ -134,7 +152,7 @@ const ShowAuctionList = () => {
     router.push(`${ROUTE_CONSTANTS.AUCTION_DETAIL}/${data?.slug}`);
   };
 
-  if (fetchStatus === "fetching") {
+  if (isLoading) {
     return (
       <div className="min-h-[70vh] flex items-center justify-center">
         <SkeltonAuctionCard />
@@ -142,10 +160,9 @@ const ShowAuctionList = () => {
     );
   }
 
-  if (auctionData?.sendResponse?.length === 0) {
+  if (auctionList.length === 0) {
     return (
       <div className="flex items-center justify-center flex-col h-[70vh]">
-        {/* <NoDataImage /> */}
         No data found
       </div>
     );
@@ -155,8 +172,7 @@ const ShowAuctionList = () => {
     if (hasKeywordSearchValue) {
       return (
         <div className="text-sm ">
-          {" "}
-          {auctionData?.meta?.total} results of {hasKeywordSearchValue}
+          {auctionList.length} results of {hasKeywordSearchValue}
         </div>
       );
     }
@@ -189,7 +205,6 @@ const ShowAuctionList = () => {
 
   return (
     <>
-      {/* Create alert Modal */}
       {openModalLogin ? (
         <CustomModal
           openModal={openModalLogin}
@@ -205,11 +220,11 @@ const ShowAuctionList = () => {
         <SavedSearchModal openModal={openModal} hideModal={hideModal} />
       ) : null}
 
-      <RenderH1SeoHeader total={auctionData?.meta?.total} />
+      <RenderH1SeoHeader total={paginationMeta?.total} />
       <div className="flex flex-col gap-4 w-full">
         {renderKeywordSearchContainer()}
         {renderSavedSearchButton()}
-        {auctionData?.sendResponse?.map((item: IAuction, index: number) => {
+        {auctionList.map((item: IAuction, index: number) => {
           return (
             <div className="w-full" key={index}>
               <AuctionCard item={item} handleClick={handleClick} />
@@ -217,13 +232,13 @@ const ShowAuctionList = () => {
           );
         })}
       </div>
-      {auctionData?.meta?.pageCount ? (
+      {auctionList.length > 0 && (
         <PaginationComp
-          totalPage={auctionData?.meta?.pageCount}
+          totalPage={paginationMeta?.pageCount}
           onPageChange={handlePageChange}
-          activePage={currentPage}
+          activePage={page}
         />
-      ) : null}
+      )}
     </>
   );
 };
