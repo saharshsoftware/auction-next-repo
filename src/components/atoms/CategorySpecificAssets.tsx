@@ -15,7 +15,7 @@ const CategorySpecificAssets = (props: {
   isCategoryRoute?: boolean;
 }) => {
   const { isBankCategoriesRoute = false, isCategoryRoute = false } = props;
-  const { setFilter } = useFilterStore();
+  const { setFilter, setPropertyType } = useFilterStore();
   const params = useParams() as {
     slug: string;
     slugasset: string;
@@ -50,10 +50,20 @@ const CategorySpecificAssets = (props: {
 
   useEffect(() => {
     // This useEffect can be used for additional logic if needed when `slug` or `slugcategory` changes
-    refetch();
-  }, [params.slug, params.slugcategory, refetch]);
+    if (params.slug || params.slugcategory) {
+      refetch();
+    }
+  }, [params.slug, params.slugcategory]);
 
   const handleLinkClick = (propertyType: IAssetType) => {
+    if (isBankCategoriesRoute || isCategoryRoute) {
+      setPropertyType({
+        ...propertyType,
+        label: propertyType?.name,
+        value: propertyType?.id,
+      });
+      return;
+    }
     setFilter({
       ...FILTER_EMPTY,
       propertyType: {

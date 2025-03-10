@@ -52,6 +52,7 @@ const ShowAuctionList = () => {
   const [hasKeywordSearchValue, setHasKeywordSearchValue] =
     useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const isLoadingRef = useRef(false);
 
   // Memoizing filter params to prevent unnecessary re-renders
   const filterParams = useMemo(
@@ -87,6 +88,12 @@ const ShowAuctionList = () => {
       console.log("(INFO):: Same params, skipping API call");
       return;
     }
+    if (isLoadingRef.current) {
+      console.log("(INFO):: Already loading, skipping API call");
+      return;
+    }
+
+    isLoadingRef.current = true;
     setIsLoading(true);
 
     try {
@@ -103,12 +110,13 @@ const ShowAuctionList = () => {
     } catch (error) {
       console.error("Error fetching auction data:", error);
     } finally {
+      isLoadingRef.current = false;
       setIsLoading(false);
     }
   };
 
   // Inside the component
-  const debouncedFetchAuctionDataRef = useRef(debounce(fetchAuctionData, 1000));
+  const debouncedFetchAuctionDataRef = useRef(debounce(fetchAuctionData, 300));
 
   useEffect(() => {
     debouncedFetchAuctionDataRef.current(filterParams);

@@ -14,7 +14,7 @@ const TopBanks = (props: {
   isLocationRoute?: boolean;
 }) => {
   const { isLocationCategoriesRoute = false, isLocationRoute = false } = props;
-  const { setFilter } = useFilterStore();
+  const { setFilter, setBank } = useFilterStore();
   const params = useParams() as {
     slug: string;
     slugasset: string;
@@ -31,6 +31,14 @@ const TopBanks = (props: {
   });
 
   const handleLinkClick = (bank: IBanks) => {
+    if (isLocationCategoriesRoute || isLocationRoute) {
+      setBank({
+        ...bank,
+        label: bank?.name,
+        value: bank?.id,
+      });
+      return;
+    }
     setFilter({
       ...FILTER_EMPTY,
       bank: {
