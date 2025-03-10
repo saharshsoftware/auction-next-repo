@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import CustomModal from "../atoms/CustomModal";
 import ActionButton from "../atoms/ActionButton";
 import { useSurveyModal } from "@/hooks/useSurveyModal";
@@ -37,6 +37,18 @@ const SurveyModal = ({ openModal, hideModal = () => {} }: ISurveyModal) => {
     : null;
   const isAuthenticated = !!userData;
 
+  // Local state to trigger the transition (in case the modal stays mounted)
+  const [animate, setAnimate] = useState(false);
+
+  useEffect(() => {
+    if (openModal) {
+      // Delay a tick to allow the component to mount before applying the transition classes.
+      setTimeout(() => setAnimate(true), 10);
+    } else {
+      setAnimate(false);
+    }
+  }, [openModal]);
+
   const remainderHandler = () => {
     handleReminder();
   };
@@ -58,11 +70,6 @@ const SurveyModal = ({ openModal, hideModal = () => {} }: ISurveyModal) => {
   };
 
   const renderSurveyQuestionContainer = () => {
-    // console.log("currentQuestion", {
-    //   currentQuestion,
-    //   responses,
-    //   res: responses[currentQuestion?.question ?? ""] ?? [],
-    // });
     if (showSurvey && _.isObject(currentQuestion)) {
       return (
         <>
@@ -70,7 +77,6 @@ const SurveyModal = ({ openModal, hideModal = () => {} }: ISurveyModal) => {
             <SurveyQuestion
               questionKey={questionKey}
               question={currentQuestion.question ?? ""}
-              // options={currentQuestion?.options?.map((option) => option.label)}
               optionsData={currentQuestion?.options}
               type={
                 currentQuestion.type as
@@ -108,7 +114,6 @@ const SurveyModal = ({ openModal, hideModal = () => {} }: ISurveyModal) => {
               isSubmitting={isPendingFinished}
               handleSubmit={handleNext}
             />
-            ;
           </div>
         </>
       );
@@ -121,7 +126,7 @@ const SurveyModal = ({ openModal, hideModal = () => {} }: ISurveyModal) => {
 
         <p className="px-6">
           Your opinion matters to us. Take a quick survey to help us improve
-          your experience
+          your experience.
         </p>
 
         <div className="flex flex-col justify-end gap-4 px-6 pb-6">
@@ -152,7 +157,9 @@ const SurveyModal = ({ openModal, hideModal = () => {} }: ISurveyModal) => {
       openModal={openModal}
       isCrossVisible={true}
       onClose={handleCrossClick}
-      customWidthClass="lg:w-[40%] md:w-4/5 sm:w-3/5 w-11/12 relative !p-0"
+      customWidthClass={`lg:w-[40%] md:w-4/5 sm:w-3/5 w-11/12 relative !p-0 transform transition-all duration-300 ease-out ${
+        animate ? "translate-y-0 opacity-100" : "translate-y-full opacity-0"
+      }`}
     >
       <div className="flex flex-col gap-4 w-full">
         <div className="bg-brand-color flex items-center justify-center h-40 rounded-t-lg relative">

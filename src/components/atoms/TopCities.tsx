@@ -11,7 +11,7 @@ import React from "react";
 
 const TopCities = (props: { isBankRoute?: boolean }) => {
   const { isBankRoute = false } = props;
-  const { setFilter } = useFilterStore();
+  const { setFilter, setLocation } = useFilterStore();
   const params = useParams() as {
     slug: string;
     slugasset: string;
@@ -20,6 +20,14 @@ const TopCities = (props: { isBankRoute?: boolean }) => {
   };
 
   const handleLinkClick = (location: ILocations) => {
+    if (isBankRoute) {
+      setLocation({
+        ...location,
+        label: location?.name,
+        value: location?.id,
+      });
+      return;
+    }
     setFilter({
       ...FILTER_EMPTY,
       location: {
@@ -103,7 +111,9 @@ const TopCities = (props: { isBankRoute?: boolean }) => {
 
   return (
     <>
-      <div className="custom-common-header-class">{STRING_DATA.TOP_CITIES}</div>
+      <div className="custom-common-header-class">
+        12321{STRING_DATA.TOP_CITIES}
+      </div>
       {renderer()}
     </>
   );

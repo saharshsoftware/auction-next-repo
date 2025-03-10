@@ -11,7 +11,7 @@ import React from "react";
 
 const TopAssets = (props: { isBankTypesRoute?: boolean }) => {
   const { isBankTypesRoute = false } = props;
-  const { setFilter } = useFilterStore();
+  const { setFilter, setPropertyType } = useFilterStore();
   const params = useParams() as {
     slug: string;
     slugasset: string;
@@ -28,6 +28,14 @@ const TopAssets = (props: { isBankTypesRoute?: boolean }) => {
   });
 
   const handleLinkClick = (propertyType: IAssetType) => {
+    if (isBankTypesRoute) {
+      setPropertyType({
+        ...propertyType,
+        label: propertyType?.name,
+        value: propertyType?.id,
+      });
+      return;
+    }
     setFilter({
       ...FILTER_EMPTY,
       propertyType: {
