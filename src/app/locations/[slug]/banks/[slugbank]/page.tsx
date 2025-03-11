@@ -43,43 +43,43 @@ export async function generateMetadata(
     );
 
     const { name: nameLocation } = locationData;
-    const { name: nameBank } = bankData;
+    const { name, slug: primaryBankSlug, secondarySlug } = bankData;
     const sanitizeImageUrl = await handleOgImageUrl(
       locationData?.imageURL ?? ""
     );
-
+    const primaryName = secondarySlug ? secondarySlug?.toUpperCase() : name;
     return {
-      title: `${nameBank} Auction Properties in ${nameLocation} | Explore Residential, Commercial, Vehicle, and Gold Auctions`,
-      description: `Discover ${nameBank}'s auction properties in ${nameLocation} on eAuctionDekho, featuring a diverse selection of asset types including flats, houses, plots, residential units, agricultural land, bungalows, cars, vehicles, commercial buildings, offices, shops, factory and building lands, godowns, industrial buildings, lands, machinery, non-agricultural lands, scrap, and sheds. Secure the best deals today on assets tailored to meet diverse investment needs.`,
+      title: `${primaryName} Auction Properties in ${nameLocation} | Explore Residential, Commercial, Vehicle, and Gold Auctions`,
+      description: `Discover ${primaryName}'s auction properties in ${nameLocation} on eAuctionDekho, featuring a diverse selection of asset types including flats, houses, plots, residential units, agricultural land, bungalows, cars, vehicles, commercial buildings, offices, shops, factory and building lands, godowns, industrial buildings, lands, machinery, non-agricultural lands, scrap, and sheds. Secure the best deals today on assets tailored to meet diverse investment needs.`,
       alternates: {
-        canonical: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/locations/${slug}/banks/${slugbank}`,
+        canonical: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/locations/${slug}/banks/${primaryBankSlug}`,
       },
 
       keywords: [
-        `${nameBank} auction properties in ${nameLocation}`,
-        `${nameBank} flat bank auctions in ${nameLocation}`,
-        `${nameBank} house bank auctions in ${nameLocation}`,
-        `${nameBank} vehicle bank auctions in ${nameLocation}`,
-        `${nameBank} commercial property bank auctions in ${nameLocation}`,
+        `${primaryName} auction properties in ${nameLocation}`,
+        `${primaryName} flat bank auctions in ${nameLocation}`,
+        `${primaryName} house bank auctions in ${nameLocation}`,
+        `${primaryName} vehicle bank auctions in ${nameLocation}`,
+        `${primaryName} commercial property bank auctions in ${nameLocation}`,
         `Agricultural land bank auctions in ${nameLocation}`,
-        `${nameBank} machinery bank auctions in ${nameLocation}`,
-        `${nameBank} plot bank auctions in ${nameLocation}`,
-        `${nameBank} residential unit bank auctions in ${nameLocation}`,
-        `eAuctionDekho ${nameBank} listings in ${nameLocation}`,
+        `${primaryName} machinery bank auctions in ${nameLocation}`,
+        `${primaryName} plot bank auctions in ${nameLocation}`,
+        `${primaryName} residential unit bank auctions in ${nameLocation}`,
+        `eAuctionDekho ${primaryName} listings in ${nameLocation}`,
       ],
 
       openGraph: {
         type: "website",
-        url: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/locations/${slug}/banks/${slugbank}`,
-        title: `${nameBank} Auction Properties in ${nameLocation} | Explore Residential, Commercial, Vehicle, and Gold Auctions`,
-        description: `Discover ${nameBank}'s auction properties in ${nameLocation} on eAuctionDekho, featuring a diverse selection of asset types including flats, houses, plots, residential units, agricultural land, bungalows, cars, vehicles, commercial buildings, offices, shops, factory and building lands, godowns, industrial buildings, lands, machinery, non-agricultural lands, scrap, and sheds. Secure the best deals today on assets tailored to meet diverse investment needs.`,
+        url: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/locations/${slug}/banks/${primaryBankSlug}`,
+        title: `${primaryName} Auction Properties in ${nameLocation} | Explore Residential, Commercial, Vehicle, and Gold Auctions`,
+        description: `Discover ${primaryName}'s auction properties in ${nameLocation} on eAuctionDekho, featuring a diverse selection of asset types including flats, houses, plots, residential units, agricultural land, bungalows, cars, vehicles, commercial buildings, offices, shops, factory and building lands, godowns, industrial buildings, lands, machinery, non-agricultural lands, scrap, and sheds. Secure the best deals today on assets tailored to meet diverse investment needs.`,
         images: sanitizeImageUrl,
       },
       twitter: {
-        site: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/locations/${slug}/banks/${slugbank}`,
+        site: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/locations/${slug}/banks/${primaryBankSlug}`,
         card: "summary_large_image",
-        title: `${nameBank} Auction Properties in ${nameLocation} | Explore Residential, Commercial, Vehicle, and Gold Auctions`,
-        description: `Discover ${nameBank}'s auction properties in ${nameLocation} on eAuctionDekho, featuring a diverse selection of asset types including flats, houses, plots, residential units, agricultural land, bungalows, cars, vehicles, commercial buildings, offices, shops, factory and building lands, godowns, industrial buildings, lands, machinery, non-agricultural lands, scrap, and sheds. Secure the best deals today on assets tailored to meet diverse investment needs.`,
+        title: `${primaryName} Auction Properties in ${nameLocation} | Explore Residential, Commercial, Vehicle, and Gold Auctions`,
+        description: `Discover ${primaryName}'s auction properties in ${nameLocation} on eAuctionDekho, featuring a diverse selection of asset types including flats, houses, plots, residential units, agricultural land, bungalows, cars, vehicles, commercial buildings, offices, shops, factory and building lands, godowns, industrial buildings, lands, machinery, non-agricultural lands, scrap, and sheds. Secure the best deals today on assets tailored to meet diverse investment needs.`,
         images: sanitizeImageUrl,
       },
     };

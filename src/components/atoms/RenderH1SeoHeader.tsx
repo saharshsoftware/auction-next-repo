@@ -34,6 +34,10 @@ const RenderH1SeoHeader = (props: IRenderH1SeoHeader) => {
     const locationSlug = pathSegments[1] || ""; // 'agra'
     const subRoute = pathSegments[2];
     const bankSlug = pathSegments[3] || ""; // 'icici-home-finance'
+
+    const bankNamePrimary = filterData?.bank?.secondarySlug
+      ? filterData?.bank?.secondarySlug?.toUpperCase()
+      : bankName;
     // console.log("pathname", {
     //   currentRoute,
     //   subRoute,
@@ -45,7 +49,7 @@ const RenderH1SeoHeader = (props: IRenderH1SeoHeader) => {
       currentRoute === STRING_DATA.LOCATIONS?.toLowerCase() &&
       subRoute === STRING_DATA.BANKS?.toLowerCase()
     ) {
-      title = `${bankName} Auction Properties in ${locationName}`;
+      title = `${bankNamePrimary} Auction Properties in ${locationName}`;
     } else if (
       currentRoute === STRING_DATA.LOCATIONS?.toLowerCase() &&
       subRoute === STRING_DATA.TYPES?.toLowerCase()
@@ -57,7 +61,7 @@ const RenderH1SeoHeader = (props: IRenderH1SeoHeader) => {
     ) {
       title = `${category} Bank Properties in ${locationName}`;
     } else if (currentRoute === STRING_DATA.BANKS?.toLowerCase()) {
-      title = `${bankName} Auction Properties`;
+      title = `${bankNamePrimary} Auction Properties`;
     } else if (currentRoute === STRING_DATA.TYPES?.toLowerCase()) {
       title = `Bank Auction ${propertyPluralizeName} in India`;
     } else if (

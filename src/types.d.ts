@@ -70,6 +70,7 @@ export interface IBanks {
   route?: string;
   slug?: string;
   imageURL?: string;
+  secondarySlug?: string;
 }
 
 export interface ILocations {
