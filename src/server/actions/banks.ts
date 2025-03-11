@@ -6,22 +6,9 @@ import { generateQueryParamString, sanitizeStrapiData } from "@/shared/Utilies";
 
 export const fetchBanks = async () => {
   try {
-    const requiredkeys = generateQueryParamString(['name', 'slug']);
+    const requiredkeys = generateQueryParamString(["name", "slug"]);
     // console.log(requiredkeys, "requiredkeys");
     const filter = `?sort[0]=name:asc&pagination[page]=1&pagination[pageSize]=1000&${requiredkeys}`;
-    const URL = API_BASE_URL + API_ENPOINTS.BANKS+filter;
-    const { data } = await getRequest({ API: URL });
-    const sendResponse = sanitizeStrapiData(data?.data);
-    return sendResponse;
-  } catch (e) {
-    console.log(e, "banks error");
-  }
-};
-
-export const fetchBanksBySlug = async (props: {slug:string}) => {
-  try {
-    const { slug }= props
-    const filter = `?sort[0]=name:asc&pagination[page]=1&pagination[pageSize]=1000&filters[slug][$eq]=${slug}`;
     const URL = API_BASE_URL + API_ENPOINTS.BANKS + filter;
     const { data } = await getRequest({ API: URL });
     const sendResponse = sanitizeStrapiData(data?.data);
@@ -31,3 +18,15 @@ export const fetchBanksBySlug = async (props: {slug:string}) => {
   }
 };
 
+export const fetchBanksBySlug = async (props: { slug: string }) => {
+  try {
+    const { slug } = props;
+    const filter = `?sort[0]=name:asc&pagination[page]=1&pagination[pageSize]=1000&filters[$or][0][slug][$eq]=${slug}&filters[$or][1][secondarySlug][$eq]=${slug}`;
+    const URL = API_BASE_URL + API_ENPOINTS.BANKS + filter;
+    const { data } = await getRequest({ API: URL });
+    const sendResponse = sanitizeStrapiData(data?.data);
+    return sendResponse;
+  } catch (e) {
+    console.log(e, "banks error");
+  }
+};

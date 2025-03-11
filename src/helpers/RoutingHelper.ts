@@ -156,7 +156,8 @@ export const fillFilterWithBanksAndAssets = (
   if (!banksList || !assetTypeList || !params) return;
 
   const selectedBank = banksList.find(
-    (item: any) => item?.slug === params?.slug
+    (item: any) =>
+      item?.slug === params?.slug || item?.secondarySlug === params?.slug
   );
   const selectedAssetType = assetTypeList.find(
     (item: any) => item?.slug === params?.slugasset
@@ -223,7 +224,9 @@ export const fillFilterWithLocationsAndBanks = (
     (item: any) => item?.slug === params?.slug
   );
   const selectedBank = bankslist.find(
-    (item: any) => item?.slug === params?.slugbank
+    (item: any) =>
+      item?.slug === params?.slugbank ||
+      item?.secondarySlug === params?.slugbank
   );
 
   setInitialValueData({
@@ -289,7 +292,8 @@ export const fillFilterWithBanksAndCategories = (
   if (!banksList || !categoriesList || !params) return;
 
   const selectedBank = banksList.find(
-    (item: any) => item?.slug === params?.slug
+    (item: any) =>
+      item?.slug === params?.slug || item?.secondarySlug === params?.slug
   );
   const selectedCategory = categoriesList.find(
     (item: any) => item?.slug === params?.slugcategory
@@ -346,7 +350,8 @@ export const fillFilterHelper = (
     const pathType = getPathType(key);
     if (pathType) {
       selectedValues[pathType] = data.find(
-        (item: any) => item?.slug === slugParam
+        (item: any) =>
+          item?.slug === slugParam || item?.secondarySlug === params?.slug
       );
     }
   });

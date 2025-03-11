@@ -43,28 +43,28 @@ export async function generateMetadata(
     );
 
     const { name: nameAssetType } = assetTypeData;
-    const { name: nameBank } = bankData;
+    const { name, slug: primaryBankSlug, secondarySlug } = bankData;
     const sanitizeImageUrl = await handleOgImageUrl(bankData?.imageURL ?? "");
-
+    const primaryName = secondarySlug ? secondarySlug?.toUpperCase() : name;
     return {
-      title: `${nameBank} ${nameAssetType} auctions | eAuctionDekho`,
-      description: `Find ${nameAssetType} auctions for ${nameBank} bank. Also find flats, houses, plots, residential units, agricultural land, bungalows, cars, vehicles, commercial buildings, offices, shops, factory lands, godowns, industrial buildings, lands, machinery, non-agricultural lands, scrap, and sheds. Secure the best deals today tailored to your investment needs`,
+      title: `${primaryName} ${nameAssetType} auctions | eAuctionDekho`,
+      description: `Find ${nameAssetType} auctions for ${primaryName} bank. Also find flats, houses, plots, residential units, agricultural land, bungalows, cars, vehicles, commercial buildings, offices, shops, factory lands, godowns, industrial buildings, lands, machinery, non-agricultural lands, scrap, and sheds. Secure the best deals today tailored to your investment needs`,
       alternates: {
-        canonical: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/banks/${slug}/types/${slugasset}`,
+        canonical: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/banks/${primaryBankSlug}/types/${slugasset}`,
       },
 
       openGraph: {
         type: "website",
-        url: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/banks/${slug}/types/${slugasset}`,
-        title: `${nameBank} ${nameAssetType} auctions | eAuctionDekho`,
-        description: `Find ${nameAssetType} auctions for ${nameBank} bank. Also find flats, houses, plots, residential units, agricultural land, bungalows, cars, vehicles, commercial buildings, offices, shops, factory lands, godowns, industrial buildings, lands, machinery, non-agricultural lands, scrap, and sheds. Secure the best deals today tailored to your investment needs`,
+        url: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/banks/${primaryBankSlug}/types/${slugasset}`,
+        title: `${primaryName} ${nameAssetType} auctions | eAuctionDekho`,
+        description: `Find ${nameAssetType} auctions for ${primaryName} bank. Also find flats, houses, plots, residential units, agricultural land, bungalows, cars, vehicles, commercial buildings, offices, shops, factory lands, godowns, industrial buildings, lands, machinery, non-agricultural lands, scrap, and sheds. Secure the best deals today tailored to your investment needs`,
         images: sanitizeImageUrl,
       },
       twitter: {
-        site: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/banks/${slug}/types/${slugasset}`,
+        site: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/banks/${primaryBankSlug}/types/${slugasset}`,
         card: "summary_large_image",
-        title: `${nameBank} ${nameAssetType} auctions | eAuctionDekho`,
-        description: `Find ${nameAssetType} auctions for ${nameBank} bank. Also find flats, houses, plots, residential units, agricultural land, bungalows, cars, vehicles, commercial buildings, offices, shops, factory lands, godowns, industrial buildings, lands, machinery, non-agricultural lands, scrap, and sheds. Secure the best deals today tailored to your investment needs`,
+        title: `${primaryName} ${nameAssetType} auctions | eAuctionDekho`,
+        description: `Find ${nameAssetType} auctions for ${primaryName} bank. Also find flats, houses, plots, residential units, agricultural land, bungalows, cars, vehicles, commercial buildings, offices, shops, factory lands, godowns, industrial buildings, lands, machinery, non-agricultural lands, scrap, and sheds. Secure the best deals today tailored to your investment needs`,
         images: sanitizeImageUrl,
       },
     };

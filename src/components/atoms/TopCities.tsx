@@ -111,9 +111,7 @@ const TopCities = (props: { isBankRoute?: boolean }) => {
 
   return (
     <>
-      <div className="custom-common-header-class">
-        12321{STRING_DATA.TOP_CITIES}
-      </div>
+      <div className="custom-common-header-class">{STRING_DATA.TOP_CITIES}</div>
       {renderer()}
     </>
   );
