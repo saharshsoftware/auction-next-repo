@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 import { IAuction } from "@/types";
 import React, { useEffect, useState } from "react";
@@ -106,11 +107,20 @@ const AuctionDetail = (props: { auctionDetail: IAuction }) => {
             </>
           </div>
           <div className="relative">
-            <Image
+            {/* <Image
               src={noticeImageUrl}
               width={120}
               height={60}
               alt="no-data"
+              onError={() => {
+                setHasError(true);
+              }}
+            /> */}
+
+            <img
+              src={noticeImageUrl}
+              alt={"no-data"}
+              className={"w-24  h-auto bg-contain"}
               onError={() => {
                 setHasError(true);
               }}

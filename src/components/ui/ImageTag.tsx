@@ -27,9 +27,13 @@ const ImageTag = (props: {
   };
   return (
     <>
-      {/* <img src={imageUrl} alt={alt ?? "i"} className={customClass ?? 'w-16 h-16'} /> */}
+      <img
+        src={imageUrl}
+        alt={alt ?? "i"}
+        className={customClass ?? "w-full  h-auto bg-contain"}
+      />
 
-      {renderImage()}
+      {/* {renderImage()} */}
     </>
   );
 };
