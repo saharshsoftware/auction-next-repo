@@ -1,11 +1,14 @@
-import ShowAuctionList from "@/components/molecules/ShowAuctionList";
 import { fetchAssetTypes } from "@/server/actions/assetTypes";
 import { getCategoryBoxCollectionBySlug } from "@/server/actions/auction";
 import { getAssetTypeClient } from "@/services/auction";
 import { extractOnlyKeywords } from "@/shared/Utilies";
 import { ICategoryCollection } from "@/types";
 import { Metadata, ResolvingMetadata } from "next";
-import React from "react";
+import React, { lazy } from "react";
+
+const ShowAuctionList = lazy(
+  () => import("@/components/molecules/ShowAuctionList")
+);
 
 async function getSlugData(slug: string) {
   const selectedCategory = (await getCategoryBoxCollectionBySlug({

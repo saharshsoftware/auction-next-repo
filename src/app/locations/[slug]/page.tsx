@@ -1,9 +1,13 @@
-import ShowAuctionList from "@/components/molecules/ShowAuctionList";
 import { fetchLocationBySlug } from "@/server/actions/location";
 import { handleOgImageUrl } from "@/shared/Utilies";
 import { ILocations } from "@/types";
 import { Metadata, ResolvingMetadata } from "next";
-import React from "react";
+
+import React, { lazy } from "react";
+
+const ShowAuctionList = lazy(
+  () => import("@/components/molecules/ShowAuctionList")
+);
 
 async function getSlugData(slug: string) {
   const selectedLocation = (await fetchLocationBySlug({

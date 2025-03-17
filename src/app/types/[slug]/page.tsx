@@ -1,8 +1,11 @@
-import ShowAuctionList from "@/components/molecules/ShowAuctionList";
 import { fetchAssetTypeBySlug } from "@/server/actions/assetTypes";
 import { IAssetType } from "@/types";
 import { Metadata, ResolvingMetadata } from "next";
-import React from "react";
+import React, { lazy } from "react";
+
+const ShowAuctionList = lazy(
+  () => import("@/components/molecules/ShowAuctionList")
+);
 
 async function getSlugData(slug: string) {
   const selectedBank = (await fetchAssetTypeBySlug({

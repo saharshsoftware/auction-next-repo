@@ -373,7 +373,11 @@ const FindAuction = (props: IFindAuction) => {
 
   const renderData = () => {
     if (!isMobileView.mobileView) {
-      return <div className="common-section p-4">{renderForm()}</div>;
+      return (
+        <div className="common-section p-4  hidden lg:block">
+          {renderForm()}
+        </div>
+      );
     }
     return (
       <>
