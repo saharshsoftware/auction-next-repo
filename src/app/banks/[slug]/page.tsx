@@ -1,6 +1,6 @@
 import ShowAuctionList from "@/components/molecules/ShowAuctionList";
 import { fetchBanksBySlug } from "@/server/actions/banks";
-import { handleOgImageUrl } from "@/shared/Utilies";
+import { getPrimaryBankName, handleOgImageUrl } from "@/shared/Utilies";
 import { IBanks } from "@/types";
 import { Metadata, ResolvingMetadata } from "next";
 import React from "react";
@@ -29,7 +29,11 @@ export async function generateMetadata(
     const { name, slug: primaryBankSlug, secondarySlug } = bankData;
     const sanitizeImageUrl = await handleOgImageUrl(bankData?.imageURL ?? "");
     console.log("Generated Image URL:", { sanitizeImageUrl }); // Debugging
-    const primaryName = secondarySlug ? secondarySlug?.toUpperCase() : name;
+    const primaryName = getPrimaryBankName(
+      name ?? "",
+      secondarySlug ?? "",
+      slug ?? ""
+    );
     return {
       title: `${primaryName} Auction Properties | eAuctionDekho - Residential, Commercial, Vehicle, and Gold`,
       description: `Discover ${primaryName}'s auction properties on eAuctionDekho, featuring a diverse selection of asset types including flats, houses, plots, residential units, agricultural land, bungalows, cars, vehicles, commercial buildings, offices, shops, factory and building lands, godowns, industrial buildings, lands, machinery, non-agricultural lands, scrap, and sheds. Secure the best deals today on assets tailored to meet diverse investment needs.`,
