@@ -38,12 +38,23 @@ const FullScreenImageModal: React.FC<IFullScreenImageModal> = ({
         <div className="relative w-full h-full max-w-4xl flex flex-col items-center justify-center">
           {isLoading && !hasError && <CustomLoading />}
           {hasError && <p className="text-red-500">Failed to load image</p>}
-          <Image
+          {/* <Image
             src={hasError ? placeholderImage : imageUrl || placeholderImage}
             alt="Displayed Image"
             layout="intrinsic"
             width={800}
             height={600}
+            className="max-w-full max-h-[90vh] object-contain shadow-lg rounded-lg"
+            onLoad={() => setIsLoading(false)}
+            onError={() => {
+              setHasError(true);
+              setIsLoading(false);
+            }}
+          /> */}
+
+          <img
+            src={hasError ? placeholderImage : imageUrl || placeholderImage}
+            alt="Displayed Image"
             className="max-w-full max-h-[90vh] object-contain shadow-lg rounded-lg"
             onLoad={() => setIsLoading(false)}
             onError={() => {

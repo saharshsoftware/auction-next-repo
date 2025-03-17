@@ -466,3 +466,11 @@ export function getOrCreateDeviceId() {
   }
   return deviceId;
 }
+
+export const getPrimaryBankName = (
+  name: string,
+  secondarySlug: string,
+  matchingSlug: string
+) => {
+  return secondarySlug === matchingSlug ? secondarySlug?.toUpperCase() : name;
+};

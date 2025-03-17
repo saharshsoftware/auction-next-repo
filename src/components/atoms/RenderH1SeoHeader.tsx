@@ -2,7 +2,7 @@ import { STRING_DATA } from "@/shared/Constants";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
 import { getPathType } from "@/shared/Utilies";
 import { useFilterStore } from "@/zustandStore/filters";
-import { usePathname, useSearchParams } from "next/navigation";
+import { useParams, usePathname, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 interface IRenderH1SeoHeader {
@@ -18,6 +18,13 @@ const RenderH1SeoHeader = (props: IRenderH1SeoHeader) => {
   const category = filterData?.category?.name ?? "";
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const params = useParams() as {
+    slug: string;
+    slugasset: string;
+    slugcategory: string;
+    slugbank: string;
+  };
+
   const titlename =
     filterData?.[getPathType?.(pathname) as keyof typeof filterData]?.name;
   const propertyPluralizeName =
@@ -35,9 +42,11 @@ const RenderH1SeoHeader = (props: IRenderH1SeoHeader) => {
     const subRoute = pathSegments[2];
     const bankSlug = pathSegments[3] || ""; // 'icici-home-finance'
 
-    const bankNamePrimary = filterData?.bank?.secondarySlug
-      ? filterData?.bank?.secondarySlug?.toUpperCase()
-      : bankName;
+    const bankNamePrimary =
+      filterData?.bank?.secondarySlug === params.slugbank ||
+      filterData?.bank?.secondarySlug === params.slug
+        ? filterData?.bank?.secondarySlug?.toUpperCase()
+        : bankName;
     // console.log("pathname", {
     //   currentRoute,
     //   subRoute,
