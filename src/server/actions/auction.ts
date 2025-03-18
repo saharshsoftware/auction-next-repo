@@ -152,7 +152,6 @@ export const getCollectionData = async (props: { endpoints: string }) => {
   try {
     const { endpoints } = props;
     const requiredkeys = generateQueryParamString(["name", "slug", "imageURL"]);
-    console.log(requiredkeys, "requiredkeys");
     let filter =
       endpoints + `?populate=*&filters[isPopular]=true&${requiredkeys}`;
     if (endpoints === "locations") {

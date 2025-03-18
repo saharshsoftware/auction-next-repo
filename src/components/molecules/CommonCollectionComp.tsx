@@ -36,7 +36,7 @@ const CommonCollectionComp = (props: any) => {
         >
           <div className="flex flex-col items-center justify-center gap-2">
             {/* border border-gray-400 shadow overflow-hidden */}
-            <div className="relative rounded-full w-20 h-28 flex items-center justify-center m-auto ">
+            <div className="relative w-20 h-28 flex items-center justify-center m-auto ">
               <ImageTag imageUrl={imageUrl} alt={"i"} />
             </div>
             <span className="text-center text-sm">{item?.name}</span>

@@ -13,7 +13,10 @@ export const userSurveys = async (body: {
   try {
     const ipAddress = await getIPAddress();
     const URL = API_BASE_URL + API_ENPOINTS.USER_SURVEYS;
-    const { data } = await axios.post(URL, { data: { ...body, ipAddress } });
+    const { data } = await axios.post(URL, {
+      data: { ...body, ipAddress },
+      headers: {},
+    });
 
     // console.log(data, "responsefetch");
     return data;
@@ -53,7 +56,9 @@ export const getActiveSurvey = async () => {
   try {
     const filter = `?filters[isActive][$eq]=true&pagination[page]=1&pagination[pageSize]=1`;
     const URL = API_BASE_URL + API_ENPOINTS.SURVEYS + filter;
-    const { data } = await axios.get(URL);
+    const { data } = await axios.get(URL, {
+      headers: {},
+    });
 
     // console.log(data, "responsefetch");
     return data;

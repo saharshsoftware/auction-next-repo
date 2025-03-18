@@ -17,7 +17,10 @@ instance.interceptors.request.use(
     if (!!token) {
       config.headers.authorization = `Bearer ${token}`;
     }
-    // console.log(config, "configuser>>")
+    // config.headers["accept-encoding"] = "gzip;q=1, br;q=0.8, *;q=0.1";
+    // config.headers["saurabh"] = "kh";
+    // config.headers["content-encoding"] = "gzip;q=1, br;q=0.8, *;q=0.1";
+    // console.log(config.headers, "configuser>>");
     return config;
   },
   (error) => {
@@ -49,4 +52,3 @@ export const putRequest = async ({ API = "", DATA = {} }: IRequest) => {
 export const deleteRequest = async ({ API = "", DATA = {} }: IRequest) => {
   return instance.delete(API, { data: DATA });
 };
-

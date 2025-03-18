@@ -3,6 +3,7 @@ import { fetchAssetTypes } from "@/server/actions/assetTypes";
 import { fetchTopAssetsTypeClient } from "@/services/assetsType";
 import { FILTER_EMPTY, REACT_QUERY, STRING_DATA } from "@/shared/Constants";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
+import { getCategorySpecificAssets } from "@/shared/Utilies";
 import { IAssetType } from "@/types";
 import { useFilterStore } from "@/zustandStore/filters";
 import { useQuery } from "@tanstack/react-query";
@@ -31,18 +32,12 @@ const CategorySpecificAssets = (props: {
     queryKey: [REACT_QUERY.CATEGORY_ASSETS_TYPE, "category-specific"],
     queryFn: async () => {
       const response = (await fetchAssetTypes()) as unknown as IAssetType[];
-      const result =
-        response?.filter((item: any) => {
-          const categoryName = item?.category?.data?.attributes?.slug || "";
-
-          if (categoryName === params?.slugcategory && isBankCategoriesRoute) {
-            return item;
-          }
-
-          if (categoryName === params?.slug && isCategoryRoute) {
-            return item;
-          }
-        }) ?? [];
+      const result = getCategorySpecificAssets({
+        response,
+        params,
+        isBankCategoriesRoute,
+        isCategoryRoute,
+      });
       console.log("INFO:: (result)", { result, response });
       return result;
     },

@@ -480,3 +480,25 @@ export const getPrimaryBankName = (
 ) => {
   return secondarySlug === matchingSlug ? secondarySlug?.toUpperCase() : name;
 };
+
+export const getCategorySpecificAssets = (props: {
+  response: IAssetType[];
+  params: { slugcategory: string; slug: string };
+  isBankCategoriesRoute: boolean;
+  isCategoryRoute: boolean;
+}) => {
+  const { response, params, isBankCategoriesRoute, isCategoryRoute } = props;
+  const result = response?.filter((item: any) => {
+    // const categoryName = item?.category?.data?.attributes?.slug || "";
+    const categoryName = item?.category?.slug || "";
+
+    if (categoryName === params?.slugcategory && isBankCategoriesRoute) {
+      return item;
+    }
+
+    if (categoryName === params?.slug && isCategoryRoute) {
+      return item;
+    }
+  });
+  return result ?? [];
+};

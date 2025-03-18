@@ -1,5 +1,8 @@
 "use client";
-import { fetchPopularLocationClient } from "@/services/location";
+import {
+  fetchLocationTopClient,
+  fetchPopularLocationClient,
+} from "@/services/location";
 import { FILTER_EMPTY, REACT_QUERY, STRING_DATA } from "@/shared/Constants";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
 import { ILocations } from "@/types";
@@ -40,8 +43,7 @@ const TopCities = (props: { isBankRoute?: boolean }) => {
   const { data: locationOptions, fetchStatus } = useQuery({
     queryKey: [REACT_QUERY.AUCTION_LOCATION, "top"],
     queryFn: async () => {
-      const res =
-        (await fetchPopularLocationClient()) as unknown as ILocations[];
+      const res = (await fetchLocationTopClient()) as unknown as ILocations[];
       return res ?? [];
     },
   });
