@@ -103,12 +103,18 @@ export const santizedErrorResponse = (error: any) => {
   return { axiosError: response?.message, responseError: response?.details };
 };
 
-export const sanitizeStrapiData = (data: any) => {
-  const sanitizeData = data?.map((item: any) => ({
-    id: item?.id,
-    ...item?.attributes,
-  }));
-  return sanitizeData;
+export const sanitizeStrapiData = (
+  data: any,
+  isStrapiDefaultResponse?: boolean
+) => {
+  if (isStrapiDefaultResponse) {
+    const sanitizeData = data?.map((item: any) => ({
+      id: item?.id,
+      ...item?.attributes,
+    }));
+    return sanitizeData;
+  }
+  return data;
 };
 
 export const sanitizeReactSelectOptions = (data: any[]) => {

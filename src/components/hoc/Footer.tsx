@@ -7,7 +7,7 @@ import { ROUTE_CONSTANTS } from "@/shared/Routes";
 const Footer: React.FC = () => {
   return (
     <>
-      <footer className="flex flex-col  gap-8 lg:p-10 px-4 py-10 bg-neutral text-neutral-content rounded">
+      <footer className="flex flex-col  gap-8 lg:p-10 px-4 py-10 bg-neutral text-neutral-content rounded-t">
         <div className="grid grid-cols-12 gap-4">
           {" "}
           <p className="text-sm lg:col-span-4 lg:block hidden">

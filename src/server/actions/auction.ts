@@ -152,14 +152,14 @@ export const getCollectionData = async (props: { endpoints: string }) => {
   try {
     const { endpoints } = props;
     const requiredkeys = generateQueryParamString(["name", "slug", "imageURL"]);
-    // console.log(requiredkeys, "requiredkeys");
+    console.log(requiredkeys, "requiredkeys");
     let filter =
       endpoints + `?populate=*&filters[isPopular]=true&${requiredkeys}`;
     if (endpoints === "locations") {
       filter += `&filters[type]=city`;
     }
     const URL = API_BASE_URL + `/api/` + filter;
-    // console.log(URL, "URL");
+    // console.log(URL, "URL-auctionDetail");
     const { data } = await getRequest({ API: URL });
     const sendResponse = sanitizeStrapiData(data.data) as any;
     return sendResponse;
@@ -175,7 +175,10 @@ export const getCarouselData = async () => {
   try {
     const URL = API_BASE_URL + API_ENPOINTS.HOME_BOX_COLLECTIONS;
     const { data } = await getRequest({ API: URL });
-    const categories = sanitizeStrapiData(data.data) as ICategoryCollection;
+    const categories = sanitizeStrapiData(
+      data.data,
+      true
+    ) as ICategoryCollection;
 
     const categorizedData = await Promise.all(
       categories.map(async (category: any) => {

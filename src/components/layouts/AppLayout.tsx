@@ -54,7 +54,7 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
 
       if (surveyId) {
         getOrCreateSurveyStorageData(surveyId);
-        setSurveyData(sanitizeStrapiData(data.data));
+        setSurveyData(sanitizeStrapiData(data.data, true));
       }
     } catch (error) {
       console.error("Error initializing survey data:", error);

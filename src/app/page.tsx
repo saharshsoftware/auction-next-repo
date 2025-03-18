@@ -4,6 +4,7 @@ import AssetsCollection from "@/components/molecules/AssetsCollection";
 import BankCollection from "@/components/molecules/BankCollection";
 import CategoryCollection from "@/components/molecules/CategoryCollection";
 import CommonCollectionComp from "@/components/molecules/CommonCollectionComp";
+import LocationCollection from "@/components/molecules/LocationCollection";
 import { fetchBanks, fetchLocation } from "@/server/actions";
 import {
   getAssetType,
@@ -22,6 +23,8 @@ const getComponent = (componentName: string) => {
       return BankCollection;
     case "AssetsCollection":
       return AssetsCollection;
+    case "LocationCollection":
+      return LocationCollection;
     default:
       return CommonCollectionComp;
   }

@@ -28,7 +28,7 @@ const CategorySpecificAssets = (props: {
     fetchStatus,
     refetch,
   } = useQuery({
-    queryKey: [REACT_QUERY.CATEGORY_ASSETS_TYPE],
+    queryKey: [REACT_QUERY.CATEGORY_ASSETS_TYPE, "category-specific"],
     queryFn: async () => {
       const response = (await fetchAssetTypes()) as unknown as IAssetType[];
       const result =

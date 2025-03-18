@@ -1,5 +1,5 @@
 "use client";
-import { fetchTopAssetsTypeClient } from "@/services/assetsType";
+import { fetchPopularAssetsTypeClient } from "@/services/assetsType";
 import { FILTER_EMPTY, REACT_QUERY, STRING_DATA } from "@/shared/Constants";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
 import { IAssetType } from "@/types";
@@ -22,7 +22,8 @@ const TopAssets = (props: { isBankTypesRoute?: boolean }) => {
   const { data: assetsTypeData, fetchStatus } = useQuery({
     queryKey: [REACT_QUERY.ASSETS_TYPE, "top"],
     queryFn: async () => {
-      const res = (await fetchTopAssetsTypeClient()) as unknown as IAssetType[];
+      const res =
+        (await fetchPopularAssetsTypeClient()) as unknown as IAssetType[];
       return res ?? [];
     },
   });

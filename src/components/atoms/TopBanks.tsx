@@ -1,5 +1,5 @@
 "use client";
-import { fetchBankTopClient } from "@/services/Home";
+import { fetchPopularBankClient } from "@/services/Home";
 import { FILTER_EMPTY, REACT_QUERY, STRING_DATA } from "@/shared/Constants";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
 import { IBanks } from "@/types";
@@ -25,7 +25,7 @@ const TopBanks = (props: {
   const { data: bankOptions, fetchStatus } = useQuery({
     queryKey: [REACT_QUERY.AUCTION_BANKS, "top"],
     queryFn: async () => {
-      const res = (await fetchBankTopClient()) as unknown as IBanks[];
+      const res = (await fetchPopularBankClient()) as unknown as IBanks[];
       return res ?? [];
     },
   });
