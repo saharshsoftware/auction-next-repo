@@ -45,8 +45,8 @@ const RenderH1SeoHeader = (props: IRenderH1SeoHeader) => {
     const bankNamePrimary =
       filterData?.bank?.secondarySlug === params.slugbank ||
       filterData?.bank?.secondarySlug === params.slug
-        ? filterData?.bank?.secondarySlug?.toUpperCase()
-        : bankName;
+        ? filterData?.bank?.secondarySlug?.toUpperCase() ?? (bankName || "")
+        : bankName || "";
     // console.log("pathname", {
     //   currentRoute,
     //   subRoute,
