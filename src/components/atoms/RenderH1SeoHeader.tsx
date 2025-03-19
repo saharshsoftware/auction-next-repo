@@ -105,7 +105,7 @@ const RenderH1SeoHeader = (props: IRenderH1SeoHeader) => {
   };
 
   // return <>{renderer()}</>;
-  return (
+  return pageTitle ? (
     <h1
       className={
         `text-2xl font-bold break-words my-4  
@@ -121,6 +121,8 @@ const RenderH1SeoHeader = (props: IRenderH1SeoHeader) => {
     >
       {renderer()}
     </h1>
+  ) : (
+    ""
   );
 };
 
