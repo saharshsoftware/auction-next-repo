@@ -1,22 +1,17 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-// import Footer from "@/components/hoc/Footer";
 import Navbar from "@/components/hoc/Navbar";
-// import AppLayout from "@/components/layouts/AppLayout";
+import AppLayout from "@/components/layouts/AppLayout";
 import Providers from "@/utilies/Providers";
 import NextTopLoader from "nextjs-toploader";
 import GoogleScriptComponent from "@/components/atoms/GoogleScriptComponent";
 import { BREADCRUMB_LIST, SITELINK_SEARCHBOX } from "@/shared/seo.constant";
-import { lazy, Suspense } from "react";
+import logo from "@/assets/images/logo.png";
 import dynamic from "next/dynamic";
-
-const Footer = lazy(() => import("@/components/hoc/Footer"));
-// const Footer = dynamic(() => import("@/components/hoc/Footer"), {
-//   ssr: false,
-//   loading: () => <p className="text-center"></p>,
-// });
-const AppLayout = lazy(() => import("@/components/layouts/AppLayout"));
+const Footer = dynamic(() => import("@/components/hoc/Footer"), {
+  ssr: false,
+});
 
 const inter = Inter({
   subsets: ["latin"],
@@ -81,15 +76,9 @@ export default function RootLayout({
     <>
       <html lang="en">
         <head>
-          <meta charSet="UTF-8" />
           <link rel="preconnect" href="https://api.eauctiondekho.com" />
-          <link
-            rel="preload"
-            href="/fonts/Inter.woff2"
-            as="font"
-            type="font/woff2"
-            crossOrigin="anonymous"
-          />
+          <link rel="preload" as="image" href={logo.src} type="image/svg+xml" />
+
           <script
             type="application/ld+json"
             dangerouslySetInnerHTML={{
@@ -117,22 +106,8 @@ export default function RootLayout({
                 shadow="0 0 10px #2299DD,0 0 5px #2299DD"
               />
               <Navbar />
-              <main className="flex-grow">
-                <Suspense
-                  fallback={
-                    <div className="min-h-screen flex items-center justify-center">
-                      Loading...
-                    </div>
-                  }
-                >
-                  <AppLayout>{children}</AppLayout>
-                </Suspense>
-              </main>
-              <Suspense
-                fallback={<div className="min-h-[150px] bg-neutral"></div>}
-              >
-                <Footer />
-              </Suspense>
+              <AppLayout>{children}</AppLayout>
+              <Footer />
             </div>
           </Providers>
           <GoogleScriptComponent />

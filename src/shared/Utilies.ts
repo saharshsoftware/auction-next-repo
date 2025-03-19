@@ -502,3 +502,25 @@ export const getCategorySpecificAssets = (props: {
   });
   return result ?? [];
 };
+
+export const getCleanedTitle = (title: string) => {
+  return title.replace(/^.*?\s+Auctions\s+for\s+/, "");
+};
+
+export const getDynamicHeight = (text: string) => {
+  const length = text.length;
+  console.log("length", length, text.length);
+  if (length < 40) return "md:h-[45px] h-[75px] "; // Short titles (1-40 chars)
+  if (length < 80) return "h-[60px]"; // Medium titles (41-80 chars)
+  return "h-[80px]"; // Long titles (>80 chars)
+};
+
+export const getAuctionCardDynamicHeight = (text: string) => {
+  const length = text.length;
+
+  if (length < 40) return "md:h-[40px] h-[60px]"; // Short titles (1-40 chars)
+  if (length < 80)
+    return "sm:h-[40px] h-[80px] md:h-[50px] lg:h-[30px] lg:bg-red-600 md:bg-blue-600 bg-yellow-600"; // Medium titles (41-80 chars)
+  if (length < 120) return "md:h-[60px] h-[100px]"; // Long titles (81-120 chars)
+  return "md:h-[80px] h-[120px]"; // Extra-long titles (>120 chars)
+};

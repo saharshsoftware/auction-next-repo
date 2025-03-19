@@ -1,7 +1,12 @@
+import dynamic from "next/dynamic";
 import React, { lazy } from "react";
 
-const ShowAuctionList = lazy(
-  () => import("@/components/molecules/ShowAuctionList")
+const ShowAuctionList = dynamic(
+  () => import("@/components/molecules/ShowAuctionList"),
+  {
+    ssr: false,
+    // loading: () => <p className="text-center">Loading auctions...</p>,
+  }
 );
 
 export default async function Page({
@@ -19,3 +24,6 @@ export default async function Page({
     </>
   );
 }
+
+// 15 minutes = 900 seconds
+export const revalidate = 900;

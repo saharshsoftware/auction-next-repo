@@ -1,3 +1,4 @@
+// import ShowAuctionList from "@/components/molecules/ShowAuctionList";
 import { fetchBanksBySlug } from "@/server/actions/banks";
 import { getPrimaryBankName, handleOgImageUrl } from "@/shared/Utilies";
 import { IBanks } from "@/types";
@@ -9,7 +10,7 @@ const ShowAuctionList = dynamic(
   () => import("@/components/molecules/ShowAuctionList"),
   {
     ssr: false,
-    loading: () => <p className="text-center">Loading auctions...</p>,
+    // loading: () => <p className="text-center">Loading auctions...</p>,
   }
 );
 async function getSlugData(slug: string) {
@@ -95,3 +96,6 @@ export default async function Page({
     </>
   );
 }
+
+// 15 minutes = 900 seconds
+export const revalidate = 900;
