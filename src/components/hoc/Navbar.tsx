@@ -169,7 +169,12 @@ const Navbar: React.FC = () => {
               className="lg:text-xl text-lg font-bold cursor-pointer "
               onClick={handleLogoClick}
             >
-              <img src={logo.src} alt="logo" className="h-16" />
+              <img
+                src={logo.src}
+                fetchPriority="high"
+                loading="eager"
+                className="h-16"
+              />
             </Link>
             <div className="hidden md:flex items-center gap-12">
               <Link

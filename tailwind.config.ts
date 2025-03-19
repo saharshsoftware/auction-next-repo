@@ -1,6 +1,11 @@
 import type { Config } from "tailwindcss";
 
 const config: Config = {
+  purge: [
+    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+  ],
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -9,24 +14,24 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        'brand-color': 'var(--brand-color)',
-        'btn-red': 'var(--btn-red)',
-        'action-btn': 'var(--action-btn-color)'
+        "brand-color": "var(--brand-color)",
+        "btn-red": "var(--btn-red)",
+        "action-btn": "var(--action-btn-color)",
       },
       container: {
         center: true,
       },
       screens: {
-        "772px": "772"
+        "772px": "772",
       },
       backgroundImage: {
-        'wave-image': "url('@/assets/wave.svg')", // Adjust the path as per your project structure
+        "wave-image": "url('@/assets/wave.svg')", // Adjust the path as per your project structure
       },
     },
   },
   plugins: [require("daisyui")],
   daisyui: {
-    themes: false, 
+    themes: false,
     darkTheme: "light", // name of one of the included themes for dark mode
     base: true, // applies background color and foreground color for root element by default
     styled: true, // include daisyUI colors and design decisions for all components
@@ -35,6 +40,5 @@ const config: Config = {
     logs: true, // Shows info about daisyUI version and used config in the console when building your CSS
     themeRoot: ":root", // The element that receives theme color CSS variables
   },
-
 };
 export default config;

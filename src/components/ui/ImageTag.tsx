@@ -30,6 +30,10 @@ const ImageTag = (props: {
       <img
         src={imageUrl}
         alt={alt ?? "i"}
+        fetchPriority="high"
+        loading="eager"
+        width="800"
+        height="800"
         className={customClass ?? "w-full  h-auto bg-contain"}
       />
 

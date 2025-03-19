@@ -1,6 +1,6 @@
 import { STRING_DATA } from "@/shared/Constants";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
-import { getPathType } from "@/shared/Utilies";
+import { getDynamicHeight, getPathType } from "@/shared/Utilies";
 import { useFilterStore } from "@/zustandStore/filters";
 import { useParams, usePathname, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -87,25 +87,41 @@ const RenderH1SeoHeader = (props: IRenderH1SeoHeader) => {
     setPageTitle(`${total ? `${total}` : ""} ${title} `);
   }, [pathname]);
 
+  // const seoHeaderHeight = getDynamicHeight(pageTitle);
+  const seoHeaderHeight = pageTitle.length || 0;
+
   const renderer = () => {
     if (pathname === ROUTE_CONSTANTS.SEARCH) {
-      return (
-        <h1 className="custom-h1-class break-words my-4">
-          {`${
-            total ?? 0
-          } auction properties result found for ${searchParams.get("q")}`}
-        </h1>
-      );
+      return `${
+        total ?? 0
+      } auction properties result found for ${searchParams.get("q")}`;
     }
     if (pathname && getPathType?.(pathname) && titlename) {
-      return <h1 className="custom-h1-class break-words my-4">{pageTitle}</h1>;
+      return pageTitle;
     }
     // console.log("No data found", titlename);
 
     return "";
   };
 
-  return <>{renderer()}</>;
+  // return <>{renderer()}</>;
+  return (
+    <h1
+      className={
+        `text-2xl font-bold break-words my-4  
+    ` +
+        ` ${seoHeaderHeight < 40 && " md:h-[45px] h-[75px]"}` +
+        ` ${
+          seoHeaderHeight <= 40 &&
+          seoHeaderHeight < 120 &&
+          "h-[60px] md:h-[30px]"
+        }` +
+        ` ${seoHeaderHeight >= 120 && " h-[80px]"}`
+      }
+    >
+      {renderer()}
+    </h1>
+  );
 };
 
 export default RenderH1SeoHeader;

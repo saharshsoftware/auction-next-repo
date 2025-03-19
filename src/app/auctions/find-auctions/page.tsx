@@ -1,10 +1,15 @@
 import React, { lazy } from "react";
 
-const ShowAuctionList = lazy(
-  () => import("@/components/molecules/ShowAuctionList")
-);
 import type { Metadata } from "next";
+import dynamic from "next/dynamic";
 
+const ShowAuctionList = dynamic(
+  () => import("@/components/molecules/ShowAuctionList"),
+  {
+    ssr: false,
+    // loading: () => <p className="text-center">Loading auctions...</p>,
+  }
+);
 export const metadata: Metadata = {
   title: "Search Results | eauctiondekho",
   description:
@@ -62,3 +67,6 @@ export default async function Page({
     </>
   );
 }
+
+// 15 minutes = 900 seconds
+export const revalidate = 900;

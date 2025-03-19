@@ -1,15 +1,22 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import Footer from "@/components/hoc/Footer";
 import Navbar from "@/components/hoc/Navbar";
 import AppLayout from "@/components/layouts/AppLayout";
 import Providers from "@/utilies/Providers";
 import NextTopLoader from "nextjs-toploader";
 import GoogleScriptComponent from "@/components/atoms/GoogleScriptComponent";
 import { BREADCRUMB_LIST, SITELINK_SEARCHBOX } from "@/shared/seo.constant";
+import logo from "@/assets/images/logo.png";
+import dynamic from "next/dynamic";
+const Footer = dynamic(() => import("@/components/hoc/Footer"), {
+  ssr: false,
+});
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({
+  subsets: ["latin"],
+  display: "swap", // Reduces layout shift
+});
 
 export const metadata: Metadata = {
   title:
@@ -70,6 +77,8 @@ export default function RootLayout({
       <html lang="en">
         <head>
           <link rel="preconnect" href="https://api.eauctiondekho.com" />
+          <link rel="preload" as="image" href={logo.src} type="image/svg+xml" />
+
           <script
             type="application/ld+json"
             dangerouslySetInnerHTML={{

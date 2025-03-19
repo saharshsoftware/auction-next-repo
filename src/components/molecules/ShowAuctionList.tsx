@@ -1,8 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { lazy, useEffect, useMemo, useRef, useState } from "react";
 import { debounce, isEqual } from "lodash";
-import AuctionCard from "../atoms/AuctionCard";
+// import AuctionCard from "../atoms/AuctionCard";
+// const AuctionCard = lazy(() => import("../atoms/AuctionCard"));
+
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
 import { IAuction } from "@/types";
@@ -19,7 +21,17 @@ import LoginComp from "../templates/LoginComp";
 import CustomModal from "../atoms/CustomModal";
 import { getAuctionDataClient, noticeSearch } from "@/services/auction";
 import { useAuctionStore } from "@/zustandStore/auctionStore";
+import dynamic from "next/dynamic";
 
+// Don't change this it may affect Largest Contentful Paint (LCP) score
+const AuctionCard = dynamic(() => import("../atoms/AuctionCard"), {
+  ssr: false,
+  loading: () => (
+    <div className="min-h-[70vh] flex items-center justify-center">
+      <SkeltonAuctionCard />
+    </div>
+  ),
+});
 const ShowAuctionList = () => {
   const { filter, prevParams, setPrevParams } = useFilterStore();
   const { setFilter } = useFilterStore();
@@ -229,9 +241,9 @@ const ShowAuctionList = () => {
         {renderSavedSearchButton()}
         {auctionList.map((item: IAuction, index: number) => {
           return (
-            <div className="w-full" key={index}>
+            <React.Fragment key={index}>
               <AuctionCard item={item} handleClick={handleClick} />
-            </div>
+            </React.Fragment>
           );
         })}
       </div>
