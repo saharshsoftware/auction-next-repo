@@ -105,14 +105,16 @@ const RenderH1SeoHeader = (props: IRenderH1SeoHeader) => {
   };
 
   // return <>{renderer()}</>;
-  return pageTitle ? (
+  return (
     <h1
       className={
         `text-2xl font-bold break-words my-4  
     ` +
-        ` ${seoHeaderHeight < 40 && " md:h-[45px] h-[75px]"}` +
+        ` ${pageTitle && seoHeaderHeight < 40 && " md:h-[45px] h-[75px]"}` +
         ` ${
-          seoHeaderHeight <= 40 &&
+          pageTitle &&
+          seoHeaderHeight >= 40 &&
+          pageTitle &&
           seoHeaderHeight < 120 &&
           "h-[60px] md:h-[30px]"
         }` +
@@ -121,8 +123,6 @@ const RenderH1SeoHeader = (props: IRenderH1SeoHeader) => {
     >
       {renderer()}
     </h1>
-  ) : (
-    ""
   );
 };
 
