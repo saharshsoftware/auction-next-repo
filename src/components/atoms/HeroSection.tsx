@@ -26,7 +26,7 @@ const HeroSection = (props: {
         <div className="bg-opacity-60"></div>
         <div className=" text-center text-neutral-content lg:w-[920px] md:w-[720px] w-11/12">
           <div className="w-full">
-            <h1 className="custom-h1-class lg:text-[4vh] text-lg font-bold text-white  mb-4">
+            <h1 className=" lg:text-[4vh] text-lg font-bold text-white  mb-4">
               {STRING_DATA.TAG_LINE}
             </h1>
             <HeroSearchBox

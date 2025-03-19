@@ -2,10 +2,15 @@ import { fetchBanksBySlug } from "@/server/actions/banks";
 import { getPrimaryBankName, handleOgImageUrl } from "@/shared/Utilies";
 import { IBanks } from "@/types";
 import { Metadata, ResolvingMetadata } from "next";
+import dynamic from "next/dynamic";
 import React, { lazy } from "react";
 
-const ShowAuctionList = lazy(
-  () => import("@/components/molecules/ShowAuctionList")
+const ShowAuctionList = dynamic(
+  () => import("@/components/molecules/ShowAuctionList"),
+  {
+    ssr: false,
+    loading: () => <p className="text-center">Loading auctions...</p>,
+  }
 );
 async function getSlugData(slug: string) {
   const selectedBank = (await fetchBanksBySlug({

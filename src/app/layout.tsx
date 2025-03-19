@@ -1,15 +1,27 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import Footer from "@/components/hoc/Footer";
+// import Footer from "@/components/hoc/Footer";
 import Navbar from "@/components/hoc/Navbar";
-import AppLayout from "@/components/layouts/AppLayout";
+// import AppLayout from "@/components/layouts/AppLayout";
 import Providers from "@/utilies/Providers";
 import NextTopLoader from "nextjs-toploader";
 import GoogleScriptComponent from "@/components/atoms/GoogleScriptComponent";
 import { BREADCRUMB_LIST, SITELINK_SEARCHBOX } from "@/shared/seo.constant";
+import { lazy, Suspense } from "react";
+import dynamic from "next/dynamic";
 
-const inter = Inter({ subsets: ["latin"] });
+const Footer = lazy(() => import("@/components/hoc/Footer"));
+// const Footer = dynamic(() => import("@/components/hoc/Footer"), {
+//   ssr: false,
+//   loading: () => <p className="text-center"></p>,
+// });
+const AppLayout = lazy(() => import("@/components/layouts/AppLayout"));
+
+const inter = Inter({
+  subsets: ["latin"],
+  display: "swap", // Reduces layout shift
+});
 
 export const metadata: Metadata = {
   title:
@@ -69,7 +81,15 @@ export default function RootLayout({
     <>
       <html lang="en">
         <head>
+          <meta charSet="UTF-8" />
           <link rel="preconnect" href="https://api.eauctiondekho.com" />
+          <link
+            rel="preload"
+            href="/fonts/Inter.woff2"
+            as="font"
+            type="font/woff2"
+            crossOrigin="anonymous"
+          />
           <script
             type="application/ld+json"
             dangerouslySetInnerHTML={{
@@ -97,8 +117,22 @@ export default function RootLayout({
                 shadow="0 0 10px #2299DD,0 0 5px #2299DD"
               />
               <Navbar />
-              <AppLayout>{children}</AppLayout>
-              <Footer />
+              <main className="flex-grow">
+                <Suspense
+                  fallback={
+                    <div className="min-h-screen flex items-center justify-center">
+                      Loading...
+                    </div>
+                  }
+                >
+                  <AppLayout>{children}</AppLayout>
+                </Suspense>
+              </main>
+              <Suspense
+                fallback={<div className="min-h-[150px] bg-neutral"></div>}
+              >
+                <Footer />
+              </Suspense>
             </div>
           </Providers>
           <GoogleScriptComponent />

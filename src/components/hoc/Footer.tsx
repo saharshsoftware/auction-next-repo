@@ -1,16 +1,25 @@
-import React from "react";
+"use client";
+import React, { useEffect, useState } from "react";
 import { STRING_DATA } from "../../shared/Constants";
-import dynamic from "next/dynamic";
 import Link from "next/link";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
 
 const Footer: React.FC = () => {
+  const [isFooterLoaded, setIsFooterLoaded] = useState(false);
+
+  useEffect(() => {
+    setIsFooterLoaded(true);
+  }, []);
   return (
     <>
-      <footer className="flex flex-col  gap-8 lg:p-10 px-4 py-10 bg-neutral text-neutral-content rounded-t">
-        <div className="grid grid-cols-12 gap-4">
+      <footer
+        className={`min-h-[200px] flex flex-col gap-8 lg:p-10 px-4 py-10 bg-neutral text-neutral-content rounded-t transition-opacity duration-500 ${
+          isFooterLoaded ? "opacity-100" : "opacity-0"
+        }`}
+      >
+        <div className="grid grid-cols-12 gap-4 ">
           {" "}
-          <p className="text-sm lg:col-span-4 lg:block hidden">
+          <p className={`text-sm lg:col-span-4 hidden lg:block min-h-[50px]`}>
             e-auctiondekho is not liable for copyright infringement without a
             formal complaint. We aim to share public domain information or
             content under fair use. If you are a copyright holder with concerns,
@@ -85,5 +94,3 @@ const Footer: React.FC = () => {
 };
 
 export default Footer;
-
-export const revalidate = 0;

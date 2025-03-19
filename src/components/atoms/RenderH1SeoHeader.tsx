@@ -90,7 +90,7 @@ const RenderH1SeoHeader = (props: IRenderH1SeoHeader) => {
   const renderer = () => {
     if (pathname === ROUTE_CONSTANTS.SEARCH) {
       return (
-        <h1 className="custom-h1-class break-words my-4">
+        <h1 className="text-2xl font-bold break-words my-4">
           {`${
             total ?? 0
           } auction properties result found for ${searchParams.get("q")}`}
@@ -98,7 +98,9 @@ const RenderH1SeoHeader = (props: IRenderH1SeoHeader) => {
       );
     }
     if (pathname && getPathType?.(pathname) && titlename) {
-      return <h1 className="custom-h1-class break-words my-4">{pageTitle}</h1>;
+      return (
+        <h1 className="text-2xl font-bold break-words my-4">{pageTitle}</h1>
+      );
     }
     // console.log("No data found", titlename);
 
