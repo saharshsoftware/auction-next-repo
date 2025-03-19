@@ -1,42 +1,37 @@
 "use client";
-import { FILTER_EMPTY } from "@/shared/Constants";
-import {
-  getAuctionFilterRequiredKey,
-  sanitizeStrapiImageUrl,
-} from "@/shared/Utilies";
+import { sanitizeStrapiImageUrl } from "@/shared/Utilies";
 import Link from "next/link";
 import React from "react";
 import ImageTag from "../ui/ImageTag";
+import { FILTER_EMPTY } from "@/shared/Constants";
+import { IBanks, ILocations } from "@/types";
+import { ROUTE_CONSTANTS } from "@/shared/Routes";
 import { useFilterStore } from "@/zustandStore/filters";
 
-const CommonCollectionComp = (props: any) => {
+const LocationCollection = (props: { fetchQuery?: string; item: any }) => {
   const { setFilter: setAuctionFilter } = useFilterStore();
 
-  const { item = "", fetchQuery } = props;
-  const handleLinkClick = (item: any) => {
-    const collectionFilterKey = getAuctionFilterRequiredKey(fetchQuery);
-    // console.log(collectionFilterKey, "collectionFilterKey");
+  const handleLinkClick = (location: ILocations) => {
     setAuctionFilter({
       ...FILTER_EMPTY,
-      [collectionFilterKey]: { ...item, label: item?.name, value: item?.id },
-    });
+      location: { ...location, label: location?.name, value: location?.id },
+    } as any);
   };
+  const { item = "", fetchQuery } = props;
   const imageUrl = sanitizeStrapiImageUrl(item) ?? "";
 
   return (
     <>
       <Link
         className="z-20 text-center"
-        href={`/${fetchQuery}/${item?.slug}`}
+        prefetch={false}
+        href={`${ROUTE_CONSTANTS.LOCATION}/${item?.slug}`}
         onClick={() => handleLinkClick(item)}
       >
-        <div
-          className="w-full p-4 min-h-28"
-          // onClick={() => handleLinkClick(item)}
-        >
+        <div className="w-full p-4 min-h-28">
           <div className="flex flex-col items-center justify-center gap-2">
             {/* border border-gray-400 shadow overflow-hidden */}
-            <div className="relative w-20 h-28 flex items-center justify-center m-auto ">
+            <div className="relative  w-20 h-20 flex items-center justify-center m-auto  overflow-hidden">
               <ImageTag imageUrl={imageUrl} alt={"i"} />
             </div>
             <span className="text-center text-sm">{item?.name}</span>
@@ -47,4 +42,4 @@ const CommonCollectionComp = (props: any) => {
   );
 };
 
-export default CommonCollectionComp;
+export default LocationCollection;

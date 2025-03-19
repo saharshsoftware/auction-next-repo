@@ -1,11 +1,14 @@
-import ShowAuctionList from "@/components/molecules/ShowAuctionList";
 import { fetchAssetTypes } from "@/server/actions/assetTypes";
 import { getCategoryBoxCollectionBySlug } from "@/server/actions/auction";
 import { fetchLocationBySlug } from "@/server/actions/location";
 import { extractOnlyKeywords, handleOgImageUrl } from "@/shared/Utilies";
 import { ICategoryCollection, ILocations } from "@/types";
 import { Metadata, ResolvingMetadata } from "next";
-import React from "react";
+import React, { lazy } from "react";
+
+const ShowAuctionList = lazy(
+  () => import("@/components/molecules/ShowAuctionList")
+);
 
 async function getSlugData(
   slug: string,

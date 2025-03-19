@@ -1,5 +1,5 @@
 "use client";
-import { fetchBankTopClient } from "@/services/Home";
+import { fetchBankTopClient, fetchPopularBankClient } from "@/services/Home";
 import { FILTER_EMPTY, REACT_QUERY, STRING_DATA } from "@/shared/Constants";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
 import { IBanks } from "@/types";

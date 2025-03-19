@@ -1,10 +1,9 @@
 import FallbackLoading from "@/components/atoms/FallbackLoading";
-import FindAuction from "@/components/molecules/FindAuction";
 import dynamic from "next/dynamic";
-import { Suspense } from "react";
-const RecentData = dynamic(() => import("@/components/molecules/RecentData"), {
-  ssr: false,
-});
+import { lazy, Suspense } from "react";
+
+const FindAuction = lazy(() => import("@/components/molecules/FindAuction"));
+const RecentData = lazy(() => import("@/components/molecules/RecentData"));
 
 export default function AuctionLayout({
   children,

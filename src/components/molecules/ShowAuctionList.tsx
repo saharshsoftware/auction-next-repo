@@ -20,24 +20,19 @@ import CustomModal from "../atoms/CustomModal";
 import { getAuctionDataClient, noticeSearch } from "@/services/auction";
 import { useAuctionStore } from "@/zustandStore/auctionStore";
 
-interface IPaginationData {
-  page: number;
-  pageCount: number;
-  pageSize: number;
-  total: number;
-}
-
 const ShowAuctionList = () => {
   const { filter, prevParams, setPrevParams } = useFilterStore();
   const { setFilter } = useFilterStore();
-  const { auctionList, page, setAuctions, setPage, resetAuctions } =
-    useAuctionStore();
-  const [paginationMeta, setPaginationMeta] = useState<IPaginationData>({
-    page: 1,
-    pageCount: 0,
-    pageSize: 10,
-    total: 0,
-  });
+  const {
+    auctionList,
+    page,
+    setAuctions,
+    setPage,
+    resetAuctions,
+    paginationData,
+    setPaginationData,
+  } = useAuctionStore();
+
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
@@ -105,7 +100,7 @@ const ShowAuctionList = () => {
         res = await noticeSearch({ searchParams: searchParams.get("q") ?? "" });
       }
       setAuctions(res.sendResponse);
-      setPaginationMeta(res.meta);
+      setPaginationData(res.meta);
       setPrevParams(params);
     } catch (error) {
       console.error("Error fetching auction data:", error);
@@ -228,7 +223,7 @@ const ShowAuctionList = () => {
         <SavedSearchModal openModal={openModal} hideModal={hideModal} />
       ) : null}
 
-      <RenderH1SeoHeader total={paginationMeta?.total} />
+      <RenderH1SeoHeader total={paginationData?.total} />
       <div className="flex flex-col gap-4 w-full">
         {renderKeywordSearchContainer()}
         {renderSavedSearchButton()}
@@ -242,7 +237,7 @@ const ShowAuctionList = () => {
       </div>
       {auctionList.length > 0 && (
         <PaginationComp
-          totalPage={paginationMeta?.pageCount}
+          totalPage={paginationData?.pageCount}
           onPageChange={handlePageChange}
           activePage={page}
         />

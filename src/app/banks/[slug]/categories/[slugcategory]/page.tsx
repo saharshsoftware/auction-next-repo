@@ -1,6 +1,8 @@
-import ShowAuctionList from "@/components/molecules/ShowAuctionList";
-import React from "react";
+import React, { lazy } from "react";
 
+const ShowAuctionList = lazy(
+  () => import("@/components/molecules/ShowAuctionList")
+);
 export default async function Page({
   params,
   searchParams,

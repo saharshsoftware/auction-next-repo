@@ -1,5 +1,8 @@
 "use client";
-import { fetchLocationTopClient } from "@/services/location";
+import {
+  fetchLocationTopClient,
+  fetchPopularLocationClient,
+} from "@/services/location";
 import { FILTER_EMPTY, REACT_QUERY, STRING_DATA } from "@/shared/Constants";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
 import { ILocations } from "@/types";

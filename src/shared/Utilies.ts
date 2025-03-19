@@ -103,12 +103,18 @@ export const santizedErrorResponse = (error: any) => {
   return { axiosError: response?.message, responseError: response?.details };
 };
 
-export const sanitizeStrapiData = (data: any) => {
-  const sanitizeData = data?.map((item: any) => ({
-    id: item?.id,
-    ...item?.attributes,
-  }));
-  return sanitizeData;
+export const sanitizeStrapiData = (
+  data: any,
+  isStrapiDefaultResponse?: boolean
+) => {
+  if (isStrapiDefaultResponse) {
+    const sanitizeData = data?.map((item: any) => ({
+      id: item?.id,
+      ...item?.attributes,
+    }));
+    return sanitizeData;
+  }
+  return data;
 };
 
 export const sanitizeReactSelectOptions = (data: any[]) => {
@@ -473,4 +479,26 @@ export const getPrimaryBankName = (
   matchingSlug: string
 ) => {
   return secondarySlug === matchingSlug ? secondarySlug?.toUpperCase() : name;
+};
+
+export const getCategorySpecificAssets = (props: {
+  response: IAssetType[];
+  params: { slugcategory: string; slug: string };
+  isBankCategoriesRoute: boolean;
+  isCategoryRoute: boolean;
+}) => {
+  const { response, params, isBankCategoriesRoute, isCategoryRoute } = props;
+  const result = response?.filter((item: any) => {
+    // const categoryName = item?.category?.data?.attributes?.slug || "";
+    const categoryName = item?.category?.slug || "";
+
+    if (categoryName === params?.slugcategory && isBankCategoriesRoute) {
+      return item;
+    }
+
+    if (categoryName === params?.slug && isCategoryRoute) {
+      return item;
+    }
+  });
+  return result ?? [];
 };

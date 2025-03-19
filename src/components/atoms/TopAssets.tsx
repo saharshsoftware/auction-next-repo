@@ -1,5 +1,8 @@
 "use client";
-import { fetchTopAssetsTypeClient } from "@/services/assetsType";
+import {
+  fetchPopularAssetsTypeClient,
+  fetchTopAssetsTypeClient,
+} from "@/services/assetsType";
 import { FILTER_EMPTY, REACT_QUERY, STRING_DATA } from "@/shared/Constants";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
 import { IAssetType } from "@/types";
