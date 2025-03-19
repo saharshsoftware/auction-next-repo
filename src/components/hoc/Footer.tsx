@@ -79,7 +79,7 @@ const Footer: React.FC = () => {
               </Link>
             </nav>
           </div>
-          <p className="text-sm lg:hidden col-span-full">
+          <p className="text-sm lg:hidden col-span-full h-auto">
             e-auctiondekho is not liable for copyright infringement without a
             formal complaint. We aim to share public domain information or
             content under fair use. If you are a copyright holder with concerns,
