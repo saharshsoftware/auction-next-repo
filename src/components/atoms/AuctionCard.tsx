@@ -1,11 +1,9 @@
-/* eslint-disable react/display-name */
 "use client";
 import React from "react";
 import ActionButton from "./ActionButton";
 import {
   formatPrice,
   formattedDate,
-  getAuctionCardDynamicHeight,
   getCleanedTitle,
   getSharedAuctionUrl,
 } from "../../shared/Utilies";
@@ -96,7 +94,7 @@ const AuctionCard: React.FC<IAuctionCard> = (props) => {
     if (item?.branchName) {
       return (
         <div
-          className={`flex gap-2 items-center justify-start ${auctionLabelClass()}`}
+          className={`flex gap-2 items-center justify-start flex-wrap ${auctionLabelClass()}`}
         >
           <span>Branch Name - </span>
           <div>{item?.branchName}</div>
@@ -105,47 +103,14 @@ const AuctionCard: React.FC<IAuctionCard> = (props) => {
     }
   };
 
-  const renderTitle = () => {
-    if (!item?.title) return null;
-
-    return (
-      <h2
-        // className="md:text-md text-lg font-bold w-full overflow-hidden text-ellipsis leading-tight
-        //   line-clamp-3 md:h-[40px] h-[80px]  "
-
-        className={`md:text-md text-lg font-bold w-full overflow-hidden text-ellipsis leading-tight
-          line-clamp-3   ${getAuctionCardDynamicHeight(item.title)}`}
-      >
-        {/* md:bg-red-600 bg-green-600 */}
-        {getCleanedTitle(item.title || "")}
-      </h2>
-    );
-  };
-
-  const auctionTitleClass = () =>
-    getAuctionCardDynamicHeight(item?.title ?? "");
-  const getItemsLength = item?.title?.length || 0;
-
   return (
     <>
-      <div className={`flex flex-col gap-4 p-4 border rounded shadow w-full `}>
-        {item?.title ? (
-          <h2
-            className={
-              `md:text-md text-lg font-bold w-full overflow-hidden text-ellipsis leading-tight
-          line-clamp-3` +
-              ` ${getItemsLength < 40 && " md:h-[40px] h-[60px]"}` +
-              ` ${
-                getItemsLength >= 40 &&
-                getItemsLength < 120 &&
-                "md:h-[30px] h-[88px]"
-              }` +
-              ` ${getItemsLength >= 120 && " md:h-[60px] h-[100px]"}`
-            }
-          >
-            {getCleanedTitle(item?.title || "")}
+      <div className="flex flex-col gap-4 p-4 border rounded shadow w-full min-h-40">
+        <div className="flex lg:flex-row flex-col gap-4 justify-between items-start">
+          <h2 className="custom-h2-class">
+            {getCleanedTitle(item?.title ?? "")}
           </h2>
-        ) : null}
+        </div>
         <div className={`flex gap-4 justify-between items-start flex-wrap`}>
           <div className="flex flex-col gap-2 items-start justify-start">
             {renderReservePrice()}
@@ -157,18 +122,14 @@ const AuctionCard: React.FC<IAuctionCard> = (props) => {
         </div>
         <div className="flex-1 line-clamp-4 space-y-4">
           <div
-            className={`flex gap-2 items-center justify-start ${auctionLabelClass()}`}
+            className={`flex gap-2 items-center justify-start flex-wrap ${auctionLabelClass()}`}
           >
             <span>Seller - </span>
             <div>{item?.bankName}</div>
           </div>
           {renderBranchName()}
         </div>
-        {item?.location ? (
-          <p className="flex-1 line-clamp-4">{item?.location || ""}</p>
-        ) : (
-          ""
-        )}
+        <p className="flex-1 line-clamp-4">{item?.location}</p>
         <div className="flex lg:flex-row flex-col gap-4 justify-between items-start">
           {renderAuctionDetails()}
         </div>
