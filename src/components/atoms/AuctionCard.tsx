@@ -128,7 +128,7 @@ const AuctionCard: React.FC<IAuctionCard> = (props) => {
 
   return (
     <>
-      <div className="flex flex-col gap-4 p-4 border rounded shadow w-full ">
+      <div className={`flex flex-col gap-4 p-4 border rounded shadow w-full `}>
         {item?.title ? (
           <h2
             className={
@@ -138,7 +138,7 @@ const AuctionCard: React.FC<IAuctionCard> = (props) => {
               ` ${
                 getItemsLength >= 40 &&
                 getItemsLength < 120 &&
-                "md:h-[30px] h-[80px]"
+                "md:h-[30px] h-[88px]"
               }` +
               ` ${getItemsLength >= 120 && " md:h-[60px] h-[100px]"}`
             }

@@ -1,6 +1,14 @@
 import FallbackLoading from "@/components/atoms/FallbackLoading";
-import FindAuction from "@/components/molecules/FindAuction";
+import SkeletonAuctionPage from "@/components/skeltons/SkeletonAuctionPage";
 import dynamic from "next/dynamic";
+
+const FindAuction = dynamic(
+  () => import("@/components/molecules/FindAuction"),
+  {
+    ssr: false,
+    loading: () => <SkeletonAuctionPage />,
+  }
+);
 const RecentData = dynamic(() => import("@/components/molecules/RecentData"), {
   ssr: false,
 });

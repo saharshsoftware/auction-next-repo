@@ -174,6 +174,7 @@ const Navbar: React.FC = () => {
                 fetchPriority="high"
                 loading="eager"
                 className="h-16"
+                alt="eauctiondekhologo"
               />
             </Link>
             <div className="hidden md:flex items-center gap-12">

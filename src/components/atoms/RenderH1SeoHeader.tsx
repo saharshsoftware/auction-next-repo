@@ -80,6 +80,8 @@ const RenderH1SeoHeader = (props: IRenderH1SeoHeader) => {
       title = `Bank Auction ${propertyPluralizeName}  in India`;
     } else if (currentRoute === STRING_DATA.CATEGORIES?.toLowerCase()) {
       title = `${titlename} Bank Auction Properties  in India`;
+    } else if (pathname === ROUTE_CONSTANTS.AUCTION) {
+      title = "Auction Properties";
     } else {
       title = `Auction Properties in ${titlename}`;
     }
@@ -116,7 +118,7 @@ const RenderH1SeoHeader = (props: IRenderH1SeoHeader) => {
           seoHeaderHeight >= 40 &&
           pageTitle &&
           seoHeaderHeight < 120 &&
-          "h-[60px] md:h-[30px]"
+          "md:h-[30px] h-[88px] "
         }` +
         ` ${seoHeaderHeight >= 120 && " h-[80px]"}`
       }

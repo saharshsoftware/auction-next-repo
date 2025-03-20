@@ -219,7 +219,7 @@ const ShowAuctionList = () => {
   };
 
   return (
-    <>
+    <div className={``}>
       {openModalLogin ? (
         <CustomModal
           openModal={openModalLogin}
@@ -236,7 +236,7 @@ const ShowAuctionList = () => {
       ) : null}
 
       <RenderH1SeoHeader total={paginationData?.total} />
-      <div className="flex flex-col gap-4 w-full">
+      <div className={`flex flex-col gap-4 w-full `}>
         {renderKeywordSearchContainer()}
         {renderSavedSearchButton()}
         {auctionList.map((item: IAuction, index: number) => {
@@ -254,7 +254,7 @@ const ShowAuctionList = () => {
           activePage={page}
         />
       )}
-    </>
+    </div>
   );
 };
 
