@@ -21,13 +21,13 @@ const BlurredFieldWrapper: React.FC<IBlurredFieldWrapperProps> = ({
   };
   return (
     <>
-      <div className="relative select-none">
+      <div className={`relative ${isBlurred ? " select-none" : ""}`}>
         {" "}
         {/* Prevents selection */}
         <div
           className={`${
-            isBlurred ? "blur-sm" : ""
-          } pointer-events-none select-none`} // Prevents text selection inside the blurred content
+            isBlurred ? "blur-sm pointer-events-none select-none" : ""
+          } `} // Prevents text selection inside the blurred content
         >
           {children}
         </div>
