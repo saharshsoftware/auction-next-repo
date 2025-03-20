@@ -1,6 +1,6 @@
 import { STRING_DATA } from "@/shared/Constants";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
-import { getDynamicHeight, getPathType } from "@/shared/Utilies";
+import { getPathType } from "@/shared/Utilies";
 import { useFilterStore } from "@/zustandStore/filters";
 import { useParams, usePathname, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -80,8 +80,6 @@ const RenderH1SeoHeader = (props: IRenderH1SeoHeader) => {
       title = `Bank Auction ${propertyPluralizeName}  in India`;
     } else if (currentRoute === STRING_DATA.CATEGORIES?.toLowerCase()) {
       title = `${titlename} Bank Auction Properties  in India`;
-    } else if (pathname === ROUTE_CONSTANTS.AUCTION) {
-      title = "Auction Properties";
     } else {
       title = `Auction Properties in ${titlename}`;
     }
@@ -89,43 +87,25 @@ const RenderH1SeoHeader = (props: IRenderH1SeoHeader) => {
     setPageTitle(`${total ? `${total}` : ""} ${title} `);
   }, [pathname]);
 
-  // const seoHeaderHeight = getDynamicHeight(pageTitle);
-  const seoHeaderHeight = pageTitle.length || 0;
-
   const renderer = () => {
     if (pathname === ROUTE_CONSTANTS.SEARCH) {
-      return `${
-        total ?? 0
-      } auction properties result found for ${searchParams.get("q")}`;
+      return (
+        <h1 className="custom-h1-class break-words my-4">
+          {`${
+            total ?? 0
+          } auction properties result found for ${searchParams.get("q")}`}
+        </h1>
+      );
     }
     if (pathname && getPathType?.(pathname) && titlename) {
-      return pageTitle;
+      return <h1 className="custom-h1-class break-words my-4">{pageTitle}</h1>;
     }
     // console.log("No data found", titlename);
 
     return "";
   };
 
-  // return <>{renderer()}</>;
-  return (
-    <h1
-      className={
-        `text-2xl font-bold break-words my-4  
-    ` +
-        ` ${pageTitle && seoHeaderHeight < 40 && " md:h-[45px] h-[75px]"}` +
-        ` ${
-          pageTitle &&
-          seoHeaderHeight >= 40 &&
-          pageTitle &&
-          seoHeaderHeight < 120 &&
-          "md:h-[30px] h-[88px] "
-        }` +
-        ` ${seoHeaderHeight >= 120 && " h-[80px]"}`
-      }
-    >
-      {renderer()}
-    </h1>
-  );
+  return <>{renderer()}</>;
 };
 
 export default RenderH1SeoHeader;
