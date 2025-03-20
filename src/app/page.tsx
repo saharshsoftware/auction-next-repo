@@ -1,5 +1,3 @@
-export const fetchCache = "default"; // Enable caching
-
 import CustomReactCarousel from "@/components/atoms/CustomReactCarousel";
 import HeroSection from "@/components/atoms/HeroSection";
 
