@@ -1,10 +1,6 @@
 import CustomReactCarousel from "@/components/atoms/CustomReactCarousel";
 import HeroSection from "@/components/atoms/HeroSection";
-import AssetsCollection from "@/components/molecules/AssetsCollection";
-import BankCollection from "@/components/molecules/BankCollection";
-import CategoryCollection from "@/components/molecules/CategoryCollection";
-import CommonCollectionComp from "@/components/molecules/CommonCollectionComp";
-import LocationCollection from "@/components/molecules/LocationCollection";
+
 import { fetchBanks, fetchLocation } from "@/server/actions";
 import {
   getAssetType,
@@ -14,6 +10,29 @@ import {
 import { PAGE_REVALIDATE_TIME } from "@/shared/Constants";
 import { sanitizeReactSelectOptions } from "@/shared/Utilies";
 import { IAssetType, IBanks, ICategoryCollection, ILocations } from "@/types";
+import dynamic from "next/dynamic";
+import { lazy } from "react";
+
+const CategoryCollection = dynamic(
+  () => import("@/components/molecules/CategoryCollection"),
+  { ssr: false }
+);
+const BankCollection = dynamic(
+  () => import("@/components/molecules/BankCollection"),
+  { ssr: false }
+);
+const AssetsCollection = dynamic(
+  () => import("@/components/molecules/AssetsCollection"),
+  { ssr: false }
+);
+const LocationCollection = dynamic(
+  () => import("@/components/molecules/LocationCollection"),
+  { ssr: false }
+);
+const CommonCollectionComp = dynamic(
+  () => import("@/components/molecules/CommonCollectionComp"),
+  { ssr: false }
+);
 
 const getComponent = (componentName: string) => {
   switch (componentName) {

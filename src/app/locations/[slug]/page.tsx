@@ -1,3 +1,4 @@
+import SkeletonAuctionPage from "@/components/skeltons/SkeletonAuctionPage";
 import { fetchLocationBySlug } from "@/server/actions/location";
 import { handleOgImageUrl } from "@/shared/Utilies";
 import { ILocations } from "@/types";
@@ -10,7 +11,6 @@ const ShowAuctionList = dynamic(
   () => import("@/components/molecules/ShowAuctionList"),
   {
     ssr: false,
-    // loading: () => <p className="text-center">Loading auctions...</p>,
   }
 );
 
