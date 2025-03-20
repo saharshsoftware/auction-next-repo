@@ -71,6 +71,7 @@ export const STRING_DATA = {
   CONFIRMATION: "Confirmation",
   ADD: "Add",
   ADD_LIST: "Add list",
+  CREATE_ALERT: "Create Alert",
   YOUR_LIST: "Your list",
   ALL: "All",
   BACK: "Back",
