@@ -136,9 +136,9 @@ const AuctionCard: React.FC<IAuctionCard> = (props) => {
           line-clamp-3` +
               ` ${getItemsLength < 40 && " md:h-[40px] h-[60px]"}` +
               ` ${
-                getItemsLength <= 40 &&
+                getItemsLength >= 40 &&
                 getItemsLength < 120 &&
-                "h-[80px] md:h-[30px]"
+                "md:h-[30px] h-[80px]"
               }` +
               ` ${getItemsLength >= 120 && " md:h-[60px] h-[100px]"}`
             }
