@@ -53,6 +53,7 @@ const ManageSavedList = () => {
       const res = (await fetchSavedSearch()) as unknown as ISavedSearch[];
       return res ?? [];
     },
+    staleTime: 0,
   });
 
   // Mutations

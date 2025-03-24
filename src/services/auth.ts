@@ -1,6 +1,6 @@
 import { ILogin, ISignup } from "@/interfaces/Auth";
 import { API_BASE_URL, API_ENPOINTS } from "@/services/api";
-import { postRequest } from "@/shared/Axios";
+import { deleteRequest, postRequest } from "@/shared/Axios";
 import { COOKIES } from "@/shared/Constants";
 import { IUserData } from "@/types";
 import { setCookie, deleteCookie } from "cookies-next";
@@ -14,8 +14,8 @@ export const signupClient = async (payload: ISignup) => {
       API: URL,
       DATA: formData,
     });
-    console.log(data)
-    const {jwt, user} = data as IUserData
+    console.log(data);
+    const { jwt, user } = data as IUserData;
     setCookie(COOKIES.TOKEN_KEY, jwt);
     setCookie(COOKIES.AUCTION_USER_KEY, JSON.stringify(user));
     return data;
@@ -45,7 +45,7 @@ export const loginClient = async (payload: ILogin) => {
 export async function logout() {
   deleteCookie(COOKIES.TOKEN_KEY);
   deleteCookie(COOKIES.AUCTION_USER_KEY);
-};
+}
 
 export const changePasswordServiceClient = async (body: {
   currentPassword: string;
@@ -66,4 +66,14 @@ export const changePasswordServiceClient = async (body: {
   }
 };
 
-
+export const deleteUserAccount = async () => {
+  try {
+    const URL = API_ENPOINTS.USER_ME;
+    const { data } = await deleteRequest({
+      API: URL,
+    });
+    return data;
+  } catch (error: any) {
+    throw error.response.data?.error;
+  }
+};
