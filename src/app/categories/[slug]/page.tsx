@@ -1,7 +1,7 @@
 import { fetchAssetTypes } from "@/server/actions/assetTypes";
 import { getCategoryBoxCollectionBySlug } from "@/server/actions/auction";
 import { getAssetTypeClient } from "@/services/auction";
-import { extractOnlyKeywords } from "@/shared/Utilies";
+import { extractOnlyKeywords, sanitizeCategorytitle } from "@/shared/Utilies";
 import { ICategoryCollection } from "@/types";
 import { Metadata, ResolvingMetadata } from "next";
 
@@ -34,10 +34,10 @@ export async function generateMetadata(
     }
     const sanitizeImageUrl =
       (process.env.NEXT_PUBLIC_IMAGE_CLOUDFRONT || "") + categoryData?.imageURL;
-
-    console.log("Generated Image URL:", { sanitizeImageUrl }); // Debugging
+    console.log("Name", { name });
+    const sanitizeTitle = sanitizeCategorytitle(name ?? "");
     return {
-      title: `${name} Bank Auction Properties in India | eAuctionDekho`,
+      title: sanitizeTitle,
       description: `Find ${name} bank auction properties on eAuctionDekho. Find diverse asset types including ${keywordsAll}. Secure the best deals today tailored to your investment needs`,
       alternates: {
         canonical: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/categories/${slug}`,
@@ -50,14 +50,14 @@ export async function generateMetadata(
       openGraph: {
         type: "website",
         url: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/categories/${slug}`,
-        title: `${name} Bank Auction Properties in India | eAuctionDekho`,
+        title: sanitizeTitle,
         description: `Find ${name} bank auction properties on eAuctionDekho. Find diverse asset types including ${keywordsAll}. Secure the best deals today tailored to your investment needs`,
         images: sanitizeImageUrl,
       },
       twitter: {
         site: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/categories/${slug}`,
         card: "summary_large_image",
-        title: `${name} Bank Auction Properties in India | eAuctionDekho`,
+        title: sanitizeTitle,
         description: `Find ${name} bank auction properties on eAuctionDekho. Find diverse asset types including ${keywordsAll}. Secure the best deals today tailored to your investment needs`,
         images: sanitizeImageUrl,
       },
@@ -77,3 +77,7 @@ export default async function Page({
 }) {
   return null;
 }
+
+export const dynamic = "force-dynamic"; // Forces fresh metadata on slug change
+export const revalidate = 0; // Ensures no ISR caching
+export const dynamicParams = true; // Forces dynamic param resolution

@@ -1,7 +1,7 @@
 "use client";
 import { STRING_DATA } from "@/shared/Constants";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
-import { getPathType } from "@/shared/Utilies";
+import { getPathType, sanitizeCategorySEOH1title } from "@/shared/Utilies";
 import { useFilterStore } from "@/zustandStore/filters";
 import { useParams, usePathname, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -90,7 +90,7 @@ const RenderH1SeoHeader = (props: IRenderH1SeoHeader) => {
     ) {
       title = `Bank Auction ${propertyPluralizeName}  in India`;
     } else if (currentRoute === STRING_DATA.CATEGORIES?.toLowerCase()) {
-      title = `${titlename} Bank Auction Properties  in India`;
+      title = sanitizeCategorySEOH1title(titlename);
     } else {
       title = `Auction Properties in ${titlename}`;
     }
@@ -107,6 +107,7 @@ const RenderH1SeoHeader = (props: IRenderH1SeoHeader) => {
     propertyPluralizeName,
     category,
     titlename,
+    propertyTypeName,
   ]);
 
   const renderer = () => {

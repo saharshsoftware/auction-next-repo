@@ -522,3 +522,17 @@ export const getAuctionCardDynamicHeight = (text: string) => {
   if (length < 120) return "md:h-[60px] h-[100px]"; // Long titles (81-120 chars)
   return "md:h-[80px] h-[120px]"; // Extra-long titles (>120 chars)
 };
+
+export const sanitizeCategorytitle = (categoryName: string) => {
+  if (categoryName === "Vehicle Auctions" || categoryName === "Gold Auctions") {
+    return `${categoryName}  Properties in India | Find ${categoryName} `;
+  }
+  return `${categoryName} Bank Auction Properties in India | Find ${categoryName} Auctions`;
+};
+
+export const sanitizeCategorySEOH1title = (categoryName: string) => {
+  if (categoryName === "Vehicle Auctions" || categoryName === "Gold Auctions") {
+    return `${categoryName}  Properties in India  `;
+  }
+  return `${categoryName} Bank Auction Properties  in India`;
+};
