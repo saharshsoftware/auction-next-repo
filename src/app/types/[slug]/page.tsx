@@ -1,16 +1,7 @@
+import ShowAuctionList from "@/components/molecules/ShowAuctionList";
 import { fetchAssetTypeBySlug } from "@/server/actions/assetTypes";
 import { IAssetType } from "@/types";
 import { Metadata, ResolvingMetadata } from "next";
-import dynamic from "next/dynamic";
-import React, { lazy } from "react";
-
-const ShowAuctionList = dynamic(
-  () => import("@/components/molecules/ShowAuctionList"),
-  {
-    ssr: false,
-    // loading: () => <p className="text-center">Loading auctions...</p>,
-  }
-);
 
 async function getSlugData(slug: string) {
   const selectedBank = (await fetchAssetTypeBySlug({
@@ -43,29 +34,29 @@ export async function generateMetadata(
     console.log("Generated Image URL:", { sanitizeImageUrl }); // Debugging
 
     return {
-      title: `Bank Auction ${name} in India | eAuctionDekho`,
+      title: `Bank Auction ${name}s in India | Find ${name}s Auctions`,
       description: `Find ${name} in bank auction. Also find flats, houses, plots, residential units, agricultural land, bungalows, cars, vehicles, commercial buildings, offices, shops, factory lands, godowns, industrial buildings, lands, machinery, non-agricultural lands, scrap, and sheds. Secure the best deals today tailored to your investment needs`,
       alternates: {
         canonical: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/types/${slug}`,
       },
 
       keywords: [
-        `<Asset Type> for sale`,
-        `bank auction ${name}`,
+        `${name}s for sale`,
+        `bank auction ${name}s`,
         `bank auction properties`,
       ],
 
       openGraph: {
         type: "website",
         url: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/types/${slug}`,
-        title: `Bank Auction ${name} in India | eAuctionDekho`,
+        title: `Bank Auction ${name}s in India | Find ${name}s Auctions`,
         description: `Find ${name} in bank auction. Also find flats, houses, plots, residential units, agricultural land, bungalows, cars, vehicles, commercial buildings, offices, shops, factory lands, godowns, industrial buildings, lands, machinery, non-agricultural lands, scrap, and sheds. Secure the best deals today tailored to your investment needs`,
         images: sanitizeImageUrl,
       },
       twitter: {
         site: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/types/${slug}`,
         card: "summary_large_image",
-        title: `Bank Auction ${name} in India | eAuctionDekho`,
+        title: `Bank Auction ${name}s in India | Find ${name}s Auctions`,
         description: `Find ${name} in bank auction. Also find flats, houses, plots, residential units, agricultural land, bungalows, cars, vehicles, commercial buildings, offices, shops, factory lands, godowns, industrial buildings, lands, machinery, non-agricultural lands, scrap, and sheds. Secure the best deals today tailored to your investment needs`,
         images: sanitizeImageUrl,
       },

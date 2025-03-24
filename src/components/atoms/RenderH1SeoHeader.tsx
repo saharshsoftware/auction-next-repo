@@ -61,6 +61,16 @@ const RenderH1SeoHeader = (props: IRenderH1SeoHeader) => {
     ) {
       title = `${bankNamePrimary} Auction Properties in ${locationName}`;
     } else if (
+      currentRoute === STRING_DATA.BANKS?.toLowerCase() &&
+      subRoute === STRING_DATA.TYPES?.toLowerCase()
+    ) {
+      title = `${bankNamePrimary} ${propertyTypeName} auctions`;
+    } else if (
+      currentRoute === STRING_DATA.BANKS?.toLowerCase() &&
+      subRoute === STRING_DATA.CATEGORIES?.toLowerCase()
+    ) {
+      title = `${bankNamePrimary}  ${category} Property Auctions`;
+    } else if (
       currentRoute === STRING_DATA.LOCATIONS?.toLowerCase() &&
       subRoute === STRING_DATA.TYPES?.toLowerCase()
     ) {

@@ -32,14 +32,14 @@ export async function generateMetadata(
     );
 
     return {
-      title: `Bank Auction Properties in ${name} | eAuctionDekho - Explore Residential, Commercial, Vehicle, and Gold Auctions`,
+      title: `Bank Auction Properties in ${name} | Find Residential, Commercial, Vehicle, and Gold Auctions`,
       description: `Explore bank auction properties in ${name} on eAuctionDekho. Find diverse asset types including flats, houses, plots, residential units, agricultural land, bungalows, cars, vehicles, commercial buildings, offices, shops, factory lands, godowns, industrial buildings, lands, machinery, non-agricultural lands, scrap, and sheds. Secure the best deals today tailored to your investment needs`,
       alternates: {
         canonical: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/lcoations/${slug}`,
       },
 
       keywords: [
-        `bank auction property in ${name}`,
+        `Bank auction property in ${name}`,
         `flat bank auctions in ${name}`,
         `house auctions in ${name}`,
         `vehicle auctions in ${name}`,
@@ -54,14 +54,14 @@ export async function generateMetadata(
       openGraph: {
         type: "website",
         url: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/lcoations/${slug}`,
-        title: `Explore Auctions in ${name} | eauctiondekho`,
+        title: `Bank Auction Properties in ${name} | Find Residential, Commercial, Vehicle, and Gold Auctions`,
         description: `Looking for auctions in ${name}? eauctiondekho offers a detailed list of auctions for properties, vehicles, and more. Start bidding in ${name} and make successful investments with ease.`,
         images: sanitizeImageUrl,
       },
       twitter: {
         site: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/locations/${slug}`,
         card: "summary_large_image",
-        title: `${name} Auctions in India | eauctiondekho Listings`,
+        title: `Bank Auction Properties in ${name} | Find Residential, Commercial, Vehicle, and Gold Auctions`,
         description: `Join the dynamic auction market in ${name} with eauctiondekho. Discover and bid on a variety of high-quality assets in ${name}, and secure valuable deals today.`,
         images: sanitizeImageUrl,
       },
@@ -81,6 +81,3 @@ export default async function Page({
 }) {
   return null;
 }
-
-// 15 minutes = 900 seconds
-export const revalidate = 900;

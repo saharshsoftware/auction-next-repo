@@ -53,7 +53,7 @@ const TopBanks = (props: {
     if (isLocationCategoriesRoute || isLocationRoute) {
       return (
         <Link
-          href={`${ROUTE_CONSTANTS.LOCATION}/${params.slug}/${ROUTE_CONSTANTS.BANKS}/${item?.slug}`}
+          href={`${ROUTE_CONSTANTS.LOCATION}/${params.slug}${ROUTE_CONSTANTS.BANKS}/${item?.slug}`}
           onClick={() => handleLinkClick(item)}
         >
           {item?.name}

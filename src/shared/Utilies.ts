@@ -381,9 +381,7 @@ export function extractOnlyKeywords(
   if (!Array.isArray(items) || !slugCategoryName) return [];
 
   const result = items
-    .filter(
-      (item) => item?.category?.data?.attributes?.name === slugCategoryName
-    )
+    .filter((item) => item?.category?.name === slugCategoryName)
     .map((item) => item?.name);
 
   // console.log(result, "resultextractOnlyKeywords", {
