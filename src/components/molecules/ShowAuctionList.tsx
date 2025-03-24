@@ -124,14 +124,14 @@ const ShowAuctionList = () => {
   };
 
   // Inside the component
-  // const debouncedFetchAuctionDataRef = useRef(debounce(fetchAuctionData, 1000));
+  const debouncedFetchAuctionDataRef = useRef(debounce(fetchAuctionData, 1000));
 
   useEffect(() => {
-    // debouncedFetchAuctionDataRef.current(filterParams);
-    // return () => {
-    //   debouncedFetchAuctionDataRef.current.cancel();
-    // };
-    fetchAuctionData(filterParams);
+    debouncedFetchAuctionDataRef.current(filterParams);
+    return () => {
+      debouncedFetchAuctionDataRef.current.cancel();
+    };
+    // fetchAuctionData(filterParams);
   }, [filterParams]);
 
   const handlePageChange = async (event: { selected: number }) => {

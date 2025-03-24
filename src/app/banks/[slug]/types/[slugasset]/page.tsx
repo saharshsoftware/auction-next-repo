@@ -90,16 +90,8 @@ export default async function Page({
   params,
   searchParams,
 }: {
-  params: { slug: string; slugasset: string };
+  params: { slug: string };
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
-  console.log("(INFO) :: params", params, searchParams);
-  return (
-    <>
-      <ShowAuctionList />
-    </>
-  );
+  return null;
 }
-
-// 15 minutes = 900 seconds
-export const revalidate = 900;

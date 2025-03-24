@@ -52,6 +52,7 @@ export const metadata: Metadata = {
     ],
   },
 };
+
 export default async function Page({
   params,
   searchParams,
@@ -59,14 +60,5 @@ export default async function Page({
   params: { slug: string };
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
-  return (
-    <>
-      <section>
-        <ShowAuctionList />
-      </section>
-    </>
-  );
+  return null;
 }
-
-// 15 minutes = 900 seconds
-export const revalidate = 900;

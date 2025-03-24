@@ -1,18 +1,7 @@
-import SkeletonAuctionPage from "@/components/skeltons/SkeletonAuctionPage";
 import { fetchLocationBySlug } from "@/server/actions/location";
 import { handleOgImageUrl } from "@/shared/Utilies";
 import { ILocations } from "@/types";
 import { Metadata, ResolvingMetadata } from "next";
-import dynamic from "next/dynamic";
-
-import React, { lazy } from "react";
-
-const ShowAuctionList = dynamic(
-  () => import("@/components/molecules/ShowAuctionList"),
-  {
-    ssr: false,
-  }
-);
 
 async function getSlugData(slug: string) {
   const selectedLocation = (await fetchLocationBySlug({
@@ -90,11 +79,7 @@ export default async function Page({
   params: { slug: string };
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
-  return (
-    <>
-      <ShowAuctionList />
-    </>
-  );
+  return null;
 }
 
 // 15 minutes = 900 seconds

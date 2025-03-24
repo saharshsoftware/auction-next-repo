@@ -3,16 +3,6 @@ import { fetchLocationBySlug } from "@/server/actions/location";
 import { getPrimaryBankName, handleOgImageUrl } from "@/shared/Utilies";
 import { IBanks, ILocations } from "@/types";
 import { Metadata, ResolvingMetadata } from "next";
-import dynamic from "next/dynamic";
-import React, { lazy } from "react";
-
-const ShowAuctionList = dynamic(
-  () => import("@/components/molecules/ShowAuctionList"),
-  {
-    ssr: false,
-    // loading: () => <p className="text-center">Loading auctions...</p>,
-  }
-);
 
 async function getSlugData(
   slug: string,
@@ -108,13 +98,5 @@ export default async function Page({
   params: { slug: string; slugbank: string };
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
-  console.log("(INFO) :: params", params, searchParams);
-  return (
-    <>
-      <ShowAuctionList />
-    </>
-  );
+  return null;
 }
-
-// 15 minutes = 900 seconds
-export const revalidate = 900;
