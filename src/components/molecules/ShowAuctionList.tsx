@@ -43,6 +43,8 @@ const ShowAuctionList = () => {
     resetAuctions,
     paginationData,
     setPaginationData,
+    setIsLoading,
+    isLoading,
   } = useAuctionStore();
 
   const router = useRouter();
@@ -58,7 +60,6 @@ const ShowAuctionList = () => {
 
   const [hasKeywordSearchValue, setHasKeywordSearchValue] =
     useState<string>("");
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const isLoadingRef = useRef(false);
 
   // Memoizing filter params to prevent unnecessary re-renders
@@ -123,13 +124,14 @@ const ShowAuctionList = () => {
   };
 
   // Inside the component
-  const debouncedFetchAuctionDataRef = useRef(debounce(fetchAuctionData, 1000));
+  // const debouncedFetchAuctionDataRef = useRef(debounce(fetchAuctionData, 1000));
 
   useEffect(() => {
-    debouncedFetchAuctionDataRef.current(filterParams);
-    return () => {
-      debouncedFetchAuctionDataRef.current.cancel();
-    };
+    // debouncedFetchAuctionDataRef.current(filterParams);
+    // return () => {
+    //   debouncedFetchAuctionDataRef.current.cancel();
+    // };
+    fetchAuctionData(filterParams);
   }, [filterParams]);
 
   const handlePageChange = async (event: { selected: number }) => {
@@ -167,21 +169,29 @@ const ShowAuctionList = () => {
     router.push(`${ROUTE_CONSTANTS.AUCTION_DETAIL}/${data?.slug}`);
   };
 
-  if (isLoading) {
-    return (
-      <div className="min-h-[70vh] flex items-center justify-center">
-        <SkeltonAuctionCard />
-      </div>
-    );
-  }
-
-  if (auctionList.length === 0) {
-    return (
-      <div className="flex items-center justify-center flex-col h-[70vh]">
-        No data found
-      </div>
-    );
-  }
+  const renderAuctionlist = () => {
+    if (isLoading) {
+      return (
+        <div className="min-h-[70vh] flex items-center justify-center">
+          <SkeltonAuctionCard />
+        </div>
+      );
+    } else if (auctionList.length === 0) {
+      return (
+        <div className="flex items-center justify-center flex-col h-[70vh]">
+          No data found
+        </div>
+      );
+    } else {
+      return auctionList.map((item: IAuction, index: number) => {
+        return (
+          <React.Fragment key={index}>
+            <AuctionCard item={item} handleClick={handleClick} />
+          </React.Fragment>
+        );
+      });
+    }
+  };
 
   const renderKeywordSearchContainer = () => {
     if (hasKeywordSearchValue) {
@@ -239,13 +249,7 @@ const ShowAuctionList = () => {
       <div className={`flex flex-col gap-4 w-full `}>
         {renderKeywordSearchContainer()}
         {renderSavedSearchButton()}
-        {auctionList.map((item: IAuction, index: number) => {
-          return (
-            <React.Fragment key={index}>
-              <AuctionCard item={item} handleClick={handleClick} />
-            </React.Fragment>
-          );
-        })}
+        {renderAuctionlist()}
       </div>
       {auctionList.length > 0 && (
         <PaginationComp

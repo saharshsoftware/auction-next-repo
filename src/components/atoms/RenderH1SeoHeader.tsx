@@ -1,3 +1,4 @@
+"use client";
 import { STRING_DATA } from "@/shared/Constants";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
 import { getPathType } from "@/shared/Utilies";
@@ -85,7 +86,18 @@ const RenderH1SeoHeader = (props: IRenderH1SeoHeader) => {
     }
 
     setPageTitle(`${total ? `${total}` : ""} ${title} `);
-  }, [pathname]);
+  }, [
+    pathname,
+    filterData,
+    total,
+    params.slugbank,
+    params.slug,
+    bankName,
+    locationName,
+    propertyPluralizeName,
+    category,
+    titlename,
+  ]);
 
   const renderer = () => {
     if (pathname === ROUTE_CONSTANTS.SEARCH) {

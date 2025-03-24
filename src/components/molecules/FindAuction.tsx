@@ -52,6 +52,7 @@ import {
   fillFilterWithLocationsAndCategories,
 } from "@/helpers/RoutingHelper";
 import { trackSearch } from "@/helpers/SurveyHelper";
+import { SkeletonFilter } from "../skeltons/SkeletonAuctionPage";
 
 const gridElementClass = () => "lg:col-span-2  col-span-full";
 
@@ -74,7 +75,7 @@ const mobileViewFilterClass = () =>
 const FindAuction = (props: IFindAuction) => {
   const filterData = useFilterStore((state) => state.filter);
   const { setFilter } = useFilterStore();
-
+  const [isFilterLoading, setIsFilterLoading] = useState(true);
   const params = useParams() as {
     slug: string;
     slugasset: string;
@@ -148,6 +149,21 @@ const FindAuction = (props: IFindAuction) => {
       return updatedData ?? [];
     },
   });
+
+  // Use useEffect to notify the parent about loading state
+  useEffect(() => {
+    const isLoading =
+      isLoadingCategory ||
+      isLoadingAssetsTypeCategory ||
+      isLoadingBank ||
+      isLoadingLocation;
+    setIsFilterLoading(isLoading);
+  }, [
+    isLoadingCategory,
+    isLoadingAssetsTypeCategory,
+    isLoadingBank,
+    isLoadingLocation,
+  ]);
 
   const [staticLoading, setStaticLoading] = useState(false);
 
@@ -372,6 +388,9 @@ const FindAuction = (props: IFindAuction) => {
   };
 
   const renderData = () => {
+    if (isFilterLoading) {
+      return <SkeletonFilter />;
+    }
     if (!isMobileView.mobileView) {
       return (
         <div className="common-section p-4  hidden lg:block">
@@ -660,7 +679,7 @@ const FindAuction = (props: IFindAuction) => {
       <CustomModal openModal={openModal}>
         <div className="w-full flex flex-col gap-4">{renderForm()}</div>
       </CustomModal>
-      <div className="bg-[#e3e3e3] sticky left-0 right-0 top-0  z-20">
+      <div className={"bg-[#e3e3e3] sticky left-0 right-0 top-0  z-20"}>
         {renderData()}
       </div>
     </>
