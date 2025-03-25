@@ -1,19 +1,20 @@
 import { useEffect, useState } from "react";
 
 const useResize = () => {
-  const [windowSize, setWindowSize] = useState({
-    width: typeof window !== "undefined" ? window.innerWidth : 0,
-    height: typeof window !== "undefined" ? window.innerHeight : 0,
+  const [isMobileView, setIsMobileView] = useState({
+    mobileView: false,
+    isOpenTopbar: false,
   });
 
-  useEffect(() => {
-    const handleResize = () => {
-      setWindowSize({
-        width: window.innerWidth,
-        height: window.innerHeight,
-      });
-    };
+  const handleResize = () => {
+    setIsMobileView((prev) => ({
+      ...prev,
+      mobileView: window.innerWidth < 1024,
+    }));
+  };
 
+  useEffect(() => {
+    handleResize();
     window.addEventListener("resize", handleResize);
 
     return () => {
@@ -21,7 +22,9 @@ const useResize = () => {
     };
   }, []);
 
-  return windowSize;
+  return {
+    isMobileView,
+  };
 };
 
 export default useResize;

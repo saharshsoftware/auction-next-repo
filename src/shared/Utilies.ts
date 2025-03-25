@@ -129,6 +129,18 @@ export const sanitizeReactSelectOptions = (data: any[]) => {
   return sanitizeData;
 };
 
+export const sanitizeReactSelectOptionsPage = (data: any[]) => {
+  const sanitizeData = data?.map((item: any) => ({
+    ...item,
+    id: item?.id,
+    name: item?.name,
+    slug: item?.slug,
+    label: item?.name,
+    value: item?.id,
+  }));
+  return [getEmptyAllObject(), ...sanitizeData];
+};
+
 export const getCategoryOptions = (data: ICategoryCollection[]) => {
   const sanitizeData = data?.map((item: ICategoryCollection) => ({
     // ...item,
@@ -523,4 +535,27 @@ export const getAuctionCardDynamicHeight = (text: string) => {
     return "sm:h-[40px] h-[80px] md:h-[50px] lg:h-[30px] lg:bg-red-600 md:bg-blue-600 bg-yellow-600"; // Medium titles (41-80 chars)
   if (length < 120) return "md:h-[60px] h-[100px]"; // Long titles (81-120 chars)
   return "md:h-[80px] h-[120px]"; // Extra-long titles (>120 chars)
+};
+
+export const sanitizeCategorytitle = (categoryName: string) => {
+  if (categoryName === "Vehicle Auctions" || categoryName === "Gold Auctions") {
+    return `${categoryName}  Properties in India | Find ${categoryName} `;
+  }
+  return `${categoryName} Bank Auction Properties in India | Find ${categoryName} Auctions`;
+};
+
+export const sanitizeCategorySEOH1title = (categoryName: string) => {
+  if (categoryName === "Vehicle Auctions" || categoryName === "Gold Auctions") {
+    return `${categoryName}  Properties in India  `;
+  }
+  return `${categoryName} Bank Auction Properties  in India`;
+};
+
+// Function to decode data from query parameters
+export const getDataFromQueryParamsMethod = (queryParam: string) => {
+  if (queryParam) {
+    const decodedData = atob(queryParam);
+    return JSON.parse(decodedData);
+  }
+  return null;
 };
