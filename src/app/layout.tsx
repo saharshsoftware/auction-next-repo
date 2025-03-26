@@ -6,9 +6,8 @@ import AppLayout from "@/components/layouts/AppLayout";
 import Providers from "@/utilies/Providers";
 import NextTopLoader from "nextjs-toploader";
 import GoogleScriptComponent from "@/components/atoms/GoogleScriptComponent";
-import { BREADCRUMB_LIST, SITELINK_SEARCHBOX } from "@/shared/seo.constant";
-import logo from "@/assets/images/logo.png";
 import dynamic from "next/dynamic";
+import HeadScripts from "@/components/atoms/HeadScripts";
 const Footer = dynamic(() => import("@/components/hoc/Footer"), {
   ssr: false,
 });
@@ -76,21 +75,7 @@ export default function RootLayout({
     <>
       <html lang="en">
         <head>
-          <link rel="preconnect" href="https://api.eauctiondekho.com" />
-          <link rel="preload" as="image" href={logo.src} type="image/svg+xml" />
-
-          <script
-            type="application/ld+json"
-            dangerouslySetInnerHTML={{
-              __html: JSON.stringify(BREADCRUMB_LIST),
-            }}
-          />
-          <script
-            type="application/ld+json"
-            dangerouslySetInnerHTML={{
-              __html: JSON.stringify(SITELINK_SEARCHBOX),
-            }}
-          />
+          <HeadScripts />
         </head>
         <body className={inter.className}>
           <Providers>

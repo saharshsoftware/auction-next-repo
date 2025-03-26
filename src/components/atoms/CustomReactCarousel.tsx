@@ -1,6 +1,6 @@
 "use client";
-import React, { useState, useEffect } from "react";
-
+import React from "react";
+import "./slickslider.style.css";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -188,7 +188,9 @@ const CustomReactCarousel = (props: ICustomReactCarousel) => {
           <p className="text-gray-500">{desc ?? ""}</p>
         </div>
         <div className={"slides-container"}>
-          <Slider {...settings}>{children}</Slider>
+          <Slider {...settings} lazyLoad="ondemand">
+            {children}
+          </Slider>
         </div>
       </div>
       {/* : ''} */}
