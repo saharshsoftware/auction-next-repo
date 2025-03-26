@@ -8,10 +8,11 @@ import React, { useEffect, useState } from "react";
 
 interface IRenderH1SeoHeader {
   total: number;
+  isLoading?: boolean;
 }
 
 const RenderH1SeoHeader = (props: IRenderH1SeoHeader) => {
-  const { total } = props;
+  const { total, isLoading } = props;
   const filterData = useFilterStore((state) => state.filter);
   const propertyTypeName = filterData?.propertyType?.name ?? "";
   const bankName = filterData?.bank?.name ?? "";
@@ -110,22 +111,35 @@ const RenderH1SeoHeader = (props: IRenderH1SeoHeader) => {
     propertyTypeName,
   ]);
 
-  const renderer = () => {
-    if (pathname === ROUTE_CONSTANTS.SEARCH) {
-      return (
-        <h1 className="custom-h1-class break-words my-4">
-          {`${
-            total ?? 0
-          } auction properties result found for ${searchParams.get("q")}`}
-        </h1>
-      );
-    }
-    if (pathname && getPathType?.(pathname) && titlename) {
-      return <h1 className="custom-h1-class break-words my-4">{pageTitle}</h1>;
-    }
-    // console.log("No data found", titlename);
+  const Heading = ({ children }: { children: React.ReactNode }) => (
+    <h1 className="custom-h1-class break-words my-4">{children}</h1>
+  );
 
-    return "";
+  const renderer = () => {
+    if (isLoading)
+      return (
+        <Heading>
+          <div className="skeleton h-6 w-2/3"></div>
+        </Heading>
+      );
+
+    if (pathname) {
+      if (pathname === ROUTE_CONSTANTS.SEARCH) {
+        return (
+          <Heading>
+            {`${
+              total ?? 0
+            } auction properties result found for ${searchParams.get("q")}`}
+          </Heading>
+        );
+      }
+
+      if (getPathType?.(pathname) && titlename) {
+        return <Heading>{pageTitle}</Heading>;
+      }
+    }
+
+    return null;
   };
 
   return <>{renderer()}</>;

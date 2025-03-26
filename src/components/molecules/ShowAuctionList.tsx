@@ -49,6 +49,8 @@ const ShowAuctionList = () => {
 
   const router = useRouter();
   const searchParams = useSearchParams();
+  const urlSearchQ = searchParams.get("q") ?? "";
+  const urlSearchPage = searchParams.get("page") ?? 1;
   const pathname = usePathname();
 
   const { showModal, openModal, hideModal } = useModal();
@@ -61,7 +63,7 @@ const ShowAuctionList = () => {
   const [hasKeywordSearchValue, setHasKeywordSearchValue] =
     useState<string>("");
   const isLoadingRef = useRef(false);
-
+  const notAuctionSearchRoute = pathname !== ROUTE_CONSTANTS.SEARCH;
   // Memoizing filter params to prevent unnecessary re-renders
   const filterParams = useMemo(
     () => ({
@@ -86,17 +88,17 @@ const ShowAuctionList = () => {
   );
 
   // Fetch auction data function
-  const fetchAuctionData = async (params: any) => {
+  const fetchAuctionData = async (params: any, isSearchApiCall?: boolean) => {
     console.log("FETCHING_API:  ");
     console.table({
       prevParams,
       params,
     });
-    if (isEqual(prevParams, params)) {
+    if (isEqual(prevParams, params) && !isSearchApiCall) {
       console.log("(INFO):: Same params, skipping API call");
       return;
     }
-    if (isLoadingRef.current) {
+    if (isLoadingRef.current && !isSearchApiCall) {
       console.log("(INFO):: Already loading, skipping API call");
       return;
     }
@@ -110,7 +112,11 @@ const ShowAuctionList = () => {
       if (pathname !== ROUTE_CONSTANTS.SEARCH) {
         res = await getAuctionDataClient(params);
       } else {
-        res = await noticeSearch({ searchParams: searchParams.get("q") ?? "" });
+        console.log("urlSearchQ", { urlSearchQ, urlSearchPage });
+        res = await noticeSearch({
+          searchParams: urlSearchQ ?? "",
+          page: Number(urlSearchPage),
+        });
       }
       setAuctions(res.sendResponse);
       setPaginationData(res.meta);
@@ -137,6 +143,12 @@ const ShowAuctionList = () => {
   const handlePageChange = async (event: { selected: number }) => {
     const { selected: page } = event;
     const pageValue = page + 1;
+    if (pathname === ROUTE_CONSTANTS.SEARCH) {
+      router.replace(
+        ROUTE_CONSTANTS.SEARCH + `?q=${urlSearchQ}&page=${pageValue}`
+      );
+      return;
+    }
     setPage(pageValue);
     const newParams = { ...filter, page: pageValue };
     const encodedQuery = setDataInQueryParams(newParams);
@@ -144,7 +156,8 @@ const ShowAuctionList = () => {
   };
 
   useEffect(() => {
-    const query = searchParams.get("q");
+    const query = urlSearchQ;
+    console.log("queryEffect", query);
     if (query) {
       if (pathname !== ROUTE_CONSTANTS.SEARCH) {
         const data = query;
@@ -158,9 +171,10 @@ const ShowAuctionList = () => {
         setHasKeywordSearchValue("");
       } else {
         console.log("hits, search api");
+        fetchAuctionData(filterParams, true);
       }
     }
-  }, [searchParams.get("q")]);
+  }, [urlSearchQ, urlSearchPage]);
 
   const handleClick = (data: any) => {
     const paramsValue = searchParams.get("q")
@@ -215,7 +229,7 @@ const ShowAuctionList = () => {
 
   const renderSavedSearchButton = () => {
     const token = getCookie(COOKIES.TOKEN_KEY) ?? "";
-    if (searchParams.get("q") && pathname !== ROUTE_CONSTANTS.SEARCH) {
+    if (urlSearchQ && pathname !== ROUTE_CONSTANTS.SEARCH) {
       return (
         <div
           className={"max-w-fit link link-primary"}
@@ -227,6 +241,10 @@ const ShowAuctionList = () => {
     }
     return null;
   };
+
+  useEffect(() => {
+    setPage(1);
+  }, []);
 
   return (
     <div className={``}>
@@ -245,17 +263,17 @@ const ShowAuctionList = () => {
         <SavedSearchModal openModal={openModal} hideModal={hideModal} />
       ) : null}
 
-      <RenderH1SeoHeader total={paginationData?.total} />
+      <RenderH1SeoHeader total={paginationData?.total} isLoading={isLoading} />
       <div className={`flex flex-col gap-4 w-full `}>
         {renderKeywordSearchContainer()}
-        {renderSavedSearchButton()}
+        {!isLoading && renderSavedSearchButton()}
         {renderAuctionlist()}
       </div>
-      {auctionList.length > 0 && (
+      {!isLoading && auctionList.length > 0 && (
         <PaginationComp
           totalPage={paginationData?.pageCount}
           onPageChange={handlePageChange}
-          activePage={page}
+          activePage={notAuctionSearchRoute ? page : Number(urlSearchPage)}
         />
       )}
     </div>

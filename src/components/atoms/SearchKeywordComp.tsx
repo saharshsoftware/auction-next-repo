@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import CustomFormikForm from "./CustomFormikForm";
 import { Field, Form } from "formik";
@@ -22,7 +23,7 @@ const SearchKeywordComp = (props: { handleClick?: () => void }) => {
     handleClick?.();
 
     console.log(values);
-    router.push(`${ROUTE_CONSTANTS.SEARCH}?q=${values?.keyword}`);
+    router.push(`${ROUTE_CONSTANTS.SEARCH}?q=${values?.keyword}&page=1`);
     setFilter(FILTER_EMPTY);
     trackSearch();
   };
