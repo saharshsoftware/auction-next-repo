@@ -381,9 +381,7 @@ export function extractOnlyKeywords(
   if (!Array.isArray(items) || !slugCategoryName) return [];
 
   const result = items
-    .filter(
-      (item) => item?.category?.data?.attributes?.name === slugCategoryName
-    )
+    .filter((item) => item?.category?.name === slugCategoryName)
     .map((item) => item?.name);
 
   // console.log(result, "resultextractOnlyKeywords", {
@@ -523,4 +521,18 @@ export const getAuctionCardDynamicHeight = (text: string) => {
     return "sm:h-[40px] h-[80px] md:h-[50px] lg:h-[30px] lg:bg-red-600 md:bg-blue-600 bg-yellow-600"; // Medium titles (41-80 chars)
   if (length < 120) return "md:h-[60px] h-[100px]"; // Long titles (81-120 chars)
   return "md:h-[80px] h-[120px]"; // Extra-long titles (>120 chars)
+};
+
+export const sanitizeCategorytitle = (categoryName: string) => {
+  if (categoryName === "Vehicle Auctions" || categoryName === "Gold Auctions") {
+    return `${categoryName}  Properties in India | Find ${categoryName} `;
+  }
+  return `${categoryName} Bank Auction Properties in India | Find ${categoryName} Auctions`;
+};
+
+export const sanitizeCategorySEOH1title = (categoryName: string) => {
+  if (categoryName === "Vehicle Auctions" || categoryName === "Gold Auctions") {
+    return `${categoryName}  Properties in India  `;
+  }
+  return `${categoryName} Bank Auction Properties  in India`;
 };

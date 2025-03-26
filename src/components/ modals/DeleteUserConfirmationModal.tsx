@@ -1,26 +1,45 @@
-import React from "react";
+import React, { useState } from "react";
 import CustomModal from "../atoms/CustomModal";
 import ActionButton from "../atoms/ActionButton";
 import { STRING_DATA } from "@/shared/Constants";
 import TextField from "../atoms/TextField";
 import CustomFormikForm from "../atoms/CustomFormikForm";
 import { Form } from "formik";
+import { useMutation } from "@tanstack/react-query";
+import { deleteUserAccount } from "@/services/auth";
+import { logout } from "@/server/actions";
+import { useRouter } from "next/navigation";
 
 interface IDeleteUserConfirmationModal {
   openModal: boolean;
   hideModal: () => void;
 }
 
-const DeleteUserConfirmationModal: React.FC<IDeleteUserConfirmationModal> = (props) => {
-  const {
-    openModal,
-    hideModal = () => {},
-  } = props;
+const DeleteUserConfirmationModal: React.FC<IDeleteUserConfirmationModal> = (
+  props
+) => {
+  const { openModal, hideModal = () => {} } = props;
+  const router = useRouter();
+  const [respError, setRespError] = useState<string>("");
+
+  const { mutate: mutateDelete, isPending: isLoadingDeletePassword } =
+    useMutation({
+      mutationFn: deleteUserAccount,
+      onSuccess() {
+        router.push("/");
+        logout();
+      },
+      onError(error) {
+        console.log(error);
+        setRespError(error?.message);
+      },
+    });
 
   const deleteUserRequest = () => {
     // DELETE USER API CALL
-    console.log("Delete api call")
-  }
+    console.log("Delete api call");
+    mutateDelete();
+  };
 
   return (
     <CustomModal
@@ -47,6 +66,11 @@ const DeleteUserConfirmationModal: React.FC<IDeleteUserConfirmationModal> = (pro
                   name="name"
                   placeholder="Type 'DELETE' to confirm"
                 />
+                {respError ? (
+                  <span className="text-center text-sm text-red-700">
+                    {respError}
+                  </span>
+                ) : null}
                 <div className="flex justify-end items-center">
                   <div className="flex justify-end items-center gap-4">
                     <ActionButton
@@ -58,7 +82,7 @@ const DeleteUserConfirmationModal: React.FC<IDeleteUserConfirmationModal> = (pro
 
                     <ActionButton
                       text={STRING_DATA.DELETE}
-                      // isLoading={loading}
+                      isLoading={isLoadingDeletePassword}
                       isSubmit={true}
                       disabled={values?.name !== "DELETE"}
                       isDeleteButton={true}

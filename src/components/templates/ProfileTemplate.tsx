@@ -30,10 +30,12 @@ export default function ProfileTemplate() {
   return (
     <>
       {/* Delete User*/}
-      <DeleteUserConfirmationModal
-        openModal={openModalDelete}
-        hideModal={hideModalDelete}
-      />
+      {openModalDelete && (
+        <DeleteUserConfirmationModal
+          openModal={openModalDelete}
+          hideModal={hideModalDelete}
+        />
+      )}
 
       {/* Delete User*/}
       <UpdatePasswordModal openModal={openModal} hideModal={hideModal} />
