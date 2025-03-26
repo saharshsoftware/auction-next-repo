@@ -96,7 +96,7 @@ const RenderH1SeoHeader = (props: IRenderH1SeoHeader) => {
       title = `Auction Properties in ${titlename}`;
     }
 
-    setPageTitle(`${total ? `${total}` : ""} ${title} `);
+    setPageTitle(` ${title} `);
   }, [
     pathname,
     filterData,
@@ -109,33 +109,35 @@ const RenderH1SeoHeader = (props: IRenderH1SeoHeader) => {
     category,
     titlename,
     propertyTypeName,
+    isLoading,
   ]);
 
   const Heading = ({ children }: { children: React.ReactNode }) => (
-    <h1 className="custom-h1-class break-words my-4">{children}</h1>
+    <h1 className="custom-h1-class break-words my-4 flex flex-row items-center gap-2">
+      {isLoading && <div className="h-6 w-10 skeleton "></div>}
+      {children}
+    </h1>
   );
 
   const renderer = () => {
-    if (isLoading)
-      return (
-        <Heading>
-          <div className="skeleton h-6 w-2/3"></div>
-        </Heading>
-      );
-
+    if (!pageTitle) return <div className="skeleton h-6 w-2/3"></div>;
     if (pathname) {
       if (pathname === ROUTE_CONSTANTS.SEARCH) {
         return (
           <Heading>
             {`${
-              total ?? 0
+              total ? (isLoading ? "" : total) : ""
             } auction properties result found for ${searchParams.get("q")}`}
           </Heading>
         );
       }
 
       if (getPathType?.(pathname) && titlename) {
-        return <Heading>{pageTitle}</Heading>;
+        return (
+          <Heading>
+            {!isLoading ? `${total} ${pageTitle}` : `${pageTitle}`}
+          </Heading>
+        );
       }
     }
 
