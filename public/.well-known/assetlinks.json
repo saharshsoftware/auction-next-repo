@@ -1,0 +1,15 @@
+[
+    {
+        "relation": [
+            "delegate_permission/common.handle_all_urls"
+        ],
+        "target": {
+            "namespace": "android_app",
+            "package_name": "com.eauctiondekho",
+            "sha256_cert_fingerprints": [
+                "57:7C:6A:5D:C2:AF:08:80:21:7C:EC:51:71:A7:67:5D:75:A3:FA:9A:5D:EF:D6:AA:F4:1B:75:05:4E:3D:B9:0D"
+               
+            ]
+        }
+    }
+]

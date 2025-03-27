@@ -1,0 +1,11 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "BW2XNV947S.com.eauctiondekho",
+        "paths": ["/", "/auction-details/*"]
+      }
+    ]
+  }
+}
