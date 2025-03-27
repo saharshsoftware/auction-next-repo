@@ -252,7 +252,7 @@ blockquote {
 }
 
 .custom-common-header-class {
-  @apply bg-[var(--brand-color)] text-white px-4 py-2 rounded-t-md
+  @apply bg-[var(--brand-color)] text-white px-4 py-2 rounded-t-md min-h-8
 }
 
 .custom-common-header-detail-class {

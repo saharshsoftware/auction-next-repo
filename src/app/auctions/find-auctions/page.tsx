@@ -10,6 +10,7 @@ import {
   getAuctionsServer,
   getCategoryBoxCollection,
 } from "@/server/actions/auction";
+import { fetchBanks, fetchLocation } from "@/server/actions";
 import {
   IAssetType,
   IAuction,
@@ -19,8 +20,8 @@ import {
 } from "@/types";
 import AuctionCard from "@/components/atoms/AuctionCard";
 import RecentData from "@/components/molecules/RecentData";
-import { fetchBanks, fetchLocation } from "@/server/actions";
 import PaginationCompServer from "@/components/atoms/PaginationCompServer";
+import { IPaginationData } from "@/zustandStore/auctionStore";
 
 export const metadata: Metadata = {
   title: "Search Results | eauctiondekho",
@@ -38,7 +39,6 @@ export const metadata: Metadata = {
   alternates: {
     canonical: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/search`,
   },
-
   openGraph: {
     type: "website",
     url: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/search`,
@@ -64,6 +64,7 @@ export const metadata: Metadata = {
     ],
   },
 };
+
 export default async function Page({
   params,
   searchParams,
@@ -71,72 +72,69 @@ export default async function Page({
   params: { slug: string };
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
-  // return null;
-
+  // Extract and sanitize search query
   const filterQueryData = getDataFromQueryParamsMethod(
     Array.isArray(searchParams?.q) ? searchParams.q[0] : searchParams?.q ?? ""
   );
-  console.log("filterQueryData", { filterQueryData });
-  const rawAssetTypes = (await getAssetType()) as unknown as IAssetType[];
-  const rawBankOptions = (await fetchBanks()) as unknown as IBanks[];
-  const rawCategoryOptions =
-    (await getCategoryBoxCollection()) as unknown as ICategoryCollection[];
-  const rawLocationOptions = (await fetchLocation()) as unknown as ILocations[];
 
+  console.log("filterQueryData", filterQueryData);
+
+  // Fetch data in parallel
+  const [rawAssetTypes, rawBanks, rawCategories, rawLocations, response]: any =
+    await Promise.all([
+      getAssetType(),
+      fetchBanks(),
+      getCategoryBoxCollection(),
+      fetchLocation(),
+      getAuctionsServer({
+        category: filterQueryData.category?.name ?? "",
+        bankName: filterQueryData?.bank?.name ?? "",
+        location: filterQueryData?.location?.name ?? "",
+        propertyType: filterQueryData?.propertyType?.name ?? "",
+        reservePrice: filterQueryData?.price ?? [],
+        locationType: filterQueryData?.location?.type ?? "",
+        keyword: "",
+        page: filterQueryData?.page?.toString() ?? "1",
+      }),
+    ]);
+
+  // Type assertions are no longer necessary if functions return correctly typed data
   const assetsTypeOptions = sanitizeReactSelectOptionsPage(
-    rawAssetTypes ?? []
+    rawAssetTypes
   ) as IAssetType[];
   const categoryOptions = sanitizeReactSelectOptionsPage(
-    rawCategoryOptions ?? []
+    rawCategories
   ) as ICategoryCollection[];
-  const bankOptions = sanitizeReactSelectOptionsPage(
-    rawBankOptions ?? []
-  ) as IBanks[];
+  const bankOptions = sanitizeReactSelectOptionsPage(rawBanks) as IBanks[];
   const locationOptions = sanitizeReactSelectOptionsPage(
-    rawLocationOptions ?? []
+    rawLocations
   ) as ILocations[];
 
-  const response = (await getAuctionsServer({
-    category: filterQueryData.category?.name ?? "",
-    bankName: filterQueryData?.bank?.name ?? "",
-    location: filterQueryData?.location?.name ?? "",
-    propertyType: filterQueryData?.propertyType?.name ?? "",
-    reservePrice: filterQueryData?.price ?? [],
-    locationType: filterQueryData?.location?.type ?? "",
-    keyword: "",
-    page: filterQueryData?.page?.toString() ?? "1",
-  })) as {
-    sendResponse: IAuction[];
-    meta: any;
-  };
+  const auctionList =
+    (response as { sendResponse: IAuction[]; meta: IPaginationData })
+      ?.sendResponse ?? [];
 
-  const auctionList = response?.sendResponse ?? [];
+  const selectedBank = bankOptions.find(
+    (item) => item.name === filterQueryData?.bank?.name
+  );
+  const selectedLocation = locationOptions.find(
+    (item) => item.name === filterQueryData?.location?.name
+  );
+  const selectedCategory = categoryOptions.find(
+    (item) => item.name === filterQueryData?.category?.name
+  );
+  const selectedAssetType = assetsTypeOptions.find(
+    (item) => item.name === filterQueryData?.propertyType?.name
+  );
 
-  // return <FindAuctionServer />;
-  const renderer = () => {
-    if (auctionList.length === 0) {
-      return (
-        <div className="flex items-center justify-center flex-col h-[70vh]">
-          No data found
-        </div>
-      );
-    }
-    return (
-      <>
-        {auctionList.map((item, index) => (
-          <React.Fragment key={index}>
-            <AuctionCard item={item} />
-          </React.Fragment>
-        ))}
-
-        {auctionList.length > 0 && (
-          <PaginationCompServer
-            totalPage={response?.meta?.pageCount}
-            activePage={filterQueryData?.page}
-          />
-        )}
-      </>
-    );
+  console.log("selectedLocationselectedLocation", selectedLocation);
+  const urlFilterdata = {
+    location: selectedLocation,
+    bank: selectedBank,
+    page: filterQueryData?.page,
+    price: filterQueryData?.price,
+    category: selectedCategory,
+    assetType: selectedAssetType,
   };
 
   return (
@@ -146,11 +144,35 @@ export default async function Page({
         assets={assetsTypeOptions}
         banks={bankOptions}
         locations={locationOptions}
+        selectedBank={selectedBank}
+        selectedLocation={selectedLocation}
+        selectedCategory={selectedCategory}
+        selectedAsset={selectedAssetType}
       />
-      <div className={`common-section`}>
+      <div className="common-section">
         <div className="grid grid-cols-12 gap-4 py-4">
           <div className="lg:col-span-8 col-span-full">
-            <div className={`flex flex-col gap-4 w-full `}>{renderer()}</div>
+            <div className="flex flex-col gap-4 w-full">
+              {auctionList.length === 0 ? (
+                <div className="flex items-center justify-center flex-col h-[70vh]">
+                  No data found
+                </div>
+              ) : (
+                <>
+                  {/* <a href={`${response?.UPDATE_URL}`} target="_blank">
+                    {JSON.stringify(response?.UPDATE_URL ?? "")}
+                  </a> */}
+                  {auctionList.map((item, index) => (
+                    <AuctionCard key={index} item={item} />
+                  ))}
+                  <PaginationCompServer
+                    totalPage={response?.meta?.pageCount}
+                    activePage={filterQueryData?.page}
+                    filterData={urlFilterdata}
+                  />
+                </>
+              )}
+            </div>
           </div>
           <div className="lg:col-span-4 col-span-full">
             <RecentData />
@@ -161,5 +183,5 @@ export default async function Page({
   );
 }
 
-// 15 minutes = 900 seconds
+// Revalidate every 15 minutes
 export const revalidate = 900;

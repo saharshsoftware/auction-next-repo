@@ -95,7 +95,7 @@ export const getAuctionDetail = async ({ slug }: { slug: string }) => {
   try {
     const filter = `?filters[slug][$eq]=${slug}`;
     const URL = API_BASE_URL + API_ENPOINTS.NOTICES + `${filter}`;
-    console.log(URL, "auction-detail");
+
     const { data } = await getRequest({ API: URL });
     // console.log(data, ">>detail")
     const sendResponse = sanitizedAuctionDetail(data.data?.[0]) as IAuction;
@@ -291,10 +291,11 @@ export const getAuctionsServer = async (payload: {
       API_ENPOINTS.NOTICES +
       filter.slice(0, -1) +
       `&${requiredkeys}&sort=auctionDate:desc`;
-    console.log({ URL: API_BASE_URL + URL }, "auction-detail");
+    const UPDATE_URL = API_BASE_URL + URL;
+    console.log({ UPDATE_URL }, "auction-detail");
     const { data } = await getRequest({ API: URL });
     const sendResponse = sanitizedAuctionData(data.data) as IAuction[];
-    return { sendResponse, meta: data?.meta?.pagination };
+    return { sendResponse, meta: data?.meta?.pagination, UPDATE_URL };
   } catch (e) {
     console.log(e, "auctionDetail error auction detail");
   }

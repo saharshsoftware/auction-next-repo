@@ -1,7 +1,7 @@
 import { IAuction } from "@/types";
 import { create } from "zustand";
 
-interface IPaginationData {
+export interface IPaginationData {
   page: number;
   pageCount: number;
   pageSize: number;
