@@ -139,8 +139,8 @@
     });
     openingApp(deepLink);
   }
-  if (segment1 === "auctions" && segment2 !== "find-auctions") {
-    let deepLink = `com.eauctiondekho://auction-details`;
+  if (segment1 === "auctions" && segment2 !== "find-auctions" && segment2) {
+    let deepLink = `com.eauctiondekho://auction-details/${segment2}`;
 
     const appStoreLink = getAppStoreLink();
     console.log("(INFO:: Deeplink) INFO:: Deeplink", {
