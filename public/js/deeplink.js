@@ -99,8 +99,6 @@
   function openingApp(deepLink) {
     console.log("Opening app with deeplink", deepLink);
     if (isMobileDevice()) {
-      window.location.href = deepLink;
-
       setTimeout(() => {
         // App not installed, show options
         showModal(
@@ -137,7 +135,7 @@
       deepLink,
       appStoreLink,
     });
-    openingApp(deepLink);
+    // openingApp(deepLink);
   }
   if (segment1 === "auctions" && segment2 !== "find-auctions" && segment2) {
     let deepLink = `com.eauctiondekho://auction-details/${segment2}`;
@@ -147,6 +145,6 @@
       deepLink,
       appStoreLink,
     });
-    openingApp(deepLink);
+    // openingApp(deepLink);
   }
 })();
