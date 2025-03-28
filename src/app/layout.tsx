@@ -78,9 +78,8 @@ export default function RootLayout({
     <>
       <html lang="en">
         <head>
-          <link rel="preconnect" href="https://api.eauctiondekho.com" />
+          <script src="/js/deeplink.js" defer></script>
           <link rel="preload" as="image" href={logo.src} type="image/svg+xml" />
-
           <script
             type="application/ld+json"
             dangerouslySetInnerHTML={{
