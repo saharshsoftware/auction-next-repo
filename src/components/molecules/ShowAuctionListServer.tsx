@@ -1,5 +1,7 @@
 import AuctionCard from "@/components/atoms/AuctionCard";
-import PaginationCompServer from "@/components/atoms/PaginationCompServer";
+import PaginationCompServer, {
+  ILocalFilter,
+} from "@/components/atoms/PaginationCompServer";
 import { IAuction } from "@/types";
 
 const ShowAuctionListServer = ({
@@ -11,7 +13,7 @@ const ShowAuctionListServer = ({
   auctions: IAuction[];
   totalPages: number;
   activePage: number;
-  filterData: any;
+  filterData: ILocalFilter;
 }) => {
   return (
     <div className="flex flex-col gap-4 w-full">

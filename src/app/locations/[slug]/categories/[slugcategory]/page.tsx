@@ -1,5 +1,6 @@
 import page from "@/app/page";
 import AuctionHeaderServer from "@/components/atoms/AuctionHeaderServer";
+import { ILocalFilter } from "@/components/atoms/PaginationCompServer";
 import FindAuctionServer from "@/components/molecules/FindAuctionServer";
 import RecentData from "@/components/molecules/RecentData";
 import ShowAuctionListServer from "@/components/molecules/ShowAuctionListServer";
@@ -124,16 +125,8 @@ export default async function Page({
 
   const { name: nameLocation, type } = locationData;
   const { name: nameCategory } = categoryData;
-  const filterQueryData = {
-    location: {
-      name: nameLocation,
-      type,
-    },
-    nameCategory: nameCategory,
-    price: [RANGE_PRICE.MIN, RANGE_PRICE.MAX],
-  };
 
-  console.log("filterQueryDataLOcationAndCategories", filterQueryData, slug);
+  console.log("filterQueryDataLOcationAndCategories", slug);
 
   // Fetch data in parallel
   const [rawAssetTypes, rawBanks, rawCategories, rawLocations, response]: any =
@@ -143,10 +136,11 @@ export default async function Page({
       getCategoryBoxCollection(),
       fetchLocation(),
       getAuctionsServer({
-        location: filterQueryData?.location?.name ?? "",
-        locationType: filterQueryData?.location?.type ?? "",
-        category: filterQueryData?.nameCategory ?? "",
+        location: nameLocation ?? "",
+        locationType: type ?? "",
+        category: nameCategory ?? "",
         page: String(page) || "1",
+        reservePrice: [RANGE_PRICE.MIN, RANGE_PRICE.MAX],
       }),
     ]);
 
@@ -176,10 +170,10 @@ export default async function Page({
 
   const urlFilterdata = {
     location: selectionLocation,
-    categoryData: selectedCategory,
+    category: selectedCategory,
     page: String(page) || "1",
-    price: filterQueryData?.price,
-  };
+    price: [RANGE_PRICE.MIN, RANGE_PRICE.MAX],
+  } as ILocalFilter;
   return (
     <section>
       <FindAuctionServer

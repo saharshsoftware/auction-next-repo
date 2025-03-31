@@ -19,6 +19,7 @@ import { IPaginationData } from "@/zustandStore/auctionStore";
 import { Metadata, ResolvingMetadata } from "next";
 import AuctionHeaderServer from "@/components/atoms/AuctionHeaderServer";
 import ShowAuctionListServer from "@/components/molecules/ShowAuctionListServer";
+import { ILocalFilter } from "@/components/atoms/PaginationCompServer";
 
 async function getSlugData(slug: string) {
   const selectedLocation = (await fetchLocationBySlug({
@@ -122,6 +123,7 @@ export default async function Page({
         location: filterQueryData?.location?.name ?? "",
         locationType: filterQueryData?.location?.type ?? "",
         page: String(page) || "1",
+        reservePrice: [RANGE_PRICE.MIN, RANGE_PRICE.MAX],
       }),
     ]);
 
@@ -147,9 +149,9 @@ export default async function Page({
 
   const urlFilterdata = {
     location: selectionLocation,
-    page: page ? Number(page) : 1,
+    page: page ? String(page) : 1,
     price: filterQueryData?.price,
-  };
+  } as ILocalFilter;
 
   return (
     <section>

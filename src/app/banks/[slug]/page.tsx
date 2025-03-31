@@ -1,9 +1,12 @@
 // import ShowAuctionList from "@/components/molecules/ShowAuctionList";
 import AuctionCard from "@/components/atoms/AuctionCard";
 import AuctionHeaderServer from "@/components/atoms/AuctionHeaderServer";
-import PaginationCompServer from "@/components/atoms/PaginationCompServer";
+import PaginationCompServer, {
+  ILocalFilter,
+} from "@/components/atoms/PaginationCompServer";
 import FindAuctionServer from "@/components/molecules/FindAuctionServer";
 import RecentData from "@/components/molecules/RecentData";
+import ShowAuctionListServer from "@/components/molecules/ShowAuctionListServer";
 import { getCategoryBoxCollection, fetchLocation } from "@/server/actions";
 import { getAssetType, getAuctionsServer } from "@/server/actions/auction";
 import { fetchBanks, fetchBanksBySlug } from "@/server/actions/banks";
@@ -102,16 +105,9 @@ export default async function Page({
 }) {
   const { slug } = params;
   const bankData = await getSlugData(slug);
+  const { page = 1 } = searchParams;
 
-  const filterQueryData = {
-    bank: {
-      name: bankData?.name,
-    },
-    page: 1,
-    price: [RANGE_PRICE.MIN, RANGE_PRICE.MAX],
-  };
-
-  console.log("filterQueryDataBank", filterQueryData, slug);
+  console.log("filterQueryDataBank", slug);
 
   // Fetch data in parallel
   const [rawAssetTypes, rawBanks, rawCategories, rawLocations, response]: any =
@@ -122,7 +118,8 @@ export default async function Page({
       fetchLocation(),
       getAuctionsServer({
         bankName: bankData?.name ?? "",
-        page: filterQueryData?.page?.toString() ?? "1",
+        page: String(page) || "1",
+        reservePrice: [RANGE_PRICE.MIN, RANGE_PRICE.MAX],
       }),
     ]);
 
@@ -145,9 +142,9 @@ export default async function Page({
   const selectedBank = bankOptions.find((item) => item.name === bankData?.name);
   const urlFilterdata = {
     bank: selectedBank,
-    page: filterQueryData?.page,
-    price: filterQueryData?.price,
-  };
+    page: String(page) || 1,
+    price: [RANGE_PRICE.MIN, RANGE_PRICE.MAX],
+  } as ILocalFilter;
 
   return (
     <section>
@@ -165,24 +162,12 @@ export default async function Page({
               total={response?.meta?.total}
               heading={`${bankData.name} Auction Properties`}
             />
-            <div className="flex flex-col gap-4 w-full">
-              {auctionList.length === 0 ? (
-                <div className="flex items-center justify-center flex-col h-[70vh]">
-                  No data found
-                </div>
-              ) : (
-                <>
-                  {auctionList.map((item, index) => (
-                    <AuctionCard key={index} item={item} />
-                  ))}
-                  <PaginationCompServer
-                    totalPage={response?.meta?.pageCount}
-                    activePage={filterQueryData?.page}
-                    filterData={urlFilterdata}
-                  />
-                </>
-              )}
-            </div>
+            <ShowAuctionListServer
+              auctions={auctionList}
+              totalPages={response?.meta?.pageCount || 1}
+              activePage={page ? Number(page) : 1}
+              filterData={urlFilterdata}
+            />
           </div>
           <div className="lg:col-span-4 col-span-full">
             <RecentData />

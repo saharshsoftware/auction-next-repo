@@ -18,6 +18,7 @@ import { getAssetType, getAuctionsServer } from "@/server/actions/auction";
 import { sanitizeReactSelectOptionsPage, selectedBank } from "@/shared/Utilies";
 import FindAuctionServer from "@/components/molecules/FindAuctionServer";
 import RecentData from "@/components/molecules/RecentData";
+import AuctionDetailRelatedBubbles from "@/components/templates/AuctionDetailRelatedBubbles";
 
 async function getAuctionDetailData(slug: string) {
   const res = await getAuctionDetail({ slug });
@@ -114,12 +115,16 @@ export default async function Page({
         />
         <div className="common-section">
           <div className="grid grid-cols-12 gap-4 py-4">
-            <div className="lg:col-span-8 col-span-full">
+            <div className="lg:col-span-8 col-span-full ">
+              {" "}
               <AuctionDetail auctionDetail={auctionDetail} />
             </div>
+            <div className="lg:col-span-4 col-span-full">
+              <RecentData />
+            </div>
           </div>
-          <div className="lg:col-span-4 col-span-full">
-            <RecentData />
+          <div className="flex justify-center">
+            <AuctionDetailRelatedBubbles />
           </div>
         </div>
       </section>

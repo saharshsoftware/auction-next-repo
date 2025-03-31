@@ -30,6 +30,7 @@ interface FindAuctionProps {
   selectedAsset?: IAssetType;
   selectedBank?: IBanks;
   selectedLocation?: ILocations;
+  selectedPrice?: number[];
 }
 
 const gridElementClass = () => "lg:col-span-2  col-span-full";
@@ -45,6 +46,7 @@ const FindAuction: React.FC<FindAuctionProps> = ({
   selectedAsset = getEmptyAllObject(),
   selectedBank = getEmptyAllObject(),
   selectedLocation = getEmptyAllObject(),
+  selectedPrice = [RANGE_PRICE.MIN, RANGE_PRICE.MAX],
 }) => {
   const router = useRouter();
   const { setDataInQueryParamsMethod } = useCustomParamsData();
@@ -60,7 +62,7 @@ const FindAuction: React.FC<FindAuctionProps> = ({
     location: selectedLocation || getEmptyAllObject(),
     bank: selectedBank || getEmptyAllObject(),
     propertyType: selectedAsset || getEmptyAllObject(),
-    price: [RANGE_PRICE.MIN, RANGE_PRICE.MAX],
+    price: selectedPrice || [RANGE_PRICE.MIN, RANGE_PRICE.MAX],
   };
 
   const handleBack = () => {
@@ -119,7 +121,7 @@ const FindAuction: React.FC<FindAuctionProps> = ({
         propertyType: selectedAsset,
         bank: selectedBank,
         location: selectedLocation,
-        price: [RANGE_PRICE.MIN, RANGE_PRICE.MAX],
+        price: selectedPrice,
       }}
       enableReinitialize={true}
       onSubmit={handleSubmit}

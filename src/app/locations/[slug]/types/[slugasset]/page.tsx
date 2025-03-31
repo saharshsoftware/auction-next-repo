@@ -1,4 +1,5 @@
 import AuctionHeaderServer from "@/components/atoms/AuctionHeaderServer";
+import { ILocalFilter } from "@/components/atoms/PaginationCompServer";
 import FindAuctionServer from "@/components/molecules/FindAuctionServer";
 import RecentData from "@/components/molecules/RecentData";
 import ShowAuctionListServer from "@/components/molecules/ShowAuctionListServer";
@@ -127,6 +128,7 @@ export default async function Page({
         locationType: filterQueryData?.location?.type ?? "",
         propertyType: filterQueryData?.nameAsset ?? "",
         page: String(page) || "1",
+        reservePrice: [RANGE_PRICE.MIN, RANGE_PRICE.MAX],
       }),
     ]);
 
@@ -159,7 +161,7 @@ export default async function Page({
     selectedAsset: selectedAsset,
     page: String(page) || "1",
     price: filterQueryData?.price,
-  };
+  } as ILocalFilter;
   return (
     <section>
       <FindAuctionServer

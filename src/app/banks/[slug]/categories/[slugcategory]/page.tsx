@@ -1,12 +1,36 @@
+import AuctionCard from "@/components/atoms/AuctionCard";
+import AuctionHeaderServer from "@/components/atoms/AuctionHeaderServer";
+import PaginationCompServer, {
+  ILocalFilter,
+} from "@/components/atoms/PaginationCompServer";
+import FindAuctionServer from "@/components/molecules/FindAuctionServer";
+import RecentData from "@/components/molecules/RecentData";
+import ShowAuctionListServer from "@/components/molecules/ShowAuctionListServer";
+import { fetchLocation } from "@/server/actions";
 import { fetchAssetTypes } from "@/server/actions/assetTypes";
-import { getCategoryBoxCollectionBySlug } from "@/server/actions/auction";
-import { fetchBanksBySlug } from "@/server/actions/banks";
+import {
+  getAssetType,
+  getAuctionsServer,
+  getCategoryBoxCollection,
+  getCategoryBoxCollectionBySlug,
+} from "@/server/actions/auction";
+import { fetchBanks, fetchBanksBySlug } from "@/server/actions/banks";
+import { RANGE_PRICE } from "@/shared/Constants";
 import {
   extractOnlyKeywords,
   getPrimaryBankName,
   handleOgImageUrl,
+  sanitizeCategorySEOH1title,
+  sanitizeReactSelectOptionsPage,
 } from "@/shared/Utilies";
-import { IBanks, ICategoryCollection } from "@/types";
+import {
+  IAssetType,
+  IAuction,
+  IBanks,
+  ICategoryCollection,
+  ILocations,
+} from "@/types";
+import { IPaginationData } from "@/zustandStore/auctionStore";
 import { Metadata, ResolvingMetadata } from "next";
 
 async function getSlugData(
@@ -108,5 +132,90 @@ export default async function Page({
   params: { slug: string; slugcategory: string };
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
-  return null;
+  const { slug, slugcategory } = params;
+  const { page = 1 } = searchParams;
+  const { category: categoryData, bank: bankData } = await getSlugData(
+    slug,
+    slugcategory
+  );
+  console.log("filterQueryDataBank&Category");
+
+  // Fetch data in parallel
+  const [rawAssetTypes, rawBanks, rawCategories, rawLocations, response]: any =
+    await Promise.all([
+      getAssetType(),
+      fetchBanks(),
+      getCategoryBoxCollection(),
+      fetchLocation(),
+      getAuctionsServer({
+        bankName: bankData?.name ?? "",
+        category: categoryData?.name ?? "",
+        page: String(page) || "1",
+        reservePrice: [RANGE_PRICE.MIN, RANGE_PRICE.MAX],
+      }),
+    ]);
+
+  // Type assertions are no longer necessary if functions return correctly typed data
+  const assetsTypeOptions = sanitizeReactSelectOptionsPage(
+    rawAssetTypes
+  ) as IAssetType[];
+  const categoryOptions = sanitizeReactSelectOptionsPage(
+    rawCategories
+  ) as ICategoryCollection[];
+  const bankOptions = sanitizeReactSelectOptionsPage(rawBanks) as IBanks[];
+  const locationOptions = sanitizeReactSelectOptionsPage(
+    rawLocations
+  ) as ILocations[];
+
+  const auctionList =
+    (response as { sendResponse: IAuction[]; meta: IPaginationData })
+      ?.sendResponse ?? [];
+
+  const selectedCategory = categoryOptions.find(
+    (item) => item.name === categoryData?.name
+  );
+  const selectedBank = bankOptions.find((item) => item.name === bankData?.name);
+  const urlFilterdata = {
+    bank: bankData,
+    category: categoryData,
+    page: String(page) || 1,
+    price: [RANGE_PRICE.MIN, RANGE_PRICE.MAX],
+  } as ILocalFilter;
+
+  const bankNamePrimary =
+    bankData?.secondarySlug === slug
+      ? bankData?.secondarySlug?.toUpperCase() ?? (bankData?.name || "")
+      : bankData?.name || "";
+
+  return (
+    <section>
+      <FindAuctionServer
+        categories={categoryOptions}
+        assets={assetsTypeOptions}
+        banks={bankOptions}
+        locations={locationOptions}
+        selectedCategory={selectedCategory}
+        selectedBank={selectedBank}
+      />
+      <div className="common-section">
+        <div className="grid grid-cols-12 gap-4 py-4">
+          <div className="lg:col-span-8 col-span-full">
+            <AuctionHeaderServer
+              total={response?.meta?.total}
+              heading={`${bankNamePrimary}  ${categoryData?.name} Property Auctions `}
+            />
+            <ShowAuctionListServer
+              auctions={auctionList}
+              totalPages={response?.meta?.pageCount || 1}
+              activePage={page ? Number(page) : 1}
+              filterData={urlFilterdata}
+            />
+          </div>
+          <div className="lg:col-span-4 col-span-full">
+            <RecentData />
+          </div>
+        </div>
+      </div>
+    </section>
+  );
 }

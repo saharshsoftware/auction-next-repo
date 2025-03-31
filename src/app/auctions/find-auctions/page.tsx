@@ -20,7 +20,9 @@ import {
 } from "@/types";
 import AuctionCard from "@/components/atoms/AuctionCard";
 import RecentData from "@/components/molecules/RecentData";
-import PaginationCompServer from "@/components/atoms/PaginationCompServer";
+import PaginationCompServer, {
+  ILocalFilter,
+} from "@/components/atoms/PaginationCompServer";
 import { IPaginationData } from "@/zustandStore/auctionStore";
 
 export const metadata: Metadata = {
@@ -93,7 +95,6 @@ export default async function Page({
         propertyType: filterQueryData?.propertyType?.name ?? "",
         reservePrice: filterQueryData?.price ?? [],
         locationType: filterQueryData?.location?.type ?? "",
-        keyword: "",
         page: filterQueryData?.page?.toString() ?? "1",
       }),
     ]);
@@ -135,7 +136,7 @@ export default async function Page({
     price: filterQueryData?.price,
     category: selectedCategory,
     assetType: selectedAssetType,
-  };
+  } as ILocalFilter;
 
   return (
     <section>
@@ -148,6 +149,7 @@ export default async function Page({
         selectedLocation={selectedLocation}
         selectedCategory={selectedCategory}
         selectedAsset={selectedAssetType}
+        selectedPrice={filterQueryData?.price}
       />
       <div className="common-section">
         <div className="grid grid-cols-12 gap-4 py-4">

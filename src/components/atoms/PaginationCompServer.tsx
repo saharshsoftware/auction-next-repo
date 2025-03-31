@@ -14,7 +14,7 @@ export interface ILocalFilter {
   category?: ICategoryCollection;
   price?: string[];
   propertyType?: IAssetType;
-  page: number;
+  page: number | string;
 }
 
 const PaginationCompServer = (props: {
@@ -58,7 +58,7 @@ const PaginationCompServer = (props: {
         onPageChange={handlePageChange}
         marginPagesDisplayed={1}
         pageRangeDisplayed={1}
-        forcePage={activePage - 1}
+        forcePage={Number(activePage) - 1}
         className="flex justify-center pagination"
       />
     </div>
