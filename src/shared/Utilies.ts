@@ -1,4 +1,3 @@
-import moment from "moment";
 import { IActionResponse } from "../interfaces/RequestInteface";
 import { STORE_KEY } from "../zustandStore/store";
 import {
@@ -78,10 +77,39 @@ export const formatPrice = (price: any) => {
   return `₹ ${formattedPrice}`;
 };
 
-export const formattedDate = (data: string | Date) =>
-  moment(data)?.format("D MMM, YYYY h:mm A");
-export const formattedDateAndTime = (data: string | Date) =>
-  data ? moment(data)?.format("MMM Do YYYY, h:mm:ss A") : "Not mentioned";
+export const formattedDate = (data: string | Date) => {
+  const date = new Date(data);
+  return (
+    date.toLocaleDateString("en-US", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    }) +
+    ` ${date.toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+    })}`
+  );
+};
+
+export const formattedDateAndTime = (data: string | Date) => {
+  if (!data) return "Not mentioned";
+  const date = new Date(data);
+  return (
+    date.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    }) +
+    `, ${date.toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: true,
+    })}`
+  );
+};
 
 export const sanitizedAuctionData = (data: any[]) => {
   return data.map((item: any) => ({ id: item.id, ...item.attributes }));
@@ -393,9 +421,7 @@ export function extractOnlyKeywords(
   if (!Array.isArray(items) || !slugCategoryName) return [];
 
   const result = items
-    .filter(
-      (item) => item?.category?.data?.attributes?.name === slugCategoryName
-    )
+    .filter((item) => item?.category?.name === slugCategoryName)
     .map((item) => item?.name);
 
   // console.log(result, "resultextractOnlyKeywords", {

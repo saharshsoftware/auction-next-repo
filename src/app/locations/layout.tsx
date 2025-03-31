@@ -1,16 +1,5 @@
-import FallbackLoading from "@/components/atoms/FallbackLoading";
-import RecentData from "@/components/molecules/RecentData";
-import SkeletonAuctionPage from "@/components/skeltons/SkeletonAuctionPage";
-import dynamic from "next/dynamic";
-import { lazy, Suspense } from "react";
-
-const FindAuction = dynamic(
-  () => import("@/components/molecules/FindAuction"),
-  {
-    ssr: false,
-    loading: () => <SkeletonAuctionPage />,
-  }
-);
+import AuctionLayoutClient from "@/components/layouts/AuctionLayoutClient";
+import { Suspense } from "react";
 
 export default function AuctionLayout({
   children,

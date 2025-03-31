@@ -19,7 +19,7 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title:
-    "Find Bank Auction Properties in India | eAuctionDekho - Residential, Commercial, Vehicles, Gold & More",
+    "Find Bank Auction Properties in India | Search Residential, Commercial, Vehicles, Gold auctions & More",
   description:
     "Find bank auction properties across India on eAuctionDekho. Find your ideal property from banks like ICICI, SBI, BOB, and more. Residential flats, plots, commercial buildings, vehicles, gold, and many more.",
   keywords: [
@@ -41,7 +41,8 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     url: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/`,
-    title: "eauctiondekho | Vehicle, Property & Industrial Auctions in India",
+    title:
+      "Find Bank Auction Properties in India | Search Residential, Commercial, Vehicles, Gold auctions & More",
     description:
       "Discover the best bank auctions for properties, vehicles, and machinery in any Indian city. Explore comprehensive listings from all major Indian banks. Secure your next investment with eauctiondekho today!",
     images: [
@@ -55,7 +56,8 @@ export const metadata: Metadata = {
   twitter: {
     site: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/`,
     card: "summary_large_image",
-    title: "eauctiondekho | Vehicle, Property & Industrial Auctions in India",
+    title:
+      "Find Bank Auction Properties in India | Search Residential, Commercial, Vehicles, Gold auctions & More",
     description:
       "Find the best deals at eauctiondekho with auctions across India for vehicles, residential flats, commercial shops, industrial plots, machinery, and gold. Your one-stop shop for bank-auctioned assets.",
     images: [

@@ -4,16 +4,6 @@ import { fetchLocationBySlug } from "@/server/actions/location";
 import { extractOnlyKeywords, handleOgImageUrl } from "@/shared/Utilies";
 import { ICategoryCollection, ILocations } from "@/types";
 import { Metadata, ResolvingMetadata } from "next";
-import dynamic from "next/dynamic";
-import React, { lazy } from "react";
-
-const ShowAuctionList = dynamic(
-  () => import("@/components/molecules/ShowAuctionList"),
-  {
-    ssr: false,
-    // loading: () => <p className="text-center">Loading auctions...</p>,
-  }
-);
 
 async function getSlugData(
   slug: string,
@@ -63,7 +53,7 @@ export async function generateMetadata(
     console.log("Generated Image URL:", { sanitizeImageUrl }); // Debugging
 
     return {
-      title: `${nameCategory} Bank Auction Properties in ${nameLocation} | eAuctionDekho`,
+      title: `${nameCategory} Bank Auction Properties in ${nameLocation} | Find ${nameCategory} Auctions`,
       description: `Find ${nameCategory} bank auction properties in ${nameLocation} on eAuctionDekho. Find diverse asset types including ${keywordsAll}. Secure the best deals today tailored to your investment needs`,
       alternates: {
         canonical: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/locations/${slug}/banks/${slugcategory}`,
@@ -77,14 +67,14 @@ export async function generateMetadata(
       openGraph: {
         type: "website",
         url: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/locations/${slug}/categories/${slugcategory}`,
-        title: `${nameCategory} Bank Auction Properties in ${nameLocation} | eAuctionDekho`,
+        title: `${nameCategory} Bank Auction Properties in ${nameLocation} | Find ${nameCategory} Auctions`,
         description: `Find ${nameCategory} bank auction properties in ${nameLocation} on eAuctionDekho. Find diverse asset types including ${keywordsAll}. Secure the best deals today tailored to your investment needs`,
         images: sanitizeImageUrl,
       },
       twitter: {
         site: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/locations/${slug}/categories/${slugcategory}`,
         card: "summary_large_image",
-        title: `${nameCategory} Bank Auction Properties in ${nameLocation} | eAuctionDekho`,
+        title: `${nameCategory} Bank Auction Properties in ${nameLocation} | Find ${nameCategory} Auctions`,
         description: `Find ${nameCategory} bank auction properties in ${nameLocation} on eAuctionDekho. Find diverse asset types including ${keywordsAll}. Secure the best deals today tailored to your investment needs`,
         images: sanitizeImageUrl,
       },
@@ -102,12 +92,5 @@ export default async function Page({
   params: { slug: string; slugcategory: string };
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
-  return (
-    <>
-      <ShowAuctionList />
-    </>
-  );
+  return null;
 }
-
-// 15 minutes = 900 seconds
-export const revalidate = 900;

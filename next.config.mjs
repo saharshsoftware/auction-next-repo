@@ -13,6 +13,11 @@ const nextConfig = {
   async redirects() {
     return [
       {
+        source: "/app",
+        destination: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}`,
+        permanent: true,
+      },
+      {
         source: "/e-auction-banks",
         destination: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/banks`,
         permanent: true,
@@ -82,6 +87,19 @@ const nextConfig = {
       {
         source: "/locations/:slug*/sitemap.xml",
         destination: `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/locations/:slug*/sitemap.xml`,
+      },
+    ];
+  },
+  async headers() {
+    return [
+      {
+        source: "/",
+        headers: [
+          {
+            key: "X-Robots-Tag",
+            value: "index, follow",
+          },
+        ],
       },
     ];
   },

@@ -39,9 +39,7 @@ const initialValues = {
   confirmPassword: STRING_DATA.EMPTY,
 };
 
-const UpdatePasswordModal: React.FC<IUpdatePasswordModal> = (
-  props
-) => {
+const UpdatePasswordModal: React.FC<IUpdatePasswordModal> = (props) => {
   const { openModal, hideModal = () => {} } = props;
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [respError, setRespError] = useState<string>("");
@@ -77,7 +75,7 @@ const UpdatePasswordModal: React.FC<IUpdatePasswordModal> = (
       passwordConfirmation: confirmPassword,
     };
     // console.log("updatepassword api called api call", body)
-    mutate(body)
+    mutate(body);
   };
 
   return (
@@ -93,7 +91,7 @@ const UpdatePasswordModal: React.FC<IUpdatePasswordModal> = (
         handleSubmit={updatePassword}
       >
         {({ values }: any) => (
-          <Form>
+          <Form className="w-full">
             <div className="flex flex-col gap-4 ">
               <TextField
                 type={"password"}

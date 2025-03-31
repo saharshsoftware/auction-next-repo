@@ -1,16 +1,18 @@
+"use client";
 import { STRING_DATA } from "@/shared/Constants";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
-import { getPathType } from "@/shared/Utilies";
+import { getPathType, sanitizeCategorySEOH1title } from "@/shared/Utilies";
 import { useFilterStore } from "@/zustandStore/filters";
 import { useParams, usePathname, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 interface IRenderH1SeoHeader {
   total: number;
+  isLoading?: boolean;
 }
 
 const RenderH1SeoHeader = (props: IRenderH1SeoHeader) => {
-  const { total } = props;
+  const { total, isLoading } = props;
   const filterData = useFilterStore((state) => state.filter);
   const propertyTypeName = filterData?.propertyType?.name ?? "";
   const bankName = filterData?.bank?.name ?? "";
@@ -60,6 +62,16 @@ const RenderH1SeoHeader = (props: IRenderH1SeoHeader) => {
     ) {
       title = `${bankNamePrimary} Auction Properties in ${locationName}`;
     } else if (
+      currentRoute === STRING_DATA.BANKS?.toLowerCase() &&
+      subRoute === STRING_DATA.TYPES?.toLowerCase()
+    ) {
+      title = `${bankNamePrimary} ${propertyTypeName} auctions`;
+    } else if (
+      currentRoute === STRING_DATA.BANKS?.toLowerCase() &&
+      subRoute === STRING_DATA.CATEGORIES?.toLowerCase()
+    ) {
+      title = `${bankNamePrimary}  ${category} Property Auctions`;
+    } else if (
       currentRoute === STRING_DATA.LOCATIONS?.toLowerCase() &&
       subRoute === STRING_DATA.TYPES?.toLowerCase()
     ) {
@@ -79,30 +91,57 @@ const RenderH1SeoHeader = (props: IRenderH1SeoHeader) => {
     ) {
       title = `Bank Auction ${propertyPluralizeName}  in India`;
     } else if (currentRoute === STRING_DATA.CATEGORIES?.toLowerCase()) {
-      title = `${titlename} Bank Auction Properties  in India`;
+      title = sanitizeCategorySEOH1title(titlename);
     } else {
       title = `Auction Properties in ${titlename}`;
     }
 
-    setPageTitle(`${total ? `${total}` : ""} ${title} `);
-  }, [pathname]);
+    setPageTitle(` ${title} `);
+  }, [
+    pathname,
+    filterData,
+    total,
+    params.slugbank,
+    params.slug,
+    bankName,
+    locationName,
+    propertyPluralizeName,
+    category,
+    titlename,
+    propertyTypeName,
+    isLoading,
+  ]);
+
+  const Heading = ({ children }: { children: React.ReactNode }) => (
+    <h1 className="custom-h1-class break-words my-4 flex flex-row items-center gap-2">
+      {isLoading && <div className="h-6 w-10 skeleton "></div>}
+      {children}
+    </h1>
+  );
 
   const renderer = () => {
-    if (pathname === ROUTE_CONSTANTS.SEARCH) {
-      return (
-        <h1 className="custom-h1-class break-words my-4">
-          {`${
-            total ?? 0
-          } auction properties result found for ${searchParams.get("q")}`}
-        </h1>
-      );
-    }
-    if (pathname && getPathType?.(pathname) && titlename) {
-      return <h1 className="custom-h1-class break-words my-4">{pageTitle}</h1>;
-    }
-    // console.log("No data found", titlename);
+    if (!pageTitle) return <div className="skeleton h-6 w-2/3"></div>;
+    if (pathname) {
+      if (pathname === ROUTE_CONSTANTS.SEARCH) {
+        return (
+          <Heading>
+            {`${
+              total ? (isLoading ? "" : total) : ""
+            } auction properties result found for ${searchParams.get("q")}`}
+          </Heading>
+        );
+      }
 
-    return "";
+      if (getPathType?.(pathname) && titlename) {
+        return (
+          <Heading>
+            {!isLoading ? `${total} ${pageTitle}` : `${pageTitle}`}
+          </Heading>
+        );
+      }
+    }
+
+    return null;
   };
 
   return <>{renderer()}</>;

@@ -3,16 +3,6 @@ import { fetchLocationBySlug } from "@/server/actions/location";
 import { handleOgImageUrl } from "@/shared/Utilies";
 import { IAssetType, ILocations } from "@/types";
 import { Metadata, ResolvingMetadata } from "next";
-import dynamic from "next/dynamic";
-import React, { lazy } from "react";
-
-const ShowAuctionList = dynamic(
-  () => import("@/components/molecules/ShowAuctionList"),
-  {
-    ssr: false,
-    // loading: () => <p className="text-center">Loading auctions...</p>,
-  }
-);
 
 async function getSlugData(
   slug: string,
@@ -55,7 +45,7 @@ export async function generateMetadata(
       locationData?.imageURL ?? ""
     );
     return {
-      title: `Bank Auction ${nameAssetType} in ${nameLocation} | eAuctionDekho`,
+      title: `${nameAssetType} Bank Auctions in ${nameLocation} | Find ${nameAssetType} Auctions`,
       description: `Find ${nameAssetType} in ${nameLocation} for auction. Also find flats, houses, plots, residential units, agricultural land, bungalows, cars, vehicles, commercial buildings, offices, shops, factory lands, godowns, industrial buildings, lands, machinery, non-agricultural lands, scrap, and sheds. Secure the best deals today tailored to your investment needs`,
       alternates: {
         canonical: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/locations/${slug}/types/${slugasset}`,
@@ -64,14 +54,14 @@ export async function generateMetadata(
       openGraph: {
         type: "website",
         url: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/locations/${slug}/types/${slugasset}`,
-        title: `Bank Auction ${nameAssetType} in ${nameLocation} | eAuctionDekho`,
+        title: `${nameAssetType} Bank Auctions in ${nameLocation} | Find ${nameAssetType} Auctions`,
         description: `Find ${nameAssetType} in ${nameLocation} for auction. Also find flats, houses, plots, residential units, agricultural land, bungalows, cars, vehicles, commercial buildings, offices, shops, factory lands, godowns, industrial buildings, lands, machinery, non-agricultural lands, scrap, and sheds. Secure the best deals today tailored to your investment needs`,
         images: sanitizeImageUrl,
       },
       twitter: {
         site: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/locations/${slug}/types/${slugasset}`,
         card: "summary_large_image",
-        title: `Bank Auction ${nameAssetType} in ${nameLocation} | eAuctionDekho`,
+        title: `${nameAssetType} Bank Auctions in ${nameLocation} | Find ${nameAssetType} Auctions`,
         description: `Find ${nameAssetType} in ${nameLocation} for auction. Also find flats, houses, plots, residential units, agricultural land, bungalows, cars, vehicles, commercial buildings, offices, shops, factory lands, godowns, industrial buildings, lands, machinery, non-agricultural lands, scrap, and sheds. Secure the best deals today tailored to your investment needs`,
         images: sanitizeImageUrl,
       },
@@ -90,12 +80,5 @@ export default async function Page({
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
   console.log("(INFO) :: params", params, searchParams);
-  return (
-    <>
-      <ShowAuctionList />
-    </>
-  );
+  return null;
 }
-
-// 15 minutes = 900 seconds
-export const revalidate = 900;

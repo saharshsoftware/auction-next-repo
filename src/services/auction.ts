@@ -354,12 +354,20 @@ export const showInterest = async (body: {
   }
 };
 
-export const noticeSearch = async (payload: { searchParams: string }) => {
+export const noticeSearch = async (payload: {
+  searchParams: string;
+  page: number;
+}) => {
   try {
+    const { page, searchParams } = payload;
+    const pageSize = 10;
+
+    let filter = `?pageSize=${pageSize}&pageNo=${page ?? 1}&`;
+
     const URL =
       API_BASE_URL +
       API_ENPOINTS.NOTICE_SEARCH +
-      `?q=${payload.searchParams}&sort=auctionDate:desc`;
+      `${filter}q=${searchParams}&sort=auctionDate:desc`;
     const { data } = await getRequest({ API: URL });
     // console.log(data, "responsefetch");
     const sendResponse = sanitizedAuctionData(data.data) as IAuction[];
