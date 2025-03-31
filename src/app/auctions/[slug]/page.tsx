@@ -1,8 +1,24 @@
-import { getAuctionDetail } from "@/server/actions";
+import {
+  fetchBanks,
+  fetchLocation,
+  getAuctionDetail,
+  getCategoryBoxCollection,
+} from "@/server/actions";
 import { Metadata, ResolvingMetadata } from "next";
-import { IAuction } from "@/types";
+import {
+  IAssetType,
+  IAuction,
+  IBanks,
+  ICategoryCollection,
+  ILocations,
+} from "@/types";
 import NotFound from "@/app/not-found";
 import AuctionDetail from "@/components/templates/AuctionDetail";
+import { getAssetType, getAuctionsServer } from "@/server/actions/auction";
+import { sanitizeReactSelectOptionsPage, selectedBank } from "@/shared/Utilies";
+import FindAuctionServer from "@/components/molecules/FindAuctionServer";
+import RecentData from "@/components/molecules/RecentData";
+import AuctionDetailRelatedBubbles from "@/components/templates/AuctionDetailRelatedBubbles";
 
 async function getAuctionDetailData(slug: string) {
   const res = await getAuctionDetail({ slug });
@@ -67,15 +83,51 @@ export default async function Page({
 }) {
   const { slug } = params;
   const auctionDetail = (await getAuctionDetail({ slug })) as IAuction;
+  // Fetch data in parallel
+  const [rawAssetTypes, rawBanks, rawCategories, rawLocations]: any =
+    await Promise.all([
+      getAssetType(),
+      fetchBanks(),
+      getCategoryBoxCollection(),
+      fetchLocation(),
+    ]);
 
-  if (auctionDetail) {
-    return (
-      <>
-        <AuctionDetail auctionDetail={auctionDetail} />
-      </>
-    );
-  }
-  if (auctionDetail == undefined) {
-    return NotFound(); // Handle case where blog data is not found
-  }
+  // Type assertions are no longer necessary if functions return correctly typed data
+  const assetsTypeOptions = sanitizeReactSelectOptionsPage(
+    rawAssetTypes
+  ) as IAssetType[];
+  const categoryOptions = sanitizeReactSelectOptionsPage(
+    rawCategories
+  ) as ICategoryCollection[];
+  const bankOptions = sanitizeReactSelectOptionsPage(rawBanks) as IBanks[];
+  const locationOptions = sanitizeReactSelectOptionsPage(
+    rawLocations
+  ) as ILocations[];
+
+  return (
+    <>
+      <section>
+        <FindAuctionServer
+          categories={categoryOptions}
+          assets={assetsTypeOptions}
+          banks={bankOptions}
+          locations={locationOptions}
+        />
+        <div className="common-section">
+          <div className="grid grid-cols-12 gap-4 py-4">
+            <div className="lg:col-span-8 col-span-full ">
+              {" "}
+              <AuctionDetail auctionDetail={auctionDetail} />
+            </div>
+            <div className="lg:col-span-4 col-span-full">
+              <RecentData />
+            </div>
+          </div>
+          <div className="flex justify-center">
+            <AuctionDetailRelatedBubbles />
+          </div>
+        </div>
+      </section>
+    </>
+  );
 }

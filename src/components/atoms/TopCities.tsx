@@ -99,7 +99,7 @@ const TopCities = (props: { isBankRoute?: boolean }) => {
     }
     return (
       <>
-        {locationOptions?.map((item, index) => {
+        {locationOptions?.slice(0, 5)?.map((item, index) => {
           return (
             <div className="custom-common-header-detail-class" key={index}>
               <div className="flex flex-col gap-4 p-4  w-full min-h-12">

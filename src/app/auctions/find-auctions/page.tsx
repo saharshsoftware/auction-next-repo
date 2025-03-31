@@ -1,15 +1,34 @@
-import React, { lazy } from "react";
-
+import React from "react";
 import type { Metadata } from "next";
-import dynamic from "next/dynamic";
+import FindAuctionServer from "@/components/molecules/FindAuctionServer";
+import {
+  getDataFromQueryParamsMethod,
+  sanitizeReactSelectOptionsPage,
+} from "@/shared/Utilies";
+import {
+  getAssetType,
+  getAuctionsServer,
+  getCategoryBoxCollection,
+} from "@/server/actions/auction";
+import { fetchBanks, fetchLocation } from "@/server/actions";
+import {
+  IAssetType,
+  IAuction,
+  IBanks,
+  ICategoryCollection,
+  ILocations,
+} from "@/types";
+import AuctionCard from "@/components/atoms/AuctionCard";
+import RecentData from "@/components/molecules/RecentData";
+import PaginationCompServer, {
+  ILocalFilter,
+} from "@/components/atoms/PaginationCompServer";
+import { IPaginationData } from "@/zustandStore/auctionStore";
+import page from "@/app/page";
+import AuctionHeaderServer from "@/components/atoms/AuctionHeaderServer";
+import ShowAuctionListServer from "@/components/molecules/ShowAuctionListServer";
+import AuctionHeaderSaveSearch from "@/components/atoms/AuctionHeaderSaveSearch";
 
-const ShowAuctionList = dynamic(
-  () => import("@/components/molecules/ShowAuctionList"),
-  {
-    ssr: false,
-    // loading: () => <p className="text-center">Loading auctions...</p>,
-  }
-);
 export const metadata: Metadata = {
   title: "Search Results | eauctiondekho",
   description:
@@ -26,7 +45,6 @@ export const metadata: Metadata = {
   alternates: {
     canonical: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/search`,
   },
-
   openGraph: {
     type: "website",
     url: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/search`,
@@ -60,5 +78,102 @@ export default async function Page({
   params: { slug: string };
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
-  return null;
+  // Extract and sanitize search query
+  const filterQueryData = getDataFromQueryParamsMethod(
+    Array.isArray(searchParams?.q) ? searchParams.q[0] : searchParams?.q ?? ""
+  );
+
+  console.log("filterQueryData", filterQueryData);
+
+  // Fetch data in parallel
+  const [rawAssetTypes, rawBanks, rawCategories, rawLocations, response]: any =
+    await Promise.all([
+      getAssetType(),
+      fetchBanks(),
+      getCategoryBoxCollection(),
+      fetchLocation(),
+      getAuctionsServer({
+        category: filterQueryData?.category?.name ?? "",
+        bankName: filterQueryData?.bank?.name ?? "",
+        location: filterQueryData?.location?.name ?? "",
+        propertyType: filterQueryData?.propertyType?.name ?? "",
+        reservePrice: filterQueryData?.price ?? [],
+        locationType: filterQueryData?.location?.type ?? "",
+        page: filterQueryData?.page?.toString() ?? "1",
+      }),
+    ]);
+
+  // Type assertions are no longer necessary if functions return correctly typed data
+  const assetsTypeOptions = sanitizeReactSelectOptionsPage(
+    rawAssetTypes
+  ) as IAssetType[];
+  const categoryOptions = sanitizeReactSelectOptionsPage(
+    rawCategories
+  ) as ICategoryCollection[];
+  const bankOptions = sanitizeReactSelectOptionsPage(rawBanks) as IBanks[];
+  const locationOptions = sanitizeReactSelectOptionsPage(
+    rawLocations
+  ) as ILocations[];
+
+  const auctionList =
+    (response as { sendResponse: IAuction[]; meta: IPaginationData })
+      ?.sendResponse ?? [];
+
+  const selectedBank = bankOptions.find(
+    (item) => item.name === filterQueryData?.bank?.name
+  );
+  const selectedLocation = locationOptions.find(
+    (item) => item.name === filterQueryData?.location?.name
+  );
+  const selectedCategory = categoryOptions.find(
+    (item) => item.name === filterQueryData?.category?.name
+  );
+  const selectedAssetType = assetsTypeOptions.find(
+    (item) => item.name === filterQueryData?.propertyType?.name
+  );
+
+  console.log("selectedLocationselectedLocation", selectedLocation);
+  const urlFilterdata = {
+    location: selectedLocation,
+    bank: selectedBank,
+    page: filterQueryData?.page,
+    price: filterQueryData?.price,
+    category: selectedCategory,
+    assetType: selectedAssetType,
+  } as ILocalFilter;
+
+  return (
+    <section>
+      <FindAuctionServer
+        categories={categoryOptions}
+        assets={assetsTypeOptions}
+        banks={bankOptions}
+        locations={locationOptions}
+        selectedBank={selectedBank}
+        selectedLocation={selectedLocation}
+        selectedCategory={selectedCategory}
+        selectedAsset={selectedAssetType}
+        selectedPrice={filterQueryData?.price}
+      />
+      <div className="common-section">
+        <div className="grid grid-cols-12 gap-4 py-4">
+          <div className="lg:col-span-8 col-span-full">
+            <AuctionHeaderSaveSearch />
+            <ShowAuctionListServer
+              auctions={auctionList}
+              totalPages={response?.meta?.pageCount || 1}
+              activePage={page ? Number(page) : 1}
+              filterData={urlFilterdata}
+            />
+          </div>
+          <div className="lg:col-span-4 col-span-full">
+            <RecentData />
+          </div>
+        </div>
+      </div>
+    </section>
+  );
 }
+
+// Revalidate every 15 minutes
+export const revalidate = 900;

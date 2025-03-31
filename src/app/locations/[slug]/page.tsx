@@ -1,7 +1,25 @@
-import { fetchLocationBySlug } from "@/server/actions/location";
-import { handleOgImageUrl } from "@/shared/Utilies";
-import { ILocations } from "@/types";
+import FindAuctionServer from "@/components/molecules/FindAuctionServer";
+import RecentData from "@/components/molecules/RecentData";
+import { fetchBanks, getCategoryBoxCollection } from "@/server/actions";
+import { getAssetType, getAuctionsServer } from "@/server/actions/auction";
+import { fetchLocation, fetchLocationBySlug } from "@/server/actions/location";
+import { RANGE_PRICE } from "@/shared/Constants";
+import {
+  handleOgImageUrl,
+  sanitizeReactSelectOptionsPage,
+} from "@/shared/Utilies";
+import {
+  IAssetType,
+  IAuction,
+  IBanks,
+  ICategoryCollection,
+  ILocations,
+} from "@/types";
+import { IPaginationData } from "@/zustandStore/auctionStore";
 import { Metadata, ResolvingMetadata } from "next";
+import AuctionHeaderServer from "@/components/atoms/AuctionHeaderServer";
+import ShowAuctionListServer from "@/components/molecules/ShowAuctionListServer";
+import { ILocalFilter } from "@/components/atoms/PaginationCompServer";
 
 async function getSlugData(slug: string) {
   const selectedLocation = (await fetchLocationBySlug({
@@ -79,5 +97,91 @@ export default async function Page({
   params: { slug: string };
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
-  return null;
+  const { slug } = params;
+  const { page = 1 } = searchParams;
+  // Extract and sanitize search query
+  const locationData = await getSlugData(slug);
+  // console.log(locationData, "location-slug");
+  const { name, type } = locationData;
+
+  const filterQueryData = {
+    location: {
+      name,
+      type,
+    },
+    price: [RANGE_PRICE.MIN, RANGE_PRICE.MAX],
+  };
+
+  // Fetch data in parallel
+  const [rawAssetTypes, rawBanks, rawCategories, rawLocations, response]: any =
+    await Promise.all([
+      getAssetType(),
+      fetchBanks(),
+      getCategoryBoxCollection(),
+      fetchLocation(),
+      getAuctionsServer({
+        location: filterQueryData?.location?.name ?? "",
+        locationType: filterQueryData?.location?.type ?? "",
+        page: String(page) || "1",
+        reservePrice: [RANGE_PRICE.MIN, RANGE_PRICE.MAX],
+      }),
+    ]);
+
+  // Type assertions are no longer necessary if functions return correctly typed data
+  const assetsTypeOptions = sanitizeReactSelectOptionsPage(
+    rawAssetTypes
+  ) as IAssetType[];
+  const categoryOptions = sanitizeReactSelectOptionsPage(
+    rawCategories
+  ) as ICategoryCollection[];
+  const bankOptions = sanitizeReactSelectOptionsPage(rawBanks) as IBanks[];
+  const locationOptions = sanitizeReactSelectOptionsPage(
+    rawLocations
+  ) as ILocations[];
+
+  const auctionList =
+    (response as { sendResponse: IAuction[]; meta: IPaginationData })
+      ?.sendResponse ?? [];
+
+  const selectionLocation = locationOptions.find(
+    (item) => item.name === locationData?.name
+  );
+
+  const urlFilterdata = {
+    location: selectionLocation,
+    page: page ? String(page) : 1,
+    price: filterQueryData?.price,
+  } as ILocalFilter;
+
+  return (
+    <section>
+      <FindAuctionServer
+        categories={categoryOptions}
+        assets={assetsTypeOptions}
+        banks={bankOptions}
+        locations={locationOptions}
+        selectedLocation={selectionLocation}
+      />
+      <div className="common-section">
+        <div className="grid grid-cols-12 gap-4 py-4">
+          <div className="lg:col-span-8 col-span-full">
+            <AuctionHeaderServer
+              total={response?.meta?.total}
+              heading={`Auction Properties in ${name}`}
+            />
+
+            <ShowAuctionListServer
+              auctions={auctionList}
+              totalPages={response?.meta?.pageCount || 1}
+              activePage={page ? Number(page) : 1}
+              filterData={urlFilterdata}
+            />
+          </div>
+          <div className="lg:col-span-4 col-span-full">
+            <RecentData />
+          </div>
+        </div>
+      </div>
+    </section>
+  );
 }

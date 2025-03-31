@@ -14,6 +14,7 @@ export interface IAssetType {
   slug: "plot";
   category: any;
   label?: string;
+  pluralizeName?: string;
 }
 
 export interface IAuction {

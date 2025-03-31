@@ -120,7 +120,7 @@ const AuctionDetail = (props: { auctionDetail: IAuction }) => {
             <img
               src={noticeImageUrl}
               alt={"no-data"}
-              className={"w-24  h-auto bg-contain"}
+              className={"w-24  h-auto bg-contain hidden"}
               onError={() => {
                 setHasError(true);
               }}

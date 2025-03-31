@@ -1,4 +1,3 @@
-import AuctionLayoutClient from "@/components/layouts/AuctionLayoutClient";
 import { Suspense } from "react";
 
 export default function AuctionLayout({
@@ -8,7 +7,6 @@ export default function AuctionLayout({
 }) {
   return (
     <Suspense>
-      <AuctionLayoutClient />
       {children} {/* Ensure the page content is rendered */}
     </Suspense>
   );

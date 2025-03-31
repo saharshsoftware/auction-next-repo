@@ -252,7 +252,7 @@ blockquote {
 }
 
 .custom-common-header-class {
-  @apply bg-[var(--brand-color)] text-white px-4 py-2 rounded-t-md
+  @apply bg-[var(--brand-color)] text-white px-4 py-2 rounded-t-md min-h-8
 }
 
 .custom-common-header-detail-class {
@@ -267,22 +267,13 @@ blockquote {
   @apply fixed left-0 top-12 p-4 right-0 bg-white z-50 w-full transform duration-300 items-start bottom-0;
 }
 
-.slick-slide {
-  padding:10px;
-}
+
 
 .footer-link-custom-class {
   @apply link link-hover
 }
 
-.slick-prev:before, .slick-next:before {
-    font-family: 'slick';
-    font-size: 26px;
-    line-height: 1;
-    color: var(--brand-color) !important;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-}
+
 
 .pagination {
   margin: 0;
@@ -366,18 +357,6 @@ blockquote {
   height: 4px !important;
 }
 
-.slides-container .slick-slider .arrow-icon {
-  font-size: 0;
-    line-height: 0;
-    position: absolute;
-    top: 50%;
-    display: block;
-    width: 20px;
-    height: 20px;
-    padding: 0;
-    transform: translate(0, -50%);
-    cursor: pointer;
-}
 
 
 .carousel-p {

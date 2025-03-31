@@ -1,7 +1,29 @@
-import { fetchBanksBySlug } from "@/server/actions/banks";
-import { fetchLocationBySlug } from "@/server/actions/location";
-import { getPrimaryBankName, handleOgImageUrl } from "@/shared/Utilies";
-import { IBanks, ILocations } from "@/types";
+import AuctionCard from "@/components/atoms/AuctionCard";
+import AuctionHeaderServer from "@/components/atoms/AuctionHeaderServer";
+import PaginationCompServer, {
+  ILocalFilter,
+} from "@/components/atoms/PaginationCompServer";
+import FindAuctionServer from "@/components/molecules/FindAuctionServer";
+import RecentData from "@/components/molecules/RecentData";
+import ShowAuctionListServer from "@/components/molecules/ShowAuctionListServer";
+import { getCategoryBoxCollection } from "@/server/actions";
+import { getAssetType, getAuctionsServer } from "@/server/actions/auction";
+import { fetchBanks, fetchBanksBySlug } from "@/server/actions/banks";
+import { fetchLocation, fetchLocationBySlug } from "@/server/actions/location";
+import { RANGE_PRICE } from "@/shared/Constants";
+import {
+  getPrimaryBankName,
+  handleOgImageUrl,
+  sanitizeReactSelectOptionsPage,
+} from "@/shared/Utilies";
+import {
+  IAssetType,
+  IAuction,
+  IBanks,
+  ICategoryCollection,
+  ILocations,
+} from "@/types";
+import { IPaginationData } from "@/zustandStore/auctionStore";
 import { Metadata, ResolvingMetadata } from "next";
 
 async function getSlugData(
@@ -98,5 +120,90 @@ export default async function Page({
   params: { slug: string; slugbank: string };
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
-  return null;
+  const { slug, slugbank } = params;
+  const { page = 1 } = searchParams;
+  const { location: locationData, bank: bankData } = await getSlugData(
+    slug,
+    slugbank
+  );
+  // console.log(locationData, "location-slug");
+  const { name, type } = locationData;
+
+  console.log("filterQueryDataLOcationAndBank", slug);
+
+  // Fetch data in parallel
+  const [rawAssetTypes, rawBanks, rawCategories, rawLocations, response]: any =
+    await Promise.all([
+      getAssetType(),
+      fetchBanks(),
+      getCategoryBoxCollection(),
+      fetchLocation(),
+      getAuctionsServer({
+        location: name ?? "",
+        locationType: type ?? "",
+        bankName: bankData?.name ?? "",
+        page: String(page) || "1",
+        reservePrice: [RANGE_PRICE.MIN, RANGE_PRICE.MAX],
+      }),
+    ]);
+
+  // Type assertions are no longer necessary if functions return correctly typed data
+  const assetsTypeOptions = sanitizeReactSelectOptionsPage(
+    rawAssetTypes
+  ) as IAssetType[];
+  const categoryOptions = sanitizeReactSelectOptionsPage(
+    rawCategories
+  ) as ICategoryCollection[];
+  const bankOptions = sanitizeReactSelectOptionsPage(rawBanks) as IBanks[];
+  const locationOptions = sanitizeReactSelectOptionsPage(
+    rawLocations
+  ) as ILocations[];
+
+  const auctionList =
+    (response as { sendResponse: IAuction[]; meta: IPaginationData })
+      ?.sendResponse ?? [];
+
+  const selectionLocation = locationOptions.find(
+    (item) => item.name === locationData?.name
+  );
+
+  const selectedBank = bankOptions.find((item) => item.name === bankData?.name);
+
+  const urlFilterdata = {
+    location: selectionLocation,
+    bank: selectedBank,
+    page: String(page) || "1",
+    price: [RANGE_PRICE.MIN, RANGE_PRICE.MAX],
+  } as ILocalFilter;
+  return (
+    <section>
+      <FindAuctionServer
+        categories={categoryOptions}
+        assets={assetsTypeOptions}
+        banks={bankOptions}
+        locations={locationOptions}
+        selectedLocation={selectionLocation}
+        selectedBank={selectedBank}
+      />
+      <div className="common-section">
+        <div className="grid grid-cols-12 gap-4 py-4">
+          <div className="lg:col-span-8 col-span-full">
+            <AuctionHeaderServer
+              total={response?.meta?.total}
+              heading={`${bankData.name} Auction Properties in ${name}`}
+            />
+            <ShowAuctionListServer
+              auctions={auctionList}
+              totalPages={response?.meta?.pageCount || 1}
+              activePage={page ? Number(page) : 1}
+              filterData={urlFilterdata}
+            />
+          </div>
+          <div className="lg:col-span-4 col-span-full">
+            <RecentData />
+          </div>
+        </div>
+      </div>
+    </section>
+  );
 }

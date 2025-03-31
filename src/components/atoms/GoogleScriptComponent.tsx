@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import Script from "next/script";
 
@@ -5,7 +7,7 @@ const GoogleScriptComponent = () => {
   return (
     <>
       {/* Google Tag Manager */}
-      <Script id="gtm-script" strategy="afterInteractive" async>
+      <Script id="gtm-script" strategy="afterInteractive">
         {`
           (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
           new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],

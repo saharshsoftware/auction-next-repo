@@ -8,7 +8,7 @@ export default function AuctionLayout({
 }) {
   return (
     <Suspense>
-      <AuctionLayoutClient />
+      {/* <AuctionLayoutClient /> */}
       {children} {/* Ensure the page content is rendered */}
     </Suspense>
   );
