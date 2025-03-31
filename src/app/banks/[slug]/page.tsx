@@ -1,5 +1,6 @@
 // import ShowAuctionList from "@/components/molecules/ShowAuctionList";
 import AuctionCard from "@/components/atoms/AuctionCard";
+import AuctionHeaderServer from "@/components/atoms/AuctionHeaderServer";
 import PaginationCompServer from "@/components/atoms/PaginationCompServer";
 import FindAuctionServer from "@/components/molecules/FindAuctionServer";
 import RecentData from "@/components/molecules/RecentData";
@@ -160,6 +161,10 @@ export default async function Page({
       <div className="common-section">
         <div className="grid grid-cols-12 gap-4 py-4">
           <div className="lg:col-span-8 col-span-full">
+            <AuctionHeaderServer
+              total={response?.meta?.total}
+              heading={`${bankData.name} Auction Properties`}
+            />
             <div className="flex flex-col gap-4 w-full">
               {auctionList.length === 0 ? (
                 <div className="flex items-center justify-center flex-col h-[70vh]">

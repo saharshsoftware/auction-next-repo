@@ -136,7 +136,6 @@ const AuctionCard: React.FC<IAuctionCard> = (props) => {
         <div className="flex items-center justify-end gap-4 flex-wrap">
           <Link
             href={`${ROUTE_CONSTANTS.AUCTION_SLASH}/${item?.slug}`}
-            target="_blank"
             prefetch={false}
             className="min-w-fit"
           >

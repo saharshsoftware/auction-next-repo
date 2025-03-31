@@ -26,27 +26,26 @@ const PaginationCompServer = (props: {
   const router = useRouter();
   const pathname = usePathname();
   const params = useSearchParams();
-
-  // Function to decode data from query parameters
-  const getDataFromQueryParamsMethod = () => {
-    const queryParam = params.get("q");
-
-    if (queryParam) {
-      const decodedData = atob(queryParam);
-      console.log("decodedData", decodedData);
-      return JSON.parse(decodedData);
-    }
-    return null;
-  };
+  const urlSearchQ = params.get("q") ?? "";
 
   const handlePageChange = async (event: { selected: number }) => {
     const { selected: page } = event;
     const pageValue = page + 1;
 
     const newParams = { ...filterData, page: pageValue };
-    console.log(newParams, "newParams", filterData);
+    console.log(newParams, "newParams", filterData, pathname);
     const encodedQuery = setDataInQueryParams(newParams);
-    router.push(ROUTE_CONSTANTS.AUCTION + "?q=" + encodedQuery);
+    if (pathname === ROUTE_CONSTANTS.AUCTION) {
+      router.push(ROUTE_CONSTANTS.AUCTION + "?q=" + encodedQuery);
+      return;
+    }
+    if (pathname === ROUTE_CONSTANTS.SEARCH) {
+      router.replace(
+        ROUTE_CONSTANTS.SEARCH + `?q=${urlSearchQ}&page=${pageValue}`
+      );
+      return;
+    }
+    router.push(pathname + "?page=" + pageValue);
   };
 
   return (

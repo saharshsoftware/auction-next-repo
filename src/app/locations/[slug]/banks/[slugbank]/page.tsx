@@ -1,7 +1,9 @@
 import AuctionCard from "@/components/atoms/AuctionCard";
+import AuctionHeaderServer from "@/components/atoms/AuctionHeaderServer";
 import PaginationCompServer from "@/components/atoms/PaginationCompServer";
 import FindAuctionServer from "@/components/molecules/FindAuctionServer";
 import RecentData from "@/components/molecules/RecentData";
+import ShowAuctionListServer from "@/components/molecules/ShowAuctionListServer";
 import { getCategoryBoxCollection } from "@/server/actions";
 import { getAssetType, getAuctionsServer } from "@/server/actions/auction";
 import { fetchBanks, fetchBanksBySlug } from "@/server/actions/banks";
@@ -117,6 +119,7 @@ export default async function Page({
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
   const { slug, slugbank } = params;
+  const { page = 1 } = searchParams;
   const { location: locationData, bank: bankData } = await getSlugData(
     slug,
     slugbank
@@ -132,7 +135,6 @@ export default async function Page({
     bank: {
       name: bankData?.name,
     },
-    page: 1,
     price: [RANGE_PRICE.MIN, RANGE_PRICE.MAX],
   };
 
@@ -149,7 +151,7 @@ export default async function Page({
         location: filterQueryData?.location?.name ?? "",
         locationType: filterQueryData?.location?.type ?? "",
         bankName: bankData?.name ?? "",
-        page: filterQueryData?.page?.toString() ?? "1",
+        page: String(page) || "1",
       }),
     ]);
 
@@ -178,7 +180,7 @@ export default async function Page({
   const urlFilterdata = {
     location: selectionLocation,
     bank: selectedBank,
-    page: filterQueryData?.page,
+    page: String(page) || "1",
     price: filterQueryData?.price,
   };
   return (
@@ -194,24 +196,16 @@ export default async function Page({
       <div className="common-section">
         <div className="grid grid-cols-12 gap-4 py-4">
           <div className="lg:col-span-8 col-span-full">
-            <div className="flex flex-col gap-4 w-full">
-              {auctionList.length === 0 ? (
-                <div className="flex items-center justify-center flex-col h-[70vh]">
-                  No data found
-                </div>
-              ) : (
-                <>
-                  {auctionList.map((item, index) => (
-                    <AuctionCard key={index} item={item} />
-                  ))}
-                  <PaginationCompServer
-                    totalPage={response?.meta?.pageCount}
-                    activePage={filterQueryData?.page}
-                    filterData={urlFilterdata}
-                  />
-                </>
-              )}
-            </div>
+            <AuctionHeaderServer
+              total={response?.meta?.total}
+              heading={`${bankData.name} Auction Properties in ${name}`}
+            />
+            <ShowAuctionListServer
+              auctions={auctionList}
+              totalPages={response?.meta?.pageCount || 1}
+              activePage={page ? Number(page) : 1}
+              filterData={urlFilterdata}
+            />
           </div>
           <div className="lg:col-span-4 col-span-full">
             <RecentData />

@@ -1,14 +1,10 @@
-import AuctionCard from "@/components/atoms/AuctionCard";
-import PaginationCompServer from "@/components/atoms/PaginationCompServer";
 import FindAuctionServer from "@/components/molecules/FindAuctionServer";
 import RecentData from "@/components/molecules/RecentData";
-import SkeletonAuctionPage from "@/components/skeltons/SkeletonAuctionPage";
 import { fetchBanks, getCategoryBoxCollection } from "@/server/actions";
 import { getAssetType, getAuctionsServer } from "@/server/actions/auction";
 import { fetchLocation, fetchLocationBySlug } from "@/server/actions/location";
 import { RANGE_PRICE } from "@/shared/Constants";
 import {
-  getDataFromQueryParamsMethod,
   handleOgImageUrl,
   sanitizeReactSelectOptionsPage,
 } from "@/shared/Utilies";
@@ -21,6 +17,8 @@ import {
 } from "@/types";
 import { IPaginationData } from "@/zustandStore/auctionStore";
 import { Metadata, ResolvingMetadata } from "next";
+import AuctionHeaderServer from "@/components/atoms/AuctionHeaderServer";
+import ShowAuctionListServer from "@/components/molecules/ShowAuctionListServer";
 
 async function getSlugData(slug: string) {
   const selectedLocation = (await fetchLocationBySlug({
@@ -99,6 +97,7 @@ export default async function Page({
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
   const { slug } = params;
+  const { page = 1 } = searchParams;
   // Extract and sanitize search query
   const locationData = await getSlugData(slug);
   // console.log(locationData, "location-slug");
@@ -109,11 +108,8 @@ export default async function Page({
       name,
       type,
     },
-    page: 1,
     price: [RANGE_PRICE.MIN, RANGE_PRICE.MAX],
   };
-
-  console.log("filterQueryDataLOcation", slug);
 
   // Fetch data in parallel
   const [rawAssetTypes, rawBanks, rawCategories, rawLocations, response]: any =
@@ -125,6 +121,7 @@ export default async function Page({
       getAuctionsServer({
         location: filterQueryData?.location?.name ?? "",
         locationType: filterQueryData?.location?.type ?? "",
+        page: String(page) || "1",
       }),
     ]);
 
@@ -150,7 +147,7 @@ export default async function Page({
 
   const urlFilterdata = {
     location: selectionLocation,
-    page: filterQueryData?.page,
+    page: page ? Number(page) : 1,
     price: filterQueryData?.price,
   };
 
@@ -166,24 +163,17 @@ export default async function Page({
       <div className="common-section">
         <div className="grid grid-cols-12 gap-4 py-4">
           <div className="lg:col-span-8 col-span-full">
-            <div className="flex flex-col gap-4 w-full">
-              {auctionList.length === 0 ? (
-                <div className="flex items-center justify-center flex-col h-[70vh]">
-                  No data found
-                </div>
-              ) : (
-                <>
-                  {auctionList.map((item, index) => (
-                    <AuctionCard key={index} item={item} />
-                  ))}
-                  <PaginationCompServer
-                    totalPage={response?.meta?.pageCount}
-                    activePage={filterQueryData?.page}
-                    filterData={urlFilterdata}
-                  />
-                </>
-              )}
-            </div>
+            <AuctionHeaderServer
+              total={response?.meta?.total}
+              heading={`Auction Properties in ${name}`}
+            />
+
+            <ShowAuctionListServer
+              auctions={auctionList}
+              totalPages={response?.meta?.pageCount || 1}
+              activePage={page ? Number(page) : 1}
+              filterData={urlFilterdata}
+            />
           </div>
           <div className="lg:col-span-4 col-span-full">
             <RecentData />

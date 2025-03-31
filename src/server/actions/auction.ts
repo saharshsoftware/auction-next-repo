@@ -205,7 +205,7 @@ export const getAssetType = async () => {
     const sendResponse = sanitizeStrapiData(data.data) as IAssetType;
     return sendResponse;
   } catch (e) {
-    console.log(e, "auctionDetail error auction detail");
+    console.log(e, "auctionDetail error auction detail-asset-types");
   }
 };
 
@@ -220,6 +220,7 @@ export const getAuctionsServer = async (payload: {
   locationType?: string;
 }) => {
   "use server";
+  let URL;
   try {
     const {
       page,
@@ -232,7 +233,7 @@ export const getAuctionsServer = async (payload: {
       locationType,
     } = payload;
     const pageSize = 10;
-    let URL;
+
     let filter = `?pagination[page]=${
       page ?? 1
     }&pagination[pageSize]=${pageSize}&`;
@@ -297,6 +298,6 @@ export const getAuctionsServer = async (payload: {
     const sendResponse = sanitizedAuctionData(data.data) as IAuction[];
     return { sendResponse, meta: data?.meta?.pagination, UPDATE_URL };
   } catch (e) {
-    console.log(e, "auctionDetail error auction detail");
+    console.log(URL, "auctionDetail error auction notices");
   }
 };

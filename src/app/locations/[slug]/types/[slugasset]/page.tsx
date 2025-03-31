@@ -1,7 +1,24 @@
+import AuctionHeaderServer from "@/components/atoms/AuctionHeaderServer";
+import FindAuctionServer from "@/components/molecules/FindAuctionServer";
+import RecentData from "@/components/molecules/RecentData";
+import ShowAuctionListServer from "@/components/molecules/ShowAuctionListServer";
+import { fetchBanks, getCategoryBoxCollection } from "@/server/actions";
 import { fetchAssetTypeBySlug } from "@/server/actions/assetTypes";
-import { fetchLocationBySlug } from "@/server/actions/location";
-import { handleOgImageUrl } from "@/shared/Utilies";
-import { IAssetType, ILocations } from "@/types";
+import { getAssetType, getAuctionsServer } from "@/server/actions/auction";
+import { fetchLocation, fetchLocationBySlug } from "@/server/actions/location";
+import { RANGE_PRICE } from "@/shared/Constants";
+import {
+  handleOgImageUrl,
+  sanitizeReactSelectOptionsPage,
+} from "@/shared/Utilies";
+import {
+  IAssetType,
+  IAuction,
+  IBanks,
+  ICategoryCollection,
+  ILocations,
+} from "@/types";
+import { IPaginationData } from "@/zustandStore/auctionStore";
 import { Metadata, ResolvingMetadata } from "next";
 
 async function getSlugData(
@@ -79,6 +96,99 @@ export default async function Page({
   params: { slug: string; slugasset: string };
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
-  console.log("(INFO) :: params", params, searchParams);
-  return null;
+  const { slug, slugasset } = params;
+  const { page = 1 } = searchParams;
+
+  const { location: locationData, assetType: assetTypeData } =
+    await getSlugData(slug, slugasset);
+
+  const { name: nameLocation, type } = locationData;
+  const { name } = assetTypeData;
+  const filterQueryData = {
+    location: {
+      name: nameLocation,
+      type,
+    },
+    nameAsset: name,
+    price: [RANGE_PRICE.MIN, RANGE_PRICE.MAX],
+  };
+
+  console.log("filterQueryDataLOcationAndAssetTypes", filterQueryData, slug);
+
+  // Fetch data in parallel
+  const [rawAssetTypes, rawBanks, rawCategories, rawLocations, response]: any =
+    await Promise.all([
+      getAssetType(),
+      fetchBanks(),
+      getCategoryBoxCollection(),
+      fetchLocation(),
+      getAuctionsServer({
+        location: filterQueryData?.location?.name ?? "",
+        locationType: filterQueryData?.location?.type ?? "",
+        propertyType: filterQueryData?.nameAsset ?? "",
+        page: String(page) || "1",
+      }),
+    ]);
+
+  // Type assertions are no longer necessary if functions return correctly typed data
+  const assetsTypeOptions = sanitizeReactSelectOptionsPage(
+    rawAssetTypes
+  ) as IAssetType[];
+  const categoryOptions = sanitizeReactSelectOptionsPage(
+    rawCategories
+  ) as ICategoryCollection[];
+  const bankOptions = sanitizeReactSelectOptionsPage(rawBanks) as IBanks[];
+  const locationOptions = sanitizeReactSelectOptionsPage(
+    rawLocations
+  ) as ILocations[];
+
+  const auctionList =
+    (response as { sendResponse: IAuction[]; meta: IPaginationData })
+      ?.sendResponse ?? [];
+
+  const selectionLocation = locationOptions.find(
+    (item) => item.name === locationData?.name
+  );
+
+  const selectedAsset = assetsTypeOptions.find(
+    (item) => item.name === assetTypeData?.name
+  );
+
+  const urlFilterdata = {
+    location: selectionLocation,
+    selectedAsset: selectedAsset,
+    page: String(page) || "1",
+    price: filterQueryData?.price,
+  };
+  return (
+    <section>
+      <FindAuctionServer
+        categories={categoryOptions}
+        assets={assetsTypeOptions}
+        banks={bankOptions}
+        locations={locationOptions}
+        selectedLocation={selectionLocation}
+        selectedAsset={selectedAsset}
+      />
+      <div className="common-section">
+        <div className="grid grid-cols-12 gap-4 py-4">
+          <div className="lg:col-span-8 col-span-full">
+            <AuctionHeaderServer
+              total={response?.meta?.total}
+              heading={`Bank Auction  ${assetTypeData?.pluralizeName} Bank Properties in  ${locationData.name}`}
+            />
+            <ShowAuctionListServer
+              auctions={auctionList}
+              totalPages={response?.meta?.pageCount || 1}
+              activePage={page ? Number(page) : 1}
+              filterData={urlFilterdata}
+            />
+          </div>
+          <div className="lg:col-span-4 col-span-full">
+            <RecentData />
+          </div>
+        </div>
+      </div>
+    </section>
+  );
 }

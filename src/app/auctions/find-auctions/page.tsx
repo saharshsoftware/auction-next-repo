@@ -87,7 +87,7 @@ export default async function Page({
       getCategoryBoxCollection(),
       fetchLocation(),
       getAuctionsServer({
-        category: filterQueryData.category?.name ?? "",
+        category: filterQueryData?.category?.name ?? "",
         bankName: filterQueryData?.bank?.name ?? "",
         location: filterQueryData?.location?.name ?? "",
         propertyType: filterQueryData?.propertyType?.name ?? "",
@@ -159,9 +159,6 @@ export default async function Page({
                 </div>
               ) : (
                 <>
-                  {/* <a href={`${response?.UPDATE_URL}`} target="_blank">
-                    {JSON.stringify(response?.UPDATE_URL ?? "")}
-                  </a> */}
                   {auctionList.map((item, index) => (
                     <AuctionCard key={index} item={item} />
                   ))}
