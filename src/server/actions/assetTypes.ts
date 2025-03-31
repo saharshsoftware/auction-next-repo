@@ -21,7 +21,7 @@ export const fetchAssetTypes = async () => {
   try {
     const URL =
       API_BASE_URL +
-      API_ENPOINTS.ASSET_TYPES +
+      API_ENPOINTS.POPULER_ASSET_TYPES +
       `?pagination[page]=1&pagination[pageSize]=50&fields[0]=name&fields[1]=slug&populate=category`;
     console.log("URL", URL);
     const { data } = await getRequest({ API: URL });

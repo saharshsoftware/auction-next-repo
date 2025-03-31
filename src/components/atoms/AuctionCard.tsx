@@ -139,11 +139,7 @@ const AuctionCard: React.FC<IAuctionCard> = (props) => {
             prefetch={false}
             className="min-w-fit"
           >
-            <ActionButton
-              text="View Auction"
-              customClass="w-full"
-              icon={<NewTabSvg />}
-            />
+            <ActionButton text="View Auction" customClass="w-full" />
           </Link>
           {showRemoveButton ? (
             <ActionButton

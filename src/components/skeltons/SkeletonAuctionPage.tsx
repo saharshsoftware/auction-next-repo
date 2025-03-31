@@ -39,7 +39,7 @@ const SkeletonSidebar = () => {
 
 const SkeletonAuctionPage = () => {
   return (
-    <div className="flex flex-col gap-6 ">
+    <div className="flex flex-col gap-6 mb-2">
       <SkeletonFilter />
       <div className="grid grid-cols-12 gap-4 common-section">
         <div className="lg:col-span-8 col-span-full flex flex-col gap-6">

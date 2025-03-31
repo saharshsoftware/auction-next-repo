@@ -24,6 +24,10 @@ import PaginationCompServer, {
   ILocalFilter,
 } from "@/components/atoms/PaginationCompServer";
 import { IPaginationData } from "@/zustandStore/auctionStore";
+import page from "@/app/page";
+import AuctionHeaderServer from "@/components/atoms/AuctionHeaderServer";
+import ShowAuctionListServer from "@/components/molecules/ShowAuctionListServer";
+import AuctionHeaderSaveSearch from "@/components/atoms/AuctionHeaderSaveSearch";
 
 export const metadata: Metadata = {
   title: "Search Results | eauctiondekho",
@@ -154,24 +158,13 @@ export default async function Page({
       <div className="common-section">
         <div className="grid grid-cols-12 gap-4 py-4">
           <div className="lg:col-span-8 col-span-full">
-            <div className="flex flex-col gap-4 w-full">
-              {auctionList.length === 0 ? (
-                <div className="flex items-center justify-center flex-col h-[70vh]">
-                  No data found
-                </div>
-              ) : (
-                <>
-                  {auctionList.map((item, index) => (
-                    <AuctionCard key={index} item={item} />
-                  ))}
-                  <PaginationCompServer
-                    totalPage={response?.meta?.pageCount}
-                    activePage={filterQueryData?.page}
-                    filterData={urlFilterdata}
-                  />
-                </>
-              )}
-            </div>
+            <AuctionHeaderSaveSearch />
+            <ShowAuctionListServer
+              auctions={auctionList}
+              totalPages={response?.meta?.pageCount || 1}
+              activePage={page ? Number(page) : 1}
+              filterData={urlFilterdata}
+            />
           </div>
           <div className="lg:col-span-4 col-span-full">
             <RecentData />

@@ -98,7 +98,7 @@ const TopAssets = (props: { isBankTypesRoute?: boolean }) => {
     }
     return (
       <>
-        {assetsTypeData?.map((item, index) => {
+        {assetsTypeData?.slice(0, 5)?.map((item, index) => {
           return (
             <div className="custom-common-header-detail-class" key={index}>
               <div className="flex flex-col gap-4 p-4  w-full min-h-12">
