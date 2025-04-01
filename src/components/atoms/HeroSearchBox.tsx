@@ -18,6 +18,7 @@ import { getCookie } from "cookies-next";
 import dynamic from "next/dynamic";
 import { IFilters, useFilterStore } from "@/zustandStore/filters";
 import { trackSearch } from "@/helpers/SurveyHelper";
+import { IAssetType } from "@/types";
 
 interface IFilter {
   category: string;
@@ -50,6 +51,9 @@ const HeroSearchBox = (props: {
   const token = getCookie(COOKIES.TOKEN_KEY) ?? "";
   const [loadingSearch, setLoadingSearch] = useState(false);
 
+  const [filteredAssets, setFilteredAssets] = useState<IAssetType[]>(
+    assetsTypeOptions ?? []
+  );
   const getFilterQuery = (values: {
     category: any;
     price: any;
@@ -84,6 +88,21 @@ const HeroSearchBox = (props: {
     // const q = getFilterQuery(values);
   };
 
+  const handleCategoryChange = (
+    selectedCategorySlug: string,
+    setFieldValue: any
+  ) => {
+    setFieldValue("propertyType", ""); // Reset propertyType
+
+    // Filter asset types based on the selected category
+    const filteredOptions = assetsTypeOptions.filter(
+      (item: IAssetType) => item?.category?.slug === selectedCategorySlug
+    );
+    setFilteredAssets(
+      filteredOptions?.length > 0 ? filteredOptions : assetsTypeOptions
+    );
+  };
+
   return (
     <>
       <div className="bg-white p-4 rounded-lg flex flex-col gap-4 relative pb-12 shadow shadow-brand-color border">
@@ -113,6 +132,7 @@ const HeroSearchBox = (props: {
                           customClass="w-full "
                           onChange={(e: any) => {
                             setFieldValue("category", e);
+                            handleCategoryChange(e?.slug, setFieldValue);
                           }}
                         />
                       )}
@@ -129,7 +149,7 @@ const HeroSearchBox = (props: {
                       {() => (
                         <ReactSelectDropdown
                           defaultValue={values?.propertyType ?? null}
-                          options={assetsTypeOptions ?? []}
+                          options={filteredAssets ?? []}
                           placeholder={"Asset type"}
                           name="asset-type-search-box"
                           // loading={isLoadingAssetsTypeCategory}
