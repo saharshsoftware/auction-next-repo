@@ -3,7 +3,11 @@
 import { IAuction } from "@/types";
 import React, { useEffect, useState } from "react";
 import ShowLabelValue from "../atoms/ShowLabelValue";
-import { COOKIES, STRING_DATA } from "@/shared/Constants";
+import {
+  COOKIES,
+  SESSIONS_STORAGE_KEYS,
+  STRING_DATA,
+} from "@/shared/Constants";
 import {
   formatPrice,
   formattedDateAndTime,
@@ -24,11 +28,13 @@ import FullScreenImageModal from "../ modals/FullScreenImageModal";
 import Image from "next/image";
 import { useAuctionDetailsStore } from "@/zustandStore/auctionDetails";
 import BlurredFieldWrapper from "../atoms/BlurredFieldWrapper";
+import { useRouter } from "next/navigation";
 
 const auctionLabelClass = () => "text-sm text-gray-400 font-bold";
 
 const AuctionDetail = (props: { auctionDetail: IAuction }) => {
   const { auctionDetail } = props;
+  const router = useRouter();
   const { setAuctionDetailData } = useAuctionDetailsStore();
   const noticeImageUrl = auctionDetail?.noticeImageURL
     ? `${process.env.NEXT_PUBLIC_IMAGE_CLOUDFRONT}/${auctionDetail?.noticeImageURL}`
@@ -137,6 +143,10 @@ const AuctionDetail = (props: { auctionDetail: IAuction }) => {
     }
   }, [auctionDetail, setAuctionDetailData]);
 
+  const handleBackClick = () => {
+    router.back();
+  };
+
   return (
     <>
       {/* Create alert Modal */}
@@ -158,11 +168,15 @@ const AuctionDetail = (props: { auctionDetail: IAuction }) => {
       <div className="flex flex-col gap-4 w-full">
         {/* {JSON.stringify(auctionDetail)} */}
         <div className="flex justify-between items-center">
-          <Link href={ROUTE_CONSTANTS.AUCTION}>
-            <em className="rounded-full bg-gray-300 px-3 py-2">
-              <FontAwesomeIcon icon={faArrowLeft} />
-            </em>
-          </Link>
+          {/* <Link href={window.location.href}> */}
+          <em
+            className="rounded-full bg-gray-300 px-3 py-2 cursor-pointer"
+            onClick={handleBackClick}
+          >
+            <FontAwesomeIcon icon={faArrowLeft} />
+          </em>
+          {/* </Link> */}
+
           <ActionButton
             text={STRING_DATA.SHOW_INTEREST.toUpperCase()}
             onclick={showModal}

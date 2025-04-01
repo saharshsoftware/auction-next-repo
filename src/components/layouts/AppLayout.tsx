@@ -14,7 +14,7 @@ import {
 
 import useModal from "@/hooks/useModal";
 import SurveyModal from "../ modals/SurveyModal";
-import { STORAGE_KEYS } from "@/shared/Constants";
+import { SESSIONS_STORAGE_KEYS, STORAGE_KEYS } from "@/shared/Constants";
 
 const AppLayout = ({ children }: { children: React.ReactNode }) => {
   const { openModal, showModal, hideModal } = useModal();

@@ -18,14 +18,9 @@ import {
   ICategoryCollection,
   ILocations,
 } from "@/types";
-import AuctionCard from "@/components/atoms/AuctionCard";
 import RecentData from "@/components/molecules/RecentData";
-import PaginationCompServer, {
-  ILocalFilter,
-} from "@/components/atoms/PaginationCompServer";
+import { ILocalFilter } from "@/components/atoms/PaginationCompServer";
 import { IPaginationData } from "@/zustandStore/auctionStore";
-import page from "@/app/page";
-import AuctionHeaderServer from "@/components/atoms/AuctionHeaderServer";
 import ShowAuctionListServer from "@/components/molecules/ShowAuctionListServer";
 import AuctionHeaderSaveSearch from "@/components/atoms/AuctionHeaderSaveSearch";
 
@@ -162,7 +157,9 @@ export default async function Page({
             <ShowAuctionListServer
               auctions={auctionList}
               totalPages={response?.meta?.pageCount || 1}
-              activePage={page ? Number(page) : 1}
+              activePage={
+                filterQueryData?.page ? Number(filterQueryData?.page) : 1
+              }
               filterData={urlFilterdata}
             />
           </div>

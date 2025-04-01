@@ -66,6 +66,7 @@ const AddToWishlist = () => {
       // console.log(dropdownData, "dropdownData");
       return dropdownData ?? [];
     },
+    enabled: isAuthenticated,
   });
 
   useEffect(() => {
