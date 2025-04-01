@@ -526,18 +526,20 @@ export const getCategorySpecificAssets = (props: {
   isCategoryRoute: boolean;
 }) => {
   const { response, params, isBankCategoriesRoute, isCategoryRoute } = props;
-  const result = response?.filter((item: any) => {
-    // const categoryName = item?.category?.data?.attributes?.slug || "";
-    const categoryName = item?.category?.slug || "";
+  const result = response
+    ?.filter((item: any) => {
+      // const categoryName = item?.category?.data?.attributes?.slug || "";
+      const categoryName = item?.category?.slug || "";
 
-    if (categoryName === params?.slugcategory && isBankCategoriesRoute) {
-      return item;
-    }
+      if (categoryName === params?.slugcategory && isBankCategoriesRoute) {
+        return item;
+      }
 
-    if (categoryName === params?.slug && isCategoryRoute) {
-      return item;
-    }
-  });
+      if (categoryName === params?.slug && isCategoryRoute) {
+        return item;
+      }
+    })
+    .sort((a, b) => (a.name || "").localeCompare(b.name || "")); // Sorting alphabetically
   return result ?? [];
 };
 
