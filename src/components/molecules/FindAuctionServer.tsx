@@ -51,6 +51,9 @@ const FindAuction: React.FC<FindAuctionProps> = ({
   const router = useRouter();
   const { setDataInQueryParamsMethod } = useCustomParamsData();
   const { showModal: showFilterModal, openModal, hideModal } = useModal();
+  const [filteredAssets, setFilteredAssets] = useState<IAssetType[]>(
+    assets ?? []
+  );
 
   const [staticLoading, setStaticLoading] = useState(false);
 
@@ -114,6 +117,30 @@ const FindAuction: React.FC<FindAuctionProps> = ({
     hideModal?.();
   };
 
+  const handleCategoryChange = (
+    selectedCategorySlug: string,
+    setFieldValue: any
+  ) => {
+    setFieldValue("propertyType", getEmptyAllObject()); // Reset propertyType
+
+    // Filter asset types based on the selected category
+    const filteredOptions = assets.filter(
+      (item: IAssetType) => item?.category?.slug === selectedCategorySlug
+    );
+    setFilteredAssets(filteredOptions?.length > 0 ? filteredOptions : assets);
+  };
+
+  useEffect(() => {
+    if ("slug" in selectedCategory && selectedCategory?.slug) {
+      const filteredOptions = assets.filter(
+        (item: IAssetType) => item?.category?.slug === selectedCategory?.slug
+      );
+      setFilteredAssets(filteredOptions);
+    } else {
+      setFilteredAssets(assets);
+    }
+  }, [selectedCategory, assets]);
+
   const renderForm = () => (
     <Formik
       initialValues={{
@@ -143,7 +170,10 @@ const FindAuction: React.FC<FindAuctionProps> = ({
                         options={categories}
                         placeholder={"Category"}
                         defaultValue={values.category}
-                        onChange={(value) => setFieldValue("category", value)}
+                        onChange={(value) => {
+                          setFieldValue("category", value);
+                          handleCategoryChange(value?.slug, setFieldValue);
+                        }}
                       />
                     )}
                   </Field>
@@ -155,7 +185,7 @@ const FindAuction: React.FC<FindAuctionProps> = ({
                     {() => (
                       <ReactSelectDropdown
                         name="propertyType"
-                        options={assets}
+                        options={filteredAssets}
                         placeholder={"Asset Type"}
                         defaultValue={values.propertyType}
                         onChange={(value) =>

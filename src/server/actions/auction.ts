@@ -198,7 +198,12 @@ export const getCarouselData = async () => {
 export const getAssetType = async () => {
   "use server";
   try {
-    const filter = `?sort[0]=name:asc`;
+    const requiredkeys = generateQueryParamString([
+      "name",
+      "slug",
+      "pluralizeName",
+    ]);
+    const filter = `?sort[0]=name:asc&${requiredkeys}&populate=category`;
     const URL = API_BASE_URL + API_ENPOINTS.ASSET_TYPES + `${filter}`;
     // console.log(URL, "assetstype-detail");
     const { data } = await getRequest({ API: URL });
@@ -271,7 +276,7 @@ export const getAuctionsServer = async (payload: {
         )}&`;
       }
 
-      if (reservePrice) {
+      if (reservePrice && reservePrice.length > 0) {
         filter += `filters[$and][${index++}][reservePrice][$gte]=${
           reservePrice[0]
         }&filters[$and][${index++}][reservePrice][$lte]=${reservePrice[1]}&`;
