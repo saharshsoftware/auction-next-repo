@@ -1158,3 +1158,8 @@ export const STORAGE_KEYS = {
   LAST_PAGE_VIEWS_UPDATE: "last_page_views_update",
   SURVEY_TRIGGER_TIME: "survey_trigger_time",
 };
+
+export const SESSIONS_STORAGE_KEYS = {
+  CURRENT_PATH: "currentPath",
+  PREVIOUS_PATH: "previousPath",
+};

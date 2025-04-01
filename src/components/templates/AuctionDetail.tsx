@@ -3,7 +3,11 @@
 import { IAuction } from "@/types";
 import React, { useEffect, useState } from "react";
 import ShowLabelValue from "../atoms/ShowLabelValue";
-import { COOKIES, STRING_DATA } from "@/shared/Constants";
+import {
+  COOKIES,
+  SESSIONS_STORAGE_KEYS,
+  STRING_DATA,
+} from "@/shared/Constants";
 import {
   formatPrice,
   formattedDateAndTime,
@@ -140,13 +144,34 @@ const AuctionDetail = (props: { auctionDetail: IAuction }) => {
   }, [auctionDetail, setAuctionDetailData]);
 
   const handleBackClick = () => {
-    const referrer = document.referrer;
-    if (referrer && referrer.includes(window.location.origin)) {
-      router.back();
+    // Get previous route from session storage
+    const previousPath = sessionStorage.getItem(
+      SESSIONS_STORAGE_KEYS.PREVIOUS_PATH
+    );
+    const currentRoute = window.location.pathname;
+
+    // Update stored route
+    sessionStorage.setItem(SESSIONS_STORAGE_KEYS.PREVIOUS_PATH, currentRoute);
+    console.log("Previous Route:", previousPath, currentRoute);
+    if (previousPath && previousPath !== currentRoute) {
+      router.push(previousPath);
     } else {
       router.push(ROUTE_CONSTANTS.AUCTION);
     }
   };
+
+  // Add this to your component's useEffect to track navigation
+  useEffect(() => {
+    const handleRouteChange = () => {
+      sessionStorage.setItem(
+        SESSIONS_STORAGE_KEYS.PREVIOUS_PATH,
+        window.location.pathname
+      );
+    };
+
+    window.addEventListener("beforeunload", handleRouteChange);
+    return () => window.removeEventListener("beforeunload", handleRouteChange);
+  }, []);
 
   return (
     <>
