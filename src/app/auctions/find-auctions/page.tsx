@@ -157,7 +157,9 @@ export default async function Page({
             <ShowAuctionListServer
               auctions={auctionList}
               totalPages={response?.meta?.pageCount || 1}
-              activePage={searchParams?.page ? Number(searchParams.page) : 1}
+              activePage={
+                filterQueryData?.page ? Number(filterQueryData?.page) : 1
+              }
               filterData={urlFilterdata}
             />
           </div>

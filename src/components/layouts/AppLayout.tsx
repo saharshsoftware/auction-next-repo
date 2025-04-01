@@ -62,21 +62,6 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
   }, [surveyId, setSurveyData]);
 
   const isAuthRoute = AUTH_ROUTES.some((route) => route.path === pathname);
-  // Track route changes (place in layout or component)
-  useEffect(() => {
-    const currentPath = window.location.pathname;
-    const previousPath = sessionStorage.getItem(
-      SESSIONS_STORAGE_KEYS.CURRENT_PATH
-    );
-
-    // Store previous route before updating
-    if (previousPath && previousPath !== currentPath) {
-      sessionStorage.setItem(SESSIONS_STORAGE_KEYS.PREVIOUS_PATH, previousPath);
-    }
-
-    // Update current route
-    sessionStorage.setItem(SESSIONS_STORAGE_KEYS.CURRENT_PATH, currentPath);
-  }, [pathname]); // Re-run when path changes
 
   return (
     <div

@@ -144,34 +144,8 @@ const AuctionDetail = (props: { auctionDetail: IAuction }) => {
   }, [auctionDetail, setAuctionDetailData]);
 
   const handleBackClick = () => {
-    // Get previous route from session storage
-    const previousPath = sessionStorage.getItem(
-      SESSIONS_STORAGE_KEYS.PREVIOUS_PATH
-    );
-    const currentRoute = window.location.pathname;
-
-    // Update stored route
-    sessionStorage.setItem(SESSIONS_STORAGE_KEYS.PREVIOUS_PATH, currentRoute);
-    console.log("Previous Route:", previousPath, currentRoute);
-    if (previousPath && previousPath !== currentRoute) {
-      router.push(previousPath);
-    } else {
-      router.push(ROUTE_CONSTANTS.AUCTION);
-    }
+    router.back();
   };
-
-  // Add this to your component's useEffect to track navigation
-  useEffect(() => {
-    const handleRouteChange = () => {
-      sessionStorage.setItem(
-        SESSIONS_STORAGE_KEYS.PREVIOUS_PATH,
-        window.location.pathname
-      );
-    };
-
-    window.addEventListener("beforeunload", handleRouteChange);
-    return () => window.removeEventListener("beforeunload", handleRouteChange);
-  }, []);
 
   return (
     <>
@@ -194,12 +168,15 @@ const AuctionDetail = (props: { auctionDetail: IAuction }) => {
       <div className="flex flex-col gap-4 w-full">
         {/* {JSON.stringify(auctionDetail)} */}
         <div className="flex justify-between items-center">
+          {/* <Link href={window.location.href}> */}
           <em
             className="rounded-full bg-gray-300 px-3 py-2 cursor-pointer"
             onClick={handleBackClick}
           >
             <FontAwesomeIcon icon={faArrowLeft} />
           </em>
+          {/* </Link> */}
+
           <ActionButton
             text={STRING_DATA.SHOW_INTEREST.toUpperCase()}
             onclick={showModal}
