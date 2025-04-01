@@ -24,11 +24,13 @@ import FullScreenImageModal from "../ modals/FullScreenImageModal";
 import Image from "next/image";
 import { useAuctionDetailsStore } from "@/zustandStore/auctionDetails";
 import BlurredFieldWrapper from "../atoms/BlurredFieldWrapper";
+import { useRouter } from "next/navigation";
 
 const auctionLabelClass = () => "text-sm text-gray-400 font-bold";
 
 const AuctionDetail = (props: { auctionDetail: IAuction }) => {
   const { auctionDetail } = props;
+  const router = useRouter();
   const { setAuctionDetailData } = useAuctionDetailsStore();
   const noticeImageUrl = auctionDetail?.noticeImageURL
     ? `${process.env.NEXT_PUBLIC_IMAGE_CLOUDFRONT}/${auctionDetail?.noticeImageURL}`
@@ -137,6 +139,15 @@ const AuctionDetail = (props: { auctionDetail: IAuction }) => {
     }
   }, [auctionDetail, setAuctionDetailData]);
 
+  const handleBackClick = () => {
+    const referrer = document.referrer;
+    if (referrer && referrer.includes(window.location.origin)) {
+      router.back();
+    } else {
+      router.push(ROUTE_CONSTANTS.AUCTION);
+    }
+  };
+
   return (
     <>
       {/* Create alert Modal */}
@@ -158,11 +169,12 @@ const AuctionDetail = (props: { auctionDetail: IAuction }) => {
       <div className="flex flex-col gap-4 w-full">
         {/* {JSON.stringify(auctionDetail)} */}
         <div className="flex justify-between items-center">
-          <Link href={ROUTE_CONSTANTS.AUCTION}>
-            <em className="rounded-full bg-gray-300 px-3 py-2">
-              <FontAwesomeIcon icon={faArrowLeft} />
-            </em>
-          </Link>
+          <em
+            className="rounded-full bg-gray-300 px-3 py-2 cursor-pointer"
+            onClick={handleBackClick}
+          >
+            <FontAwesomeIcon icon={faArrowLeft} />
+          </em>
           <ActionButton
             text={STRING_DATA.SHOW_INTEREST.toUpperCase()}
             onclick={showModal}
