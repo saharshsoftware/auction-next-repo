@@ -11,6 +11,7 @@ import {
   sanitizedAuctionDetail,
 } from "@/shared/Utilies";
 import { IAssetType, IAuction, ICategoryCollection } from "@/types";
+import { FILTER_API_REVALIDATE_TIME } from "@/shared/Constants";
 
 export const getAuctionData = async (payload: {
   page?: string;
@@ -118,6 +119,31 @@ export const getCategoryBoxCollection = async () => {
   }
 };
 
+export const fetchCategories = async () => {
+  "use server";
+  try {
+    const URL = API_BASE_URL + API_ENPOINTS.CATEGORY_BOX_COLLETIONS;
+
+    const response = await fetch(URL, {
+      next: { revalidate: FILTER_API_REVALIDATE_TIME },
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch categories");
+    }
+
+    const responseResult = await response.json();
+    return sanitizeStrapiData(responseResult?.data);
+  } catch (e) {
+    console.error(e, "Category fetch error");
+    return null;
+  }
+};
+
 export const getCategoryBoxCollectionBySlug = async (props: {
   slug: string;
 }) => {
@@ -211,6 +237,38 @@ export const getAssetType = async () => {
     return sendResponse;
   } catch (e) {
     console.log(e, "auctionDetail error auction detail-asset-types");
+  }
+};
+
+export const fetchAssetType = async () => {
+  "use server";
+  try {
+    const requiredkeys = generateQueryParamString([
+      "name",
+      "slug",
+      "pluralizeName",
+    ]);
+    const filter = `?sort[0]=name:asc&${requiredkeys}&populate=category`;
+    const URL = API_BASE_URL + API_ENPOINTS.ASSET_TYPES + `${filter}`;
+    console.log(URL, "assetstype-detail");
+    const response = await fetch(URL, {
+      next: { revalidate: FILTER_API_REVALIDATE_TIME },
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch asset types");
+    }
+
+    const responseResult = await response.json();
+    const result = sanitizeStrapiData(responseResult?.data) as IAssetType[];
+    return result;
+  } catch (e) {
+    console.error(e, "Error fetching asset types");
+    return null;
   }
 };
 

@@ -32,6 +32,7 @@ export const NAVICON_COLOR = "#a6a6a6";
 
 export const PAGE_REVALIDATE_TIME = 86400; // 24 hr
 export const PAGE_REVALIDATE_TIME_FOR_AUCTION_LIST = 900; // 15 min
+export const FILTER_API_REVALIDATE_TIME = 300; // 5 min
 
 export const STRING_DATA = {
   LOGIN_VIEW_DOC: "Login to view",

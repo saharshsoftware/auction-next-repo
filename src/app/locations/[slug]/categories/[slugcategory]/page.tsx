@@ -7,6 +7,8 @@ import ShowAuctionListServer from "@/components/molecules/ShowAuctionListServer"
 import { fetchBanks } from "@/server/actions";
 import { fetchAssetTypes } from "@/server/actions/assetTypes";
 import {
+  fetchAssetType,
+  fetchCategories,
   getAssetType,
   getAuctionsServer,
   getCategoryBoxCollection,
@@ -131,9 +133,9 @@ export default async function Page({
   // Fetch data in parallel
   const [rawAssetTypes, rawBanks, rawCategories, rawLocations, response]: any =
     await Promise.all([
-      getAssetType(),
+      fetchAssetType(),
       fetchBanks(),
-      getCategoryBoxCollection(),
+      fetchCategories(),
       fetchLocation(),
       getAuctionsServer({
         location: nameLocation ?? "",

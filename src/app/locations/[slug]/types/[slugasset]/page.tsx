@@ -5,7 +5,12 @@ import RecentData from "@/components/molecules/RecentData";
 import ShowAuctionListServer from "@/components/molecules/ShowAuctionListServer";
 import { fetchBanks, getCategoryBoxCollection } from "@/server/actions";
 import { fetchAssetTypeBySlug } from "@/server/actions/assetTypes";
-import { getAssetType, getAuctionsServer } from "@/server/actions/auction";
+import {
+  fetchAssetType,
+  fetchCategories,
+  getAssetType,
+  getAuctionsServer,
+} from "@/server/actions/auction";
 import { fetchLocation, fetchLocationBySlug } from "@/server/actions/location";
 import { RANGE_PRICE } from "@/shared/Constants";
 import {
@@ -63,7 +68,7 @@ export async function generateMetadata(
       locationData?.imageURL ?? ""
     );
     return {
-      title: `${nameAssetType} Bank Auctions in ${nameLocation} | Find ${nameAssetType} Auctions`,
+      title: `Bank Auction ${nameAssetType} in ${nameLocation} | Find ${nameAssetType} Auctions`,
       description: `Find ${nameAssetType} in ${nameLocation} for auction. Also find flats, houses, plots, residential units, agricultural land, bungalows, cars, vehicles, commercial buildings, offices, shops, factory lands, godowns, industrial buildings, lands, machinery, non-agricultural lands, scrap, and sheds. Secure the best deals today tailored to your investment needs`,
       alternates: {
         canonical: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/locations/${slug}/types/${slugasset}`,
@@ -119,9 +124,9 @@ export default async function Page({
   // Fetch data in parallel
   const [rawAssetTypes, rawBanks, rawCategories, rawLocations, response]: any =
     await Promise.all([
-      getAssetType(),
+      fetchAssetType(),
       fetchBanks(),
-      getCategoryBoxCollection(),
+      fetchCategories(),
       fetchLocation(),
       getAuctionsServer({
         location: filterQueryData?.location?.name ?? "",
@@ -177,7 +182,7 @@ export default async function Page({
           <div className="lg:col-span-8 col-span-full">
             <AuctionHeaderServer
               total={response?.meta?.total}
-              heading={`Bank Auction  ${assetTypeData?.pluralizeName} Bank Properties in  ${locationData.name}`}
+              heading={`Bank Auction ${assetTypeData?.pluralizeName} in ${locationData.name}`}
             />
             <ShowAuctionListServer
               auctions={auctionList}
