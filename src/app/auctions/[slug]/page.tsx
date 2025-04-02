@@ -14,7 +14,12 @@ import {
 } from "@/types";
 import NotFound from "@/app/not-found";
 import AuctionDetail from "@/components/templates/AuctionDetail";
-import { getAssetType, getAuctionsServer } from "@/server/actions/auction";
+import {
+  fetchAssetType,
+  fetchCategories,
+  getAssetType,
+  getAuctionsServer,
+} from "@/server/actions/auction";
 import { sanitizeReactSelectOptionsPage, selectedBank } from "@/shared/Utilies";
 import FindAuctionServer from "@/components/molecules/FindAuctionServer";
 import RecentData from "@/components/molecules/RecentData";
@@ -86,9 +91,9 @@ export default async function Page({
   // Fetch data in parallel
   const [rawAssetTypes, rawBanks, rawCategories, rawLocations]: any =
     await Promise.all([
-      getAssetType(),
+      fetchAssetType(),
       fetchBanks(),
-      getCategoryBoxCollection(),
+      fetchCategories(),
       fetchLocation(),
     ]);
 

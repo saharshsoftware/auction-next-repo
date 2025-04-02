@@ -119,9 +119,9 @@ const FindAuction: React.FC<FindAuctionProps> = ({
 
   const handleCategoryChange = (
     selectedCategorySlug: string,
-    setFieldValue: any
+    setFieldValue?: any
   ) => {
-    setFieldValue("propertyType", getEmptyAllObject()); // Reset propertyType
+    setFieldValue?.("propertyType", getEmptyAllObject()); // Reset propertyType
 
     // Filter asset types based on the selected category
     const filteredOptions = assets.filter(
@@ -132,14 +132,9 @@ const FindAuction: React.FC<FindAuctionProps> = ({
 
   useEffect(() => {
     if ("slug" in selectedCategory && selectedCategory?.slug) {
-      const filteredOptions = assets.filter(
-        (item: IAssetType) => item?.category?.slug === selectedCategory?.slug
-      );
-      setFilteredAssets(filteredOptions);
-    } else {
-      setFilteredAssets(assets);
+      handleCategoryChange(selectedCategory?.slug);
     }
-  }, [selectedCategory, assets]);
+  }, [selectedCategory]);
 
   const renderForm = () => (
     <Formik

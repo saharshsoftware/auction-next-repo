@@ -2,19 +2,33 @@
 
 import { API_BASE_URL, API_ENPOINTS } from "@/services/api";
 import { getRequest } from "@/shared/Axios";
+import { FILTER_API_REVALIDATE_TIME } from "@/shared/Constants";
 import { generateQueryParamString, sanitizeStrapiData } from "@/shared/Utilies";
 
 export const fetchBanks = async () => {
+  "use server";
   try {
     const requiredkeys = generateQueryParamString(["name", "slug"]);
-    // console.log(requiredkeys, "requiredkeys");
     const filter = `?sort[0]=name:asc&pagination[page]=1&pagination[pageSize]=1000&${requiredkeys}`;
     const URL = API_BASE_URL + API_ENPOINTS.BANKS + filter;
-    const { data } = await getRequest({ API: URL });
-    const sendResponse = sanitizeStrapiData(data?.data);
-    return sendResponse;
+
+    const response = await fetch(URL, {
+      next: { revalidate: FILTER_API_REVALIDATE_TIME },
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch banks");
+    }
+
+    const responseResult = await response.json();
+    return sanitizeStrapiData(responseResult?.data);
   } catch (e) {
-    console.log(e, "banks error");
+    console.error(e, "Banks error");
+    return null;
   }
 };
 

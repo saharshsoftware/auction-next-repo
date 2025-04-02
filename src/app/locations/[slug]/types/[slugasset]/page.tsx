@@ -5,7 +5,12 @@ import RecentData from "@/components/molecules/RecentData";
 import ShowAuctionListServer from "@/components/molecules/ShowAuctionListServer";
 import { fetchBanks, getCategoryBoxCollection } from "@/server/actions";
 import { fetchAssetTypeBySlug } from "@/server/actions/assetTypes";
-import { getAssetType, getAuctionsServer } from "@/server/actions/auction";
+import {
+  fetchAssetType,
+  fetchCategories,
+  getAssetType,
+  getAuctionsServer,
+} from "@/server/actions/auction";
 import { fetchLocation, fetchLocationBySlug } from "@/server/actions/location";
 import { RANGE_PRICE } from "@/shared/Constants";
 import {
@@ -119,9 +124,9 @@ export default async function Page({
   // Fetch data in parallel
   const [rawAssetTypes, rawBanks, rawCategories, rawLocations, response]: any =
     await Promise.all([
-      getAssetType(),
+      fetchAssetType(),
       fetchBanks(),
-      getCategoryBoxCollection(),
+      fetchCategories(),
       fetchLocation(),
       getAuctionsServer({
         location: filterQueryData?.location?.name ?? "",

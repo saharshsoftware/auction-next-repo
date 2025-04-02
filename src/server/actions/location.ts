@@ -2,23 +2,42 @@
 
 import { API_BASE_URL, API_ENPOINTS } from "@/services/api";
 import { getRequest } from "@/shared/Axios";
+import { FILTER_API_REVALIDATE_TIME } from "@/shared/Constants";
 import { generateQueryParamString, sanitizeStrapiData } from "@/shared/Utilies";
 
 export const fetchLocation = async () => {
+  "use server";
   try {
-    const requiredkeys = generateQueryParamString(["slug", 'name', 'type', 'state']);
-    // console.log(requiredkeys, "requiredkeys");
+    const requiredkeys = generateQueryParamString([
+      "slug",
+      "name",
+      "type",
+      "state",
+    ]);
     const filter = `?sort[0]=name:asc&pagination[page]=1&pagination[pageSize]=1000&${requiredkeys}`;
-    const URL = API_BASE_URL + API_ENPOINTS.LOCATIONS+filter;
-    const { data } = await getRequest({ API: URL });
-    const sendResponse = sanitizeStrapiData(data?.data);
-    return sendResponse;
+    const URL = API_BASE_URL + API_ENPOINTS.LOCATIONS + filter;
+
+    const response = await fetch(URL, {
+      next: { revalidate: FILTER_API_REVALIDATE_TIME },
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch locations");
+    }
+
+    const responseResult = await response.json();
+    return sanitizeStrapiData(responseResult?.data);
   } catch (e) {
-    console.log(e, "locations-server error");
+    console.error(e, "locations-server error");
+    return null;
   }
 };
 
-export const fetchLocationBySlug = async (props: {slug:string}) => {
+export const fetchLocationBySlug = async (props: { slug: string }) => {
   try {
     const { slug } = props;
     const filter = `?sort[0]=name:asc&pagination[page]=1&pagination[pageSize]=1000&filters[slug][$eq]=${slug}`;
