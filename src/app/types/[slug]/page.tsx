@@ -1,5 +1,6 @@
 import AuctionHeaderServer from "@/components/atoms/AuctionHeaderServer";
 import { ILocalFilter } from "@/components/atoms/PaginationCompServer";
+import TopAssets from "@/components/atoms/TopAssets";
 import FindAuctionServer from "@/components/molecules/FindAuctionServer";
 import RecentData from "@/components/molecules/RecentData";
 import ShowAuctionList from "@/components/molecules/ShowAuctionList";
@@ -9,7 +10,10 @@ import {
   getCategoryBoxCollection,
   fetchLocation,
 } from "@/server/actions";
-import { fetchAssetTypeBySlug } from "@/server/actions/assetTypes";
+import {
+  fetchAssetTypeBySlug,
+  fetchPopularAssetTypes,
+} from "@/server/actions/assetTypes";
 import {
   fetchAssetType,
   fetchCategories,
@@ -103,18 +107,25 @@ export default async function Page({
   console.log("filterQueryDataTypes");
 
   // Fetch data in parallel
-  const [rawAssetTypes, rawBanks, rawCategories, rawLocations, response]: any =
-    await Promise.all([
-      fetchAssetType(),
-      fetchBanks(),
-      fetchCategories(),
-      fetchLocation(),
-      getAuctionsServer({
-        propertyType: assetTypeData?.name ?? "",
-        page: String(page) || "1",
-        reservePrice: [RANGE_PRICE.MIN, RANGE_PRICE.MAX],
-      }),
-    ]);
+  const [
+    rawAssetTypes,
+    rawBanks,
+    rawCategories,
+    rawLocations,
+    response,
+    popularAssets,
+  ]: any = await Promise.all([
+    fetchAssetType(),
+    fetchBanks(),
+    fetchCategories(),
+    fetchLocation(),
+    getAuctionsServer({
+      propertyType: assetTypeData?.name ?? "",
+      page: String(page) || "1",
+      reservePrice: [RANGE_PRICE.MIN, RANGE_PRICE.MAX],
+    }),
+    fetchPopularAssetTypes(),
+  ]);
 
   // Type assertions are no longer necessary if functions return correctly typed data
   const assetsTypeOptions = sanitizeReactSelectOptionsPage(
@@ -165,7 +176,7 @@ export default async function Page({
             />
           </div>
           <div className="lg:col-span-4 col-span-full">
-            <RecentData />
+            <TopAssets assetsTypeData={popularAssets} />
           </div>
         </div>
       </div>

@@ -3,11 +3,16 @@ import AuctionHeaderServer from "@/components/atoms/AuctionHeaderServer";
 import PaginationCompServer, {
   ILocalFilter,
 } from "@/components/atoms/PaginationCompServer";
+import TopAssets from "@/components/atoms/TopAssets";
+import TopCities from "@/components/atoms/TopCities";
 import FindAuctionServer from "@/components/molecules/FindAuctionServer";
 import RecentData from "@/components/molecules/RecentData";
 import ShowAuctionListServer from "@/components/molecules/ShowAuctionListServer";
 import { getCategoryBoxCollection, fetchLocation } from "@/server/actions";
-import { fetchAssetTypeBySlug } from "@/server/actions/assetTypes";
+import {
+  fetchAssetTypeBySlug,
+  fetchPopularAssetTypes,
+} from "@/server/actions/assetTypes";
 import {
   fetchAssetType,
   fetchCategories,
@@ -15,6 +20,7 @@ import {
   getAuctionsServer,
 } from "@/server/actions/auction";
 import { fetchBanks, fetchBanksBySlug } from "@/server/actions/banks";
+import { fetchPopularLocations } from "@/server/actions/location";
 import { RANGE_PRICE } from "@/shared/Constants";
 import {
   getPrimaryBankName,
@@ -117,19 +123,28 @@ export default async function Page({
   console.log("filterQueryDataBank&Types");
 
   // Fetch data in parallel
-  const [rawAssetTypes, rawBanks, rawCategories, rawLocations, response]: any =
-    await Promise.all([
-      fetchAssetType(),
-      fetchBanks(),
-      fetchCategories(),
-      fetchLocation(),
-      getAuctionsServer({
-        bankName: bankData?.name ?? "",
-        propertyType: assetTypeData?.name ?? "",
-        page: String(page) || "1",
-        reservePrice: [RANGE_PRICE.MIN, RANGE_PRICE.MAX],
-      }),
-    ]);
+  const [
+    rawAssetTypes,
+    rawBanks,
+    rawCategories,
+    rawLocations,
+    response,
+    popularLocations,
+    popularAssets,
+  ]: any = await Promise.all([
+    fetchAssetType(),
+    fetchBanks(),
+    fetchCategories(),
+    fetchLocation(),
+    getAuctionsServer({
+      bankName: bankData?.name ?? "",
+      propertyType: assetTypeData?.name ?? "",
+      page: String(page) || "1",
+      reservePrice: [RANGE_PRICE.MIN, RANGE_PRICE.MAX],
+    }),
+    fetchPopularLocations(),
+    fetchPopularAssetTypes(),
+  ]);
 
   // Type assertions are no longer necessary if functions return correctly typed data
   const assetsTypeOptions = sanitizeReactSelectOptionsPage(
@@ -188,7 +203,20 @@ export default async function Page({
             />
           </div>
           <div className="lg:col-span-4 col-span-full">
-            <RecentData />
+            <div className="mb-4">
+              <TopCities
+                locationOptions={popularLocations}
+                isBankRoute={true}
+                bankSlug={slug}
+              />
+            </div>
+            <div>
+              <TopAssets
+                assetsTypeData={popularAssets}
+                isBankTypesRoute={true}
+                bankSlug={slug}
+              />
+            </div>
           </div>
         </div>
       </div>

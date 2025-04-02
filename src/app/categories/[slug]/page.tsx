@@ -1,8 +1,10 @@
 import AuctionCard from "@/components/atoms/AuctionCard";
 import AuctionHeaderServer from "@/components/atoms/AuctionHeaderServer";
+import CategorySpecificAssets from "@/components/atoms/CategorySpecificAssets";
 import PaginationCompServer, {
   ILocalFilter,
 } from "@/components/atoms/PaginationCompServer";
+import TopCategory from "@/components/atoms/TopCategory";
 import FindAuctionServer from "@/components/molecules/FindAuctionServer";
 import RecentData from "@/components/molecules/RecentData";
 import ShowAuctionListServer from "@/components/molecules/ShowAuctionListServer";
@@ -11,6 +13,8 @@ import { fetchAssetTypes } from "@/server/actions/assetTypes";
 import {
   fetchAssetType,
   fetchCategories,
+  fetchPopularAssets,
+  fetchPopularCategories,
   getAssetType,
   getAuctionsServer,
   getCategoryBoxCollection,
@@ -20,6 +24,7 @@ import { getAssetTypeClient } from "@/services/auction";
 import { RANGE_PRICE } from "@/shared/Constants";
 import {
   extractOnlyKeywords,
+  getCategorySpecificAssets,
   sanitizeCategorySEOH1title,
   sanitizeCategorytitle,
   sanitizeReactSelectOptionsPage,
@@ -111,18 +116,27 @@ export default async function Page({
   console.log("filterQueryDataBank");
 
   // Fetch data in parallel
-  const [rawAssetTypes, rawBanks, rawCategories, rawLocations, response]: any =
-    await Promise.all([
-      fetchAssetType(),
-      fetchBanks(),
-      fetchCategories(),
-      fetchLocation(),
-      getAuctionsServer({
-        category: categoryData?.name ?? "",
-        page: String(page) || "1",
-        reservePrice: [RANGE_PRICE.MIN, RANGE_PRICE.MAX],
-      }),
-    ]);
+  const [
+    rawAssetTypes,
+    rawBanks,
+    rawCategories,
+    rawLocations,
+    response,
+    popularCategories,
+    popularAssets,
+  ]: any = await Promise.all([
+    fetchAssetType(),
+    fetchBanks(),
+    fetchCategories(),
+    fetchLocation(),
+    getAuctionsServer({
+      category: categoryData?.name ?? "",
+      page: String(page) || "1",
+      reservePrice: [RANGE_PRICE.MIN, RANGE_PRICE.MAX],
+    }),
+    fetchPopularCategories(),
+    fetchPopularAssets(),
+  ]);
 
   // Type assertions are no longer necessary if functions return correctly typed data
   const assetsTypeOptions = sanitizeReactSelectOptionsPage(
@@ -148,6 +162,14 @@ export default async function Page({
     page: String(page) || 1,
     price: [RANGE_PRICE.MIN, RANGE_PRICE.MAX],
   } as ILocalFilter;
+
+  const filteredAssetsType =
+    (getCategorySpecificAssets({
+      response: popularAssets,
+      params: { slug },
+      isBankCategoriesRoute: false,
+      isCategoryRoute: true,
+    }) as IAssetType[]) || [];
 
   return (
     <section>
@@ -175,7 +197,16 @@ export default async function Page({
             />
           </div>
           <div className="lg:col-span-4 col-span-full">
-            <RecentData />
+            <div className="mb-4">
+              <TopCategory categoryOptions={popularCategories} />
+            </div>
+            <div>
+              <CategorySpecificAssets
+                assetsTypeData={filteredAssetsType}
+                isCategoryRoute={true}
+                categorySlug={slug}
+              />
+            </div>
           </div>
         </div>
       </div>

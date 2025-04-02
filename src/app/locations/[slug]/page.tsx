@@ -25,6 +25,8 @@ import { Metadata, ResolvingMetadata } from "next";
 import AuctionHeaderServer from "@/components/atoms/AuctionHeaderServer";
 import ShowAuctionListServer from "@/components/molecules/ShowAuctionListServer";
 import { ILocalFilter } from "@/components/atoms/PaginationCompServer";
+import TopBanks from "@/components/atoms/TopBanks";
+import { fetchPopularBanks } from "@/server/actions/banks";
 
 async function getSlugData(slug: string) {
   const selectedLocation = (await fetchLocationBySlug({
@@ -118,19 +120,26 @@ export default async function Page({
   };
 
   // Fetch data in parallel
-  const [rawAssetTypes, rawBanks, rawCategories, rawLocations, response]: any =
-    await Promise.all([
-      fetchAssetType(),
-      fetchBanks(),
-      fetchCategories(),
-      fetchLocation(),
-      getAuctionsServer({
-        location: filterQueryData?.location?.name ?? "",
-        locationType: filterQueryData?.location?.type ?? "",
-        page: String(page) || "1",
-        reservePrice: [RANGE_PRICE.MIN, RANGE_PRICE.MAX],
-      }),
-    ]);
+  const [
+    rawAssetTypes,
+    rawBanks,
+    rawCategories,
+    rawLocations,
+    response,
+    popularBanks,
+  ]: any = await Promise.all([
+    fetchAssetType(),
+    fetchBanks(),
+    fetchCategories(),
+    fetchLocation(),
+    getAuctionsServer({
+      location: filterQueryData?.location?.name ?? "",
+      locationType: filterQueryData?.location?.type ?? "",
+      page: String(page) || "1",
+      reservePrice: [RANGE_PRICE.MIN, RANGE_PRICE.MAX],
+    }),
+    fetchPopularBanks(),
+  ]);
 
   // Type assertions are no longer necessary if functions return correctly typed data
   const assetsTypeOptions = sanitizeReactSelectOptionsPage(
@@ -183,7 +192,11 @@ export default async function Page({
             />
           </div>
           <div className="lg:col-span-4 col-span-full">
-            <RecentData />
+            <TopBanks
+              bankOptions={popularBanks}
+              isLocationRoute={true}
+              locationSlug={slug}
+            />
           </div>
         </div>
       </div>

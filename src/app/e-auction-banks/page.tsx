@@ -4,7 +4,6 @@ import type { Metadata } from "next";
 import { fetchBanks } from "@/server/actions";
 import { groupAndSortBanks } from "@/shared/Utilies";
 import { IBanks } from "@/types";
-import { PAGE_REVALIDATE_TIME } from "@/shared/Constants";
 
 export const metadata: Metadata = {
   title: "All Indian Banks | Auction Listings - eauctiondekho",
@@ -59,5 +58,3 @@ export default async function Page() {
     </section>
   );
 }
-
-export const revalidate = PAGE_REVALIDATE_TIME;

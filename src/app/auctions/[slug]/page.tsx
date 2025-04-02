@@ -1,9 +1,4 @@
-import {
-  fetchBanks,
-  fetchLocation,
-  getAuctionDetail,
-  getCategoryBoxCollection,
-} from "@/server/actions";
+import { fetchBanks, fetchLocation, getAuctionDetail } from "@/server/actions";
 import { Metadata, ResolvingMetadata } from "next";
 import {
   IAssetType,
@@ -12,15 +7,9 @@ import {
   ICategoryCollection,
   ILocations,
 } from "@/types";
-import NotFound from "@/app/not-found";
 import AuctionDetail from "@/components/templates/AuctionDetail";
-import {
-  fetchAssetType,
-  fetchCategories,
-  getAssetType,
-  getAuctionsServer,
-} from "@/server/actions/auction";
-import { sanitizeReactSelectOptionsPage, selectedBank } from "@/shared/Utilies";
+import { fetchAssetType, fetchCategories } from "@/server/actions/auction";
+import { sanitizeReactSelectOptionsPage } from "@/shared/Utilies";
 import FindAuctionServer from "@/components/molecules/FindAuctionServer";
 import RecentData from "@/components/molecules/RecentData";
 import AuctionDetailRelatedBubbles from "@/components/templates/AuctionDetailRelatedBubbles";
@@ -44,6 +33,9 @@ export async function generateMetadata(
 
   try {
     const blogData = (await getAuctionDetailData(slug)) as IAuction;
+
+    if (!blogData || !slug) return {};
+    // Check if the data is available before destructuring
 
     const { title, description } = blogData;
 

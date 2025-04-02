@@ -25,6 +25,8 @@ import { ILocalFilter } from "@/components/atoms/PaginationCompServer";
 import { IPaginationData } from "@/zustandStore/auctionStore";
 import ShowAuctionListServer from "@/components/molecules/ShowAuctionListServer";
 import AuctionHeaderSaveSearch from "@/components/atoms/AuctionHeaderSaveSearch";
+import TopCities from "@/components/atoms/TopCities";
+import { fetchPopularLocations } from "@/server/actions/location";
 
 export const metadata: Metadata = {
   title: "Search Results | eauctiondekho",
@@ -83,22 +85,29 @@ export default async function Page({
   console.log("filterQueryData", filterQueryData);
 
   // Fetch data in parallel
-  const [rawAssetTypes, rawBanks, rawCategories, rawLocations, response]: any =
-    await Promise.all([
-      fetchAssetType(),
-      fetchBanks(),
-      fetchCategories(),
-      fetchLocation(),
-      getAuctionsServer({
-        category: filterQueryData?.category?.name ?? "",
-        bankName: filterQueryData?.bank?.name ?? "",
-        location: filterQueryData?.location?.name ?? "",
-        propertyType: filterQueryData?.propertyType?.name ?? "",
-        reservePrice: filterQueryData?.price ?? [],
-        locationType: filterQueryData?.location?.type ?? "",
-        page: filterQueryData?.page?.toString() ?? "1",
-      }),
-    ]);
+  const [
+    rawAssetTypes,
+    rawBanks,
+    rawCategories,
+    rawLocations,
+    response,
+    popularLocations,
+  ]: any = await Promise.all([
+    fetchAssetType(),
+    fetchBanks(),
+    fetchCategories(),
+    fetchLocation(),
+    getAuctionsServer({
+      category: filterQueryData?.category?.name ?? "",
+      bankName: filterQueryData?.bank?.name ?? "",
+      location: filterQueryData?.location?.name ?? "",
+      propertyType: filterQueryData?.propertyType?.name ?? "",
+      reservePrice: filterQueryData?.price ?? [],
+      locationType: filterQueryData?.location?.type ?? "",
+      page: filterQueryData?.page?.toString() ?? "1",
+    }),
+    fetchPopularLocations(),
+  ]);
 
   // Type assertions are no longer necessary if functions return correctly typed data
   const assetsTypeOptions = sanitizeReactSelectOptionsPage(
@@ -166,13 +175,10 @@ export default async function Page({
             />
           </div>
           <div className="lg:col-span-4 col-span-full">
-            <RecentData />
+            <TopCities locationOptions={popularLocations} />
           </div>
         </div>
       </div>
     </section>
   );
 }
-
-// Revalidate every 15 minutes
-export const revalidate = 900;
