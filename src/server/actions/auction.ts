@@ -144,6 +144,32 @@ export const fetchCategories = async () => {
   }
 };
 
+export const fetchPopularCategories = async () => {
+  "use server";
+  try {
+    const filter = `?filters[$and][0][isPopular]=true&pagination[page]=1&pagination[pageSize]=5`;
+    const URL = API_BASE_URL + API_ENPOINTS.POPULAR_CATEGORIES + filter;
+
+    const response = await fetch(URL, {
+      next: { revalidate: FILTER_API_REVALIDATE_TIME },
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch categories");
+    }
+
+    const responseResult = await response.json();
+    const sendResponse = sanitizeStrapiData(responseResult?.data);
+    return sendResponse;
+  } catch (e) {
+    console.log(e, "location error");
+  }
+};
+
 export const getCategoryBoxCollectionBySlug = async (props: {
   slug: string;
 }) => {
@@ -251,6 +277,34 @@ export const fetchAssetType = async () => {
     const filter = `?sort[0]=name:asc&${requiredkeys}&populate=category`;
     const URL = API_BASE_URL + API_ENPOINTS.ASSET_TYPES + `${filter}`;
     console.log(URL, "assetstype-detail");
+    const response = await fetch(URL, {
+      next: { revalidate: FILTER_API_REVALIDATE_TIME },
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch asset types");
+    }
+
+    const responseResult = await response.json();
+    const result = sanitizeStrapiData(responseResult?.data) as IAssetType[];
+    return result;
+  } catch (e) {
+    console.error(e, "Error fetching asset types");
+    return null;
+  }
+};
+
+export const fetchPopularAssets = async () => {
+  "use server";
+  try {
+    const URL =
+      API_BASE_URL +
+      API_ENPOINTS.ASSET_TYPES +
+      `?pagination[page]=1&pagination[pageSize]=50&fields[0]=name&fields[1]=slug&populate=category`;
     const response = await fetch(URL, {
       next: { revalidate: FILTER_API_REVALIDATE_TIME },
       method: "GET",

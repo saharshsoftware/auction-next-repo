@@ -44,3 +44,28 @@ export const fetchBanksBySlug = async (props: { slug: string }) => {
     console.log(e, "banks error");
   }
 };
+
+export const fetchPopularBanks = async () => {
+  try {
+    const filter = `?filters[$and][0][isPopular]=true&pagination[page]=1&pagination[pageSize]=5`;
+    const URL = API_BASE_URL + API_ENPOINTS.POPULAR_BANKS + filter;
+
+    const response = await fetch(URL, {
+      next: { revalidate: FILTER_API_REVALIDATE_TIME },
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch banks");
+    }
+
+    const responseResult = await response.json();
+    const sendResponse = sanitizeStrapiData(responseResult?.data);
+    return sendResponse;
+  } catch (e) {
+    console.log(e, "location error");
+  }
+};

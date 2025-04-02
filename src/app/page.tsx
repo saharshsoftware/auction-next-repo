@@ -7,7 +7,6 @@ import {
   getCarouselData,
   getCategoryBoxCollection,
 } from "@/server/actions/auction";
-import { PAGE_REVALIDATE_TIME } from "@/shared/Constants";
 import { sanitizeReactSelectOptions } from "@/shared/Utilies";
 import { IAssetType, IBanks, ICategoryCollection, ILocations } from "@/types";
 import dynamic from "next/dynamic";
@@ -126,5 +125,3 @@ export default async function Home() {
     </>
   );
 }
-
-export const revalidate = PAGE_REVALIDATE_TIME;

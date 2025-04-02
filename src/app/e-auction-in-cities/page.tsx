@@ -4,7 +4,6 @@ import type { Metadata } from "next";
 import { fetchLocation } from "@/server/actions";
 import { ILocations } from "@/types";
 import { groupByState } from "@/shared/Utilies";
-import { PAGE_REVALIDATE_TIME } from "@/shared/Constants";
 
 export const metadata: Metadata = {
   title: "All Cities and States | Find Auctions Across India - eauctiondekho",
@@ -62,5 +61,3 @@ export default async function Page() {
     </section>
   );
 }
-
-export const revalidate = PAGE_REVALIDATE_TIME;

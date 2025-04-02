@@ -521,7 +521,7 @@ export const getPrimaryBankName = (
 
 export const getCategorySpecificAssets = (props: {
   response: IAssetType[];
-  params: { slugcategory: string; slug: string };
+  params: { slugcategory?: string; slug?: string };
   isBankCategoriesRoute: boolean;
   isCategoryRoute: boolean;
 }) => {

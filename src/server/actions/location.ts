@@ -49,3 +49,29 @@ export const fetchLocationBySlug = async (props: { slug: string }) => {
     console.log(e, "location-detail error");
   }
 };
+
+export const fetchPopularLocations = async () => {
+  "use server";
+  try {
+    const filter = `?sort[0]=name:asc&filters[$and][0][isPopular]=true&pagination[page]=1&pagination[pageSize]=5`;
+    const URL = API_BASE_URL + API_ENPOINTS.POPULAR_LOCATIONS + filter;
+
+    const response = await fetch(URL, {
+      next: { revalidate: FILTER_API_REVALIDATE_TIME },
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch locations");
+    }
+
+    const responseResult = await response.json();
+    return sanitizeStrapiData(responseResult?.data);
+  } catch (e) {
+    console.error(e, "locations-server error");
+    return null;
+  }
+};

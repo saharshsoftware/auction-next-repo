@@ -4,6 +4,7 @@ import AuctionHeaderServer from "@/components/atoms/AuctionHeaderServer";
 import PaginationCompServer, {
   ILocalFilter,
 } from "@/components/atoms/PaginationCompServer";
+import TopCities from "@/components/atoms/TopCities";
 import FindAuctionServer from "@/components/molecules/FindAuctionServer";
 import RecentData from "@/components/molecules/RecentData";
 import ShowAuctionListServer from "@/components/molecules/ShowAuctionListServer";
@@ -15,6 +16,7 @@ import {
   getAuctionsServer,
 } from "@/server/actions/auction";
 import { fetchBanks, fetchBanksBySlug } from "@/server/actions/banks";
+import { fetchPopularLocations } from "@/server/actions/location";
 import { RANGE_PRICE } from "@/shared/Constants";
 import {
   getPrimaryBankName,
@@ -115,18 +117,25 @@ export default async function Page({
   console.log("filterQueryDataBank", slug);
 
   // Fetch data in parallel
-  const [rawAssetTypes, rawBanks, rawCategories, rawLocations, response]: any =
-    await Promise.all([
-      fetchAssetType(),
-      fetchBanks(),
-      fetchCategories(),
-      fetchLocation(),
-      getAuctionsServer({
-        bankName: bankData?.name ?? "",
-        page: String(page) || "1",
-        reservePrice: [RANGE_PRICE.MIN, RANGE_PRICE.MAX],
-      }),
-    ]);
+  const [
+    rawAssetTypes,
+    rawBanks,
+    rawCategories,
+    rawLocations,
+    response,
+    popularLocations,
+  ]: any = await Promise.all([
+    fetchAssetType(),
+    fetchBanks(),
+    fetchCategories(),
+    fetchLocation(),
+    getAuctionsServer({
+      bankName: bankData?.name ?? "",
+      page: String(page) || "1",
+      reservePrice: [RANGE_PRICE.MIN, RANGE_PRICE.MAX],
+    }),
+    fetchPopularLocations(),
+  ]);
 
   // Type assertions are no longer necessary if functions return correctly typed data
   const assetsTypeOptions = sanitizeReactSelectOptionsPage(
@@ -175,7 +184,11 @@ export default async function Page({
             />
           </div>
           <div className="lg:col-span-4 col-span-full">
-            <RecentData />
+            <TopCities
+              locationOptions={popularLocations}
+              isBankRoute={true}
+              bankSlug={slug}
+            />
           </div>
         </div>
       </div>

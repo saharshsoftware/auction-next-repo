@@ -4,7 +4,6 @@ import React from "react";
 import type { Metadata } from "next";
 import { getCategoryBoxCollection } from "@/server/actions";
 import { ICategoryCollection } from "@/types";
-import { PAGE_REVALIDATE_TIME } from "@/shared/Constants";
 
 export const metadata: Metadata = {
   title:
@@ -69,5 +68,3 @@ export default async function Page() {
     </>
   );
 }
-
-export const revalidate = PAGE_REVALIDATE_TIME;
