@@ -136,7 +136,7 @@ export default async function Page({
     page: filterQueryData?.page,
     price: filterQueryData?.price,
     category: selectedCategory,
-    assetType: selectedAssetType,
+    propertyType: selectedAssetType,
   } as ILocalFilter;
 
   return (

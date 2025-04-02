@@ -68,7 +68,7 @@ export async function generateMetadata(
       locationData?.imageURL ?? ""
     );
     return {
-      title: `${nameAssetType} Bank Auctions in ${nameLocation} | Find ${nameAssetType} Auctions`,
+      title: `Bank Auction ${nameAssetType} in ${nameLocation} | Find ${nameAssetType} Auctions`,
       description: `Find ${nameAssetType} in ${nameLocation} for auction. Also find flats, houses, plots, residential units, agricultural land, bungalows, cars, vehicles, commercial buildings, offices, shops, factory lands, godowns, industrial buildings, lands, machinery, non-agricultural lands, scrap, and sheds. Secure the best deals today tailored to your investment needs`,
       alternates: {
         canonical: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/locations/${slug}/types/${slugasset}`,
@@ -182,7 +182,7 @@ export default async function Page({
           <div className="lg:col-span-8 col-span-full">
             <AuctionHeaderServer
               total={response?.meta?.total}
-              heading={`Bank Auction  ${assetTypeData?.pluralizeName} Bank Properties in  ${locationData.name}`}
+              heading={`Bank Auction ${assetTypeData?.pluralizeName} in ${locationData.name}`}
             />
             <ShowAuctionListServer
               auctions={auctionList}
