@@ -59,56 +59,82 @@ export const handleOnSettled = (actionResponse: IActionResponse) => {
 };
 
 export const formatPrice = (price: any) => {
-  price = parseFloat(price);
-  if (isNaN(price)) {
-    return "Invalid price";
-  }
-  let formattedPrice: string;
+  const numericPrice = parseFloat(price);
+  if (isNaN(numericPrice) || numericPrice < 0) return "Invalid price"; // Ensure valid number
 
-  if (price >= 10000000) {
-    // If price is greater than or equal to 1 crore (10,000,000)
-    formattedPrice = (price / 10000000).toFixed(2).toLocaleString() + " Cr";
-  } else if (price >= 100000) {
-    // If price is greater than or equal to 1 lakh (100,000)
-    formattedPrice = (price / 100000).toFixed(2).toLocaleString() + " Lakh";
+  let formattedPrice: string;
+  if (numericPrice >= 1_00_00_000) {
+    formattedPrice = `${(numericPrice / 1_00_00_000).toFixed(2)} Cr`;
+  } else if (numericPrice >= 1_00_000) {
+    formattedPrice = `${(numericPrice / 1_00_000).toFixed(2)} Lakh`;
   } else {
-    formattedPrice = price.toLocaleString();
+    formattedPrice = numericPrice.toLocaleString();
   }
+
   return `₹ ${formattedPrice}`;
 };
 
 export const formattedDate = (data: string | Date) => {
+  if (!data) return ""; // Avoid errors for undefined/null input
+
   const date = new Date(data);
-  return (
-    date.toLocaleDateString("en-US", {
-      day: "numeric",
-      month: "short",
-      year: "numeric",
-    }) +
-    ` ${date.toLocaleTimeString("en-US", {
-      hour: "numeric",
-      minute: "2-digit",
-      hour12: true,
-    })}`
-  );
+  if (isNaN(date.getTime())) return "Invalid Date"; // Prevent invalid date errors
+
+  return new Intl.DateTimeFormat("en-US", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+    timeZone: "UTC", // Ensures consistent SSR and CSR rendering
+  }).format(date);
 };
 
-export const formattedDateAndTime = (data: string | Date) => {
+export const formattedDateAndTime = (data?: string | Date | null): string => {
+  // Handle empty/undefined cases first
   if (!data) return "Not mentioned";
-  const date = new Date(data);
-  return (
-    date.toLocaleDateString("en-US", {
-      month: "short",
+
+  try {
+    // Create date object - works for both strings and Date objects
+    const date = new Date(data);
+
+    // Validate the date
+    if (isNaN(date.getTime())) {
+      console.warn("Invalid date input:", data);
+      return "Invalid date";
+    }
+
+    // Use the same reliable formatting as your working version
+    return new Intl.DateTimeFormat("en-US", {
       day: "numeric",
+      month: "short",
       year: "numeric",
-    }) +
-    `, ${date.toLocaleTimeString("en-US", {
       hour: "numeric",
       minute: "2-digit",
-      second: "2-digit",
       hour12: true,
-    })}`
-  );
+      timeZone: "UTC", // <- Critical for consistent behavior
+    }).format(date);
+  } catch (error) {
+    console.error("Date formatting error:", error);
+    return "Date unavailable";
+  }
+};
+
+const formatValidDate = (date: Date): string => {
+  const dateStr = date.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+
+  const timeStr = date.toLocaleTimeString("en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  });
+
+  return `${dateStr}, ${timeStr}`;
 };
 
 export const sanitizedAuctionData = (data: any[]) => {
@@ -158,14 +184,15 @@ export const sanitizeReactSelectOptions = (data: any[]) => {
 };
 
 export const sanitizeReactSelectOptionsPage = (data: any[]) => {
-  const sanitizeData = data?.map((item: any) => ({
-    ...item,
-    id: item?.id,
-    name: item?.name,
-    slug: item?.slug,
-    label: item?.name,
-    value: item?.id,
-  }));
+  const sanitizeData =
+    data?.map((item: any) => ({
+      ...item,
+      id: item?.id,
+      name: item?.name,
+      slug: item?.slug,
+      label: item?.name,
+      value: item?.id,
+    })) || [];
   return [getEmptyAllObject(), ...sanitizeData];
 };
 
