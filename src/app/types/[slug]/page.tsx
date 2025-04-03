@@ -64,9 +64,7 @@ export async function generateMetadata(
     return {
       title: `Bank Auction ${name}s in India | Find ${name}s Auctions`,
       description: `Find ${name} in bank auction. Also find flats, houses, plots, residential units, agricultural land, bungalows, cars, vehicles, commercial buildings, offices, shops, factory lands, godowns, industrial buildings, lands, machinery, non-agricultural lands, scrap, and sheds. Secure the best deals today tailored to your investment needs`,
-      alternates: {
-        canonical: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/types/${slug}`,
-      },
+
       keywords: [
         `${name}s for sale`,
         `bank auction ${name}s`,

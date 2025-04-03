@@ -21,9 +21,6 @@ export const metadata: Metadata = {
     "eauctiondekho",
   ],
   robots: "index, follow",
-  alternates: {
-    canonical: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/cities-states`,
-  },
   openGraph: {
     type: "website",
     url: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/cities-states`,

@@ -34,8 +34,8 @@ const auctionLabelClass = () => "text-sm text-gray-400 font-bold";
 
 const AuctionDetail = (props: { auctionDetail: IAuction }) => {
   const { auctionDetail } = props;
+
   const router = useRouter();
-  const { setAuctionDetailData } = useAuctionDetailsStore();
   const noticeImageUrl = auctionDetail?.noticeImageURL
     ? `${process.env.NEXT_PUBLIC_IMAGE_CLOUDFRONT}/${auctionDetail?.noticeImageURL}`
     : "";
@@ -137,15 +137,11 @@ const AuctionDetail = (props: { auctionDetail: IAuction }) => {
     }
   };
 
-  useEffect(() => {
-    if (auctionDetail) {
-      setAuctionDetailData(auctionDetail);
-    }
-  }, [auctionDetail, setAuctionDetailData]);
-
   const handleBackClick = () => {
     router.back();
   };
+
+  if (!auctionDetail) return <p>Loading...</p>;
 
   return (
     <>
@@ -248,15 +244,27 @@ const AuctionDetail = (props: { auctionDetail: IAuction }) => {
           />
           <ShowLabelValue
             heading={STRING_DATA.EMD_SUBMISSION}
-            value={formattedDateAndTime(auctionDetail?.auctionEndDate ?? "")}
+            value={
+              auctionDetail?.auctionEndDate
+                ? formattedDateAndTime(auctionDetail?.auctionEndDate ?? "")
+                : "-"
+            }
           />
           <ShowLabelValue
             heading={STRING_DATA.AUCTION_START_D_AND_T}
-            value={formattedDateAndTime(auctionDetail?.auctionStartTime ?? "")}
+            value={
+              auctionDetail?.auctionStartTime
+                ? formattedDateAndTime(auctionDetail?.auctionStartTime ?? "")
+                : "-"
+            }
           />
           <ShowLabelValue
             heading={STRING_DATA.AUCTION_END_D_AND_T}
-            value={formattedDateAndTime(auctionDetail?.auctionEndDate ?? "")}
+            value={
+              auctionDetail?.auctionEndDate
+                ? formattedDateAndTime(auctionDetail?.auctionEndDate ?? "")
+                : "-"
+            }
           />
           {/* Set hasChildren props true to render link in ui */}
           {!hasError && auctionDetail?.noticeImageURL ? (

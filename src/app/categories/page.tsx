@@ -26,10 +26,6 @@ export const metadata: Metadata = {
     "India",
   ],
   robots: "index, follow",
-  alternates: {
-    canonical: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/categories`,
-  },
-
   openGraph: {
     type: "website",
     url: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/categories`,
