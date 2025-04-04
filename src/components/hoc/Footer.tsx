@@ -74,6 +74,7 @@ const Footer: React.FC = () => {
                 href={"/sitemap.xml.gz"}
                 className="link link-hover"
                 target="_blank"
+                rel="nofollow"
               >
                 {STRING_DATA.SITEMAP}
               </Link>

@@ -73,9 +73,6 @@ export async function generateMetadata(
     return {
       title: sanitizeTitle,
       description: `Find ${name} bank auction properties on eAuctionDekho. Find diverse asset types including ${keywordsAll}. Secure the best deals today tailored to your investment needs`,
-      alternates: {
-        canonical: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/categories/${slug}`,
-      },
       keywords: [
         `${name} bank auction properties`,
         ...keywordsAll.map((k) => `${k} bank auction`),

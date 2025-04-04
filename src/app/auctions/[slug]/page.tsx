@@ -13,6 +13,10 @@ import { sanitizeReactSelectOptionsPage } from "@/shared/Utilies";
 import FindAuctionServer from "@/components/molecules/FindAuctionServer";
 import RecentData from "@/components/molecules/RecentData";
 import AuctionDetailRelatedBubbles from "@/components/templates/AuctionDetailRelatedBubbles";
+import AddToWishlist from "@/components/templates/AddToWishlist";
+import { cookies } from "next/headers";
+import { COOKIES } from "@/shared/Constants";
+import { fetchFavoriteList } from "@/server/actions/favouriteList";
 
 async function getAuctionDetailData(slug: string) {
   const res = await getAuctionDetail({ slug });
@@ -79,6 +83,9 @@ export default async function Page({
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
   const { slug } = params;
+  const cookieStore = cookies();
+  const token = cookieStore.get(COOKIES.TOKEN_KEY)?.value || null; // Replace with your actual cookie name
+
   const auctionDetail = (await getAuctionDetail({ slug })) as IAuction;
   // Fetch data in parallel
   const [rawAssetTypes, rawBanks, rawCategories, rawLocations]: any =
@@ -88,6 +95,16 @@ export default async function Page({
       fetchCategories(),
       fetchLocation(),
     ]);
+
+  let faviouriteList: any[] = [];
+  if (token) {
+    const res = await fetchFavoriteList();
+    faviouriteList =
+      res?.map((item: any) => ({
+        value: item.id,
+        label: item.name,
+      })) || [];
+  }
 
   // Type assertions are no longer necessary if functions return correctly typed data
   const assetsTypeOptions = sanitizeReactSelectOptionsPage(
@@ -101,6 +118,24 @@ export default async function Page({
     rawLocations
   ) as ILocations[];
 
+  const bankData = bankOptions.find(
+    (data: any) => data.name === auctionDetail?.bankName
+  ) as IBanks;
+  const locationData = locationOptions.find(
+    (data: any) => data.name === auctionDetail?.city
+  ) as ILocations;
+
+  const renderWishlistComponent = () => {
+    if (token) {
+      return (
+        <AddToWishlist
+          auctionData={auctionDetail}
+          faviouriteList={faviouriteList}
+          isAuthenticated={token ? true : false}
+        />
+      );
+    }
+  };
   return (
     <>
       <section>
@@ -113,15 +148,19 @@ export default async function Page({
         <div className="common-section">
           <div className="grid grid-cols-12 gap-4 py-4">
             <div className="lg:col-span-8 col-span-full ">
-              {" "}
               <AuctionDetail auctionDetail={auctionDetail} />
             </div>
             <div className="lg:col-span-4 col-span-full">
-              <RecentData />
+              {renderWishlistComponent()}
             </div>
           </div>
           <div className="flex justify-center">
-            <AuctionDetailRelatedBubbles />
+            <AuctionDetailRelatedBubbles
+              auctionDetailStoredata={auctionDetail}
+              auctionDetailData={auctionDetail}
+              bankData={bankData}
+              locationData={locationData}
+            />
           </div>
         </div>
       </section>

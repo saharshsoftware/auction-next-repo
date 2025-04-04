@@ -21,9 +21,7 @@ export const metadata: Metadata = {
     "machinery auctions",
   ],
   robots: "index, follow",
-  alternates: {
-    canonical: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/banks`,
-  },
+
   openGraph: {
     type: "website",
     url: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/banks`,

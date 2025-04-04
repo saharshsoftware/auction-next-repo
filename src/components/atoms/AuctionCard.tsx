@@ -2,10 +2,10 @@
 import React from "react";
 import ActionButton from "./ActionButton";
 import {
-  formatPrice,
-  formattedDate,
   getCleanedTitle,
   getSharedAuctionUrl,
+  formattedDate,
+  formatPrice,
 } from "../../shared/Utilies";
 import { IAuction } from "@/types";
 import { WhatsappShareWithIcon } from "./SocialIcons";
