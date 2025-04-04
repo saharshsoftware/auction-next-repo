@@ -38,10 +38,6 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
       surveyStatus?.status === "REMIND_LATER" && isRemindLaterValid(surveyId);
     const hasNullStatus = surveyStatus?.status === null;
 
-    console.table({
-      isPendingRemainLater,
-      hasNullStatus,
-    });
     if (hasNullStatus || isPendingRemainLater) {
       incrementCounter(STORAGE_KEYS.PAGE_VIEWS);
       checkSurveyTrigger(surveyId, showModal);

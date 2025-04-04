@@ -614,3 +614,52 @@ export const getDataFromQueryParamsMethod = (queryParam: string) => {
   }
   return null;
 };
+
+export const sanitizeCategoryTypeTitle = (
+  categoryName: string,
+  assetData: IAssetType,
+  isMetaDataTitle?: boolean
+) => {
+  if (
+    categoryName === "Gold Auctions" &&
+    assetData?.pluralizeName === "Gold Auctions"
+  ) {
+    return `${categoryName} in India ${
+      isMetaDataTitle ? `| Find ${assetData?.name} ` : ""
+    }`;
+  }
+
+  if (
+    categoryName === "Vehicle Auctions" &&
+    assetData?.pluralizeName === "Vehicle Auctions"
+  ) {
+    return `${categoryName} in India ${
+      isMetaDataTitle ? `| Find ${assetData?.name} ` : ""
+    }`;
+  }
+
+  if (
+    categoryName === "Vehicle Auctions" &&
+    assetData?.pluralizeName !== "Vehicle Auctions"
+  ) {
+    return `${categoryName} ${assetData?.pluralizeName} in India ${
+      isMetaDataTitle ? `| Find ${assetData?.name} ` : ""
+    }`;
+  }
+
+  const title = `${categoryName} ${
+    assetData?.pluralizeName
+  } Auctions in India ${
+    isMetaDataTitle ? `| Find ${assetData?.name} Auctions` : ""
+  }`;
+
+  return title
+    .split(/\s+/)
+    .reduce((acc: string[], word) => {
+      if (acc.length === 0 || acc[acc.length - 1] !== word) {
+        acc.push(word);
+      }
+      return acc;
+    }, [])
+    .join(" ");
+};

@@ -10,7 +10,10 @@ import {
   getCategoryBoxCollection,
   fetchLocation,
 } from "@/server/actions";
-import { fetchAssetTypeBySlug } from "@/server/actions/assetTypes";
+import {
+  fetchAssetTypeBySlug,
+  fetchAssetTypes,
+} from "@/server/actions/assetTypes";
 import {
   fetchAssetType,
   fetchCategories,
@@ -22,11 +25,15 @@ import {
 } from "@/server/actions/auction";
 import { RANGE_PRICE } from "@/shared/Constants";
 import {
+  extractOnlyKeywords,
   getCategorySpecificAssets,
+  sanitizeCategorytitle,
+  sanitizeCategoryTypeTitle,
   sanitizeReactSelectOptionsPage,
 } from "@/shared/Utilies";
 import { IAssetType, ICategoryCollection, ILocations, IAuction } from "@/types";
 import { IPaginationData } from "@/zustandStore/auctionStore";
+import { ResolvingMetadata, Metadata } from "next";
 
 async function getSlugData(
   slug: string,
@@ -44,6 +51,65 @@ async function getSlugData(
     assetType: selectedLocation?.[0] as IAssetType,
     category: selectedCategory?.[0] as ICategoryCollection,
   };
+}
+
+export async function generateMetadata(
+  {
+    params,
+    searchParams,
+  }: {
+    params: { slug: string; slugasset: string };
+    searchParams: { [key: string]: string | string[] | undefined };
+  },
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const { slug, slugasset } = params;
+
+  try {
+    const { assetType: assetTypeData, category: categoryData } =
+      await getSlugData(slug, slugasset);
+
+    const { name, subCategories } = categoryData;
+    let keywordsAll: string[] = [];
+    if (name) {
+      const allSssetTypeData = await fetchAssetTypes();
+      keywordsAll = extractOnlyKeywords(allSssetTypeData, name);
+    }
+    const sanitizeImageUrl =
+      (process.env.NEXT_PUBLIC_IMAGE_CLOUDFRONT || "") + categoryData?.imageURL;
+    console.log("Name", { name });
+    const sanitizeTitle = sanitizeCategoryTypeTitle(
+      name ?? "",
+      assetTypeData,
+      true
+    );
+    return {
+      title: sanitizeTitle,
+      description: `Find ${name} ${assetTypeData?.name}  bank auction properties for on eAuctionDekho. Find diverse asset types including ${keywordsAll}. Secure the best deals today tailored to your investment needs`,
+      keywords: [
+        `${name} bank auction properties`,
+        ...keywordsAll.map((k) => `${k} bank auction`),
+      ],
+
+      openGraph: {
+        type: "website",
+        url: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/categories/${slug}/types/${slugasset}`,
+        title: sanitizeTitle,
+        description: `Find ${name} ${assetTypeData?.name}  bank auction properties for on eAuctionDekho. Find diverse asset types including ${keywordsAll}. Secure the best deals today tailored to your investment needs`,
+        images: sanitizeImageUrl,
+      },
+      twitter: {
+        site: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/categories/${slug}/types/${slugasset}`,
+        card: "summary_large_image",
+        title: sanitizeTitle,
+        description: `Find ${name} ${assetTypeData?.name}  bank auction properties for on eAuctionDekho. Find diverse asset types including ${keywordsAll}. Secure the best deals today tailored to your investment needs`,
+        images: sanitizeImageUrl,
+      },
+    };
+  } catch (error) {
+    console.log("Error fetching metadata:", error);
+    return {};
+  }
 }
 
 export default async function Page({
@@ -120,6 +186,11 @@ export default async function Page({
       isBankCategoriesRoute: false,
       isCategoryRoute: true,
     }) as IAssetType[]) || [];
+
+  const sanitizeTitle = sanitizeCategoryTypeTitle(
+    categoryData?.name ?? "",
+    assetTypeData
+  );
   return (
     <section>
       <FindAuctionServer
@@ -135,7 +206,7 @@ export default async function Page({
           <div className="lg:col-span-8 col-span-full">
             <AuctionHeaderServer
               total={response?.meta?.total}
-              heading={`Bank Auction ${assetTypeData?.name} in India `}
+              heading={`${sanitizeTitle}`}
             />
             <ShowAuctionListServer
               auctions={auctionList}
