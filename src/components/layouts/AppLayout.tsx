@@ -26,6 +26,8 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
   const surveyId = data?.data?.[0]?.id || null;
 
   useEffect(() => {
+    if (typeof window === "undefined" || !surveyId) return;
+
     if (surveyId) {
       getOrCreateSurveyStorageData(surveyId);
     }
@@ -45,6 +47,8 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
   }, [pathname, surveyId]); // Runs every time user navigates to a new page
 
   useEffect(() => {
+    if (typeof window === "undefined" || !surveyId) return;
+
     try {
       getOrCreateDeviceId();
 
