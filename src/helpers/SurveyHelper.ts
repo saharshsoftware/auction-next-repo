@@ -180,7 +180,8 @@ export function isRemindLaterValid(surveyId: string): boolean {
   try {
     const surveyData = JSON.parse(
       localStorage.getItem(`SurveyId_${surveyId}`) || "{}"
-    );
+    ) as { status: USER_SURVEY_STATUS; remindLaterTimestamp: number };
+
     const remindLaterTimestamp = surveyData?.remindLaterTimestamp;
     if (!remindLaterTimestamp) {
       return true; // No timestamp means the reminder is valid
