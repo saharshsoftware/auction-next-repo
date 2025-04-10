@@ -7,6 +7,7 @@ import {
 import { updateUserSurveys, userSurveys } from "@/services/survey";
 import { COOKIES } from "@/shared/Constants";
 import { getOrCreateDeviceId } from "@/shared/Utilies";
+import { USER_SURVEY_STATUS } from "@/types";
 import { useSurveyStore } from "@/zustandStore/surveyStore";
 import { useMutation } from "@tanstack/react-query";
 import { getCookie } from "cookies-next";
@@ -77,7 +78,7 @@ export function useSurveyModal(hideModalFn?: () => void) {
     return {
       user: userData?.id,
       survey: surveyStoreData?.[0]?.id ?? "",
-      status: "REMIND_LATER" as "COMPLETED" | "REMIND_LATER",
+      status: "REMIND_LATER" as USER_SURVEY_STATUS,
       deviceId,
     };
   };

@@ -1,16 +1,16 @@
-import { ISurvey, IUserSurvey } from "@/types";
+import { ISurvey, IUserSurvey, USER_SURVEY_STATUS } from "@/types";
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 
 type State = {
   surveyData: ISurvey[] | null;
-  ipAdderssStatus: "COMPLETED" | "REMIND_LATER" | null;
+  ipAdderssStatus: USER_SURVEY_STATUS | null;
   userSurveyData: IUserSurvey | null;
 };
 
 type Action = {
   setSurveyData: (payload: ISurvey[]) => void;
-  updateIpAddressStatus: (payload: "COMPLETED" | "REMIND_LATER") => void;
+  updateIpAddressStatus: (payload: USER_SURVEY_STATUS) => void;
   updateUserSurveyData: (payload: IUserSurvey) => void;
 };
 
@@ -24,7 +24,7 @@ export const useSurveyStore = create<ISurveyStore>()(
     setSurveyData: (payload: ISurvey[]) => {
       set({ surveyData: payload });
     },
-    updateIpAddressStatus: (payload: "COMPLETED" | "REMIND_LATER") => {
+    updateIpAddressStatus: (payload: USER_SURVEY_STATUS) => {
       set({ ipAdderssStatus: payload });
     },
     updateUserSurveyData: (payload: IUserSurvey) => {

@@ -1,6 +1,7 @@
 "use client";
 import { API_BASE_URL, API_ENPOINTS } from "./api";
 import { getIPAddress, getOrCreateDeviceId } from "@/shared/Utilies";
+import { USER_SURVEY_STATUS } from "@/types";
 import axios from "axios";
 
 export const userSurveys = async (body: {
@@ -8,7 +9,7 @@ export const userSurveys = async (body: {
   user: string;
   answers?: any;
   survey: string;
-  status: "COMPLETED" | "REMIND_LATER";
+  status: USER_SURVEY_STATUS;
 }) => {
   try {
     const ipAddress = await getIPAddress();
@@ -32,7 +33,7 @@ export const updateUserSurveys = async (payload: {
     user: string;
     answers?: any;
     survey: string;
-    status: "COMPLETED" | "REMIND_LATER";
+    status: USER_SURVEY_STATUS;
   };
   userSurveyId: string;
 }) => {

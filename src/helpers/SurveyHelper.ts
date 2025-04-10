@@ -1,4 +1,5 @@
 import { STORAGE_KEYS } from "@/shared/Constants";
+import { USER_SURVEY_STATUS } from "@/types";
 
 /**
  * Adds an auction ID to localStorage and tracks views.
@@ -118,12 +119,12 @@ export function getActiveSurveyStorageStatus(
  */
 export function setActiveSurveyStorageStatus(
   storageKey: string,
-  status: "COMPLETED" | "REMIND_LATER" | "null"
+  status: USER_SURVEY_STATUS
 ) {
   try {
     const data: any = { status };
 
-    if (status === "REMIND_LATER") {
+    if (status === "REMIND_LATER" || status === "INCOMPLETE") {
       data.remindLaterTimestamp = Date.now(); // Store current timestamp
     }
 
@@ -143,7 +144,7 @@ export function setActiveSurveyStorageStatus(
  */
 export function updateActiveSurveyStorageStatus(
   storageKey: string,
-  status: "COMPLETED" | "REMIND_LATER" | "null"
+  status: USER_SURVEY_STATUS
 ) {
   try {
     setActiveSurveyStorageStatus(storageKey, status);
@@ -181,13 +182,23 @@ export function isRemindLaterValid(surveyId: string): boolean {
       localStorage.getItem(`SurveyId_${surveyId}`) || "{}"
     );
     const remindLaterTimestamp = surveyData?.remindLaterTimestamp;
-
     if (!remindLaterTimestamp) {
       return true; // No timestamp means the reminder is valid
     }
 
-    const oneWeekInMs = 7 * 24 * 60 * 60 * 1000;
-    const isExpired = Date.now() >= remindLaterTimestamp + oneWeekInMs;
+    let isExpired = false;
+
+    if (surveyData?.status === "REMIND_LATER") {
+      const oneWeekInMs = 7 * 24 * 60 * 60 * 1000;
+      isExpired = Date.now() >= remindLaterTimestamp + oneWeekInMs;
+    }
+
+    if (surveyData?.status === "INCOMPLETE") {
+      const threeDayinMs = 3 * 24 * 60 * 60 * 1000;
+      // const threeDayinMs = 5000; // 5 seconds for testing
+      isExpired = Date.now() >= remindLaterTimestamp + threeDayinMs;
+    }
+
     return isExpired;
 
     // const onMinutes = 1 * 60 * 1000;

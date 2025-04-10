@@ -15,6 +15,7 @@ import {
 import useModal from "@/hooks/useModal";
 import SurveyModal from "../ modals/SurveyModal";
 import { SESSIONS_STORAGE_KEYS, STORAGE_KEYS } from "@/shared/Constants";
+import { USER_SURVEY_STATUS } from "@/types";
 
 const AppLayout = ({ children }: { children: React.ReactNode }) => {
   const { openModal, showModal, hideModal } = useModal();
@@ -33,11 +34,13 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
     }
     const surveyKey = `${STORAGE_KEYS.SURVEY_SHOWN}${surveyId}`; // Unique key per survey
     let surveyStatus = JSON.parse(localStorage.getItem(surveyKey) || "{}") as {
-      status: "COMPLETED" | "REMIND_LATER" | "null";
+      status: USER_SURVEY_STATUS;
     } | null;
 
     const isPendingRemainLater =
-      surveyStatus?.status === "REMIND_LATER" && isRemindLaterValid(surveyId);
+      (surveyStatus?.status === "REMIND_LATER" ||
+        surveyStatus?.status === "INCOMPLETE") &&
+      isRemindLaterValid(surveyId);
     const hasNullStatus = surveyStatus?.status === null;
 
     if (hasNullStatus || isPendingRemainLater) {
