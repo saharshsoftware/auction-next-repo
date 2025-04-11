@@ -70,7 +70,7 @@ export function useSurvey(hideModalFn?: () => void) {
   const handleSurveyApiCall = async (payload: any) => {
     const hasEntryExist =
       getActiveSurveyStorageStatus(surveyStoreData?.[0]?.id ?? "") !== null;
-    console.log("hasEntryExist", hasEntryExist, responses);
+    console.log("hasEntryExist", hasEntryExist, responsePayload);
     // I want to check if response if empty object using lodash
     if (_.isEmpty(responses)) {
       console.log("Question-response is empty", responses);
@@ -128,7 +128,11 @@ export function useSurvey(hideModalFn?: () => void) {
     };
   };
 
-  const handleNext = (email?: string, phone?: string) => {
+  const handleNext = (
+    email?: string,
+    phone?: string,
+    isFinished: boolean = false
+  ) => {
     const currentQuestionData = questions?.[questionKey];
 
     // Find the next question key based on the user's response
@@ -144,7 +148,7 @@ export function useSurvey(hideModalFn?: () => void) {
       setQuestionKey(nextQuestionKey); // Update questionKey instead of currentIndex
     } else if (nextQuestionKey === "end") {
       console.log("Survey Completed - API will hit");
-      handleSubmit(email ?? "", phone ?? "");
+      handleSubmit(email ?? "", phone ?? "", isFinished);
       localStorage.removeItem(STORAGE_KEYS.AUCTION_VIEW_KEY);
     } else {
       console.log("Survey nextQuestionKey", { nextQuestionKey });
@@ -178,16 +182,19 @@ export function useSurvey(hideModalFn?: () => void) {
 
   const handleChange = (value: any) => {
     // setResponses((prev) => ({ ...prev, [currentQuestion.id]: value }));
-    console.log("Value", { value, responses });
+    console.log("Value", { value, responses, currentQuestion, questions });
 
     if (currentQuestion.question) {
-      setResponses((prev) => ({
-        ...prev,
+      const newResponses = {
+        ...responses,
         [String(currentQuestion.question)]: value,
-      }));
+      };
+
+      setResponses(newResponses);
+
       const updateResponses = removeDownstreamResponses(
         currentQuestion,
-        responses,
+        newResponses,
         questions
       );
       console.log("(INFO::)Updated Responses", updateResponses);
@@ -195,23 +202,31 @@ export function useSurvey(hideModalFn?: () => void) {
     }
   };
 
-  const getPayloadData = async (email: string, phone: string) => {
+  const getPayloadData = async (
+    email: string,
+    phone: string,
+    isFinished: boolean = false
+  ) => {
     const deviceId = getOrCreateDeviceId();
 
     return {
       user: userData?.id,
       answers: responsePayload,
       survey: surveyStoreData?.[0]?.id ?? "",
-      status: "COMPLETED" as "COMPLETED" | "REMIND_LATER",
+      status: isFinished ? "COMPLETED" : "INCOMPLETE",
       deviceId,
       ...(email && { email }),
       ...(phone && { phone }),
     };
   };
 
-  const handleSubmit = async (email?: string, phone?: string) => {
+  const handleSubmit = async (
+    email?: string,
+    phone?: string,
+    isFinished: boolean = false
+  ) => {
     console.log("Survey Responses:", responses);
-    const payload = await getPayloadData(email ?? "", phone ?? "");
+    const payload = await getPayloadData(email ?? "", phone ?? "", isFinished);
     console.log("(useSurvey :: ) payload data:", payload);
 
     handleSurveyApiCall(payload);

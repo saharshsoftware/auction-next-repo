@@ -199,13 +199,19 @@ export interface ISurvey {
   isActive: boolean;
 }
 
+export type USER_SURVEY_STATUS =
+  | "COMPLETED"
+  | "REMIND_LATER"
+  | "INCOMPLETE"
+  | "null";
+
 export interface IUserSurvey {
   id: string;
   answers: any[];
   createdAt: Date;
   updatedAt: Date;
   publishedAt: Date;
-  status: "COMPLETED" | "REMIND_LATER" | null;
+  status: USER_SURVEY_STATUS;
 }
 
 export interface Question {

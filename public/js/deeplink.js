@@ -1,21 +1,48 @@
 (function () {
+  // Configuration
+  const CONFIG = {
+    APP_SCHEME: "com.eauctiondekho://",
+    ANDROID_PACKAGE: "com.eauctiondekho",
+    IOS_APP_STORE_ID: "", // Add your iOS app store ID
+    MODAL_TIMEOUT: 1000, // Reduced timeout for better UX
+    STORAGE_KEYS: {
+      PREFER_WEB: "preferWeb",
+      APP_CHECK_DONE: "appCheckDone",
+      USER_PREFERENCE: "userLinkPreference",
+    },
+  };
+
+  // Utility: Detect mobile device (more reliable detection)
   function isMobileDevice() {
     const userAgent = navigator.userAgent || navigator.vendor || window.opera;
-    return /android|iphone|ipad|ipod/i.test(userAgent);
+    const isMobile = /android|iphone|ipad|ipod|mobile|tablet/i.test(
+      userAgent.toLowerCase()
+    );
+    const isTablet = /(ipad|tablet|playbook|silk)|(android(?!.*mobile))/i.test(
+      userAgent
+    );
+    return isMobile || isTablet;
   }
 
+  // Utility: Get appropriate app store link with tracking parameters
   function getAppStoreLink() {
     const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+    const trackingParams = `?utm_source=web&utm_medium=deeplink&utm_campaign=app_install`;
+
     if (/android/i.test(userAgent)) {
-      return "https://play.google.com/store/apps/details?id=com.eauctiondekho"; // Replace with your Play Store URL
+      return CONFIG.ANDROID_PACKAGE
+        ? `https://play.google.com/store/apps/details?id=${CONFIG.ANDROID_PACKAGE}${trackingParams}`
+        : null;
     } else if (/iphone|ipad|ipod/i.test(userAgent)) {
-      return ""; // Replace with your App Store URL
+      return CONFIG.IOS_APP_STORE_ID
+        ? `https://apps.apple.com/app/id${CONFIG.IOS_APP_STORE_ID}${trackingParams}`
+        : null;
     }
     return null;
   }
 
+  // Utility: Create and show modal with improved UX
   function showModal(message, onContinue, onCancel) {
-    // Create the modal HTML structure
     const modal = document.createElement("div");
     modal.style.position = "fixed";
     modal.style.top = "0";
@@ -96,55 +123,114 @@
     document.body.appendChild(modal);
   }
 
-  function openingApp(deepLink) {
-    console.log("Opening app with deeplink", deepLink);
-    if (isMobileDevice()) {
-      setTimeout(() => {
-        // App not installed, show options
-        showModal(
-          "It seems you don't have the eauctiondekho app installed. Would you like to install it or continue on the website?",
-          () => {
-            const appStoreLink = getAppStoreLink();
-            if (appStoreLink) {
-              window.location.href = appStoreLink;
-            }
-          },
-          () => {
-            console.log("User chose to continue on the website.");
-          }
+  // Routes-to-Deeplink rules
+  const deeplinkRoutes = [
+    // Specific deep link routes can be added here
+    {
+      name: "Generic fallback",
+      match: (path) => true,
+      deepLink: (path) => `${CONFIG.APP_SCHEME}${path}`,
+    },
+  ];
+
+  // Enhanced app opening function with fallback
+  function tryOpeningApp(deepLink) {
+    if (!isMobileDevice()) return;
+
+    // Check if user has set a permanent preference
+    const userChoice = sessionStorage.getItem(
+      CONFIG.STORAGE_KEYS.USER_PREFERENCE
+    );
+
+    if (userChoice === "web") return;
+    if (userChoice === "app") {
+      window.location.href = deepLink;
+      return;
+    }
+
+    // If no choice made yet, proceed with detection
+    let appOpened = false;
+    const visibilityChangeHandler = () => {
+      if (document.hidden) {
+        appOpened = true;
+        document.removeEventListener(
+          "visibilitychange",
+          visibilityChangeHandler
         );
-      }, 2000);
+      }
+    };
+
+    document.addEventListener("visibilitychange", visibilityChangeHandler);
+
+    // Try to open app
+    window.location.href = deepLink;
+
+    setTimeout(() => {
+      document.removeEventListener("visibilitychange", visibilityChangeHandler);
+
+      if (!appOpened) {
+        showInstallModal(deepLink);
+      }
+    }, CONFIG.MODAL_TIMEOUT);
+  }
+
+  function showInstallModal(deepLink) {
+    showModal(
+      "For the best experience, we recommend using the eAuctionDekho app. What would you like to do?",
+      () => {
+        const storage = sessionStorage;
+        storage.setItem(CONFIG.STORAGE_KEYS.USER_PREFERENCE, "app");
+
+        const appStoreLink = getAppStoreLink();
+        if (appStoreLink) {
+          // Try to open app again in case it was just slow to respond
+          window.location.href = deepLink;
+          setTimeout(() => {
+            window.location.href = appStoreLink;
+          }, 300);
+        } else {
+          window.location.href = deepLink;
+        }
+      },
+      () => {
+        const storage = sessionStorage;
+        storage.setItem(CONFIG.STORAGE_KEYS.USER_PREFERENCE, "web");
+      }
+    );
+  }
+
+  // Main entry with error handling
+  function handleDeeplinkRouting() {
+    try {
+      const currentUrl = window.location.href;
+      const urlObj = new URL(currentUrl);
+      const pathname = urlObj.pathname.slice(1); // remove initial '/'
+
+      // Skip for certain paths if needed
+      if (pathname.startsWith("admin/") || pathname.startsWith("api/")) {
+        return;
+      }
+
+      for (const route of deeplinkRoutes) {
+        if (route.match(pathname)) {
+          const deepLink = route.deepLink(pathname);
+          console.debug("[Deeplink] Matching route:", route.name, deepLink);
+          tryOpeningApp(deepLink);
+          break;
+        }
+      }
+    } catch (error) {
+      console.error("[Deeplink] Error in routing:", error);
     }
   }
 
-  const currentUrl = window.location.href;
-  const urlObj = new URL(currentUrl);
-  const pathname = urlObj.pathname.slice(1);
-  const [segment1, segment2] = pathname.split("/");
-
-  console.log("(INFO:: Deeplink)", {
-    urlObj,
-    currentUrl,
-    pathname,
-  });
-  if (pathname.startsWith("app")) {
-    let deepLink = `com.eauctiondekho://${pathname}`;
-
-    const appStoreLink = getAppStoreLink();
-    console.log("(INFO:: Deeplink) INFO:: Deeplink", {
-      deepLink,
-      appStoreLink,
-    });
-    // openingApp(deepLink);
-  }
-  if (segment1 === "auctions" && segment2 !== "find-auctions" && segment2) {
-    let deepLink = `com.eauctiondekho://auction-details/${segment2}`;
-
-    const appStoreLink = getAppStoreLink();
-    console.log("(INFO:: Deeplink) INFO:: Deeplink", {
-      deepLink,
-      appStoreLink,
-    });
-    // openingApp(deepLink);
+  // Run the script after DOM is fully loaded
+  if (
+    document.readyState === "complete" ||
+    document.readyState === "interactive"
+  ) {
+    setTimeout(handleDeeplinkRouting, 0);
+  } else {
+    document.addEventListener("DOMContentLoaded", handleDeeplinkRouting);
   }
 })();

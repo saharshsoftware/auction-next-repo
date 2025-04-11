@@ -1,6 +1,7 @@
 "use client";
 import { API_BASE_URL, API_ENPOINTS } from "./api";
 import { getIPAddress, getOrCreateDeviceId } from "@/shared/Utilies";
+import { USER_SURVEY_STATUS } from "@/types";
 import axios from "axios";
 
 export const userSurveys = async (body: {
@@ -8,14 +9,13 @@ export const userSurveys = async (body: {
   user: string;
   answers?: any;
   survey: string;
-  status: "COMPLETED" | "REMIND_LATER";
+  status: USER_SURVEY_STATUS;
 }) => {
   try {
     const ipAddress = await getIPAddress();
     const URL = API_BASE_URL + API_ENPOINTS.USER_SURVEYS;
     const { data } = await axios.post(URL, {
       data: { ...body, ipAddress },
-      headers: {},
     });
 
     // console.log(data, "responsefetch");
@@ -33,7 +33,7 @@ export const updateUserSurveys = async (payload: {
     user: string;
     answers?: any;
     survey: string;
-    status: "COMPLETED" | "REMIND_LATER";
+    status: USER_SURVEY_STATUS;
   };
   userSurveyId: string;
 }) => {
@@ -56,9 +56,7 @@ export const getActiveSurvey = async () => {
   try {
     const filter = `?filters[isActive][$eq]=true&pagination[page]=1&pagination[pageSize]=1`;
     const URL = API_BASE_URL + API_ENPOINTS.SURVEYS + filter;
-    const { data } = await axios.get(URL, {
-      headers: {},
-    });
+    const { data } = await axios.get(URL, {});
 
     // console.log(data, "responsefetch");
     return data;

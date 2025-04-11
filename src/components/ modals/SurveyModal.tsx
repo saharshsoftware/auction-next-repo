@@ -8,7 +8,7 @@ import logo from "@/assets/images/logo.png";
 import _ from "lodash";
 import Image from "next/image";
 import EmailPhoneSurveyForm from "../molecules/EmailPhoneSurveyForm";
-import { COOKIES } from "@/shared/Constants";
+import { COOKIES, STRING_DATA } from "@/shared/Constants";
 import { getCookie } from "cookies-next";
 
 interface ISurveyModal {
@@ -65,7 +65,9 @@ const SurveyModal = ({ openModal, hideModal = () => {} }: ISurveyModal) => {
     if (currentQuestionData.next !== "end") {
       handleNext();
     } else {
-      isAuthenticated ? handleNext() : setShowContactForm(true);
+      isAuthenticated
+        ? handleSubmit(STRING_DATA.EMPTY, STRING_DATA.EMPTY, true)
+        : setShowContactForm(true);
     }
   };
 
@@ -112,7 +114,7 @@ const SurveyModal = ({ openModal, hideModal = () => {} }: ISurveyModal) => {
           <div className={`${showContactForm ? "" : "hidden"}`}>
             <EmailPhoneSurveyForm
               isSubmitting={isPendingFinished}
-              handleSubmit={handleNext}
+              handleSubmit={(email, phone) => handleNext(email, phone, true)}
             />
           </div>
         </>
