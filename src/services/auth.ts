@@ -77,3 +77,51 @@ export const deleteUserAccount = async () => {
     throw error.response.data?.error;
   }
 };
+
+export const sendSignInOtpClient = async (payload: { email: string }) => {
+  const { email } = payload;
+  try {
+    const URL = API_BASE_URL + API_ENPOINTS.SEND_SIGNIN_OTP;
+    console.log(URL);
+    const { data } = await postRequest({
+      API: URL,
+      DATA: { email },
+    });
+    return data;
+  } catch (error: any) {
+    throw error.response.data?.error;
+  }
+};
+
+export const signupCustomClient = async (payload: ISignup) => {
+  const { formData } = payload;
+  try {
+    const URL = API_BASE_URL + API_ENPOINTS.SIGNUP_CUSTOM;
+    console.log(URL);
+    const { data } = await postRequest({
+      API: URL,
+      DATA: formData,
+    });
+    return data;
+  } catch (error: any) {
+    throw error.response.data?.error;
+  }
+};
+
+export const siginUsingOtpClient = async (payload: { email: string, otp: string }) => {
+  const { email, otp } = payload;
+  try {
+    const URL = API_BASE_URL + API_ENPOINTS.SIGNIN_USING_OTP;
+    console.log(URL);
+    const { data } = await postRequest({
+      API: URL,
+      DATA: { email, otp },
+    });
+    const { jwt, user } = data as IUserData;
+    setCookie(COOKIES.TOKEN_KEY, jwt);
+    setCookie(COOKIES.AUCTION_USER_KEY, JSON.stringify(user));
+    return data;
+  } catch (error: any) {
+    throw error.response.data?.error;
+  }
+};

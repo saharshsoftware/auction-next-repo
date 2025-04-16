@@ -39,7 +39,7 @@ export default function LoginComp(props: {
     closeModal = () => {},
   } = props;
   const router = useRouter();
-  const params = useParams(); 
+  const params = useParams();
   const [showPassword, setShowPassword] = useState(false);
   const [respError, setRespError] = useState<string>("");
 
@@ -52,7 +52,7 @@ export default function LoginComp(props: {
         data,
         success: () => {
           if (isAuthModal) {
-            router.refresh()
+            router.refresh();
             closeModal?.();
             return;
           }
@@ -87,9 +87,7 @@ export default function LoginComp(props: {
   };
   return (
     <>
-      <div
-        className={`${isAuthModal ? "" : "common-auth-section-class"} my-4`}
-      >
+      <div className={`${isAuthModal ? "" : "common-auth-section-class"} my-4`}>
         <CustomFormikForm
           initialValues={initialValues}
           validationSchema={validationSchema}
@@ -153,6 +151,19 @@ export default function LoginComp(props: {
                 </Link>
               )}
             </p>
+            {!isAuthModal && (
+              <>
+                <div className="text-center text-sm font-medium text-gray-500">
+                  -- OR --
+                </div>
+                <ActionButton
+                  text="LOGIN WITH OTP"
+                  onclick={() => router.push(ROUTE_CONSTANTS.LOGIN_OTP)}
+                  isActionButton={false}
+                  customClass="w-full"
+                />
+              </>
+            )}
           </div>
         </CustomFormikForm>
       </div>

@@ -83,10 +83,11 @@ export const STRING_DATA = {
   NOT_REGISTERED: "Not registered?",
   NOTICE: "Notice",
   LOGIN: "Login",
+  LOGIN_OTP: "Login with OTP",
   DASHBOARD: "Dashboard",
   BRAND_NAME: "Auction",
   REGISTER: "Signup",
-  CREATE_ACCOUNT: "Create Acount",
+  CREATE_ACCOUNT: "Create Account",
   SEARCH: "Search",
   TAG_LINE: "Find Auctions Near You",
   POPULER_CITIES: "Popular Cities",
@@ -133,6 +134,7 @@ export const STRING_DATA = {
   LOCATIONS: "locations",
   ASSETS_TYPE: "asset-types",
   TYPES: "types",
+  BACK_TO_LOGIN: "Back to Login"
 };
 
 export const NAVBAR_NAV_LINKS = [
