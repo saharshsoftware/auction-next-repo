@@ -10,8 +10,10 @@ interface IActionButton {
   customClass?: string;
   isSubmit?: boolean;
   icon?: any;
+  iconLeft?: any;
   isActionButton?: boolean;
   isDeleteButton?: boolean;
+  isOutline?: boolean; // ✅ New flag added
 }
 
 const ActionButton: React.FC<IActionButton> = (props) => {
@@ -23,11 +25,16 @@ const ActionButton: React.FC<IActionButton> = (props) => {
     customClass,
     isSubmit,
     icon,
+    iconLeft,
     isActionButton = true,
     isDeleteButton = false,
+    isOutline = false, // ✅ Destructure it here
   } = props;
 
   const getButtonClass = () => {
+    if (isOutline) {
+      return "border border-gray-400 text-gray-700 bg-transparent hover:bg-gray-100";
+    }
     if (isDeleteButton) {
       return "bg-[#dc3545] text-white";
     }
@@ -46,9 +53,10 @@ const ActionButton: React.FC<IActionButton> = (props) => {
           disabled ? "custom-btn-disabled" : ""
         } ${
           customClass ?? "custom-action-button-class"
-        } btn  ${getButtonClass()}`}
+        } btn ${getButtonClass()}`}
         onClick={onclick}
       >
+        {iconLeft ? iconLeft : null}
         {isLoading ? <CustomLoading /> : text}
         {icon ? icon : null}
       </button>
