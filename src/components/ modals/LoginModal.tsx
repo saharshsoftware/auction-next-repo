@@ -1,15 +1,10 @@
+"use client";
 import React, { useState } from "react";
 import CustomModal from "../atoms/CustomModal";
-import ActionButton from "../atoms/ActionButton";
-import { ERROR_MESSAGE, REACT_QUERY, STRING_DATA } from "@/shared/Constants";
-import CustomFormikForm from "../atoms/CustomFormikForm";
-import TextField from "../atoms/TextField";
-import * as Yup from "yup";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { handleOnSettled } from "@/shared/Utilies";
-import { createFavouriteList } from "@/server/actions/favouriteList";
-import { createFavouriteListClient } from "@/services/favouriteList";
+import { STRING_DATA } from "@/shared/Constants";
 import LoginComp from "../templates/LoginComp";
+import SignupComp from "../templates/SignupComp";
+import { useRouter } from "next/navigation";
 
 interface ILoginModal {
   openModal: boolean;
@@ -18,46 +13,55 @@ interface ILoginModal {
 
 const LoginModal = (props: ILoginModal) => {
   const { openModal, hideModal = () => {} } = props;
-  const queryClient = useQueryClient();
-  const [respError, setRespError] = useState<string>("");
+  const router = useRouter();
+  const [show, setShow] = useState({ login: true, signup: false });
+  const handleShowRegister = () => {
+    setShow({ login: false, signup: true });
+    router.refresh();
+  };
 
-  // Mutations
-  const { mutate, isPending } = useMutation({
-    mutationFn: createFavouriteListClient,
-    onSettled: async (data) => {
-      console.log(data);
-      const response = {
-        data,
-        success: () => {
-          queryClient.invalidateQueries({
-            queryKey: [REACT_QUERY.FAVOURITE_LIST],
-          });
-          // router.push(ROUTE_CONSTANTS.DASHBOARD);
-          hideModal?.();
-        },
-        fail: (error: any) => {
-          const { message } = error;
-          setRespError(message);
-        },
-      };
-      handleOnSettled(response);
-    },
-  });
+  const handleShowLogin = () => {
+    setShow({ login: true, signup: false });
+  };
+  const renderAuthComponent = () => {
+    if (show?.login) {
+      return (
+        <LoginComp
+          isAuthModal={true}
+          handleLinkclick={handleShowRegister}
+          closeModal={hideModal}
+        />
+      );
+    }
+    if (show?.signup) {
+      return (
+        <SignupComp
+          isAuthModal={true}
+          handleLinkclick={handleShowLogin}
+          closeModal={hideModal}
+        />
+      );
+    }
+  };
 
-  const handleFavlist = (values: { name: string }) => {
-    const body = {
-      name: values?.name,
-    };
-    mutate(body);
+  const selectedHeading = () => {
+    let heading = STRING_DATA.SHOW_INTEREST;
+    if (show?.login) {
+      heading = STRING_DATA.LOGIN;
+    }
+    if (show?.signup) {
+      heading = STRING_DATA.REGISTER;
+    }
+    return heading;
   };
   return (
     <>
       <CustomModal
         openModal={openModal}
-        modalHeading={STRING_DATA.LOGIN}
-        customWidthClass="md:w-[40%] sm:w-3/5 w-11/12"
+        modalHeading={selectedHeading()}
+        customWidthClass="lg:w-[40%] md:w-4/5 sm:w-3/5 w-11/12"
       >
-       <LoginComp /> 
+        <div className="w-full">{renderAuthComponent()}</div>
       </CustomModal>
     </>
   );
