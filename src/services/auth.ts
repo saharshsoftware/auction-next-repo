@@ -38,7 +38,7 @@ export const loginClient = async (payload: ILogin) => {
     setCookie(COOKIES.AUCTION_USER_KEY, JSON.stringify(user));
     return data;
   } catch (error: any) {
-    return error.response.data;
+    throw error.response.data?.error;
   }
 };
 

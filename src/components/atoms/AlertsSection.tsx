@@ -1,9 +1,19 @@
+"use client";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBell, faInbox } from "@fortawesome/free-solid-svg-icons";
 import { AlertCard } from "./AlertCard";
 
 import { SectionHeader } from "./SectionHeader";
 import ActionButton from "./ActionButton";
+import { StepsList } from "./StepsList";
+import Image from "next/image";
+import instructionsData from "@/data/wishlist-instructions.json";
+import useModal from "@/hooks/useModal";
+import CreateAlert from "../ modals/CreateAlert";
+import LoginComp from "../templates/LoginComp";
+import { useRouter } from "next/navigation";
+import LoginModal from "../ modals/LoginModal";
 
 interface Alert {
   id: string;
@@ -20,29 +30,79 @@ interface Alert {
 
 interface AlertsSectionProps {
   alerts: Alert[];
+  isAuthenticated?: boolean;
 }
 
-export function AlertsSection({ alerts }: AlertsSectionProps) {
+export function AlertsSection({
+  alerts,
+  isAuthenticated = false,
+}: AlertsSectionProps) {
+  const { showModal, openModal, hideModal } = useModal();
+  const router = useRouter();
+
+  const handleCloseCreateAlert = () => {
+    hideModal();
+    router.refresh();
+  };
+
+  const renderModalContainer = () => {
+    if (isAuthenticated) {
+      return (
+        <CreateAlert openModal={openModal} hideModal={handleCloseCreateAlert} />
+      );
+    }
+    return (
+      <LoginModal openModal={openModal} hideModal={handleCloseCreateAlert} />
+    );
+  };
+
   if (alerts.length === 0) {
     return (
       <>
         <SectionHeader
-          title="Your Property"
+          title="Smart Property"
           highlightedText="Alerts"
-          description="Stay ahead of the market with personalized property alerts! Set up alerts for your preferred locations and property types, and never miss out on the perfect investment opportunity."
+          description="Never miss your dream property! Get instant notifications when properties matching your criteria hit the market. Set up personalized alerts and stay ahead of other buyers."
         />
 
-        <div className="text-center py-12">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full mb-4">
-            <FontAwesomeIcon icon={faInbox} className="h-8 w-8 text-gray-400" />
+        <div className="py-12">
+          <div className="flex flex-col lg:flex-row gap-8 max-w-6xl mx-auto items-center lg:items-start">
+            <div className="flex-1 w-full lg:self-center">
+              <StepsList steps={instructionsData.steps} />
+              <div className="text-center mt-8">
+                <ActionButton
+                  text="Create New Alert"
+                  onclick={showModal}
+                  iconLeft={
+                    <FontAwesomeIcon icon={faBell} className="h-4 w-4 " />
+                  }
+                />
+              </div>
+            </div>
+            <div className="flex-1 lg:self-center">
+              <div className="text-center lg:text-left mb-6">
+                <h3 className="text-2xl font-semibold mb-4">
+                  Stay Ahead with Property Alerts
+                </h3>
+                <p className="text-gray-600">
+                  Be the first to know when your perfect property becomes
+                  available. Follow these steps to set up your personalized
+                  alerts.
+                </p>
+              </div>
+              <div className="relative w-full max-w-md mx-auto lg:mx-0">
+                <Image
+                  src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExcHVzaGluZ3RvbjQ3MzQ1NjIzNDU2MjM0NTYyMzQ1NjIzNDU2MjM0NTYyMw/3o7aCTPPm4OHfRLSH6/giphy.gif"
+                  alt="How to set up alerts"
+                  width={400}
+                  height={300}
+                  className="rounded-lg shadow-md w-full"
+                />
+              </div>
+            </div>
           </div>
-          <h3 className="text-lg font-medium text-gray-900 mb-2">
-            No Alerts Yet
-          </h3>
-          <p className="text-gray-500 mb-6">
-            Create your first property alert to stay updated on new listings.
-          </p>
         </div>
+        {openModal ? renderModalContainer() : null}
       </>
     );
   }
@@ -64,7 +124,7 @@ export function AlertsSection({ alerts }: AlertsSectionProps) {
         }`}
       >
         {alerts.map((alert) => (
-          <AlertCard key={alert.id} {...alert} />
+          <AlertCard key={alert.id} data={alert} />
         ))}
       </div>
     </>

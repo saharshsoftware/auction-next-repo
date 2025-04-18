@@ -249,6 +249,7 @@ export default function SignupComp(props: {
         <OtpVerificationForm
           email={email}
           isRegisteredRoute={true}
+          isAuthModal={isAuthModal}
           registerFormCallback={handleRegisterCallback}
         />
       )}

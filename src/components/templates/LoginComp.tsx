@@ -46,24 +46,18 @@ export default function LoginComp(props: {
   // Mutations
   const { mutate, isPending } = useMutation({
     mutationFn: loginClient,
-    onSettled: async (data) => {
-      console.log(data);
-      const response = {
-        data,
-        success: () => {
-          if (isAuthModal) {
-            router.refresh();
-            closeModal?.();
-            return;
-          }
-          router.push(ROUTE_CONSTANTS.DASHBOARD);
-        },
-        fail: (error: any) => {
-          const { message } = error;
-          setRespError(message);
-        },
-      };
-      handleOnSettled(response);
+    onSuccess(data, variables, context) {
+      if (isAuthModal) {
+        router.refresh();
+        closeModal?.();
+        return;
+      }
+      router.push(ROUTE_CONSTANTS.DASHBOARD);
+      router.refresh();
+    },
+    onError(error: { message: string }) {
+      const { message } = error;
+      setRespError(message || "Something went wrong, please try again later");
     },
   });
 

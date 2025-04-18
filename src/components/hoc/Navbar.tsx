@@ -183,22 +183,35 @@ const Navbar: React.FC = () => {
             </Link>
             <div className="hidden md:flex items-center gap-12">
               <Link
-                href={ROUTE_CONSTANTS.DASHBOARD}
+                href={ROUTE_CONSTANTS.BANKS}
                 className="cursor-pointer text-xs lg:text-sm"
               >
-                {STRING_DATA.HOME}{" "}
+                {STRING_DATA.BANKS}{" "}
               </Link>
               <Link
-                href={ROUTE_CONSTANTS.ABOUT_US}
+                href={ROUTE_CONSTANTS.CITIES}
                 className="cursor-pointer text-xs lg:text-sm"
               >
-                {STRING_DATA.ABOUT_US}{" "}
+                {STRING_DATA.CITIES}{" "}
               </Link>
+              <Link
+                href={ROUTE_CONSTANTS.CATEGORY}
+                className="cursor-pointer text-xs lg:text-sm"
+              >
+                {STRING_DATA.CATEGORIES}{" "}
+              </Link>
+
               <Link
                 href={ROUTE_CONSTANTS.CONTACT}
                 className="cursor-pointer text-xs lg:text-sm"
               >
                 {STRING_DATA.CONTACT_US}{" "}
+              </Link>
+              <Link
+                href={ROUTE_CONSTANTS.ASSETS}
+                className="cursor-pointer text-xs lg:text-sm"
+              >
+                {STRING_DATA.ASSETS}{" "}
               </Link>
             </div>
           </div>

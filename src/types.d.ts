@@ -237,3 +237,22 @@ export enum Type {
   MultipleChoice = "multiple-choice",
   SingleChoice = "single-choice",
 }
+
+export interface FilterItem {
+  [x: string]: any;
+  id: string;
+  name: string;
+  slug: string;
+  state?: string;
+  type?: string;
+}
+
+export type FilterType = "category" | "bank" | "assetType" | "location";
+
+export interface TempFilters {
+  category: FilterItem | null;
+  bank: FilterItem | null;
+  propertyType: FilterItem | null;
+  location: FilterItem | null;
+  price: number[];
+}

@@ -424,6 +424,7 @@ export const fetchAlertsServer = async () => {
 
     const response = await fetch(URL, {
       method: "GET",
+      cache: "no-store",
       headers: {
         "Content-Type": "application/json",
         Authorization: token ? `Bearer ${token}` : "",
@@ -453,6 +454,7 @@ export const fetchSavedSearchServer = async () => {
 
     const response = await fetch(URL, {
       method: "GET",
+      cache: "no-store",
       headers: {
         "Content-Type": "application/json",
         Authorization: token ? `Bearer ${token}` : "",
@@ -473,6 +475,7 @@ export const fetchFavoriteListServer = async () => {
     const URL = API_BASE_URL + API_ENPOINTS.FAVOURITE_LIST;
     const response = await fetch(URL, {
       method: "GET",
+      cache: "no-store",
       headers: {
         "Content-Type": "application/json",
         Authorization: token ? `Bearer ${token}` : "",

@@ -31,11 +31,13 @@ interface OtpVerificationFormProps {
   email?: string;
   isRegisteredRoute?: boolean;
   registerFormCallback?: () => void;
+  isAuthModal?: boolean;
 }
 
 const OtpVerificationForm: React.FC<OtpVerificationFormProps> = ({
   email = "",
   isRegisteredRoute = false,
+  isAuthModal = false,
   registerFormCallback = () => {},
 }) => {
   const router = useRouter();
@@ -127,7 +129,7 @@ const OtpVerificationForm: React.FC<OtpVerificationFormProps> = ({
   };
 
   return (
-    <div className="common-auth-section-class">
+    <div className={isAuthModal ? "" : "common-auth-section-class"}>
       <Formik
         initialValues={{
           email: submittedEmail,
