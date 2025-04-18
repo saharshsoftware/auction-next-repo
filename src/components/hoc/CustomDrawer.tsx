@@ -152,16 +152,6 @@ const CustomDrawer = (props: ICustomDrawer) => {
             <span>{STRING_DATA.CATEGORIES}</span>
             <FontAwesomeIcon color={NAVICON_COLOR} icon={faBagShopping} />
           </NextLink>
-
-          <NextLink
-            href={ROUTE_CONSTANTS.CONTACT}
-            onClick={toggleTopBar}
-            hasChildren={true}
-            customClass="flex justify-between gap-2"
-          >
-            <span>{STRING_DATA.CONTACT_US}</span>
-            <FontAwesomeIcon color={NAVICON_COLOR} icon={faPhone} />
-          </NextLink>
           <NextLink
             href={ROUTE_CONSTANTS.ASSETS}
             onClick={toggleTopBar}
@@ -170,6 +160,15 @@ const CustomDrawer = (props: ICustomDrawer) => {
           >
             <span>{STRING_DATA.ASSETS}</span>
             <FontAwesomeIcon color={NAVICON_COLOR} icon={faList} />
+          </NextLink>
+          <NextLink
+            href={ROUTE_CONSTANTS.CONTACT}
+            onClick={toggleTopBar}
+            hasChildren={true}
+            customClass="flex justify-between gap-2"
+          >
+            <span>{STRING_DATA.CONTACT_US}</span>
+            <FontAwesomeIcon color={NAVICON_COLOR} icon={faPhone} />
           </NextLink>
         </div>
         {renderAuthComponent()}

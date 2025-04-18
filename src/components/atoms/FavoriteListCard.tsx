@@ -5,8 +5,14 @@ import { CustomCard } from "./CustomCard";
 import ActionButton from "./ActionButton";
 import { useRouter } from "next/navigation";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
+import { REACT_QUERY } from "@/shared/Constants";
+import { fetchFavoriteListPropertyClient } from "@/services/favouriteList";
+import { IFavouriteListProperty } from "@/types";
+import { useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 
 interface FavoriteListProps {
+  listId: string;
   name: string;
   description: string;
   createdAt: string;
@@ -15,11 +21,13 @@ interface FavoriteListProps {
 }
 
 export function FavoriteListCard({
+  listId,
   name,
   propertyCount,
   onViewProperties = () => {},
 }: FavoriteListProps) {
   const router = useRouter();
+  const [count, setCount] = useState(0);
 
   const header = (
     <>
@@ -30,6 +38,25 @@ export function FavoriteListCard({
     </>
   );
 
+  const fetchFavoriteListPropertyData = async (listId: string) => {
+    try {
+      let res;
+      console.log("(INFO):: params", listId);
+      res = await fetchFavoriteListPropertyClient({ listId, onlyCount: true });
+      console.log("fetchFavoriteListPropertyData:", res);
+      const totalCount = res?.length ?? 0;
+      setCount(totalCount);
+    } catch (error) {
+      console.error("Error fetching auction data:", error);
+    } finally {
+    }
+  };
+
+  useEffect(() => {
+    if (!listId) return;
+    fetchFavoriteListPropertyData(listId);
+  }, [listId]);
+
   return (
     <CustomCard header={header} className="!cursor-default">
       <div className="mt-2 pt-4 border-t text-sm text-gray-500 ">
@@ -38,7 +65,9 @@ export function FavoriteListCard({
             text="View Details"
             onclick={() => onViewProperties?.(name)}
           />
-          <span>{propertyCount || 0} properties (static)</span>
+          <span>
+            {count} {count > 1 ? "properties" : "property"}
+          </span>
         </div>
       </div>
     </CustomCard>

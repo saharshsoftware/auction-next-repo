@@ -13,26 +13,36 @@ import { ROUTE_CONSTANTS } from "@/shared/Routes";
 import { getDataFromQueryParamsMethod } from "@/shared/Utilies";
 import ActionButton from "./ActionButton";
 import { TempFilters } from "@/types";
+import { getAuctionDataClient } from "@/services/auction";
+import { useEffect, useState } from "react";
 
 interface SavedSearchProps {
   name: string;
-  filter: string;
-  matchCount?: number;
   data: any;
 }
-export function SavedSearchCard({
-  name,
-  filter,
-  matchCount,
-  data,
-}: SavedSearchProps) {
+export function SavedSearchCard({ name, data }: SavedSearchProps) {
   const router = useRouter();
+  const [count, setCount] = useState(0);
 
   const searchFilterValues: TempFilters =
     getDataFromQueryParamsMethod(data.filter) ?? {};
 
   const handleClick = () => {
     router.push(`${ROUTE_CONSTANTS.AUCTION}?q=${data.filter}`);
+  };
+
+  const fetchAuctionData = async (params: any) => {
+    try {
+      let res;
+      console.log("(INFO):: params", params);
+      res = await getAuctionDataClient(params);
+      console.log("Auction data fetched:", res);
+      const totalCount = res?.meta?.total ?? 0;
+      setCount(totalCount);
+    } catch (error) {
+      console.error("Error fetching auction data:", error);
+    } finally {
+    }
   };
 
   const header = (
@@ -43,6 +53,21 @@ export function SavedSearchCard({
       </div>
     </>
   );
+
+  useEffect(() => {
+    const params = getDataFromQueryParamsMethod(data?.filter);
+    console.log("paramsparamsparamsSavedSearchCard", params);
+    const filters = {
+      category: params.category?.name ?? "",
+      bankName: params?.bank?.name ?? "",
+      location: params?.location?.name ?? "",
+      propertyType: params?.propertyType?.name ?? "",
+      reservePrice: params?.price ?? [],
+      locationType: params?.location?.type ?? "",
+      page: 1,
+    };
+    fetchAuctionData(filters);
+  }, [data?.filter]);
 
   return (
     <CustomCard
@@ -83,7 +108,7 @@ export function SavedSearchCard({
         <div className="mt-2 pt-4 border-t text-sm text-gray-500 flex items-center justify-between">
           <ActionButton text="View Details" onclick={handleClick} />
           <div className="flex items-center gap-1">
-            <span>~ {matchCount || 2} matches</span> (static)
+            <span>~ {count} matches</span>
           </div>
         </div>
       </div>

@@ -144,6 +144,7 @@ const CreateAlert = (props: ICreateFavList) => {
       bankName: bank?.name ?? "",
       minPrice: price?.[0],
       maxPrice: price?.[1],
+      locationType: location?.type ?? "",
     };
 
     console.log(body);

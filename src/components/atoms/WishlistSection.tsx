@@ -29,7 +29,7 @@ interface Property {
 }
 
 interface FavoriteList {
-  id: number;
+  id: string;
   name: string;
   description: string;
   createdAt: string;
@@ -134,6 +134,7 @@ export function WishlistSection({
             {favoriteLists.map((list) => (
               <FavoriteListCard
                 key={list.id}
+                listId={list.id}
                 name={list.name}
                 description={list.description}
                 createdAt={list.createdAt}

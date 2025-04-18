@@ -82,12 +82,7 @@ export function SavedSearchesSection({
         }`}
       >
         {savedSearches.map((search) => (
-          <SavedSearchCard
-            key={search.id}
-            name={search.name}
-            filter={search.filters}
-            data={search}
-          />
+          <SavedSearchCard key={search.id} name={search.name} data={search} />
         ))}
       </div>
     </>

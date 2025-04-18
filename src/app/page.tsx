@@ -11,7 +11,13 @@ import {
   getCategoryBoxCollection,
 } from "@/server/actions/auction";
 import { sanitizeReactSelectOptions } from "@/shared/Utilies";
-import { IAssetType, IBanks, ICategoryCollection, ILocations } from "@/types";
+import {
+  IAlert,
+  IAssetType,
+  IBanks,
+  ICategoryCollection,
+  ILocations,
+} from "@/types";
 import { Metadata } from "next";
 import dynamic from "next/dynamic";
 import { AlertsSection } from "@/components/atoms/AlertsSection";
@@ -21,6 +27,7 @@ import { COOKIES } from "@/shared/Constants";
 import { cookies } from "next/headers";
 import { AuctionSmarterSection } from "@/components/atoms/AuctionSmarterSection";
 import PartnerAndHelpSection from "@/components/atoms/PartnerAndHelpSection";
+import ForceRefreshOnMount from "@/components/atoms/ForceRefreshOnMount";
 
 export const revalidate = 0;
 export const metadata: Metadata = {
@@ -111,21 +118,35 @@ export default async function Home() {
   const cookieStore = cookies();
   const token = cookieStore.get(COOKIES.TOKEN_KEY)?.value ?? "";
   const isAuthenticated = !!token;
-  const [
-    carouselResponse,
-    assetsTypeOptions,
-    categoryOptions,
-    bankOptions,
-    locationOptions,
-  ] = await Promise.all([
-    getCarouselData(),
-    getAssetType(),
-    getCategoryBoxCollection(),
-    fetchBanks(),
-    fetchLocation(),
-  ]);
+  const carouselResponse = await getCarouselData();
+
+  const assetsTypeOptions = (await getAssetType()) as unknown as IAssetType[];
+  const categoryOptions =
+    (await getCategoryBoxCollection()) as unknown as ICategoryCollection[];
+  const bankOptions = (await fetchBanks()) as unknown as IBanks[];
+  const locationOptions = (await fetchLocation()) as unknown as ILocations[];
 
   const alertsList = isAuthenticated ? await fetchAlertsServer() : [];
+  const updateAlertList = isAuthenticated
+    ? alertsList?.map((item: IAlert) => {
+        return {
+          ...item,
+          locationType: locationOptions?.find(
+            (location) => location?.name === item?.location
+          )?.type,
+          location: locationOptions?.find(
+            (location) => location?.name === item?.location
+          ),
+          category: categoryOptions?.find(
+            (category) => category?.name === item?.assetCategory
+          ),
+          propertyType: assetsTypeOptions?.find(
+            (asset) => asset?.name === item?.assetType
+          ),
+          bank: bankOptions?.find((bank) => bank?.name === item?.bankName),
+        };
+      })
+    : [];
   const savedSearchesList = isAuthenticated
     ? await fetchSavedSearchServer()
     : [];
@@ -184,6 +205,7 @@ export default async function Home() {
 
   return (
     <>
+      <ForceRefreshOnMount />
       <main className="">
         {/* Hero Section - Keep original background */}
         <section className="">
@@ -198,7 +220,7 @@ export default async function Home() {
         {/* Alerts Section */}
         <section className="common-section py-12 bg-odd-color">
           <AlertsSection
-            alerts={alertsList?.slice(0, 3)}
+            alerts={updateAlertList?.slice(0, 3)}
             isAuthenticated={isAuthenticated}
           />
         </section>

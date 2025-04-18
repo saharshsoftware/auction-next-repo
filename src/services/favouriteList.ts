@@ -11,24 +11,27 @@ export const fetchFavoriteListClient = async () => {
   }
 };
 
-export const createFavouriteListClient = async (body: {name: string}) => {
+export const createFavouriteListClient = async (body: { name: string }) => {
   try {
-    const URL =  API_ENPOINTS.FAVOURITE_LIST+ '/create';
+    const URL = API_ENPOINTS.FAVOURITE_LIST + '/create';
     const { data } = await postRequest({
       API: URL,
       DATA: body,
-    });    
+    });
     return data;
   } catch (error: any) {
     return error?.response?.data;
   }
 };
 
-export const fetchFavoriteListPropertyClient = async (params: { listId: string }) => {
+export const fetchFavoriteListPropertyClient = async (params: { listId: string, onlyCount?: boolean }) => {
   try {
-    const { listId } = params;
-    const URL =
+    const { listId, onlyCount = false } = params;
+    let URL =
       API_BASE_URL + API_ENPOINTS.FAVOURITE_LIST_PROPERTY + `?listId=${listId}`;
+    if (onlyCount) {
+      URL += `&pagination[pageSize]=1&pagination[page]=1`;
+    }
     const { data } = await getRequest({ API: URL });
     console.log(data, "propertydata")
     return data;
@@ -39,7 +42,7 @@ export const fetchFavoriteListPropertyClient = async (params: { listId: string }
 
 export const deleteFavoriteListClient = async (params: { id: string }) => {
   try {
-    const {id} = params
+    const { id } = params
     const URL = API_BASE_URL + API_ENPOINTS.FAVOURITE_LIST + `/${id}`;
     console.log(URL)
     const { data } = await deleteRequest({ API: URL });
@@ -78,10 +81,10 @@ export const removePropertyFromFavoriteListClient = async (params: { id: string 
   }
 };
 
-export const updateFavouriteListClient = async (payload: {id:string ,body: {name: string }}) => {
+export const updateFavouriteListClient = async (payload: { id: string, body: { name: string } }) => {
   try {
-    const {id, body} = payload
-    const URL = API_BASE_URL + API_ENPOINTS.FAVOURITE_LIST+`/${id}`;
+    const { id, body } = payload
+    const URL = API_BASE_URL + API_ENPOINTS.FAVOURITE_LIST + `/${id}`;
     const { data } = await putRequest({
       API: URL,
       DATA: body,
