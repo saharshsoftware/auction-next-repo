@@ -14,6 +14,7 @@ import LoginComp from "../templates/LoginComp";
 import { useRouter } from "next/navigation";
 import LoginModal from "../ modals/LoginModal";
 import saveAlertGif from "@/assets/gifs/save-alert.gif";
+import CustomReactCarouselForSection from "./CustomReactCarouselForSection";
 
 interface Alert {
   id: string;
@@ -81,7 +82,7 @@ export function AlertsSection({
         />
 
         <div className="py-12">
-          <div className="flex flex-col lg:flex-row gap-8 max-w-6xl mx-auto items-center lg:items-start">
+          <div className="flex flex-col lg:flex-row gap-8 sm:max-w-6xl mx-auto items-center lg:items-start">
             <div className="flex-1 w-full lg:self-center">
               <StepsList steps={instructionsData} />
               <div className="text-center mt-8">
@@ -105,14 +106,31 @@ export function AlertsSection({
                   alerts.
                 </p>
               </div>
-              <div className="relative w-full max-w-md mx-auto lg:mx-0">
-                <Image
-                  src={saveAlertGif.src}
-                  alt="How to set up alerts"
-                  width={400}
-                  height={300}
-                  className="rounded-lg shadow-md w-full"
-                />
+              {/* <div className="relative w-full sm:max-w-md mx-auto lg:mx-0"> */}
+              <div className="relative sm:max-w-md sm:w-full w-80 mx-auto lg:mx-0">
+                <CustomReactCarouselForSection>
+                  <Image
+                    src={require("@/assets/images/5.png")}
+                    alt="How to save searches"
+                    width={400}
+                    height={300}
+                    className="rounded-lg shadow-lg w-full"
+                  />
+                  <Image
+                    src={require("@/assets/images/6.png")}
+                    alt="How to save searches"
+                    width={400}
+                    height={300}
+                    className="rounded-lg shadow-md w-full"
+                  />
+                  <Image
+                    src={require("@/assets/images/7.png")}
+                    alt="How to save searches"
+                    width={400}
+                    height={300}
+                    className="rounded-lg shadow-md w-full"
+                  />
+                </CustomReactCarouselForSection>
               </div>
             </div>
           </div>

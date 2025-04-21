@@ -107,8 +107,8 @@ const CustomReactCarouselForSection = (props: ICustomReactCarousel) => {
       {
         breakpoint: 480,
         settings: {
-          slidesToShow: 2,
-          slidesToScroll: 2,
+          slidesToShow: 1,
+          slidesToScroll: 1,
           initialSlide: 1,
           arrows: false,
           dots: true,
@@ -120,7 +120,7 @@ const CustomReactCarouselForSection = (props: ICustomReactCarousel) => {
   return (
     <>
       <div className={` py-12`}>
-        <div className={"slides-container"}>
+        <div className={" slides-container"}>
           <Slider {...settings} lazyLoad="ondemand">
             {children}
           </Slider>

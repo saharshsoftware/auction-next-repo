@@ -52,7 +52,7 @@ export function SavedSearchesSection({
         />
 
         <div className="py-12">
-          <div className="flex flex-col lg:flex-row gap-8 max-w-6xl mx-auto items-center lg:items-start">
+          <div className="flex flex-col lg:flex-row gap-8 sm:max-w-6xl mx-auto items-center lg:items-start">
             <div className="flex-1 lg:self-center">
               <div className="text-center lg:text-left mb-6">
                 <h3 className="text-2xl font-semibold mb-4">
@@ -64,7 +64,8 @@ export function SavedSearchesSection({
                   steps.
                 </p>
               </div>
-              <div className="relative w-full max-w-md mx-auto lg:mx-0">
+              {/* <div className="relative w-full max-w-md mx-auto lg:mx-0"> */}
+              <div className="relative sm:max-w-md sm:w-full w-80 mx-auto lg:mx-0">
                 <CustomReactCarouselForSection>
                   <Image
                     src={require("@/assets/images/1.png")}
@@ -82,6 +83,13 @@ export function SavedSearchesSection({
                   />
                   <Image
                     src={require("@/assets/images/3.png")}
+                    alt="How to save searches"
+                    width={400}
+                    height={300}
+                    className="rounded-lg shadow-md w-full"
+                  />
+                  <Image
+                    src={require("@/assets/images/4.png")}
                     alt="How to save searches"
                     width={400}
                     height={300}
