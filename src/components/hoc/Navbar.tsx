@@ -181,7 +181,7 @@ const Navbar: React.FC = () => {
                 />
               </span>
             </Link>
-            <div className="hidden md:flex items-center gap-12">
+            <div className="hidden xl:flex items-center gap-12">
               <Link
                 href={ROUTE_CONSTANTS.BANKS}
                 className="cursor-pointer text-xs lg:text-sm"
@@ -214,14 +214,14 @@ const Navbar: React.FC = () => {
               </Link>
             </div>
           </div>
-          <div className="hidden lg:flex items-center gap-12">
+          <div className="hidden xl:flex items-center gap-12">
             <div className="w-80">
               <SearchKeywordComp handleClick={handleLogoClick} />
             </div>
             {renderAuthComponent()}
           </div>
 
-          <div className="lg:hidden cursor-pointer" onClick={toggleTopBar}>
+          <div className="xl:hidden cursor-pointer" onClick={toggleTopBar}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-6 w-6"

@@ -36,8 +36,7 @@ export function PropertyCard({
 
   const footer = (
     <div className="flex justify-end w-full">
-      {/* <Button variant="outline" size="sm">View Details</Button> */}
-      <ActionButton text="View Details" />
+      <ActionButton text="View Properties" />
     </div>
   );
 

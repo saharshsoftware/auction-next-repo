@@ -17,6 +17,9 @@ const ReactSelectDropdown: React.FC<IReactSelectDropdown> = (props) => {
     clearRenderer,
     clearable = false,
     menuIsOpen = false,
+    isMulti = false,
+    hidePlaceholder = false,
+    maxMultiSelectOptions = 5,
   } = props;
   const [mounted, setMounted] = useState(false);
 
@@ -24,7 +27,7 @@ const ReactSelectDropdown: React.FC<IReactSelectDropdown> = (props) => {
     setMounted(true);
   }, []);
 
-  if (!mounted) {
+  if (!mounted && !hidePlaceholder) {
     return (
       <div className="w-full min-h-[38px] border border-brand-color rounded px-3 flex items-center justify-between bg-white">
         <span className="">All</span>
@@ -51,6 +54,19 @@ const ReactSelectDropdown: React.FC<IReactSelectDropdown> = (props) => {
     );
   }
 
+  const handleChange = (selectedOption: any) => {
+    if (isMulti) {
+      if (
+        Array.isArray(selectedOption) &&
+        selectedOption.length > maxMultiSelectOptions
+      ) {
+        // Prevent selecting more than 5 items
+        return;
+      }
+    }
+    onChange(selectedOption);
+  };
+
   return (
     <>
       <div
@@ -64,6 +80,7 @@ const ReactSelectDropdown: React.FC<IReactSelectDropdown> = (props) => {
           id={`react-select-${name ?? ""}`}
           options={options}
           isLoading={loading}
+          isMulti={isMulti}
           isDisabled={loading}
           // searchBy="name"
           name={name}
@@ -75,7 +92,7 @@ const ReactSelectDropdown: React.FC<IReactSelectDropdown> = (props) => {
           value={defaultValue ?? null}
           // dropdownHandle={false}
           // menuIsOpen={menuIsOpen}
-          onChange={onChange}
+          onChange={handleChange}
           placeholder={placeholder}
           // noDataRenderer={noDataRenderer}
           // itemRenderer={itemRenderer}

@@ -27,4 +27,5 @@ export const ROUTE_CONSTANTS = {
   ASSETS: "/assets",
   TYPES: "/types",
   LOGIN_OTP: "/otp-login",
+  PARTNER: "/partner",
 };

@@ -106,7 +106,7 @@ export function SavedSearchCard({ name, data }: SavedSearchProps) {
 
         {/* Footer stays at the bottom */}
         <div className="mt-2 pt-4 border-t text-sm text-gray-500 flex items-center justify-between">
-          <ActionButton text="View Details" onclick={handleClick} />
+          <ActionButton text="View Properties" onclick={handleClick} />
           <div className="flex items-center gap-1">
             <span>~ {count} matches</span>
           </div>

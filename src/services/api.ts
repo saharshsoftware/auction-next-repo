@@ -34,8 +34,9 @@ export const API_ENPOINTS = {
   NOTICE_SEARCH: "/api/notices/search",
   USER_SURVEYS: "/api/user-surveys",
   SURVEYS: "/api/surveys",
-  USER_ME: '/api/users/me',
+  USER_ME: "/api/users/me",
   SIGNUP_CUSTOM: "/api/auth/signup",
   SEND_SIGNIN_OTP: "/api/auth/send-signin-otp",
-  SIGNIN_USING_OTP: "/api/auth/signin-using-otp"
+  SIGNIN_USING_OTP: "/api/auth/signin-using-otp",
+  CONTACT_BROKERS: "/api/contact-brokers",
 };

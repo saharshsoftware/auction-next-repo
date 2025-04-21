@@ -463,8 +463,7 @@ export const handleFilterAssetTypeChange = (
   AssetTypeData: IAssetType[]
 ) => {
   const result = AssetTypeData?.filter(
-    (item: IAssetType) =>
-      item?.category?.data?.attributes?.slug === selectedCategorySlug
+    (item: IAssetType) => item?.category?.slug === selectedCategorySlug
   );
   return result;
 };
@@ -662,4 +661,8 @@ export const sanitizeCategoryTypeTitle = (
       return acc;
     }, [])
     .join(" ");
+};
+
+export const getCityNamesCommaSeparated = (cities: any[]): string => {
+  return cities.map((city) => city.name).join(", ");
 };

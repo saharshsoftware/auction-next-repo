@@ -15,7 +15,7 @@ const PartnerAndHelpSection = () => {
   const router = useRouter();
   return (
     <>
-      <div className="grid md:grid-cols-2 gap-8 common-section mx-auto">
+      <div className="grid md:grid-cols-2 gap-8 1common-section mx-auto">
         {/* Partner With Us */}
         <div className="bg-white rounded-lg p-8 shadow-sm">
           <div className="text-center mb-6">
@@ -37,7 +37,10 @@ const PartnerAndHelpSection = () => {
             </p>
           </div>
           <div className="text-center">
-            <ActionButton text="Become a Partner" />
+            <ActionButton
+              text="Become a Partner"
+              onclick={() => router.push(ROUTE_CONSTANTS.PARTNER)}
+            />
           </div>
         </div>
 
@@ -65,14 +68,6 @@ const PartnerAndHelpSection = () => {
               onclick={() => router.push(ROUTE_CONSTANTS.CONTACT)}
               iconLeft={
                 <FontAwesomeIcon icon={faEnvelope} className="h-4 w-4" />
-              }
-            />
-
-            <ActionButton
-              isOutline={true}
-              text="Send a Message"
-              iconLeft={
-                <FontAwesomeIcon icon={faMessage} className="h-4 w-4" />
               }
             />
           </div>

@@ -217,23 +217,23 @@ export default async function Home() {
           />
         </section>
 
+        {/* Saved Searches Section */}
+        <section className="section-class py-12 bg-even-color">
+          <SavedSearchesSection
+            savedSearches={savedSearchesList?.slice(0, 3)}
+          />
+        </section>
+
         {/* Alerts Section */}
-        <section className="common-section py-12 bg-odd-color">
+        <section className="section-class py-12 bg-odd-color">
           <AlertsSection
             alerts={updateAlertList?.slice(0, 3)}
             isAuthenticated={isAuthenticated}
           />
         </section>
 
-        {/* Saved Searches Section */}
-        <section className="common-section py-12 bg-even-color">
-          <SavedSearchesSection
-            savedSearches={savedSearchesList?.slice(0, 3)}
-          />
-        </section>
-
         {/* Wishlist Section */}
-        <section className="common-section py-12 bg-odd-color">
+        <section className="section-class py-12 bg-odd-color">
           <WishlistSection
             favoriteLists={favoriteLists?.slice(0, 3)}
             isAuthenticated={isAuthenticated}

@@ -58,7 +58,7 @@ export function AlertCard({ data }: AlertProps) {
     <>
       <div className="flex items-center gap-2">
         <FontAwesomeIcon icon={faBell} className="h-4 w-4 text-blue-600" />
-        <h3 className="font-medium capitalize">{data?.name} Property Alert</h3>
+        <h3 className="font-medium capitalize">{data?.name}</h3>
       </div>
     </>
   );
@@ -113,7 +113,10 @@ export function AlertCard({ data }: AlertProps) {
           )}
         </div>
         <div className="mt-2 pt-4 border-t text-sm text-gray-500 flex items-center justify-between">
-          <ActionButton text="View Details" onclick={() => handleClick(data)} />
+          <ActionButton
+            text="View Properties"
+            onclick={() => handleClick(data)}
+          />
           <div className="flex justify-end items-center text-sm text-gray-500">
             <span>
               {" "}

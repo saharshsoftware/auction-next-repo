@@ -4,8 +4,9 @@ import { SavedSearchCard } from "./SavedSearchCard";
 import { SectionHeader } from "./SectionHeader";
 import ActionButton from "./ActionButton";
 import { StepsList } from "./StepsList";
-import instructionsData from "@/data/wishlist-instructions.json";
 import Image from "next/image";
+import CustomReactCarouselForSection from "./CustomReactCarouselForSection";
+import ImageTag from "../ui/ImageTag";
 
 interface SavedSearch {
   id: number;
@@ -18,6 +19,25 @@ interface SavedSearch {
 interface SavedSearchesSectionProps {
   savedSearches: SavedSearch[];
 }
+
+const instructionsData = [
+  {
+    id: 1,
+    text: "Use filters to search for properties",
+  },
+  {
+    id: 2,
+    text: "Click the “Save this Search” button shown in the top",
+  },
+  {
+    id: 3,
+    text: "Name your search for easy reference",
+  },
+  {
+    id: 4,
+    text: "Access it anytime from “Your Saved Searches”",
+  },
+];
 
 export function SavedSearchesSection({
   savedSearches,
@@ -45,17 +65,33 @@ export function SavedSearchesSection({
                 </p>
               </div>
               <div className="relative w-full max-w-md mx-auto lg:mx-0">
-                <Image
-                  src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMzQ1NjIzNDU2MjM0NTYyMzQ1NjIzNDU2MjM0NTYyMzQ1NjIzNDU2Mg/3o7aCTPPm4OHfRLSH6/giphy.gif"
-                  alt="How to save searches"
-                  width={400}
-                  height={300}
-                  className="rounded-lg shadow-md w-full"
-                />
+                <CustomReactCarouselForSection>
+                  <Image
+                    src={require("@/assets/images/1.png")}
+                    alt="How to save searches"
+                    width={400}
+                    height={300}
+                    className="rounded-lg shadow-lg w-full"
+                  />
+                  <Image
+                    src={require("@/assets/images/2.png")}
+                    alt="How to save searches"
+                    width={400}
+                    height={300}
+                    className="rounded-lg shadow-md w-full"
+                  />
+                  <Image
+                    src={require("@/assets/images/3.png")}
+                    alt="How to save searches"
+                    width={400}
+                    height={300}
+                    className="rounded-lg shadow-md w-full"
+                  />
+                </CustomReactCarouselForSection>
               </div>
             </div>
             <div className="flex-1 w-full lg:self-center">
-              <StepsList steps={instructionsData.steps} />
+              <StepsList steps={instructionsData} />
             </div>
           </div>
         </div>

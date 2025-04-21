@@ -62,7 +62,7 @@ export function FavoriteListCard({
       <div className="mt-2 pt-4 border-t text-sm text-gray-500 ">
         <div className="flex justify-between items-center text-sm text-gray-500">
           <ActionButton
-            text="View Details"
+            text="View Properties"
             onclick={() => onViewProperties?.(name)}
           />
           <span>

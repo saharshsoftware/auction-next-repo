@@ -3,7 +3,6 @@ import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart, faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 import Image from "next/image";
-import instructionsData from "@/data/wishlist-instructions.json";
 
 import { SectionHeader } from "./SectionHeader";
 import { FavoriteListCard } from "./FavoriteListCard";
@@ -41,6 +40,25 @@ interface WishlistSectionProps {
   isAuthenticated?: boolean;
 }
 
+const instructionsData = [
+  {
+    id: 1,
+    text: "Visit any property detail page",
+  },
+  {
+    id: 2,
+    text: "Scroll down to the “Add to List” section",
+  },
+  {
+    id: 3,
+    text: "Choose an existing list or create a new one",
+  },
+  {
+    id: 4,
+    text: "Click “Add”",
+  },
+];
+
 export function WishlistSection({
   favoriteLists,
   isAuthenticated = false,
@@ -77,18 +95,6 @@ export function WishlistSection({
 
         <div className="py-12">
           <div className="flex flex-col lg:flex-row gap-8  items-center lg:items-start">
-            <div className="flex-1 w-full lg:self-center">
-              <StepsList steps={instructionsData.steps} />
-              <div className="text-center mt-8">
-                <ActionButton
-                  text="Create New Collection"
-                  onclick={showModal}
-                  iconLeft={
-                    <FontAwesomeIcon icon={faHeart} className="h-4 w-4" />
-                  }
-                />
-              </div>
-            </div>
             <div className="flex-1 lg:self-center">
               <div className="text-center lg:text-left mb-6">
                 <h3 className="text-2xl font-semibold mb-4">
@@ -107,6 +113,18 @@ export function WishlistSection({
                   width={400}
                   height={300}
                   className="rounded-lg shadow-md w-full"
+                />
+              </div>
+            </div>
+            <div className="flex-1 w-full lg:self-center">
+              <StepsList steps={instructionsData} />
+              <div className="text-center mt-8">
+                <ActionButton
+                  text="Login To Create Collection"
+                  onclick={showModal}
+                  iconLeft={
+                    <FontAwesomeIcon icon={faHeart} className="h-4 w-4" />
+                  }
                 />
               </div>
             </div>

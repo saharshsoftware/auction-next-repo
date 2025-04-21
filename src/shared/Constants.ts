@@ -134,7 +134,7 @@ export const STRING_DATA = {
   LOCATIONS: "locations",
   ASSETS_TYPE: "asset-types",
   TYPES: "types",
-  BACK_TO_LOGIN: "Back to Login"
+  BACK_TO_LOGIN: "Back to Login",
 };
 
 export const NAVBAR_NAV_LINKS = [
@@ -1166,3 +1166,12 @@ export const SESSIONS_STORAGE_KEYS = {
   CURRENT_PATH: "currentPath",
   PREVIOUS_PATH: "previousPath",
 };
+
+export const YEAR_OF_EXPERIENCE = [
+  { id: 1, label: "0-1 Year", value: "0-1 Year" },
+  { id: 2, label: "1-2 Years", value: "1-2 Years" },
+  { id: 3, label: "2-3 Years", value: "2-3 Years" },
+  { id: 4, label: "3-4 Years", value: "3-4 Years" },
+  { id: 5, label: "4-5 Years", value: "4-5 Years" },
+  { id: 6, label: "5 + Years", value: "5 + Years" },
+];

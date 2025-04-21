@@ -8,12 +8,12 @@ import { SectionHeader } from "./SectionHeader";
 import ActionButton from "./ActionButton";
 import { StepsList } from "./StepsList";
 import Image from "next/image";
-import instructionsData from "@/data/wishlist-instructions.json";
 import useModal from "@/hooks/useModal";
 import CreateAlert from "../ modals/CreateAlert";
 import LoginComp from "../templates/LoginComp";
 import { useRouter } from "next/navigation";
 import LoginModal from "../ modals/LoginModal";
+import saveAlertGif from "@/assets/gifs/save-alert.gif";
 
 interface Alert {
   id: string;
@@ -32,6 +32,21 @@ interface AlertsSectionProps {
   alerts: Alert[];
   isAuthenticated?: boolean;
 }
+
+const instructionsData = [
+  {
+    id: 1,
+    text: "Open the “Your Alerts” page",
+  },
+  {
+    id: 2,
+    text: "Click the “Add Alert” button",
+  },
+  {
+    id: 3,
+    text: "Hit “Create Alert” and stay notified",
+  },
+];
 
 export function AlertsSection({
   alerts,
@@ -68,10 +83,10 @@ export function AlertsSection({
         <div className="py-12">
           <div className="flex flex-col lg:flex-row gap-8 max-w-6xl mx-auto items-center lg:items-start">
             <div className="flex-1 w-full lg:self-center">
-              <StepsList steps={instructionsData.steps} />
+              <StepsList steps={instructionsData} />
               <div className="text-center mt-8">
                 <ActionButton
-                  text="Create New Alert"
+                  text="Login To Create Alert"
                   onclick={showModal}
                   iconLeft={
                     <FontAwesomeIcon icon={faBell} className="h-4 w-4 " />
@@ -92,7 +107,7 @@ export function AlertsSection({
               </div>
               <div className="relative w-full max-w-md mx-auto lg:mx-0">
                 <Image
-                  src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExcHVzaGluZ3RvbjQ3MzQ1NjIzNDU2MjM0NTYyMzQ1NjIzNDU2MjM0NTYyMw/3o7aCTPPm4OHfRLSH6/giphy.gif"
+                  src={saveAlertGif.src}
                   alt="How to set up alerts"
                   width={400}
                   height={300}

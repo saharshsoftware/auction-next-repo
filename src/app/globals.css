@@ -232,6 +232,10 @@ blockquote {
   @apply lg:px-32 px-4
 }
 
+.section-class {
+  @apply xl:px-32 px-4
+}
+
 .custom-h2-class {
   @apply text-xl font-bold
 }
