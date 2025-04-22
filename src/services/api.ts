@@ -34,5 +34,6 @@ export const API_ENPOINTS = {
   NOTICE_SEARCH: "/api/notices/search",
   USER_SURVEYS: "/api/user-surveys",
   SURVEYS: "/api/surveys",
-  USER_ME: '/api/users/me',
+  USER_ME: "/api/users/me",
+  BLOGS: "/api/blogs",
 };

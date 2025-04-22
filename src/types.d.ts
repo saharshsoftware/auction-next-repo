@@ -237,3 +237,13 @@ export enum Type {
   MultipleChoice = "multiple-choice",
   SingleChoice = "single-choice",
 }
+
+export interface BlogPost {
+  title: string;
+  id: string;
+  slug: string;
+  description: string;
+  image: string;
+  slug: string;
+  blog_categories: { data: ICategoryCollection[] };
+}

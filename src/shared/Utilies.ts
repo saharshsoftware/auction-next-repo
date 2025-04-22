@@ -10,6 +10,7 @@ import {
 import { AxiosError } from "axios";
 import { getEmptyAllObject, STORAGE_KEYS, STRING_DATA } from "./Constants";
 import { ROUTE_CONSTANTS } from "./Routes";
+import MarkdownIt from "markdown-it";
 
 export const getDataFromLocalStorage = () => {
   const storedData = localStorage.getItem(STORE_KEY);
@@ -662,4 +663,12 @@ export const sanitizeCategoryTypeTitle = (
       return acc;
     }, [])
     .join(" ");
+};
+
+export const renderMarkdown = (markdown: any) => {
+  const md = new MarkdownIt({
+    html: true,
+    linkify: true,
+  });
+  return md.render(markdown);
 };
