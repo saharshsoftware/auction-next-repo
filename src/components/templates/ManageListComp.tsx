@@ -15,7 +15,7 @@ import { IFavouriteList } from "@/types";
 import FavouriteListProperty from "./FavouriteListProperty";
 import ConfirmationModal from "../ modals/ConfirmationModal";
 import EditFavList from "../ modals/EditFavList";
-import { handleOnSettled } from "@/shared/Utilies";
+import { handleOnSettled, slugify } from "@/shared/Utilies";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons/faPlus";
 import { faTrash } from "@fortawesome/free-solid-svg-icons/faTrash";
@@ -79,7 +79,7 @@ const ManageListComp = () => {
   useEffect(() => {
     if ((favouriteListData?.length ?? 0) > 0) {
       const result = favouriteListData?.find(
-        (item) => item?.name?.toLowerCase() === hash
+        (item) => slugify(item?.name?.toLowerCase()) === hash
       );
       setActiveBadgeData(result ?? favouriteListData?.[0]);
     }
@@ -109,7 +109,9 @@ const ManageListComp = () => {
 
   const handleBadgeClick = (data: any) => {
     console.log(data);
-    router.push(`${ROUTE_CONSTANTS.MANAGE_LIST}#${data?.name?.toLowerCase()}`);
+    router.push(
+      `${ROUTE_CONSTANTS.MANAGE_LIST}#${slugify(data?.name?.toLowerCase())}`
+    );
     setActiveBadgeData(data);
   };
 

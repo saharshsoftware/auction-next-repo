@@ -666,3 +666,6 @@ export const sanitizeCategoryTypeTitle = (
 export const getCityNamesCommaSeparated = (cities: any[]): string => {
   return cities.map((city) => city.name).join(", ");
 };
+
+export const slugify = (text: string) =>
+  text.toLowerCase().trim().replace(/\s+/g, "-");

@@ -1,14 +1,10 @@
 "use client";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHeart, faChevronRight } from "@fortawesome/free-solid-svg-icons";
+import { faHeart } from "@fortawesome/free-solid-svg-icons";
 import { CustomCard } from "./CustomCard";
 import ActionButton from "./ActionButton";
 import { useRouter } from "next/navigation";
-import { ROUTE_CONSTANTS } from "@/shared/Routes";
-import { REACT_QUERY } from "@/shared/Constants";
 import { fetchFavoriteListPropertyClient } from "@/services/favouriteList";
-import { IFavouriteListProperty } from "@/types";
-import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 
 interface FavoriteListProps {

@@ -15,6 +15,7 @@ import LoginModal from "../ modals/LoginModal";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
 import { IMAGES } from "@/shared/Images";
 import { CarouselWrapper } from "./CarouselWrapper";
+import { slugify } from "@/shared/Utilies";
 
 interface Property {
   id: number;
@@ -133,7 +134,9 @@ export function WishlistSection({
   }
 
   const handleClick = (name: string) => {
-    router.push(`${ROUTE_CONSTANTS.MANAGE_LIST}#${name?.toLowerCase()}`);
+    router.push(
+      `${ROUTE_CONSTANTS.MANAGE_LIST}#${slugify(name?.toLowerCase())}`
+    );
   };
   return (
     <>
