@@ -42,7 +42,7 @@ export default async function BlogPostPage({
 
   return (
     <div className="min-h-screen bg-gray-50 common-section">
-      <div className="container mx-auto px-4 py-16">
+      <div className="container mx-auto py-16">
         <Link
           href="/blogs"
           className="inline-flex items-center text-blue-600 hover:text-blue-700 mb-8"
@@ -50,17 +50,17 @@ export default async function BlogPostPage({
           <FontAwesomeIcon icon={faArrowLeft} className="mr-1" />
           Back to blogs
         </Link>
-        <article className="max-w-4xl mx-auto bg-white rounded-lg overflow-hidden shadow-sm">
-          <div className="relative h-[400px] w-full">
+        <article className="max-w-4xl mx-auto bg-white rounded-lg  ">
+          <div className="relative lg:min-h-[400px] min-h-[220px] w-full">
             <Image
               src={post.image ?? logo.src}
               alt={post.title}
               fill
-              className="object-contain"
+              className={"object-contain"}
             />
           </div>
-          <div className="p-8">
-            <div className="mb-6 flex flex-row items-center gap-2">
+          <div className="px-2 py-4">
+            <div className="mb-6 flex flex-row items-center gap-2 flex-wrap">
               {categories.map((category: string, index: number) => (
                 <span
                   key={index}

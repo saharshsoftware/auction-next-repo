@@ -16,16 +16,16 @@ export function BlogCard({ post }: BlogCardProps) {
   return (
     <Link href={`/blogs/${post.slug}`}>
       <article className="bg-white rounded-lg overflow-hidden shadow-md transition-shadow">
-        <div className="relative h-48 w-full border border-b-gray-200 rounded-t-lg overflow-hidden">
+        <div className="relative aspect-video w-full border border-b-gray-200 rounded-t-lg overflow-hidden">
           <Image
             src={post.image ?? logo.src}
             alt={post.title}
             fill={true}
-            className="object-contain"
+            className={"object-contain"}
           />
         </div>
         <div className="p-6">
-          <div className="mb-4 flex flex-row items-center gap-2">
+          <div className="mb-4 flex flex-row items-center gap-2 flex-wrap">
             {categories.map((category: string, index: number) => (
               <span
                 key={index}
