@@ -6,6 +6,7 @@ import {
   IBanks,
   ICategoryCollection,
   ILocations,
+  INSTRUCTIONS_FOLDER_NAME,
 } from "@/types";
 import { AxiosError } from "axios";
 import { getEmptyAllObject, STORAGE_KEYS, STRING_DATA } from "./Constants";
@@ -669,3 +670,13 @@ export const getCityNamesCommaSeparated = (cities: any[]): string => {
 
 export const slugify = (text: string) =>
   text.toLowerCase().trim().replace(/\s+/g, "-");
+
+export const getImageCloudfrontUrl = (
+  imageUrl: string,
+  sectionRef: INSTRUCTIONS_FOLDER_NAME
+) => {
+  const cloudfrontBase = process.env.NEXT_PUBLIC_IMAGE_CLOUDFRONT || "";
+  const actualImageUrl = `${cloudfrontBase}/instructions/${sectionRef}/${imageUrl}.png`;
+
+  return actualImageUrl;
+};

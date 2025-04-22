@@ -15,7 +15,6 @@ export function CarouselWrapper({ images }: CarouselWrapperProps) {
             alt={`How to save searches ${index + 1}`}
             width={400}
             height={300}
-            placeholder="blur"
             priority={index === 0} // Only prioritize first image
             className="rounded-lg shadow-lg w-full h-full object-cover"
             style={{

@@ -13,6 +13,7 @@ import { useRouter } from "next/navigation";
 import LoginModal from "../ modals/LoginModal";
 import { IMAGES } from "@/shared/Images";
 import { CarouselWrapper } from "./CarouselWrapper";
+import { getImageCloudfrontUrl } from "@/shared/Utilies";
 
 interface Alert {
   id: string;
@@ -47,11 +48,27 @@ const instructionsData = [
   },
 ];
 
+const IMAGES_NAME = {
+  FIVE: "5",
+  SIX: "6",
+  SEVEN: "7",
+};
+
 export function AlertsSection({
   alerts,
   isAuthenticated = false,
 }: AlertsSectionProps) {
-  const instructionImages = [IMAGES.img5, IMAGES.img6, IMAGES.img7];
+  const instructionImages = [
+    IMAGES_NAME.FIVE,
+    IMAGES_NAME.SIX,
+    IMAGES_NAME.SEVEN,
+  ].map((item) =>
+    getImageCloudfrontUrl(
+      typeof item === "string" ? item : item,
+      "alerts-instructions"
+    )
+  );
+
   const { showModal, openModal, hideModal } = useModal();
   const router = useRouter();
 

@@ -256,3 +256,8 @@ export interface TempFilters {
   location: FilterItem | null;
   price: number[];
 }
+
+export type INSTRUCTIONS_FOLDER_NAME =
+  | "alerts-instructions"
+  | "saved-search-instructions"
+  | "wishlist-instructions";

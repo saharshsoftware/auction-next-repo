@@ -3,6 +3,7 @@ import { SectionHeader } from "./SectionHeader";
 import { StepsList } from "./StepsList";
 import { IMAGES } from "@/shared/Images";
 import { CarouselWrapper } from "./CarouselWrapper";
+import { getImageCloudfrontUrl } from "@/shared/Utilies";
 
 interface SavedSearch {
   id: number;
@@ -35,15 +36,28 @@ const instructionsData = [
   },
 ];
 
+const IMAGES_NAME = {
+  ONE: "1",
+  TWO: "2",
+  THREE: "3",
+  FOUR: "4",
+};
+
 export function SavedSearchesSection({
   savedSearches,
 }: SavedSearchesSectionProps) {
   const instructionImages = [
-    IMAGES.img1,
-    IMAGES.img2,
-    IMAGES.img3,
-    IMAGES.img4,
-  ];
+    IMAGES_NAME.ONE,
+    IMAGES_NAME.TWO,
+    IMAGES_NAME.THREE,
+    IMAGES_NAME.FOUR,
+  ].map((item) =>
+    getImageCloudfrontUrl(
+      typeof item === "string" ? item : item,
+      "saved-search-instructions"
+    )
+  );
+
   if (savedSearches.length === 0) {
     return (
       <>

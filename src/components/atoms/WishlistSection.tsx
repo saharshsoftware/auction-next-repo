@@ -15,7 +15,7 @@ import LoginModal from "../ modals/LoginModal";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
 import { IMAGES } from "@/shared/Images";
 import { CarouselWrapper } from "./CarouselWrapper";
-import { slugify } from "@/shared/Utilies";
+import { getImageCloudfrontUrl, slugify } from "@/shared/Utilies";
 
 interface Property {
   id: number;
@@ -61,11 +61,27 @@ const instructionsData = [
   },
 ];
 
+const IMAGES_NAME = {
+  EIGHT: "8",
+  NINE: "9",
+  TEN: "10",
+};
+
 export function WishlistSection({
   favoriteLists,
   isAuthenticated = false,
 }: WishlistSectionProps) {
-  const instructionImages = [IMAGES.img8, IMAGES.img9, IMAGES.img10];
+  const instructionImages = [
+    IMAGES_NAME.EIGHT,
+    IMAGES_NAME.NINE,
+    IMAGES_NAME.TEN,
+  ].map((item) =>
+    getImageCloudfrontUrl(
+      typeof item === "string" ? item : item,
+      "wishlist-instructions"
+    )
+  );
+
   const router = useRouter();
   const [selectedList, setSelectedList] = useState<FavoriteList | null>(null);
   const { showModal, openModal, hideModal } = useModal();
