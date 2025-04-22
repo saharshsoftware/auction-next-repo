@@ -1,20 +1,18 @@
 "use client";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBell, faInbox } from "@fortawesome/free-solid-svg-icons";
+import { faBell } from "@fortawesome/free-solid-svg-icons";
 import { AlertCard } from "./AlertCard";
 
 import { SectionHeader } from "./SectionHeader";
 import ActionButton from "./ActionButton";
 import { StepsList } from "./StepsList";
-import Image from "next/image";
 import useModal from "@/hooks/useModal";
 import CreateAlert from "../ modals/CreateAlert";
-import LoginComp from "../templates/LoginComp";
 import { useRouter } from "next/navigation";
 import LoginModal from "../ modals/LoginModal";
-import saveAlertGif from "@/assets/gifs/save-alert.gif";
-import CustomReactCarouselForSection from "./CustomReactCarouselForSection";
+import { IMAGES } from "@/shared/Images";
+import { CarouselWrapper } from "./CarouselWrapper";
 
 interface Alert {
   id: string;
@@ -53,6 +51,7 @@ export function AlertsSection({
   alerts,
   isAuthenticated = false,
 }: AlertsSectionProps) {
+  const instructionImages = [IMAGES.img5, IMAGES.img6, IMAGES.img7];
   const { showModal, openModal, hideModal } = useModal();
   const router = useRouter();
 
@@ -82,7 +81,7 @@ export function AlertsSection({
         />
 
         <div className="py-12">
-          <div className="flex flex-col lg:flex-row gap-8 sm:max-w-6xl mx-auto items-center lg:items-start">
+          <div className="flex flex-col-reverse lg:flex-row  lg:gap-8 sm:max-w-6xl mx-auto items-center lg:items-start">
             <div className="flex-1 w-full lg:self-center">
               <StepsList steps={instructionsData} />
               <div className="text-center mt-8">
@@ -107,30 +106,8 @@ export function AlertsSection({
                 </p>
               </div>
               {/* <div className="relative w-full sm:max-w-md mx-auto lg:mx-0"> */}
-              <div className="relative sm:max-w-md sm:w-full w-80 mx-auto lg:mx-0">
-                <CustomReactCarouselForSection>
-                  <Image
-                    src={require("@/assets/images/5.png")}
-                    alt="How to save searches"
-                    width={400}
-                    height={300}
-                    className="rounded-lg shadow-lg w-full"
-                  />
-                  <Image
-                    src={require("@/assets/images/6.png")}
-                    alt="How to save searches"
-                    width={400}
-                    height={300}
-                    className="rounded-lg shadow-md w-full"
-                  />
-                  <Image
-                    src={require("@/assets/images/7.png")}
-                    alt="How to save searches"
-                    width={400}
-                    height={300}
-                    className="rounded-lg shadow-md w-full"
-                  />
-                </CustomReactCarouselForSection>
+              <div className="relative sm:max-w-md sm:w-full w-80 mx-auto lg:mx-0 ">
+                <CarouselWrapper images={instructionImages} />
               </div>
             </div>
           </div>

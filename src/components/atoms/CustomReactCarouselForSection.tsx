@@ -63,11 +63,12 @@ const CustomReactCarouselForSection = (props: ICustomReactCarousel) => {
   const settings = {
     dots: true,
     infinite: true,
-    speed: 500,
+    speed: 700, // Slightly slower transition
     autoplay: false,
     slidesToShow: 1,
     nextArrow: <NextArrow />,
     prevArrow: <PrevArrow />,
+    adaptiveHeight: false,
     responsive: [
       {
         breakpoint: 2048,
@@ -119,11 +120,9 @@ const CustomReactCarouselForSection = (props: ICustomReactCarousel) => {
 
   return (
     <>
-      <div className={` py-12`}>
+      <div className={` py-12 min-h-[350px]`}>
         <div className={" slides-container"}>
-          <Slider {...settings} lazyLoad="ondemand">
-            {children}
-          </Slider>
+          <Slider {...settings}>{children}</Slider>
         </div>
       </div>
     </>

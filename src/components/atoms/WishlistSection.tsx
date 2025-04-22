@@ -2,7 +2,6 @@
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart, faChevronLeft } from "@fortawesome/free-solid-svg-icons";
-import Image from "next/image";
 
 import { SectionHeader } from "./SectionHeader";
 import { FavoriteListCard } from "./FavoriteListCard";
@@ -14,7 +13,8 @@ import CreateFavList from "../ modals/CreateFavList";
 import { useRouter } from "next/navigation";
 import LoginModal from "../ modals/LoginModal";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
-import CustomReactCarouselForSection from "./CustomReactCarouselForSection";
+import { IMAGES } from "@/shared/Images";
+import { CarouselWrapper } from "./CarouselWrapper";
 
 interface Property {
   id: number;
@@ -64,6 +64,7 @@ export function WishlistSection({
   favoriteLists,
   isAuthenticated = false,
 }: WishlistSectionProps) {
+  const instructionImages = [IMAGES.img8, IMAGES.img9, IMAGES.img10];
   const router = useRouter();
   const [selectedList, setSelectedList] = useState<FavoriteList | null>(null);
   const { showModal, openModal, hideModal } = useModal();
@@ -95,7 +96,7 @@ export function WishlistSection({
         />
 
         <div className="py-12">
-          <div className="flex flex-col lg:flex-row gap-8 sm:max-w-6xl mx-auto items-center lg:items-start">
+          <div className="flex flex-col lg:flex-row lg:gap-8 sm:max-w-6xl mx-auto items-center lg:items-start">
             <div className="flex-1 lg:self-center">
               <div className="text-center lg:text-left mb-6">
                 <h3 className="text-2xl font-semibold mb-4">
@@ -108,30 +109,8 @@ export function WishlistSection({
                 </p>
               </div>
               {/* <div className="relative w-full max-w-md mx-auto lg:mx-0"> */}
-              <div className="relative sm:max-w-md sm:w-full w-80 mx-auto lg:mx-0">
-                <CustomReactCarouselForSection>
-                  <Image
-                    src={require("@/assets/images/8.png")}
-                    alt="How to save searches"
-                    width={400}
-                    height={300}
-                    className="rounded-lg shadow-lg w-full"
-                  />
-                  <Image
-                    src={require("@/assets/images/9.png")}
-                    alt="How to save searches"
-                    width={400}
-                    height={300}
-                    className="rounded-lg shadow-md w-full"
-                  />
-                  <Image
-                    src={require("@/assets/images/10.png")}
-                    alt="How to save searches"
-                    width={400}
-                    height={300}
-                    className="rounded-lg shadow-md w-full"
-                  />
-                </CustomReactCarouselForSection>
+              <div className="relative sm:max-w-md sm:w-full w-80 mx-auto lg:mx-0 min-h-[300px]">
+                <CarouselWrapper images={instructionImages} />
               </div>
             </div>
             <div className="flex-1 w-full lg:self-center">

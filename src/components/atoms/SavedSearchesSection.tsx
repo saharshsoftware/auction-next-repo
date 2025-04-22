@@ -1,12 +1,8 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch, faBookmark } from "@fortawesome/free-solid-svg-icons";
 import { SavedSearchCard } from "./SavedSearchCard";
 import { SectionHeader } from "./SectionHeader";
-import ActionButton from "./ActionButton";
 import { StepsList } from "./StepsList";
-import Image from "next/image";
-import CustomReactCarouselForSection from "./CustomReactCarouselForSection";
-import ImageTag from "../ui/ImageTag";
+import { IMAGES } from "@/shared/Images";
+import { CarouselWrapper } from "./CarouselWrapper";
 
 interface SavedSearch {
   id: number;
@@ -42,6 +38,12 @@ const instructionsData = [
 export function SavedSearchesSection({
   savedSearches,
 }: SavedSearchesSectionProps) {
+  const instructionImages = [
+    IMAGES.img1,
+    IMAGES.img2,
+    IMAGES.img3,
+    IMAGES.img4,
+  ];
   if (savedSearches.length === 0) {
     return (
       <>
@@ -52,7 +54,7 @@ export function SavedSearchesSection({
         />
 
         <div className="py-12">
-          <div className="flex flex-col lg:flex-row gap-8 sm:max-w-6xl mx-auto items-center lg:items-start">
+          <div className="flex flex-col lg:flex-row lg:gap-8 sm:max-w-6xl mx-auto items-stretch lg:items-start ">
             <div className="flex-1 lg:self-center">
               <div className="text-center lg:text-left mb-6">
                 <h3 className="text-2xl font-semibold mb-4">
@@ -65,40 +67,11 @@ export function SavedSearchesSection({
                 </p>
               </div>
               {/* <div className="relative w-full max-w-md mx-auto lg:mx-0"> */}
-              <div className="relative sm:max-w-md sm:w-full w-80 mx-auto lg:mx-0">
-                <CustomReactCarouselForSection>
-                  <Image
-                    src={require("@/assets/images/1.png")}
-                    alt="How to save searches"
-                    width={400}
-                    height={300}
-                    className="rounded-lg shadow-lg w-full"
-                  />
-                  <Image
-                    src={require("@/assets/images/2.png")}
-                    alt="How to save searches"
-                    width={400}
-                    height={300}
-                    className="rounded-lg shadow-md w-full"
-                  />
-                  <Image
-                    src={require("@/assets/images/3.png")}
-                    alt="How to save searches"
-                    width={400}
-                    height={300}
-                    className="rounded-lg shadow-md w-full"
-                  />
-                  <Image
-                    src={require("@/assets/images/4.png")}
-                    alt="How to save searches"
-                    width={400}
-                    height={300}
-                    className="rounded-lg shadow-md w-full"
-                  />
-                </CustomReactCarouselForSection>
+              <div className="relative sm:max-w-md sm:w-full w-80 mx-auto lg:mx-0 ">
+                <CarouselWrapper images={instructionImages} />
               </div>
             </div>
-            <div className="flex-1 w-full lg:self-center">
+            <div className="flex-1 w-full lg:self-center items-center justify-center ">
               <StepsList steps={instructionsData} />
             </div>
           </div>

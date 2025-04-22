@@ -9,7 +9,7 @@ interface StepsListProps {
 
 export function StepsList({ steps }: StepsListProps) {
   return (
-    <div className="space-y-4 max-w-md mx-auto">
+    <div className=" h-full space-y-4 max-w-md mx-auto">
       {steps.map((step) => (
         <div key={step.id} className="bg-white p-4 rounded-lg shadow-sm">
           <div className="flex items-center gap-3">
