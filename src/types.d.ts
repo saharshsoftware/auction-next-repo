@@ -247,7 +247,8 @@ export interface BlogPost {
   slug: string;
   publishedAt: Date;
   blog_categories: { data: ICategoryCollection[] };
-  readingTime: string;
+  reading_time: string;
+  no_of_likes: number;
 }
 export interface FilterItem {
   [x: string]: any;

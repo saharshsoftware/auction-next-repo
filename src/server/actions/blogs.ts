@@ -8,6 +8,7 @@ export const fetchBlogs = async () => {
   "use server";
   try {
     const URL = API_BASE_URL + API_ENPOINTS.BLOGS + `?populate=*`;
+    // const URL = "http://localhost:3000" + API_ENPOINTS.BLOGS + `?populate=*`;
 
     const response = await fetch(URL, {
       next: { revalidate: FILTER_API_REVALIDATE_TIME },
@@ -34,6 +35,10 @@ export const fetchBlogBySlug = async (slug: string) => {
   try {
     const URL =
       API_BASE_URL + API_ENPOINTS.BLOGS + `?populate=*&filters[slug]=${slug}`;
+    // const URL =
+    //   "http://localhost:3000" +
+    //   API_ENPOINTS.BLOGS +
+    //   `?populate=*&filters[slug]=${slug}`;
 
     const response = await fetch(URL, {
       next: { revalidate: FILTER_API_REVALIDATE_TIME },

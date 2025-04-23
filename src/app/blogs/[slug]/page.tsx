@@ -1,12 +1,19 @@
 import Image from "next/image";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowLeft,
+  faCalendar,
+  faClock,
+} from "@fortawesome/free-solid-svg-icons";
 import { fetchBlogBySlug } from "@/server/actions/blogs";
 import logo from "@/assets/images/logo.png";
-import { renderMarkdown } from "@/shared/Utilies";
 import { BlogPost } from "@/types";
 import MarkdownIt from "markdown-it";
+import BlogShare from "@/components/atoms/BlogShare";
+import { formattedDate, stripHtmlTags } from "@/shared/Utilies";
+import TextToSpeech from "@/components/atoms/TextToSpeech";
+import BlogHeart from "@/components/atoms/BlogHeart";
 
 // Generate static params for all blog posts at build time
 async function fetchBlogBySlugData(slug: string) {
@@ -31,6 +38,8 @@ export default async function BlogPostPage({
     return md.render(markdown);
   };
   const post = result?.[0];
+  const rawHtml = renderMarkdown(post?.description ?? "");
+  const cleanText = stripHtmlTags(rawHtml);
   const categories =
     post?.blog_categories?.data?.length > 0
       ? post?.blog_categories?.data.map((cat: any) => cat.attributes.label)
@@ -51,14 +60,33 @@ export default async function BlogPostPage({
   return (
     <div className="min-h-screen bg-gray-50 common-section">
       <div className="container mx-auto py-16">
-        <Link
-          href="/blogs"
-          className="inline-flex items-center text-blue-600 hover:text-blue-700 mb-8"
-        >
-          <FontAwesomeIcon icon={faArrowLeft} className="mr-1" />
-          Back to blogs
-        </Link>
-        <article className="max-w-4xl mx-auto bg-white rounded-lg  ">
+        <article className="max-w-4xl mx-auto bg-white rounded-lg lg:px-4 px-2 ">
+          <Link
+            href="/blogs"
+            className="inline-flex items-center text-blue-600 hover:text-blue-700 mb-8"
+          >
+            <FontAwesomeIcon icon={faArrowLeft} className="mr-1" />
+            Back to blogs
+          </Link>
+          <h1 className="lg:px-4 px-2  text-3xl font-bold mb-4 text-gray-900">
+            {post.title}
+          </h1>
+          {/* Author Info */}
+
+          <div className="lg:px-4 px-2 flex items-center flex-wrap gap-6 text-sm text-gray-500  mb-8">
+            <div className="flex items-center gap-1">
+              <FontAwesomeIcon icon={faCalendar} />
+              <span>{formattedDate(post.publishedAt)}</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <FontAwesomeIcon icon={faClock} />
+              <span>{post?.reading_time ?? "5 min read"}</span>
+            </div>
+            <TextToSpeech text={cleanText} />
+            <BlogHeart blogId={post?.id} no_of_likes={post?.no_of_likes} />
+            <BlogShare />
+          </div>
+
           <div className="relative lg:min-h-[400px] min-h-[220px] w-full">
             <Image
               src={post.image ?? logo.src}
@@ -67,8 +95,8 @@ export default async function BlogPostPage({
               className={"object-contain"}
             />
           </div>
-          <div className="px-2 py-4">
-            <div className="mb-6 flex flex-row items-center gap-2 flex-wrap">
+          <div className="lg:px-4 px-2 py-4 mt-8">
+            <div className="mb-4 flex flex-row items-center gap-2 flex-wrap">
               {categories.map((category: string, index: number) => (
                 <span
                   key={index}
@@ -79,18 +107,12 @@ export default async function BlogPostPage({
               ))}
             </div>
 
-            <h1 className="text-3xl font-bold mb-4 text-gray-900">
-              {post.title}
-            </h1>
-
-            <div className="prose max-w-none">
-              <div
-                className="text-left text-base leading-[30px]  font-normal relative self-stretch danger-blog-class"
-                dangerouslySetInnerHTML={{
-                  __html: renderMarkdown(post?.description ?? ""),
-                }}
-              ></div>
-            </div>
+            <div
+              className="text-base leading-[30px]  text-justify  font-normal relative self-stretch danger-blog-class "
+              dangerouslySetInnerHTML={{
+                __html: renderMarkdown(post?.description ?? ""),
+              }}
+            ></div>
           </div>
         </article>
       </div>

@@ -63,7 +63,7 @@ export function BlogCard({ post }: BlogCardProps) {
             </div>
             <div className="flex items-center gap-1">
               <FontAwesomeIcon icon={faClock} />
-              <span>{post?.readingTime ?? "5 min read"}</span>
+              <span>{post?.reading_time ?? "5 min read"}</span>
             </div>
           </div>
         </div>
