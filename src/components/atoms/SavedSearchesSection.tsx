@@ -85,7 +85,7 @@ export function SavedSearchesSection({
                 <CarouselWrapper images={instructionImages} />
               </div>
             </div>
-            <div className="flex-1 w-full lg:self-center items-center justify-center ">
+            <div className="flex-1 w-full lg:self-center">
               <StepsList steps={instructionsData} />
             </div>
           </div>
