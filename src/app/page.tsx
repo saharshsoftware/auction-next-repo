@@ -28,6 +28,7 @@ import { cookies } from "next/headers";
 import { AuctionSmarterSection } from "@/components/atoms/AuctionSmarterSection";
 import PartnerAndHelpSection from "@/components/atoms/PartnerAndHelpSection";
 import ForceRefreshOnMount from "@/components/atoms/ForceRefreshOnMount";
+import LandingPageSection from "@/components/molecules/LandingPageSections";
 
 export const revalidate = 0;
 export const metadata: Metadata = {
@@ -126,32 +127,6 @@ export default async function Home() {
   const bankOptions = (await fetchBanks()) as unknown as IBanks[];
   const locationOptions = (await fetchLocation()) as unknown as ILocations[];
 
-  const alertsList = isAuthenticated ? await fetchAlertsServer() : [];
-  const updateAlertList = isAuthenticated
-    ? alertsList?.map((item: IAlert) => {
-        return {
-          ...item,
-          locationType: locationOptions?.find(
-            (location) => location?.name === item?.location
-          )?.type,
-          location: locationOptions?.find(
-            (location) => location?.name === item?.location
-          ),
-          category: categoryOptions?.find(
-            (category) => category?.name === item?.assetCategory
-          ),
-          propertyType: assetsTypeOptions?.find(
-            (asset) => asset?.name === item?.assetType
-          ),
-          bank: bankOptions?.find((bank) => bank?.name === item?.bankName),
-        };
-      })
-    : [];
-  const savedSearchesList = isAuthenticated
-    ? await fetchSavedSearchServer()
-    : [];
-  const favoriteLists = isAuthenticated ? await fetchFavoriteListServer() : [];
-
   const renderHomeCollection = () => {
     if (carouselResponse) {
       return (
@@ -217,33 +192,13 @@ export default async function Home() {
           />
         </section>
 
-        {/* Saved Searches Section */}
-        <section className="section-class py-12 bg-odd-color">
-          <SavedSearchesSection
-            savedSearches={savedSearchesList?.slice(0, 3)}
-          />
-        </section>
-
-        {/* Alerts Section */}
-        <section className="section-class py-12 bg-even-color">
-          <AlertsSection
-            alerts={updateAlertList?.slice(0, 3)}
-            isAuthenticated={isAuthenticated}
-          />
-        </section>
-
-        {/* Wishlist Section */}
-        <section className="section-class py-12 bg-odd-color">
-          <WishlistSection
-            favoriteLists={favoriteLists?.slice(0, 3)}
-            isAuthenticated={isAuthenticated}
-          />
-        </section>
-
-        <section className="common-section py-12 bg-even-color">
-          <PartnerAndHelpSection />
-        </section>
-
+        <LandingPageSection
+          isAuthenticated={isAuthenticated}
+          locationOptions={locationOptions}
+          categoryOptions={categoryOptions}
+          assetsTypeOptions={assetsTypeOptions}
+          bankOptions={bankOptions}
+        />
         {/* Home Collection Sections - Already has alternating colors */}
         {renderHomeCollection()}
       </main>
