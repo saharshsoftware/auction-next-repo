@@ -688,3 +688,22 @@ export const getImageCloudfrontUrl = (
 
   return actualImageUrl;
 };
+
+export function stripHtmlTags(html: string): string {
+  if (!html) return "";
+
+  // Create a temporary DOM element to safely extract text
+  const tempElement =
+    typeof window !== "undefined" ? document.createElement("div") : null;
+
+  if (tempElement) {
+    tempElement.innerHTML = html;
+    return tempElement.textContent || tempElement.innerText || "";
+  }
+
+  // Fallback (server-side)
+  return html
+    .replace(/<[^>]*>/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}

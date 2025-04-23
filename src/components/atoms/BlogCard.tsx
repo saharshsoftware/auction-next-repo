@@ -2,8 +2,10 @@ import { BlogPost } from "@/types";
 import Image from "next/image";
 import Link from "next/link";
 import logo from "@/assets/images/logo.png";
-import { renderMarkdown } from "@/shared/Utilies";
+import { formattedDate, renderMarkdown } from "@/shared/Utilies";
 import MarkdownIt from "markdown-it";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCalendar, faClock } from "@fortawesome/free-solid-svg-icons";
 
 interface BlogCardProps {
   post: BlogPost;
@@ -49,11 +51,21 @@ export function BlogCard({ post }: BlogCardProps) {
           </h2>
           {/* <p className="text-gray-600 line-clamp-3">{post.description}</p> */}
           <div
-            className="text-left text-base leading-[30px]  line-clamp-3 font-normal relative self-stretch danger-blog-class"
+            className="text-left text-base leading-[30px]  line-clamp-3 font-normal relative self-stretch danger-blog-class mb-4"
             dangerouslySetInnerHTML={{
               __html: renderMarkdown(post?.description ?? ""),
             }}
           ></div>
+          <div className="flex items-center gap-4 text-sm text-gray-500">
+            <div className="flex items-center gap-1">
+              <FontAwesomeIcon icon={faCalendar} />
+              <span>{formattedDate(post.publishedAt)}</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <FontAwesomeIcon icon={faClock} />
+              <span>{post?.readingTime ?? "5 min read"}</span>
+            </div>
+          </div>
         </div>
       </article>
     </Link>

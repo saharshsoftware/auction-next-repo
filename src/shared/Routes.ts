@@ -28,4 +28,5 @@ export const ROUTE_CONSTANTS = {
   TYPES: "/types",
   LOGIN_OTP: "/otp-login",
   PARTNER: "/partner",
+  BLOGS: "/blogs",
 };

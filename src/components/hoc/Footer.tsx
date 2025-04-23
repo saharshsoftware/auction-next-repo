@@ -67,6 +67,9 @@ const Footer: React.FC = () => {
               </Link>
             </nav>
             <nav className="flex items-center justify-center gap-4 text-sm">
+              <Link href={ROUTE_CONSTANTS.BLOGS} className="link link-hover">
+                {STRING_DATA.BLOGS}
+              </Link>
               <Link href={ROUTE_CONSTANTS.CONTACT} className="link link-hover">
                 {STRING_DATA.CONTACT_US}
               </Link>

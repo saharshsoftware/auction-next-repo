@@ -206,12 +206,6 @@ const Navbar: React.FC = () => {
               >
                 {STRING_DATA.ASSETS}{" "}
               </Link>
-              <Link
-                href={ROUTE_CONSTANTS.CONTACT}
-                className="cursor-pointer text-xs lg:text-sm"
-              >
-                {STRING_DATA.CONTACT_US}{" "}
-              </Link>
             </div>
           </div>
           <div className="hidden xl:flex items-center gap-12">
