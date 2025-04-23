@@ -6,6 +6,7 @@ import { fetchBlogBySlug } from "@/server/actions/blogs";
 import logo from "@/assets/images/logo.png";
 import { renderMarkdown } from "@/shared/Utilies";
 import { BlogPost } from "@/types";
+import MarkdownIt from "markdown-it";
 
 // Generate static params for all blog posts at build time
 async function fetchBlogBySlugData(slug: string) {
@@ -22,6 +23,13 @@ export default async function BlogPostPage({
 }) {
   const { slug } = params;
   const result = (await fetchBlogBySlugData(slug)) as BlogPost[];
+  const renderMarkdown = (markdown: any) => {
+    const md = new MarkdownIt({
+      html: true,
+      linkify: true,
+    });
+    return md.render(markdown);
+  };
   const post = result?.[0];
   const categories =
     post?.blog_categories?.data?.length > 0

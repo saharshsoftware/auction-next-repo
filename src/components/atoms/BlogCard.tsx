@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import logo from "@/assets/images/logo.png";
 import { renderMarkdown } from "@/shared/Utilies";
+import MarkdownIt from "markdown-it";
 
 interface BlogCardProps {
   post: BlogPost;
@@ -13,6 +14,14 @@ export function BlogCard({ post }: BlogCardProps) {
     post?.blog_categories?.data?.length > 0
       ? post?.blog_categories?.data.map((cat: any) => cat.attributes.label)
       : [];
+
+  const renderMarkdown = (markdown: any) => {
+    const md = new MarkdownIt({
+      html: true,
+      linkify: true,
+    });
+    return md.render(markdown);
+  };
   return (
     <Link href={`/blogs/${post.slug}`}>
       <article className="bg-white rounded-lg overflow-hidden shadow-md transition-shadow">
