@@ -39,31 +39,25 @@ export default function LoginComp(props: {
     closeModal = () => {},
   } = props;
   const router = useRouter();
-  const params = useParams(); 
+  const params = useParams();
   const [showPassword, setShowPassword] = useState(false);
   const [respError, setRespError] = useState<string>("");
 
   // Mutations
   const { mutate, isPending } = useMutation({
     mutationFn: loginClient,
-    onSettled: async (data) => {
-      console.log(data);
-      const response = {
-        data,
-        success: () => {
-          if (isAuthModal) {
-            router.refresh()
-            closeModal?.();
-            return;
-          }
-          router.push(ROUTE_CONSTANTS.DASHBOARD);
-        },
-        fail: (error: any) => {
-          const { message } = error;
-          setRespError(message);
-        },
-      };
-      handleOnSettled(response);
+    onSuccess(data, variables, context) {
+      if (isAuthModal) {
+        router.refresh();
+        closeModal?.();
+        return;
+      }
+      router.push(ROUTE_CONSTANTS.DASHBOARD);
+      router.refresh();
+    },
+    onError(error: { message: string }) {
+      const { message } = error;
+      setRespError(message || "Something went wrong, please try again later");
     },
   });
 
@@ -87,9 +81,7 @@ export default function LoginComp(props: {
   };
   return (
     <>
-      <div
-        className={`${isAuthModal ? "" : "common-auth-section-class"} my-4`}
-      >
+      <div className={`${isAuthModal ? "" : "common-auth-section-class"} my-4`}>
         <CustomFormikForm
           initialValues={initialValues}
           validationSchema={validationSchema}
@@ -153,6 +145,19 @@ export default function LoginComp(props: {
                 </Link>
               )}
             </p>
+            {!isAuthModal && (
+              <>
+                <div className="text-center text-sm font-medium text-gray-500">
+                  -- OR --
+                </div>
+                <ActionButton
+                  text="LOGIN WITH OTP"
+                  onclick={() => router.push(ROUTE_CONSTANTS.LOGIN_OTP)}
+                  isActionButton={false}
+                  customClass="w-full"
+                />
+              </>
+            )}
           </div>
         </CustomFormikForm>
       </div>

@@ -12,4 +12,7 @@ export interface IReactSelectDropdown {
   clearRenderer?: any;
   clearable?: boolean;
   menuIsOpen?: boolean;
+  isMulti?: boolean;
+  maxMultiSelectOptions?: number;
+  hidePlaceholder?: boolean;
 }

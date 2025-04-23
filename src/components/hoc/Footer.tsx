@@ -13,7 +13,7 @@ const Footer: React.FC = () => {
   return (
     <>
       <footer
-        className={`lg:h-auto h-[300px] flex flex-col gap-8 lg:p-10 px-4 py-10 bg-neutral text-neutral-content rounded-t transition-opacity duration-500 ${
+        className={`lg:h-auto h-[300px] flex flex-col gap-8 lg:p-10 px-4 py-10 bg-gray-900 text-neutral-content rounded-t transition-opacity duration-500 ${
           isFooterLoaded ? "opacity-100" : "opacity-0"
         }`}
       >

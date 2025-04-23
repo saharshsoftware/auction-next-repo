@@ -14,6 +14,8 @@
   --secondary-color: #18535f;
   --badge-color: #d7dbe9;
   --button-hover-color: #667085;
+  --even-bg-color: #f0f1f8;
+  --odd-bg-color: #fbfbfc;
 }
 
 body {
@@ -228,6 +230,18 @@ blockquote {
 
 .common-section {
   @apply lg:px-32 px-4
+}
+
+.section-class {
+  @apply xl:px-32 px-4
+}
+
+.section-carousel-img-container {
+  @apply w-full h-full;
+}
+
+.section-carousel-img-container img {
+  @apply w-full h-full object-cover;
 }
 
 .custom-h2-class {

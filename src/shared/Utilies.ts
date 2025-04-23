@@ -6,6 +6,7 @@ import {
   IBanks,
   ICategoryCollection,
   ILocations,
+  INSTRUCTIONS_FOLDER_NAME,
 } from "@/types";
 import { AxiosError } from "axios";
 import { getEmptyAllObject, STORAGE_KEYS, STRING_DATA } from "./Constants";
@@ -463,8 +464,7 @@ export const handleFilterAssetTypeChange = (
   AssetTypeData: IAssetType[]
 ) => {
   const result = AssetTypeData?.filter(
-    (item: IAssetType) =>
-      item?.category?.data?.attributes?.slug === selectedCategorySlug
+    (item: IAssetType) => item?.category?.slug === selectedCategorySlug
   );
   return result;
 };
@@ -662,4 +662,21 @@ export const sanitizeCategoryTypeTitle = (
       return acc;
     }, [])
     .join(" ");
+};
+
+export const getCityNamesCommaSeparated = (cities: any[]): string => {
+  return cities.map((city) => city.name).join(", ");
+};
+
+export const slugify = (text: string) =>
+  text.toLowerCase().trim().replace(/\s+/g, "-");
+
+export const getImageCloudfrontUrl = (
+  imageUrl: string,
+  sectionRef: INSTRUCTIONS_FOLDER_NAME
+) => {
+  const cloudfrontBase = process.env.NEXT_PUBLIC_IMAGE_CLOUDFRONT || "";
+  const actualImageUrl = `${cloudfrontBase}/instructions/${sectionRef}/${imageUrl}.png`;
+
+  return actualImageUrl;
 };

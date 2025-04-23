@@ -1,6 +1,5 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import TooltipContent from "../atoms/TooltipContent";
 import { getCookie } from "cookies-next";
 import {
   COOKIES,
@@ -10,17 +9,18 @@ import {
 } from "@/shared/Constants";
 import { getInitials } from "@/shared/Utilies";
 import LogoutButton from "../ui/LogoutButton";
-import Link from "next/link";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import SearchKeywordComp from "../atoms/SearchKeywordComp";
 import NextLink from "../ui/NextLink";
 import {
-  faHome,
+  faBagShopping,
+  faBank,
+  faList,
+  faMapPin,
   faPhone,
   faRightToBracket,
   faUserPlus,
-  faUsers,
 } from "@fortawesome/free-solid-svg-icons";
 
 interface ICustomDrawer {
@@ -124,14 +124,42 @@ const CustomDrawer = (props: ICustomDrawer) => {
         <div className="flex flex-col gap-4 transform transition duration-300 py-4 flex-1 ">
           <SearchKeywordComp handleClick={toggleTopBar} />
           {renderLinks()}
+
           <NextLink
-            href={ROUTE_CONSTANTS.DASHBOARD}
+            href={ROUTE_CONSTANTS.BANKS}
             onClick={toggleTopBar}
             hasChildren={true}
             customClass="flex justify-between gap-2"
           >
-            <span>{STRING_DATA.HOME}</span>
-            <FontAwesomeIcon color={NAVICON_COLOR} icon={faHome} />
+            <span>{STRING_DATA.BANKS}</span>
+            <FontAwesomeIcon color={NAVICON_COLOR} icon={faBank} />
+          </NextLink>
+          <NextLink
+            href={ROUTE_CONSTANTS.CITIES}
+            onClick={toggleTopBar}
+            hasChildren={true}
+            customClass="flex justify-between gap-2"
+          >
+            <span>{STRING_DATA.CITIES}</span>
+            <FontAwesomeIcon color={NAVICON_COLOR} icon={faMapPin} />
+          </NextLink>
+          <NextLink
+            href={ROUTE_CONSTANTS.CATEGORY}
+            onClick={toggleTopBar}
+            hasChildren={true}
+            customClass="flex justify-between gap-2"
+          >
+            <span>{STRING_DATA.CATEGORIES}</span>
+            <FontAwesomeIcon color={NAVICON_COLOR} icon={faBagShopping} />
+          </NextLink>
+          <NextLink
+            href={ROUTE_CONSTANTS.ASSETS}
+            onClick={toggleTopBar}
+            hasChildren={true}
+            customClass="flex justify-between gap-2"
+          >
+            <span>{STRING_DATA.ASSETS}</span>
+            <FontAwesomeIcon color={NAVICON_COLOR} icon={faList} />
           </NextLink>
           <NextLink
             href={ROUTE_CONSTANTS.CONTACT}
@@ -141,15 +169,6 @@ const CustomDrawer = (props: ICustomDrawer) => {
           >
             <span>{STRING_DATA.CONTACT_US}</span>
             <FontAwesomeIcon color={NAVICON_COLOR} icon={faPhone} />
-          </NextLink>
-          <NextLink
-            href={ROUTE_CONSTANTS.ABOUT_US}
-            onClick={toggleTopBar}
-            hasChildren={true}
-            customClass="flex justify-between gap-2"
-          >
-            <span>{STRING_DATA.ABOUT_US}</span>
-            <FontAwesomeIcon color={NAVICON_COLOR} icon={faUsers} />
           </NextLink>
         </div>
         {renderAuthComponent()}

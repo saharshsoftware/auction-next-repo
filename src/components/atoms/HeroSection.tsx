@@ -18,7 +18,7 @@ const HeroSection = (props: {
   return (
     <>
       <div
-        className="hero min-h-screen"
+        className="hero xl:min-h-screen lg:min-h-[50vh] md:min-h-[70vh] min-h-screen"
         style={{
           backgroundImage: `url(${waveImage?.src})`,
         }}

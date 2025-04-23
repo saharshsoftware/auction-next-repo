@@ -11,7 +11,7 @@ import {
   sanitizedAuctionDetail,
 } from "@/shared/Utilies";
 import { IAssetType, IAuction, ICategoryCollection } from "@/types";
-import { FILTER_API_REVALIDATE_TIME } from "@/shared/Constants";
+import { COOKIES, FILTER_API_REVALIDATE_TIME } from "@/shared/Constants";
 
 export const getAuctionData = async (payload: {
   page?: string;
@@ -36,9 +36,8 @@ export const getAuctionData = async (payload: {
     } = payload;
     const pageSize = 10;
     let URL;
-    let filter = `?pagination[page]=${
-      page ?? 1
-    }&pagination[pageSize]=${pageSize}&`;
+    let filter = `?pagination[page]=${page ?? 1
+      }&pagination[pageSize]=${pageSize}&`;
 
     let filterSearch = `?pageSize=${pageSize}&pageNo=${page}&`;
     // debugger;
@@ -72,9 +71,8 @@ export const getAuctionData = async (payload: {
       }
 
       if (reservePrice) {
-        filter += `filters[$and][${index++}][reservePrice][$gte]=${
-          reservePrice[0]
-        }&filters[$and][${index++}][reservePrice][$lte]=${reservePrice[1]}&`;
+        filter += `filters[$and][${index++}][reservePrice][$gte]=${reservePrice[0]
+          }&filters[$and][${index++}][reservePrice][$lte]=${reservePrice[1]}&`;
       }
       URL = API_ENPOINTS.NOTICES + filter.slice(0, -1); // Remove the trailing '&' if present
     }
@@ -351,9 +349,8 @@ export const getAuctionsServer = async (payload: {
     } = payload;
     const pageSize = 10;
 
-    let filter = `?pagination[page]=${
-      page ?? 1
-    }&pagination[pageSize]=${pageSize}&`;
+    let filter = `?pagination[page]=${page ?? 1
+      }&pagination[pageSize]=${pageSize}&`;
     let filterSearch = `?pageSize=${pageSize}&pageNo=${page}&`;
     if (keyword) {
       filterSearch += `q=${encodeURI(keyword)}&`;
@@ -389,9 +386,8 @@ export const getAuctionsServer = async (payload: {
       }
 
       if (reservePrice && reservePrice.length > 0) {
-        filter += `filters[$and][${index++}][reservePrice][$gte]=${
-          reservePrice[0]
-        }&filters[$and][${index++}][reservePrice][$lte]=${reservePrice[1]}&`;
+        filter += `filters[$and][${index++}][reservePrice][$gte]=${reservePrice[0]
+          }&filters[$and][${index++}][reservePrice][$lte]=${reservePrice[1]}&`;
       }
     }
     const requiredkeys = generateQueryParamString([
@@ -416,5 +412,78 @@ export const getAuctionsServer = async (payload: {
     return { sendResponse, meta: data?.meta?.pagination, UPDATE_URL };
   } catch (e) {
     console.log(URL, "auctionDetail error auction notices");
+  }
+};
+
+export const fetchAlertsServer = async () => {
+  try {
+    const cookieStore = cookies();
+    const token = cookieStore.get(COOKIES.TOKEN_KEY)?.value; // Replace with your actual cookie name
+
+    const URL = API_BASE_URL + API_ENPOINTS.ALERTS;
+
+    const response = await fetch(URL, {
+      method: "GET",
+      cache: "no-store",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: token ? `Bearer ${token}` : "",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch alerts");
+    }
+
+    const data = await response.json();
+    console.log(data, "responsefetch");
+    // const sanitizeData = sanitizeStrapiData(data?.data) as IAlert[];
+    // return {data: sanitizeData, meta: data?.data?.meta};
+    return data;
+  } catch (e) {
+    console.log(e, "auctionDetail error collection");
+  }
+};
+
+export const fetchSavedSearchServer = async () => {
+  try {
+    const cookieStore = cookies();
+    const token = cookieStore.get(COOKIES.TOKEN_KEY)?.value; // Replace with your actual cookie name
+
+    const URL = API_BASE_URL + API_ENPOINTS.SAVED_SEARCH;
+
+    const response = await fetch(URL, {
+      method: "GET",
+      cache: "no-store",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: token ? `Bearer ${token}` : "",
+      },
+    });
+    const data = await response.json();
+    console.log(data, "responsefetch");
+    return data;
+  } catch (e) {
+    console.log(e, "auctionDetail error collection");
+  }
+};
+
+export const fetchFavoriteListServer = async () => {
+  try {
+    const cookieStore = cookies();
+    const token = cookieStore.get(COOKIES.TOKEN_KEY)?.value; // Replace with your actual cookie name
+    const URL = API_BASE_URL + API_ENPOINTS.FAVOURITE_LIST;
+    const response = await fetch(URL, {
+      method: "GET",
+      cache: "no-store",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: token ? `Bearer ${token}` : "",
+      },
+    });
+    const data = await response.json();
+    return data;
+  } catch (e) {
+    console.log(e, "fetchfav error");
   }
 };

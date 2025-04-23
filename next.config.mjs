@@ -8,6 +8,16 @@ const nextConfig = {
         hostname: "dwqz7qa945k06.cloudfront.net",
         port: "",
       },
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+        port: "",
+      },
+      {
+        protocol: "https",
+        hostname: "media.giphy.com",
+        port: "",
+      }
     ],
   },
   async redirects() {

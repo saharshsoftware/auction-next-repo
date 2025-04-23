@@ -30,35 +30,35 @@ const SavedSearchModal = (props: ISavedSearchModal) => {
   const searchParams = useSearchParams();
   const [respError, setRespError] = useState<string>("");
 
-    const { mutate, isPending } = useMutation({
-      mutationFn: createSavedSearch,
-      onSettled: async (data) => {
-        const response = {
-          data,
-          success: () => {
-            setRespError("");
-            hideModal()
-            toast("Successfully saved", {
-              theme: "success",
-              position: "top-center",
-            });
-          },
-          fail: (error: any) => {
-            const { message } = error;
-            setRespError(message);
-          },
-        };
-        handleOnSettled(response);
-      },
-    });
+  const { mutate, isPending } = useMutation({
+    mutationFn: createSavedSearch,
+    onSettled: async (data) => {
+      const response = {
+        data,
+        success: () => {
+          setRespError("");
+          hideModal();
+          toast("Successfully saved", {
+            theme: "success",
+            position: "top-center",
+          });
+        },
+        fail: (error: any) => {
+          const { message } = error;
+          setRespError(message);
+        },
+      };
+      handleOnSettled(response);
+    },
+  });
 
-  const handleSaved = (values:any) => {
-    console.log(values, searchParams.get('q'));
+  const handleSaved = (values: any) => {
+    console.log(values, searchParams.get("q"));
     const formData = {
       name: values?.name,
-      filter: searchParams.get("q") ?? '',
+      filter: searchParams.get("q") ?? "",
     };
-    mutate({formData});
+    mutate({ formData });
   };
 
   return (
@@ -95,7 +95,7 @@ const SavedSearchModal = (props: ISavedSearchModal) => {
                   />
                   <ActionButton
                     isSubmit={true}
-                    text={STRING_DATA.SAVED}
+                    text={STRING_DATA.SAVE}
                     isLoading={isPending}
                   />
                 </div>

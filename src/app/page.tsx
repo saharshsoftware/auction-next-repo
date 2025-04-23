@@ -3,16 +3,33 @@ import HeroSection from "@/components/atoms/HeroSection";
 
 import { fetchBanks, fetchLocation } from "@/server/actions";
 import {
+  fetchAlertsServer,
+  fetchFavoriteListServer,
+  fetchSavedSearchServer,
   getAssetType,
   getCarouselData,
   getCategoryBoxCollection,
 } from "@/server/actions/auction";
 import { sanitizeReactSelectOptions } from "@/shared/Utilies";
-import { IAssetType, IBanks, ICategoryCollection, ILocations } from "@/types";
+import {
+  IAlert,
+  IAssetType,
+  IBanks,
+  ICategoryCollection,
+  ILocations,
+} from "@/types";
 import { Metadata } from "next";
 import dynamic from "next/dynamic";
-import { lazy } from "react";
+import { AlertsSection } from "@/components/atoms/AlertsSection";
+import { SavedSearchesSection } from "@/components/atoms/SavedSearchesSection";
+import { WishlistSection } from "@/components/atoms/WishlistSection";
+import { COOKIES } from "@/shared/Constants";
+import { cookies } from "next/headers";
+import { AuctionSmarterSection } from "@/components/atoms/AuctionSmarterSection";
+import PartnerAndHelpSection from "@/components/atoms/PartnerAndHelpSection";
+import ForceRefreshOnMount from "@/components/atoms/ForceRefreshOnMount";
 
+export const revalidate = 0;
 export const metadata: Metadata = {
   title:
     "Find Bank Auction Properties in India | Search Residential, Commercial, Vehicles, Gold auctions & More",
@@ -98,6 +115,9 @@ const getComponent = (componentName: string) => {
 };
 
 export default async function Home() {
+  const cookieStore = cookies();
+  const token = cookieStore.get(COOKIES.TOKEN_KEY)?.value ?? "";
+  const isAuthenticated = !!token;
   const carouselResponse = await getCarouselData();
 
   const assetsTypeOptions = (await getAssetType()) as unknown as IAssetType[];
@@ -105,6 +125,32 @@ export default async function Home() {
     (await getCategoryBoxCollection()) as unknown as ICategoryCollection[];
   const bankOptions = (await fetchBanks()) as unknown as IBanks[];
   const locationOptions = (await fetchLocation()) as unknown as ILocations[];
+
+  const alertsList = isAuthenticated ? await fetchAlertsServer() : [];
+  const updateAlertList = isAuthenticated
+    ? alertsList?.map((item: IAlert) => {
+        return {
+          ...item,
+          locationType: locationOptions?.find(
+            (location) => location?.name === item?.location
+          )?.type,
+          location: locationOptions?.find(
+            (location) => location?.name === item?.location
+          ),
+          category: categoryOptions?.find(
+            (category) => category?.name === item?.assetCategory
+          ),
+          propertyType: assetsTypeOptions?.find(
+            (asset) => asset?.name === item?.assetType
+          ),
+          bank: bankOptions?.find((bank) => bank?.name === item?.bankName),
+        };
+      })
+    : [];
+  const savedSearchesList = isAuthenticated
+    ? await fetchSavedSearchServer()
+    : [];
+  const favoriteLists = isAuthenticated ? await fetchFavoriteListServer() : [];
 
   const renderHomeCollection = () => {
     if (carouselResponse) {
@@ -128,7 +174,7 @@ export default async function Home() {
                 <div
                   key={index}
                   className={`${
-                    index % 2 === 0 ? "bg-[#f0f1f8]" : "bg-[#fbfbfc]"
+                    index % 2 === 0 ? "bg-odd-color" : "bg-even-color"
                   }`}
                 >
                   <CustomReactCarousel
@@ -159,8 +205,10 @@ export default async function Home() {
 
   return (
     <>
+      <ForceRefreshOnMount />
       <main className="">
-        <section>
+        {/* Hero Section - Keep original background */}
+        <section className="">
           <HeroSection
             assetsTypeOptions={sanitizeReactSelectOptions(assetsTypeOptions)}
             categoryOptions={sanitizeReactSelectOptions(categoryOptions)}
@@ -169,6 +217,34 @@ export default async function Home() {
           />
         </section>
 
+        {/* Saved Searches Section */}
+        <section className="section-class py-12 bg-odd-color">
+          <SavedSearchesSection
+            savedSearches={savedSearchesList?.slice(0, 3)}
+          />
+        </section>
+
+        {/* Alerts Section */}
+        <section className="section-class py-12 bg-even-color">
+          <AlertsSection
+            alerts={updateAlertList?.slice(0, 3)}
+            isAuthenticated={isAuthenticated}
+          />
+        </section>
+
+        {/* Wishlist Section */}
+        <section className="section-class py-12 bg-odd-color">
+          <WishlistSection
+            favoriteLists={favoriteLists?.slice(0, 3)}
+            isAuthenticated={isAuthenticated}
+          />
+        </section>
+
+        <section className="common-section py-12 bg-even-color">
+          <PartnerAndHelpSection />
+        </section>
+
+        {/* Home Collection Sections - Already has alternating colors */}
         {renderHomeCollection()}
       </main>
     </>

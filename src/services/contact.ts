@@ -9,7 +9,20 @@ interface IPayload {
 
 interface IContactUs {
   formData: IPayload;
-  onSettled?: ()=>void;
+  onSettled?: () => void;
+}
+
+interface IPartnerContactForm {
+  formData: {
+    name: string;
+    mobile: string;
+    email: string;
+    cities: string;
+    reasonToJoin?: string;
+    background?: string;
+    experience?: string;
+    isActiveForAuction?: boolean;
+  };
 }
 
 export const ConatctUsClient = async (payload: IContactUs) => {
@@ -19,12 +32,28 @@ export const ConatctUsClient = async (payload: IContactUs) => {
     console.log(URL);
     const { data } = await postRequest({
       API: URL,
-      DATA: {data: formData},
+      DATA: { data: formData },
     });
     console.log(data);
     onSettled?.();
     return data;
   } catch (error: any) {
     return error?.response?.data;
+  }
+};
+
+export const partnerConatctClient = async (payload: IPartnerContactForm) => {
+  const { formData } = payload;
+  try {
+    const URL = API_BASE_URL + API_ENPOINTS.CONTACT_BROKERS;
+    console.log(URL);
+    const { data } = await postRequest({
+      API: URL,
+      DATA: { data: formData },
+    });
+    console.log(data);
+    return data;
+  } catch (error: any) {
+    throw error?.response?.data?.error;
   }
 };

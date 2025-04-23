@@ -10,10 +10,6 @@ import { ROUTE_CONSTANTS } from "../../shared/Routes";
 import { formatPrice, setDataInQueryParams } from "../../shared/Utilies";
 import Link from "next/link";
 import RangeSliderCustom from "./RangeSliderCustom";
-// import SavedSearchList from "./SavedSearchList";
-const SavedSearchList = dynamic(() => import("./SavedSearchList"), {
-  ssr: false,
-});
 import { getCookie } from "cookies-next";
 import dynamic from "next/dynamic";
 import { IFilters, useFilterStore } from "@/zustandStore/filters";
@@ -235,11 +231,6 @@ const HeroSearchBox = (props: {
                   </TextField>
                 </div>
 
-                {token ? (
-                  <div className={"col-span-full"}>
-                    <SavedSearchList />
-                  </div>
-                ) : null}
                 <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2">
                   <Link
                     href={{

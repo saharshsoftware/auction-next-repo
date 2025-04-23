@@ -15,7 +15,7 @@ import { IFavouriteList } from "@/types";
 import FavouriteListProperty from "./FavouriteListProperty";
 import ConfirmationModal from "../ modals/ConfirmationModal";
 import EditFavList from "../ modals/EditFavList";
-import { handleOnSettled } from "@/shared/Utilies";
+import { handleOnSettled, slugify } from "@/shared/Utilies";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons/faPlus";
 import { faTrash } from "@fortawesome/free-solid-svg-icons/faTrash";
@@ -24,9 +24,29 @@ import {
   deleteFavoriteListClient,
   fetchFavoriteListClient,
 } from "@/services/favouriteList";
+import { useRouter } from "next/navigation";
+import { ROUTE_CONSTANTS } from "@/shared/Routes";
 
 const ManageListComp = () => {
+  const router = useRouter();
   const queryClient = useQueryClient();
+  const [hash, setHash] = useState("");
+
+  useEffect(() => {
+    const currentHash = window.location.hash;
+    setHash(currentHash.replace("#", "")); // remove the # if needed
+  }, []);
+
+  useEffect(() => {
+    const handleHashChange = () => {
+      setHash(window.location.hash.replace("#", ""));
+    };
+
+    handleHashChange(); // set on mount
+    window.addEventListener("hashchange", handleHashChange);
+
+    return () => window.removeEventListener("hashchange", handleHashChange);
+  }, []);
   const [activeBadgeData, setActiveBadgeData] = useState<IFavouriteList>();
   const [selectedBadge, setSelectedBadge] = useState<any>();
   const { showModal, openModal, hideModal } = useModal();
@@ -58,9 +78,12 @@ const ManageListComp = () => {
 
   useEffect(() => {
     if ((favouriteListData?.length ?? 0) > 0) {
-      setActiveBadgeData(favouriteListData?.[0]);
+      const result = favouriteListData?.find(
+        (item) => slugify(item?.name?.toLowerCase()) === hash
+      );
+      setActiveBadgeData(result ?? favouriteListData?.[0]);
     }
-  }, [favouriteListData]);
+  }, [favouriteListData, hash]);
 
   // Mutations
   const { mutate, isPending } = useMutation({
@@ -86,6 +109,9 @@ const ManageListComp = () => {
 
   const handleBadgeClick = (data: any) => {
     console.log(data);
+    router.push(
+      `${ROUTE_CONSTANTS.MANAGE_LIST}#${slugify(data?.name?.toLowerCase())}`
+    );
     setActiveBadgeData(data);
   };
 
