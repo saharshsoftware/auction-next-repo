@@ -671,6 +671,7 @@ export const renderMarkdown = (markdown: any) => {
     linkify: true,
   });
   return md.render(markdown);
+};
 export const getCityNamesCommaSeparated = (cities: any[]): string => {
   return cities.map((city) => city.name).join(", ");
 };
