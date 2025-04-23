@@ -247,3 +247,26 @@ export interface BlogPost {
   slug: string;
   blog_categories: { data: ICategoryCollection[] };
 }
+export interface FilterItem {
+  [x: string]: any;
+  id: string;
+  name: string;
+  slug: string;
+  state?: string;
+  type?: string;
+}
+
+export type FilterType = "category" | "bank" | "assetType" | "location";
+
+export interface TempFilters {
+  category: FilterItem | null;
+  bank: FilterItem | null;
+  propertyType: FilterItem | null;
+  location: FilterItem | null;
+  price: number[];
+}
+
+export type INSTRUCTIONS_FOLDER_NAME =
+  | "alerts-instructions"
+  | "saved-search-instructions"
+  | "wishlist-instructions";

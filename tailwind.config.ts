@@ -12,6 +12,8 @@ const config: Config = {
         "brand-color": "var(--brand-color)",
         "btn-red": "var(--btn-red)",
         "action-btn": "var(--action-btn-color)",
+        "even-color": "var(--even-bg-color)",
+        "odd-color": "var(--odd-bg-color)",
       },
       container: {
         center: true,

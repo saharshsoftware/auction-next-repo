@@ -11,4 +11,8 @@ export const AUTH_ROUTES: IRouteInterface[] = [
     path: ROUTE_CONSTANTS.REGISTER,
     title: STRING_DATA.REGISTER,
   },
+  {
+    path: ROUTE_CONSTANTS.LOGIN_OTP,
+    title: STRING_DATA.LOGIN_OTP,
+  },
 ];

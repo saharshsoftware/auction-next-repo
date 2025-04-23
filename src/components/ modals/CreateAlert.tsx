@@ -12,8 +12,11 @@ import TextField from "../atoms/TextField";
 import * as Yup from "yup";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
+  doesAssetTypeExistInFilteredAssetType,
   formatPrice,
+  handleFilterAssetTypeChange,
   handleOnSettled,
+  resetFormValues,
   sanitizeReactSelectOptions,
 } from "@/shared/Utilies";
 import RangeSliderCustom from "../atoms/RangeSliderCustom";
@@ -65,6 +68,7 @@ const CreateAlert = (props: ICreateFavList) => {
   const { openModal, hideModal = () => {} } = props;
   const queryClient = useQueryClient();
   const [respError, setRespError] = useState<string>("");
+  const [filteredAssetsType, setFilterAssetsType] = useState<IAssetType[]>([]);
 
   const { data: categoryOptions, isLoading: isLoadingCategory } = useQuery({
     queryKey: [REACT_QUERY.CATEGORY_BOX_COLLECITON_OPTIONS],
@@ -105,6 +109,17 @@ const CreateAlert = (props: ICreateFavList) => {
     },
   });
 
+  function handleFilterAssetTypesDropdownData(
+    slugcategory: string
+  ): IAssetType[] {
+    const result = handleFilterAssetTypeChange(
+      slugcategory,
+      assetsTypeOptions ?? []
+    );
+    setFilterAssetsType(result);
+    return result;
+  }
+
   // Mutations
   const { mutate, isPending } = useMutation({
     mutationFn: createAlertSearch,
@@ -144,6 +159,7 @@ const CreateAlert = (props: ICreateFavList) => {
       bankName: bank?.name ?? "",
       minPrice: price?.[0],
       maxPrice: price?.[1],
+      locationType: location?.type ?? "",
     };
 
     console.log(body);
@@ -182,7 +198,7 @@ const CreateAlert = (props: ICreateFavList) => {
                       </div>
                       <div className={gridElementClass()}>
                         <TextField
-                          label={"Categories"}
+                          label={"Categories23"}
                           name={"category"}
                           hasChildren={true}
                         >
@@ -198,6 +214,20 @@ const CreateAlert = (props: ICreateFavList) => {
                                 onChange={(e) => {
                                   if (e?.label !== STRING_DATA.ALL) {
                                     setFieldValue("category", e);
+                                    const result =
+                                      handleFilterAssetTypesDropdownData(
+                                        e?.slug
+                                      );
+                                    const isFound = result?.length
+                                      ? doesAssetTypeExistInFilteredAssetType(
+                                          result,
+                                          values?.propertyType
+                                        )
+                                      : true;
+
+                                    if (!isFound) {
+                                      setFieldValue("propertyType", null);
+                                    }
                                     return;
                                   }
                                   setFieldValue("category", null);
@@ -217,7 +247,11 @@ const CreateAlert = (props: ICreateFavList) => {
                             {() => (
                               <ReactSelectDropdown
                                 defaultValue={values?.propertyType}
-                                options={assetsTypeOptions ?? []}
+                                options={
+                                  filteredAssetsType?.length
+                                    ? filteredAssetsType
+                                    : assetsTypeOptions ?? []
+                                }
                                 loading={isLoadingAssetsTypeCategory}
                                 placeholder={"Asset type"}
                                 name="asset-type-create-alert"

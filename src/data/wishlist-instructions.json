@@ -1,0 +1,16 @@
+{
+    "steps": [
+      {
+        "id": 1,
+        "text": "Browse through available properties"
+      },
+      {
+        "id": 2,
+        "text": "Click the heart icon on properties you like"
+      },
+      {
+        "id": 3,
+        "text": "Create collections to organize your favorites"
+      }
+    ]
+  }
