@@ -1,21 +1,10 @@
-"use client";
-import { useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHeart, faChevronLeft } from "@fortawesome/free-solid-svg-icons";
-
 import { SectionHeader } from "./SectionHeader";
 import { FavoriteListCard } from "./FavoriteListCard";
-import { PropertyCard } from "./PropertyCard";
-import ActionButton from "./ActionButton";
 import { StepsList } from "./StepsList";
-import useModal from "@/hooks/useModal";
-import CreateFavList from "../ modals/CreateFavList";
-import { useRouter } from "next/navigation";
-import LoginModal from "../ modals/LoginModal";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
-import { IMAGES } from "@/shared/Images";
 import { CarouselWrapper } from "./CarouselWrapper";
 import { getImageCloudfrontUrl, slugify } from "@/shared/Utilies";
+import LoginToCreateCollection from "../ modals/LoginToCreateCollection";
 
 interface Property {
   id: number;
@@ -82,27 +71,6 @@ export function WishlistSection({
     )
   );
 
-  const router = useRouter();
-  const [selectedList, setSelectedList] = useState<FavoriteList | null>(null);
-  const { showModal, openModal, hideModal } = useModal();
-
-  const handleCloseCreateFavList = () => {
-    hideModal();
-    router.refresh();
-  };
-  const renderModalContainer = () => {
-    if (isAuthenticated) {
-      return (
-        <CreateFavList
-          openModal={openModal}
-          hideModal={handleCloseCreateFavList}
-        />
-      );
-    }
-    return (
-      <LoginModal openModal={openModal} hideModal={handleCloseCreateFavList} />
-    );
-  };
   if (favoriteLists.length === 0) {
     return (
       <>
@@ -133,27 +101,15 @@ export function WishlistSection({
             <div className="flex-1 w-full lg:self-center">
               <StepsList steps={instructionsData} />
               <div className="text-center mt-8">
-                <ActionButton
-                  text="Login To Create Collection"
-                  onclick={showModal}
-                  iconLeft={
-                    <FontAwesomeIcon icon={faHeart} className="h-4 w-4" />
-                  }
-                />
+                <LoginToCreateCollection isAuthenticated={isAuthenticated} />
               </div>
             </div>
           </div>
         </div>
-        {openModal ? renderModalContainer() : null}
       </>
     );
   }
 
-  const handleClick = (name: string) => {
-    router.push(
-      `${ROUTE_CONSTANTS.MANAGE_LIST}#${slugify(name?.toLowerCase())}`
-    );
-  };
   return (
     <>
       <SectionHeader
@@ -162,42 +118,18 @@ export function WishlistSection({
         description="Organize your favorite properties into custom collections. Create multiple wishlists to categorize properties based on your preferences and investment goals."
       />
 
-      {!selectedList ? (
-        <>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-            {favoriteLists.map((list) => (
-              <FavoriteListCard
-                key={list.id}
-                listId={list.id}
-                name={list.name}
-                description={list.description}
-                createdAt={list.createdAt}
-                propertyCount={list?.properties?.length || 0}
-                onViewProperties={handleClick}
-              />
-            ))}
-          </div>
-        </>
-      ) : (
-        <>
-          <div className="flex justify-between items-center mb-6">
-            <ActionButton
-              text=" Back to Collections"
-              onclick={() => setSelectedList(null)}
-              iconLeft={
-                <FontAwesomeIcon icon={faChevronLeft} className="h-4 w-4 " />
-              }
-            />
-            <h3 className="text-xl font-medium">{selectedList.name}</h3>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {selectedList.properties.map((property) => (
-              <PropertyCard key={property.id} {...property} />
-            ))}
-          </div>
-        </>
-      )}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+        {favoriteLists.map((list) => (
+          <FavoriteListCard
+            key={list.id}
+            listId={list.id}
+            name={list.name}
+            description={list.description}
+            createdAt={list.createdAt}
+            propertyCount={list?.properties?.length || 0}
+          />
+        ))}
+      </div>
     </>
   );
 }

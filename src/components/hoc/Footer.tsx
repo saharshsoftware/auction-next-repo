@@ -14,7 +14,7 @@ const Footer: React.FC = () => {
     <>
       <footer
         className={`lg:h-auto h-[300px] flex flex-col gap-8 lg:p-10 px-4 py-10 bg-gray-900 text-neutral-content rounded-t transition-opacity duration-500 ${
-          isFooterLoaded ? "opacity-100" : "opacity-0"
+          isFooterLoaded ? "opacity-100 visible" : "opacity-0 invisible"
         }`}
       >
         <div className="grid grid-cols-12 gap-4 ">

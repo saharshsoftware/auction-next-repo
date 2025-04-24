@@ -6,6 +6,8 @@ import ActionButton from "./ActionButton";
 import { useRouter } from "next/navigation";
 import { fetchFavoriteListPropertyClient } from "@/services/favouriteList";
 import { useEffect, useState } from "react";
+import { ROUTE_CONSTANTS } from "@/shared/Routes";
+import { slugify } from "@/shared/Utilies";
 
 interface FavoriteListProps {
   listId: string;
@@ -13,15 +15,9 @@ interface FavoriteListProps {
   description: string;
   createdAt: string;
   propertyCount: number;
-  onViewProperties?: (name: string) => void;
 }
 
-export function FavoriteListCard({
-  listId,
-  name,
-  propertyCount,
-  onViewProperties = () => {},
-}: FavoriteListProps) {
+export function FavoriteListCard({ listId, name }: FavoriteListProps) {
   const router = useRouter();
   const [count, setCount] = useState(0);
 
@@ -53,14 +49,17 @@ export function FavoriteListCard({
     fetchFavoriteListPropertyData(listId);
   }, [listId]);
 
+  const handleClick = () => {
+    router.push(
+      `${ROUTE_CONSTANTS.MANAGE_LIST}#${slugify(name?.toLowerCase())}`
+    );
+  };
+
   return (
     <CustomCard header={header} className="!cursor-default">
       <div className="mt-2 pt-4 border-t text-sm text-gray-500 ">
         <div className="flex justify-between items-center text-sm text-gray-500">
-          <ActionButton
-            text="View Properties"
-            onclick={() => onViewProperties?.(name)}
-          />
+          <ActionButton text="View Properties" onclick={handleClick} />
           <span>
             {count} {count > 1 ? "properties" : "property"}
           </span>

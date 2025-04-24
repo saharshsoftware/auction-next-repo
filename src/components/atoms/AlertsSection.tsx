@@ -1,19 +1,10 @@
-"use client";
-
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBell } from "@fortawesome/free-solid-svg-icons";
 import { AlertCard } from "./AlertCard";
 
 import { SectionHeader } from "./SectionHeader";
-import ActionButton from "./ActionButton";
 import { StepsList } from "./StepsList";
-import useModal from "@/hooks/useModal";
-import CreateAlert from "../ modals/CreateAlert";
-import { useRouter } from "next/navigation";
-import LoginModal from "../ modals/LoginModal";
-import { IMAGES } from "@/shared/Images";
 import { CarouselWrapper } from "./CarouselWrapper";
 import { getImageCloudfrontUrl } from "@/shared/Utilies";
+import LoginToCreateAlert from "../ modals/LoginToCreateAlert";
 
 interface Alert {
   id: string;
@@ -69,25 +60,6 @@ export function AlertsSection({
     )
   );
 
-  const { showModal, openModal, hideModal } = useModal();
-  const router = useRouter();
-
-  const handleCloseCreateAlert = () => {
-    hideModal();
-    router.refresh();
-  };
-
-  const renderModalContainer = () => {
-    if (isAuthenticated) {
-      return (
-        <CreateAlert openModal={openModal} hideModal={handleCloseCreateAlert} />
-      );
-    }
-    return (
-      <LoginModal openModal={openModal} hideModal={handleCloseCreateAlert} />
-    );
-  };
-
   if (alerts.length === 0) {
     return (
       <>
@@ -102,13 +74,7 @@ export function AlertsSection({
             <div className="flex-1 w-full lg:self-center">
               <StepsList steps={instructionsData} />
               <div className="text-center mt-8">
-                <ActionButton
-                  text="Login To Create Alert"
-                  onclick={showModal}
-                  iconLeft={
-                    <FontAwesomeIcon icon={faBell} className="h-4 w-4 " />
-                  }
-                />
+                <LoginToCreateAlert isAuthenticated={isAuthenticated} />
               </div>
             </div>
             <div className="flex-1 lg:self-center">
@@ -129,7 +95,6 @@ export function AlertsSection({
             </div>
           </div>
         </div>
-        {openModal ? renderModalContainer() : null}
       </>
     );
   }

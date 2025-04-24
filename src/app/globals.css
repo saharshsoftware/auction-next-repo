@@ -240,9 +240,7 @@ blockquote {
   @apply w-full h-full;
 }
 
-.section-carousel-img-container img {
-  @apply w-full h-full object-cover;
-}
+
 
 .custom-h2-class {
   @apply text-xl font-bold

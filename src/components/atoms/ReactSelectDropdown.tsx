@@ -78,6 +78,7 @@ const ReactSelectDropdown: React.FC<IReactSelectDropdown> = (props) => {
           // className={`custom-select-dropdown ${customClass ?? ""}`}
           className="react-select-container"
           id={`react-select-${name ?? ""}`}
+          aria-label={name}
           options={options}
           isLoading={loading}
           isMulti={isMulti}

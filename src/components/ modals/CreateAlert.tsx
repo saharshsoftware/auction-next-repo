@@ -1,3 +1,4 @@
+"use client";
 import React, { useState } from "react";
 import CustomModal from "../atoms/CustomModal";
 import ActionButton from "../atoms/ActionButton";
