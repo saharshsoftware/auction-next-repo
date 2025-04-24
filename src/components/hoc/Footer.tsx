@@ -1,22 +1,24 @@
-"use client";
+// "use client";
 import React, { useEffect, useState } from "react";
 import { STRING_DATA } from "../../shared/Constants";
 import Link from "next/link";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
 
 const Footer: React.FC = () => {
-  const [isFooterLoaded, setIsFooterLoaded] = useState(false);
+  // const [isFooterLoaded, setIsFooterLoaded] = useState(false);
 
-  useEffect(() => {
-    setIsFooterLoaded(true);
-  }, []);
+  // useEffect(() => {
+  //   setIsFooterLoaded(true);
+  // }, []);
   return (
     <>
       <footer
-        className={`lg:h-auto h-[300px] flex flex-col gap-8 lg:p-10 px-4 py-10 bg-gray-900 text-neutral-content rounded-t transition-opacity duration-500 ${
-          isFooterLoaded ? "opacity-100 visible" : "opacity-0 invisible"
-        }`}
+        className={`lg:h-auto h-[300px] flex flex-col gap-8 lg:p-10 px-4 py-10 bg-gray-900 text-neutral-content rounded-t transition-opacity duration-500 "opacity-100 visible"
+          `}
       >
+        {/* ${
+       isFooterLoaded ? "opacity-100 visible" : "opacity-0 invisible"
+     } */}
         <div className="grid grid-cols-12 gap-4 ">
           {" "}
           <p

@@ -11,7 +11,7 @@ export const fetchBlogs = async () => {
     // const URL = "http://localhost:3000" + API_ENPOINTS.BLOGS + `?populate=*`;
 
     const response = await fetch(URL, {
-      next: { revalidate: FILTER_API_REVALIDATE_TIME },
+      cache: "no-cache",
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -41,7 +41,7 @@ export const fetchBlogBySlug = async (slug: string) => {
     //   `?populate=*&filters[slug]=${slug}`;
 
     const response = await fetch(URL, {
-      next: { revalidate: FILTER_API_REVALIDATE_TIME },
+      cache: "no-cache",
       method: "GET",
       headers: {
         "Content-Type": "application/json",

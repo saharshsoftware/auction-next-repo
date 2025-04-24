@@ -113,5 +113,8 @@ const nextConfig = {
       },
     ];
   },
+  experimental: {
+    optimizeCss: true, // Enables CSS optimization
+  },
 };
 export default nextConfig;

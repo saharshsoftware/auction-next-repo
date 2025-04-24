@@ -119,13 +119,26 @@ export default async function Home() {
   const cookieStore = cookies();
   const token = cookieStore.get(COOKIES.TOKEN_KEY)?.value ?? "";
   const isAuthenticated = !!token;
-  const carouselResponse = await getCarouselData();
 
-  const assetsTypeOptions = (await getAssetType()) as unknown as IAssetType[];
-  const categoryOptions =
-    (await getCategoryBoxCollection()) as unknown as ICategoryCollection[];
-  const bankOptions = (await fetchBanks()) as unknown as IBanks[];
-  const locationOptions = (await fetchLocation()) as unknown as ILocations[];
+  const [
+    assetsTypeOptions,
+    categoryOptions,
+    bankOptions,
+    locationOptions,
+    carouselResponse,
+  ] = (await Promise.all([
+    getAssetType(),
+    getCategoryBoxCollection(),
+    fetchBanks(),
+    fetchLocation(),
+    getCarouselData(),
+  ])) as unknown as [
+    IAssetType[],
+    ICategoryCollection[],
+    IBanks[],
+    ILocations[],
+    any[]
+  ];
 
   const renderHomeCollection = () => {
     if (carouselResponse) {
