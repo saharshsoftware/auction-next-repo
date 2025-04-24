@@ -238,6 +238,18 @@ export enum Type {
   SingleChoice = "single-choice",
 }
 
+export interface BlogPost {
+  title: string;
+  id: string;
+  slug: string;
+  description: string;
+  image: string;
+  slug: string;
+  publishedAt: Date;
+  blog_categories: { data: ICategoryCollection[] };
+  reading_time: string;
+  no_of_likes: number;
+}
 export interface FilterItem {
   [x: string]: any;
   id: string;

@@ -7,16 +7,11 @@ const ReactSelectDropdown: React.FC<IReactSelectDropdown> = (props) => {
   const {
     options,
     loading,
-    noDataRenderer,
-    itemRenderer,
-    customClass,
     name = "",
     onChange = () => {},
     placeholder,
     defaultValue,
-    clearRenderer,
     clearable = false,
-    menuIsOpen = false,
     isMulti = false,
     hidePlaceholder = false,
     maxMultiSelectOptions = 5,
@@ -70,12 +65,10 @@ const ReactSelectDropdown: React.FC<IReactSelectDropdown> = (props) => {
   return (
     <>
       <div
-        className="w-full text-left "
         id={`container-react-select-${name ?? ""}`}
+        className="w-full text-left"
       >
         <Select
-          // multi={false}
-          // className={`custom-select-dropdown ${customClass ?? ""}`}
           className="react-select-container"
           id={`react-select-${name ?? ""}`}
           aria-label={name}
@@ -83,22 +76,13 @@ const ReactSelectDropdown: React.FC<IReactSelectDropdown> = (props) => {
           isLoading={loading}
           isMulti={isMulti}
           isDisabled={loading}
-          // searchBy="name"
           name={name}
-          // labelField="name"
-          // valueField="id"
           isSearchable={true}
           isClearable={clearable}
-          // defaultValue={defaultValue}
           value={defaultValue ?? null}
-          // dropdownHandle={false}
-          // menuIsOpen={menuIsOpen}
           onChange={handleChange}
           placeholder={placeholder}
-          // noDataRenderer={noDataRenderer}
-          // itemRenderer={itemRenderer}
-          // clearRenderer={clearRenderer}
-          classNamePrefix={`${"react-select"}`}
+          classNamePrefix="react-select"
         />
       </div>
     </>

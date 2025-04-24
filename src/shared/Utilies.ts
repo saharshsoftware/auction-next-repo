@@ -11,6 +11,7 @@ import {
 import { AxiosError } from "axios";
 import { getEmptyAllObject, STORAGE_KEYS, STRING_DATA } from "./Constants";
 import { ROUTE_CONSTANTS } from "./Routes";
+import MarkdownIt from "markdown-it";
 
 export const getDataFromLocalStorage = () => {
   const storedData = localStorage.getItem(STORE_KEY);
@@ -664,6 +665,13 @@ export const sanitizeCategoryTypeTitle = (
     .join(" ");
 };
 
+export const renderMarkdown = (markdown: any) => {
+  const md = new MarkdownIt({
+    html: true,
+    linkify: true,
+  });
+  return md.render(markdown);
+};
 export const getCityNamesCommaSeparated = (cities: any[]): string => {
   return cities.map((city) => city.name).join(", ");
 };
@@ -680,3 +688,22 @@ export const getImageCloudfrontUrl = (
 
   return actualImageUrl;
 };
+
+export function stripHtmlTags(html: string): string {
+  if (!html) return "";
+
+  // Create a temporary DOM element to safely extract text
+  const tempElement =
+    typeof window !== "undefined" ? document.createElement("div") : null;
+
+  if (tempElement) {
+    tempElement.innerHTML = html;
+    return tempElement.textContent || tempElement.innerText || "";
+  }
+
+  // Fallback (server-side)
+  return html
+    .replace(/<[^>]*>/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
