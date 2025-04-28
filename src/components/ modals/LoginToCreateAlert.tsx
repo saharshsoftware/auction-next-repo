@@ -35,7 +35,7 @@ function LoginToCreateAlert({
   return (
     <>
       <ActionButton
-        text="Login To Create Alert"
+        text={isAuthenticated ? "Create Alert" : "Login To Create Alert"}
         onclick={showModal}
         iconLeft={<FontAwesomeIcon icon={faBell} className="h-4 w-4 " />}
       />

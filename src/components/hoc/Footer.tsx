@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { STRING_DATA } from "../../shared/Constants";
 import Link from "next/link";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
+import DownloadStoreButton from "../molecules/DownloadStoreButton";
 
 const Footer: React.FC = () => {
   // const [isFooterLoaded, setIsFooterLoaded] = useState(false);
@@ -13,14 +14,20 @@ const Footer: React.FC = () => {
   return (
     <>
       <footer
-        className={`lg:h-auto h-[300px] flex flex-col gap-8 lg:p-10 px-4 py-10 bg-gray-900 text-neutral-content rounded-t transition-opacity duration-500 "opacity-100 visible"
+        className={`lg:h-auto  flex flex-col gap-8 lg:p-10 px-4 py-10 bg-gray-900 text-neutral-content rounded-t transition-opacity duration-500 "opacity-100 visible"
           `}
       >
         {/* ${
        isFooterLoaded ? "opacity-100 visible" : "opacity-0 invisible"
      } */}
-        <div className="grid grid-cols-12 gap-4 ">
+        <div className="grid grid-cols-12 gap-2">
           {" "}
+          <div className="lg:col-span-4 col-span-full  space-y-4 flex flex-col h-full lg:items-start mb-2">
+            <h3 className="text-lg font-semibold lg:text-left text-center">
+              Download e-auctiondekho app
+            </h3>
+            <DownloadStoreButton />
+          </div>
           <p
             className={`text-sm lg:col-span-4 lg:block  hidden lg:h-auto min-h-auto`}
           >
@@ -29,7 +36,7 @@ const Footer: React.FC = () => {
             content under fair use. If you are a copyright holder with concerns,
             please contact us to resolve any issues.
           </p>
-          <div className="lg:col-span-8 col-span-full  space-y-4 flex flex-col h-full lg:items-end items-center">
+          <div className="lg:col-span-4 col-span-full  space-y-4 flex flex-col h-full lg:items-end items-center">
             <nav className="flex items-center justify-center gap-4 text-sm ">
               <Link
                 href={ROUTE_CONSTANTS.CITIES}

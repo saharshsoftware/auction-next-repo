@@ -38,7 +38,9 @@ function LoginToCreateCollection({
   return (
     <>
       <ActionButton
-        text="Login To Create Collection"
+        text={
+          isAuthenticated ? "Create Collection" : "Login To Create Collection"
+        }
         onclick={showModal}
         iconLeft={<FontAwesomeIcon icon={faBell} className="h-4 w-4 " />}
       />
