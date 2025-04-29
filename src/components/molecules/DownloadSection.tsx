@@ -12,8 +12,13 @@ export default function DownloadBanner() {
         <div className="flex flex-col md:flex-row items-center justify-center ">
           <div className="max-w-xl mb-8 md:mb-0">
             <h2 className="text-3xl font-bold text-center mb-4">
-              Download e-auctiondekho app
+              Download{" "}
+              <span className="inline-block whitespace-nowrap break-keep">
+                e-auctiondekho
+              </span>{" "}
+              app
             </h2>
+
             <p className=" mb-6 text-center">
               Get instant access to thousands of bank auctions right from your
               phone. Set alerts, save searches, and never miss a great deal
