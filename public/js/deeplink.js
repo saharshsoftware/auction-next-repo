@@ -3,7 +3,10 @@
   const CONFIG = {
     APP_SCHEME: "com.eauctiondekho://",
     ANDROID_PACKAGE: "com.eauctiondekho",
-    IOS_APP_STORE_ID: "", // Add your iOS app store ID
+    PLAYSTORE_URL: "https://play.google.com/store/apps/details?id=com.eauctiondekho",
+    APPSTORE_URL:
+      "https://apps.apple.com/us/app/e-auctiondekho/id6742924249",
+    IOS_APP_STORE_ID: "6742924249", // Add your iOS app store ID
     MODAL_TIMEOUT: 1000, // Reduced timeout for better UX
     STORAGE_KEYS: {
       PREFER_WEB: "preferWeb",
@@ -27,16 +30,11 @@
   // Utility: Get appropriate app store link with tracking parameters
   function getAppStoreLink() {
     const userAgent = navigator.userAgent || navigator.vendor || window.opera;
-    const trackingParams = `?utm_source=web&utm_medium=deeplink&utm_campaign=app_install`;
 
     if (/android/i.test(userAgent)) {
-      return CONFIG.ANDROID_PACKAGE
-        ? `https://play.google.com/store/apps/details?id=${CONFIG.ANDROID_PACKAGE}${trackingParams}`
-        : null;
+      return CONFIG.PLAYSTORE_URL;
     } else if (/iphone|ipad|ipod/i.test(userAgent)) {
-      return CONFIG.IOS_APP_STORE_ID
-        ? `https://apps.apple.com/app/id${CONFIG.IOS_APP_STORE_ID}${trackingParams}`
-        : null;
+      return CONFIG.APPSTORE_URL;
     }
     return null;
   }

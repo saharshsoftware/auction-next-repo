@@ -29,6 +29,7 @@ import { AuctionSmarterSection } from "@/components/atoms/AuctionSmarterSection"
 import PartnerAndHelpSection from "@/components/atoms/PartnerAndHelpSection";
 import ForceRefreshOnMount from "@/components/atoms/ForceRefreshOnMount";
 import LandingPageSection from "@/components/molecules/LandingPageSections";
+import DownloadBanner from "@/components/molecules/DownloadSection";
 
 export const revalidate = 0;
 export const metadata: Metadata = {
@@ -205,6 +206,7 @@ export default async function Home() {
           />
         </section>
 
+        <DownloadBanner />
         <LandingPageSection
           isAuthenticated={isAuthenticated}
           locationOptions={locationOptions}
