@@ -1,9 +1,13 @@
+"use client";
 import { SavedSearchCard } from "./SavedSearchCard";
 import { SectionHeader } from "./SectionHeader";
 import { StepsList } from "./StepsList";
 import { IMAGES } from "@/shared/Images";
 import { CarouselWrapper } from "./CarouselWrapper";
 import { getImageCloudfrontUrl } from "@/shared/Utilies";
+import { useDeviceType } from "@/hooks/useDeviceType";
+import { IMAGES_NAME } from "@/shared/Constants";
+import { useInstructionImages } from "@/hooks/useInstructionImages";
 
 interface SavedSearch {
   id: number;
@@ -36,26 +40,18 @@ const instructionsData = [
   },
 ];
 
-const IMAGES_NAME = {
-  ONE: "1",
-  TWO: "2",
-  THREE: "3",
-  FOUR: "4",
-};
-
 export function SavedSearchesSection({
   savedSearches,
 }: SavedSearchesSectionProps) {
-  const instructionImages = [
-    IMAGES_NAME.ONE,
-    IMAGES_NAME.TWO,
-    IMAGES_NAME.THREE,
-    IMAGES_NAME.FOUR,
-  ].map((item) =>
-    getImageCloudfrontUrl(
-      typeof item === "string" ? item : item,
-      "saved-search-instructions"
-    )
+  const device = useDeviceType();
+  const instImage =
+    device === "mobile" || device === "tablet"
+      ? [IMAGES_NAME.ONE, IMAGES_NAME.TWO, IMAGES_NAME.THREE]
+      : [IMAGES_NAME.ONE, IMAGES_NAME.TWO, IMAGES_NAME.THREE, IMAGES_NAME.FOUR];
+
+  const instructionImages = useInstructionImages(
+    instImage,
+    "saved-search-instructions"
   );
 
   if (savedSearches.length === 0) {

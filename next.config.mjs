@@ -17,7 +17,13 @@ const nextConfig = {
         protocol: "https",
         hostname: "media.giphy.com",
         port: "",
-      }
+      },
+      {
+        protocol: "https",
+        hostname: "auction-dekho.s3.ap-south-1.amazonaws.com",
+        port: "",
+      },
+
     ],
   },
   async redirects() {

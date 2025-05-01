@@ -12,6 +12,7 @@ import { AxiosError } from "axios";
 import { getEmptyAllObject, STORAGE_KEYS, STRING_DATA } from "./Constants";
 import { ROUTE_CONSTANTS } from "./Routes";
 import MarkdownIt from "markdown-it";
+import { CONFIG } from "@/utilies/Config";
 
 export const getDataFromLocalStorage = () => {
   const storedData = localStorage.getItem(STORE_KEY);
@@ -681,10 +682,14 @@ export const slugify = (text: string) =>
 
 export const getImageCloudfrontUrl = (
   imageUrl: string,
-  sectionRef: INSTRUCTIONS_FOLDER_NAME
+  sectionRef: INSTRUCTIONS_FOLDER_NAME,
+  parentFolderName: string = "instructions"
 ) => {
-  const cloudfrontBase = process.env.NEXT_PUBLIC_IMAGE_CLOUDFRONT || "";
-  const actualImageUrl = `${cloudfrontBase}/instructions/${sectionRef}/${imageUrl}.png`;
+  const cloudfrontBase =
+    parentFolderName === "instructions"
+      ? process.env.NEXT_PUBLIC_IMAGE_CLOUDFRONT
+      : CONFIG.AUCTION_DEKHO_S3;
+  const actualImageUrl = `${cloudfrontBase}/${parentFolderName}/${sectionRef}/${imageUrl}.png`;
 
   return actualImageUrl;
 };
