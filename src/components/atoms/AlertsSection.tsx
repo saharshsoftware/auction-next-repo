@@ -1,3 +1,4 @@
+"use client";
 import { AlertCard } from "./AlertCard";
 
 import { SectionHeader } from "./SectionHeader";
@@ -5,6 +6,9 @@ import { StepsList } from "./StepsList";
 import { CarouselWrapper } from "./CarouselWrapper";
 import { getImageCloudfrontUrl } from "@/shared/Utilies";
 import LoginToCreateAlert from "../ modals/LoginToCreateAlert";
+import { useDeviceType } from "@/hooks/useDeviceType";
+import { IMAGES_NAME } from "@/shared/Constants";
+import { useInstructionImages } from "@/hooks/useInstructionImages";
 
 interface Alert {
   id: string;
@@ -39,25 +43,20 @@ const instructionsData = [
   },
 ];
 
-const IMAGES_NAME = {
-  FIVE: "5",
-  SIX: "6",
-  SEVEN: "7",
-};
-
 export function AlertsSection({
   alerts,
   isAuthenticated = false,
 }: AlertsSectionProps) {
-  const instructionImages = [
-    IMAGES_NAME.FIVE,
-    IMAGES_NAME.SIX,
-    IMAGES_NAME.SEVEN,
-  ].map((item) =>
-    getImageCloudfrontUrl(
-      typeof item === "string" ? item : item,
-      "alerts-instructions"
-    )
+  const device = useDeviceType();
+
+  const instImage =
+    device === "mobile" || device === "tablet"
+      ? [IMAGES_NAME.FOUR, IMAGES_NAME.FIVE, IMAGES_NAME.SIX]
+      : [IMAGES_NAME.FIVE, IMAGES_NAME.SIX, IMAGES_NAME.SEVEN];
+
+  const instructionImages = useInstructionImages(
+    instImage,
+    "alerts-instructions"
   );
 
   if (alerts.length === 0) {

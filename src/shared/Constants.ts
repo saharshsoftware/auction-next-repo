@@ -1177,3 +1177,16 @@ export const YEAR_OF_EXPERIENCE = [
   { id: 5, label: "4-5 Years", value: "4-5 Years" },
   { id: 6, label: "5 + Years", value: "5 + Years" },
 ];
+
+export const IMAGES_NAME = {
+  ONE: "1",
+  TWO: "2",
+  THREE: "3",
+  FOUR: "4",
+  FIVE: "5",
+  SIX: "6",
+  SEVEN: "7",
+  EIGHT: "8",
+  NINE: "9",
+  TEN: "10",
+};

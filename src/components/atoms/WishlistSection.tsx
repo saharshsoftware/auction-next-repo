@@ -1,3 +1,4 @@
+"use client";
 import { SectionHeader } from "./SectionHeader";
 import { FavoriteListCard } from "./FavoriteListCard";
 import { StepsList } from "./StepsList";
@@ -5,6 +6,9 @@ import { ROUTE_CONSTANTS } from "@/shared/Routes";
 import { CarouselWrapper } from "./CarouselWrapper";
 import { getImageCloudfrontUrl, slugify } from "@/shared/Utilies";
 import LoginToCreateCollection from "../ modals/LoginToCreateCollection";
+import { useDeviceType } from "@/hooks/useDeviceType";
+import { IMAGES_NAME } from "@/shared/Constants";
+import { useInstructionImages } from "@/hooks/useInstructionImages";
 
 interface Property {
   id: number;
@@ -50,25 +54,19 @@ const instructionsData = [
   },
 ];
 
-const IMAGES_NAME = {
-  EIGHT: "8",
-  NINE: "9",
-  TEN: "10",
-};
-
 export function WishlistSection({
   favoriteLists,
   isAuthenticated = false,
 }: WishlistSectionProps) {
-  const instructionImages = [
-    IMAGES_NAME.EIGHT,
-    IMAGES_NAME.NINE,
-    IMAGES_NAME.TEN,
-  ].map((item) =>
-    getImageCloudfrontUrl(
-      typeof item === "string" ? item : item,
-      "wishlist-instructions"
-    )
+  const device = useDeviceType();
+  const instImage =
+    device === "mobile" || device === "tablet"
+      ? [IMAGES_NAME.SEVEN, IMAGES_NAME.EIGHT, IMAGES_NAME.NINE]
+      : [IMAGES_NAME.EIGHT, IMAGES_NAME.NINE, IMAGES_NAME.TEN];
+
+  const instructionImages = useInstructionImages(
+    instImage,
+    "wishlist-instructions"
   );
 
   if (favoriteLists.length === 0) {
