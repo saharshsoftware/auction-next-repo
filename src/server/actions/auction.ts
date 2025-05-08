@@ -442,6 +442,7 @@ export const fetchAlertsServer = async () => {
     return data;
   } catch (e) {
     console.log(e, "auctionDetail error collection");
+    return []
   }
 };
 
@@ -460,11 +461,16 @@ export const fetchSavedSearchServer = async () => {
         Authorization: token ? `Bearer ${token}` : "",
       },
     });
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch saved searches");
+    }
     const data = await response.json();
     console.log(data, "responsefetch");
     return data;
   } catch (e) {
     console.log(e, "auctionDetail error collection");
+    return []
   }
 };
 
@@ -481,9 +487,13 @@ export const fetchFavoriteListServer = async () => {
         Authorization: token ? `Bearer ${token}` : "",
       },
     });
+    if (!response.ok) {
+      throw new Error("Failed to faviourite list");
+    }
     const data = await response.json();
     return data;
   } catch (e) {
     console.log(e, "fetchfav error");
+    return []
   }
 };
