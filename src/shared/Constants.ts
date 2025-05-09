@@ -1162,6 +1162,8 @@ export const STORAGE_KEYS = {
   LAST_SURVEY_ID: "last_survey_id",
   LAST_PAGE_VIEWS_UPDATE: "last_page_views_update",
   SURVEY_TRIGGER_TIME: "survey_trigger_time",
+  SHOW_LOGIN_FLAG: "showLoginFlag",
+  AUCTION_VISIT_IDS: "auctionVisitIds",
 };
 
 export const SESSIONS_STORAGE_KEYS = {

@@ -29,12 +29,15 @@ import Image from "next/image";
 import { useAuctionDetailsStore } from "@/zustandStore/auctionDetails";
 import BlurredFieldWrapper from "../atoms/BlurredFieldWrapper";
 import { useRouter } from "next/navigation";
+import { loginLogic } from "@/utilies/LoginHelper";
+import { useLoginFormTrigger } from "@/hooks/useLoginTrigger";
+import LoginModal from "../ modals/LoginModal";
 
 const auctionLabelClass = () => "text-sm text-gray-400 font-bold";
 
-const AuctionDetail = (props: { auctionDetail: IAuction }) => {
-  const { auctionDetail } = props;
-
+const AuctionDetail = (props: { auctionDetail: IAuction, slug: string }) => {
+  const { auctionDetail, slug } = props;
+  const showLogin = useLoginFormTrigger();
   const router = useRouter();
   const noticeImageUrl = auctionDetail?.noticeImageURL
     ? `${process.env.NEXT_PUBLIC_IMAGE_CLOUDFRONT}/${auctionDetail?.noticeImageURL}`
@@ -46,12 +49,31 @@ const AuctionDetail = (props: { auctionDetail: IAuction }) => {
   useEffect(() => {
     setToken(tokenFromCookie ? String(tokenFromCookie) : null);
   }, [tokenFromCookie]);
+
+  useEffect(() => {
+    if (!token) {
+      loginLogic.markAuctionDetailVisited(slug); // Pass unique ID
+    }
+  }, [slug, token]);
+
   const { showModal, openModal, hideModal } = useModal();
   const {
     showModal: showImageModal,
     openModal: openImageModal,
     hideModal: hideImageModal,
   } = useModal();
+
+  const {
+    showModal: showLoginModal,
+    hideModal: hideLoginModal,
+    openModal: openLoginModal,
+  } = useModal()
+
+  useEffect(() => {
+    if (showLogin) {
+      showLoginModal();
+    }
+  }, [showLogin]);
 
   const userData = getCookie(COOKIES.AUCTION_USER_KEY)
     ? JSON.parse(getCookie(COOKIES.AUCTION_USER_KEY) ?? "")
@@ -154,6 +176,7 @@ const AuctionDetail = (props: { auctionDetail: IAuction }) => {
           auctionDetail={auctionDetail}
         />
       ) : null}
+
       {openImageModal ? (
         <FullScreenImageModal
           openModal={openImageModal}
@@ -161,6 +184,11 @@ const AuctionDetail = (props: { auctionDetail: IAuction }) => {
           imageUrl={noticeImageUrl}
         />
       ) : null}
+
+      {openLoginModal ? (
+        <LoginModal openModal={openLoginModal} hideModal={hideLoginModal} />
+      ) : null
+      }
       <div className="flex flex-col gap-4 w-full">
         {/* {JSON.stringify(auctionDetail)} */}
         <div className="flex justify-between items-center">
