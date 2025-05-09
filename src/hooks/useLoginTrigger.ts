@@ -10,7 +10,6 @@ export function useLoginFormTrigger() {
 
     if (shouldShow) {
       setShowLogin(true);
-      loginLogic.resetLoginFlag();
     }
   }, []);
 

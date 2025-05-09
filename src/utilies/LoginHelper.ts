@@ -11,7 +11,7 @@ export const loginLogic = {
       if (!visited.includes(auctionId)) {
         visited.push(auctionId);
 
-        if (visited.length > MAX_VISITS) {
+        if (visited.length >= MAX_VISITS) {
           localStorage.setItem(STORAGE_KEYS.SHOW_LOGIN_FLAG, 'true');
           localStorage.removeItem(STORAGE_KEYS.AUCTION_VISIT_IDS);
         } else {

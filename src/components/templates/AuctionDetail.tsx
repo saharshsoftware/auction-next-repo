@@ -37,7 +37,7 @@ const auctionLabelClass = () => "text-sm text-gray-400 font-bold";
 
 const AuctionDetail = (props: { auctionDetail: IAuction, slug: string }) => {
   const { auctionDetail, slug } = props;
-  const showLogin = useLoginFormTrigger();
+  const showLogin = loginLogic.getShouldShowLogin()
   const router = useRouter();
   const noticeImageUrl = auctionDetail?.noticeImageURL
     ? `${process.env.NEXT_PUBLIC_IMAGE_CLOUDFRONT}/${auctionDetail?.noticeImageURL}`
@@ -62,18 +62,6 @@ const AuctionDetail = (props: { auctionDetail: IAuction, slug: string }) => {
     openModal: openImageModal,
     hideModal: hideImageModal,
   } = useModal();
-
-  const {
-    showModal: showLoginModal,
-    hideModal: hideLoginModal,
-    openModal: openLoginModal,
-  } = useModal()
-
-  useEffect(() => {
-    if (showLogin) {
-      showLoginModal();
-    }
-  }, [showLogin]);
 
   const userData = getCookie(COOKIES.AUCTION_USER_KEY)
     ? JSON.parse(getCookie(COOKIES.AUCTION_USER_KEY) ?? "")
@@ -103,7 +91,7 @@ const AuctionDetail = (props: { auctionDetail: IAuction, slug: string }) => {
   };
 
   const noticeLinkRenderer = () => {
-    if (token === null) {
+    if (token === null && showLogin) {
       return (
         <button
           onClick={showModal}
@@ -113,29 +101,28 @@ const AuctionDetail = (props: { auctionDetail: IAuction, slug: string }) => {
         </button>
       );
     }
-    if (token) {
-      return (
-        // <Link
-        //   // href={`${process.env.NEXT_PUBLIC_IMAGE_CLOUDFRONT}/${auctionDetail?.noticeImageURL}`}
-        //   target="_blank"
-        //   className="flex items-center gap-2 link link-primary"
-        //   onClick={showImageModal}
-        // >
-        //   <span>Notice link</span>
-        //   <NewTabSvg />
-        // </Link>
-        <>
-          <div
-            className="flex items-center gap-2 link link-primary"
-            onClick={showImageModal}
-          >
-            <>
-              <span>Notice link</span>
-              <NewTabSvg />
-            </>
-          </div>
-          <div className="relative">
-            {/* <Image
+    return (
+      // <Link
+      //   // href={`${process.env.NEXT_PUBLIC_IMAGE_CLOUDFRONT}/${auctionDetail?.noticeImageURL}`}
+      //   target="_blank"
+      //   className="flex items-center gap-2 link link-primary"
+      //   onClick={showImageModal}
+      // >
+      //   <span>Notice link</span>
+      //   <NewTabSvg />
+      // </Link>
+      <>
+        <div
+          className="flex items-center gap-2 link link-primary"
+          onClick={showImageModal}
+        >
+          <>
+            <span>Notice link</span>
+            <NewTabSvg />
+          </>
+        </div>
+        <div className="relative">
+          {/* <Image
               src={noticeImageUrl}
               width={120}
               height={60}
@@ -145,18 +132,18 @@ const AuctionDetail = (props: { auctionDetail: IAuction, slug: string }) => {
               }}
             /> */}
 
-            <img
-              src={noticeImageUrl}
-              alt={"no-data"}
-              className={"w-24  h-auto bg-contain hidden"}
-              onError={() => {
-                setHasError(true);
-              }}
-            />
-          </div>
-        </>
-      );
-    }
+          <img
+            src={noticeImageUrl}
+            alt={"no-data"}
+            className={"w-24  h-auto bg-contain hidden"}
+            onError={() => {
+              setHasError(true);
+            }}
+          />
+        </div>
+      </>
+    );
+
   };
 
   const handleBackClick = () => {
@@ -185,10 +172,7 @@ const AuctionDetail = (props: { auctionDetail: IAuction, slug: string }) => {
         />
       ) : null}
 
-      {openLoginModal ? (
-        <LoginModal openModal={openLoginModal} hideModal={hideLoginModal} />
-      ) : null
-      }
+
       <div className="flex flex-col gap-4 w-full">
         {/* {JSON.stringify(auctionDetail)} */}
         <div className="flex justify-between items-center">
@@ -222,7 +206,7 @@ const AuctionDetail = (props: { auctionDetail: IAuction, slug: string }) => {
         </div>
 
         {auctionDetail?.description && (
-          <BlurredFieldWrapper isBlurred={token === null}>
+          <BlurredFieldWrapper isBlurred={token === null && showLogin}>
             <p className="flex-1 ">{auctionDetail?.description}</p>
           </BlurredFieldWrapper>
         )}
@@ -254,7 +238,7 @@ const AuctionDetail = (props: { auctionDetail: IAuction, slug: string }) => {
             value={auctionDetail?.borrowerName}
           />
           <ShowLabelValue
-            isBlurred={token === null}
+            isBlurred={token === null && showLogin}
             heading={STRING_DATA.CONTACT}
             value={auctionDetail?.contact}
           />
