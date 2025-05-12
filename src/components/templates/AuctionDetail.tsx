@@ -29,12 +29,15 @@ import Image from "next/image";
 import { useAuctionDetailsStore } from "@/zustandStore/auctionDetails";
 import BlurredFieldWrapper from "../atoms/BlurredFieldWrapper";
 import { useRouter } from "next/navigation";
+import { loginLogic } from "@/utilies/LoginHelper";
+import { useLoginFormTrigger } from "@/hooks/useLoginTrigger";
+import LoginModal from "../ modals/LoginModal";
 
 const auctionLabelClass = () => "text-sm text-gray-400 font-bold";
 
-const AuctionDetail = (props: { auctionDetail: IAuction }) => {
-  const { auctionDetail } = props;
-
+const AuctionDetail = (props: { auctionDetail: IAuction, slug: string }) => {
+  const { auctionDetail, slug } = props;
+  const showLogin = loginLogic.getShouldShowLogin()
   const router = useRouter();
   const noticeImageUrl = auctionDetail?.noticeImageURL
     ? `${process.env.NEXT_PUBLIC_IMAGE_CLOUDFRONT}/${auctionDetail?.noticeImageURL}`
@@ -46,6 +49,13 @@ const AuctionDetail = (props: { auctionDetail: IAuction }) => {
   useEffect(() => {
     setToken(tokenFromCookie ? String(tokenFromCookie) : null);
   }, [tokenFromCookie]);
+
+  useEffect(() => {
+    if (!token) {
+      loginLogic.markAuctionDetailVisited(slug); // Pass unique ID
+    }
+  }, [slug, token]);
+
   const { showModal, openModal, hideModal } = useModal();
   const {
     showModal: showImageModal,
@@ -81,7 +91,7 @@ const AuctionDetail = (props: { auctionDetail: IAuction }) => {
   };
 
   const noticeLinkRenderer = () => {
-    if (token === null) {
+    if (token === null && showLogin) {
       return (
         <button
           onClick={showModal}
@@ -91,29 +101,28 @@ const AuctionDetail = (props: { auctionDetail: IAuction }) => {
         </button>
       );
     }
-    if (token) {
-      return (
-        // <Link
-        //   // href={`${process.env.NEXT_PUBLIC_IMAGE_CLOUDFRONT}/${auctionDetail?.noticeImageURL}`}
-        //   target="_blank"
-        //   className="flex items-center gap-2 link link-primary"
-        //   onClick={showImageModal}
-        // >
-        //   <span>Notice link</span>
-        //   <NewTabSvg />
-        // </Link>
-        <>
-          <div
-            className="flex items-center gap-2 link link-primary"
-            onClick={showImageModal}
-          >
-            <>
-              <span>Notice link</span>
-              <NewTabSvg />
-            </>
-          </div>
-          <div className="relative">
-            {/* <Image
+    return (
+      // <Link
+      //   // href={`${process.env.NEXT_PUBLIC_IMAGE_CLOUDFRONT}/${auctionDetail?.noticeImageURL}`}
+      //   target="_blank"
+      //   className="flex items-center gap-2 link link-primary"
+      //   onClick={showImageModal}
+      // >
+      //   <span>Notice link</span>
+      //   <NewTabSvg />
+      // </Link>
+      <>
+        <div
+          className="flex items-center gap-2 link link-primary"
+          onClick={showImageModal}
+        >
+          <>
+            <span>Notice link</span>
+            <NewTabSvg />
+          </>
+        </div>
+        <div className="relative">
+          {/* <Image
               src={noticeImageUrl}
               width={120}
               height={60}
@@ -123,18 +132,18 @@ const AuctionDetail = (props: { auctionDetail: IAuction }) => {
               }}
             /> */}
 
-            <img
-              src={noticeImageUrl}
-              alt={"no-data"}
-              className={"w-24  h-auto bg-contain hidden"}
-              onError={() => {
-                setHasError(true);
-              }}
-            />
-          </div>
-        </>
-      );
-    }
+          <img
+            src={noticeImageUrl}
+            alt={"no-data"}
+            className={"w-24  h-auto bg-contain hidden"}
+            onError={() => {
+              setHasError(true);
+            }}
+          />
+        </div>
+      </>
+    );
+
   };
 
   const handleBackClick = () => {
@@ -154,6 +163,7 @@ const AuctionDetail = (props: { auctionDetail: IAuction }) => {
           auctionDetail={auctionDetail}
         />
       ) : null}
+
       {openImageModal ? (
         <FullScreenImageModal
           openModal={openImageModal}
@@ -161,6 +171,8 @@ const AuctionDetail = (props: { auctionDetail: IAuction }) => {
           imageUrl={noticeImageUrl}
         />
       ) : null}
+
+
       <div className="flex flex-col gap-4 w-full">
         {/* {JSON.stringify(auctionDetail)} */}
         <div className="flex justify-between items-center">
@@ -194,7 +206,7 @@ const AuctionDetail = (props: { auctionDetail: IAuction }) => {
         </div>
 
         {auctionDetail?.description && (
-          <BlurredFieldWrapper isBlurred={token === null}>
+          <BlurredFieldWrapper isBlurred={token === null && showLogin}>
             <p className="flex-1 ">{auctionDetail?.description}</p>
           </BlurredFieldWrapper>
         )}
@@ -226,7 +238,7 @@ const AuctionDetail = (props: { auctionDetail: IAuction }) => {
             value={auctionDetail?.borrowerName}
           />
           <ShowLabelValue
-            isBlurred={token === null}
+            isBlurred={token === null && showLogin}
             heading={STRING_DATA.CONTACT}
             value={auctionDetail?.contact}
           />
