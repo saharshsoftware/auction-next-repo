@@ -1,9 +1,11 @@
 import { STORAGE_KEYS } from "@/shared/Constants";
 
 const MAX_VISITS = 5;
+const isBrowser = typeof window !== 'undefined';
 
 export const loginLogic = {
   markAuctionDetailVisited: (auctionId: string) => {
+    if (!isBrowser) return;
     try {
       const raw = localStorage.getItem(STORAGE_KEYS.AUCTION_VISIT_IDS);
       const visited: string[] = raw ? JSON.parse(raw) : [];
@@ -24,6 +26,7 @@ export const loginLogic = {
   },
 
   resetLoginFlag: () => {
+    if (!isBrowser) return;
     try {
       localStorage.removeItem(STORAGE_KEYS.SHOW_LOGIN_FLAG);
       localStorage.removeItem(STORAGE_KEYS.AUCTION_VISIT_IDS);
@@ -33,6 +36,7 @@ export const loginLogic = {
   },
 
   getShouldShowLogin: (): boolean => {
+    if (!isBrowser) return false;
     try {
       return localStorage.getItem(STORAGE_KEYS.SHOW_LOGIN_FLAG) === 'true';
     } catch (err) {

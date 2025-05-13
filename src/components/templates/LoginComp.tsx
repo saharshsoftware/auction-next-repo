@@ -32,11 +32,13 @@ export default function LoginComp(props: {
   isAuthModal?: boolean;
   handleLinkclick?: () => void;
   closeModal?: () => void;
+  setShowOtpForm?: () => void;
 }) {
   const {
     isAuthModal = false,
-    handleLinkclick = () => {},
-    closeModal = () => {},
+    handleLinkclick = () => { },
+    closeModal = () => { },
+    setShowOtpForm = () => { },
   } = props;
   const router = useRouter();
   const params = useParams();
@@ -79,6 +81,14 @@ export default function LoginComp(props: {
     //  debugger
     //  console.log(response, "reponse")
   };
+
+  const handleClickLoginWithOtp = () => {
+    if (isAuthModal) {
+      setShowOtpForm?.();
+      return;
+    }
+    router.push(ROUTE_CONSTANTS.LOGIN_OTP);
+  }
   return (
     <>
       <div className={`${isAuthModal ? "" : "common-auth-section-class"} my-4`}>
@@ -116,17 +126,17 @@ export default function LoginComp(props: {
               </span>
             ) : null}
             <div className="flex justify-end items-center gap-4">
-              {isAuthModal ? (
+              {/* {isAuthModal ? (
                 <ActionButton
                   text={STRING_DATA.CANCEL.toUpperCase()}
                   onclick={closeModal}
                   isActionButton={false}
                 />
-              ) : null}
+              ) : null} */}
               <ActionButton
                 text={STRING_DATA.LOGIN.toUpperCase()}
                 isSubmit={true}
-                customClass={`${isAuthModal ? null : "w-full"}`}
+                customClass={`w-full`}
                 isLoading={isPending}
               />
             </div>
@@ -145,19 +155,15 @@ export default function LoginComp(props: {
                 </Link>
               )}
             </p>
-            {!isAuthModal && (
-              <>
-                <div className="text-center text-sm font-medium text-gray-500">
-                  -- OR --
-                </div>
-                <ActionButton
-                  text="LOGIN WITH OTP"
-                  onclick={() => router.push(ROUTE_CONSTANTS.LOGIN_OTP)}
-                  isActionButton={false}
-                  customClass="w-full"
-                />
-              </>
-            )}
+            <div className="text-center text-sm font-medium text-gray-500">
+              -- OR --
+            </div>
+            <ActionButton
+              text="LOGIN WITH OTP"
+              onclick={handleClickLoginWithOtp}
+              isActionButton={false}
+              customClass="w-full"
+            />
           </div>
         </CustomFormikForm>
       </div>

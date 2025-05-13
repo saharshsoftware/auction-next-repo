@@ -20,9 +20,9 @@ const getValidationSchema = (isOtpSent: boolean) => {
       .required(ERROR_MESSAGE.EMAIL_REQUIRED),
     otp: isOtpSent
       ? Yup.string()
-          .trim()
-          .length(4, "OTP must be 4 digits")
-          .required("OTP is required")
+        .trim()
+        .length(4, "OTP must be 4 digits")
+        .required("OTP is required")
       : Yup.string().notRequired(),
   });
 };
@@ -32,13 +32,17 @@ interface OtpVerificationFormProps {
   isRegisteredRoute?: boolean;
   registerFormCallback?: () => void;
   isAuthModal?: boolean;
+  loginApiCallback?: () => void;
+  setShowOtpForm?: () => void;
 }
 
 const OtpVerificationForm: React.FC<OtpVerificationFormProps> = ({
   email = "",
   isRegisteredRoute = false,
   isAuthModal = false,
-  registerFormCallback = () => {},
+  registerFormCallback = () => { },
+  loginApiCallback = () => { },
+  setShowOtpForm = () => { },
 }) => {
   const router = useRouter();
   const [isOtpSent, setIsOtpSent] = useState(false);
@@ -89,6 +93,11 @@ const OtpVerificationForm: React.FC<OtpVerificationFormProps> = ({
   } = useMutation({
     mutationFn: siginUsingOtpClient,
     onSuccess: (data, variables) => {
+      if (isAuthModal) {
+        router.refresh();
+        loginApiCallback?.();
+        return;
+      }
       setRespError("");
       console.log("OTP sent successfully", data);
       router.push(ROUTE_CONSTANTS.DASHBOARD);
@@ -128,8 +137,16 @@ const OtpVerificationForm: React.FC<OtpVerificationFormProps> = ({
     }
   };
 
+  const handleClickLoginWithEmail = () => {
+    if (isAuthModal) {
+      setShowOtpForm?.();
+      return;
+    }
+    router.push(ROUTE_CONSTANTS.LOGIN);
+  }
+
   return (
-    <div className={isAuthModal ? "" : "common-auth-section-class"}>
+    <div className={`${isAuthModal ? "" : "common-auth-section-class"} my-4`}>
       <Formik
         initialValues={{
           email: submittedEmail,
@@ -143,7 +160,7 @@ const OtpVerificationForm: React.FC<OtpVerificationFormProps> = ({
           <Form>
             <div className="flex flex-col gap-4">
               <h2 className="custom-h2-class text-center text-3xl">
-                {isOtpSent ? "OTP verification" : "Login with OTP"}
+                {isOtpSent ? "OTP verification" : isAuthModal ? '' : "Login with OTP"}
               </h2>
               {!isOtpSent ? (
                 <TextField
@@ -225,7 +242,7 @@ const OtpVerificationForm: React.FC<OtpVerificationFormProps> = ({
                   </div>
                   <ActionButton
                     text="LOGIN USING EMAIL AND PASSWORD"
-                    onclick={() => router.push(ROUTE_CONSTANTS.LOGIN)}
+                    onclick={handleClickLoginWithEmail}
                     isActionButton={false}
                     customClass="w-full"
                   />
