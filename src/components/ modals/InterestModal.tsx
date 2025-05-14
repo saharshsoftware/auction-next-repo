@@ -15,6 +15,7 @@ import toast from "react-simple-toasts";
 import { IAuction } from "@/types";
 import WhatsappSvg from "../svgIcons/WhatsappSvg";
 import { useRouter } from "next/navigation";
+import OtpVerificationForm from "../templates/OtpVerificationForm";
 
 interface IInterestModal {
   openModal: boolean;
@@ -25,9 +26,10 @@ interface IInterestModal {
 
 const InterestModal = (props: IInterestModal) => {
   const router = useRouter();
-  const { openModal, hideModal = () => {}, userData, auctionDetail } = props;
+  const { openModal, hideModal = () => { }, userData, auctionDetail } = props;
   const [show, setShow] = useState({ login: true, signup: false });
   // const token = getCookie(COOKIES.TOKEN_KEY) ?? "";
+  const [showOtpForm, setShowOtpForm] = useState(false);
 
   const [myToken, setMyToken] = useState(getCookie(COOKIES.TOKEN_KEY) ?? "");
 
@@ -65,14 +67,25 @@ const InterestModal = (props: IInterestModal) => {
   const queryClient = useQueryClient();
   const [respError, setRespError] = useState<string>("");
 
+  const handleLoginForm = () => {
+    if (showOtpForm) {
+      return (
+        <OtpVerificationForm isAuthModal={true} loginApiCallback={hideModal} setShowOtpForm={() => setShowOtpForm(false)} />
+      )
+    }
+    return (
+      <LoginComp
+        isAuthModal={true}
+        handleLinkclick={handleShowRegister}
+        closeModal={hideModal}
+        setShowOtpForm={() => setShowOtpForm(true)}
+      />
+    );
+  }
   const renderAuthComponent = () => {
     if (show?.login) {
       return (
-        <LoginComp
-          isAuthModal={true}
-          handleLinkclick={handleShowRegister}
-          closeModal={hideModal}
-        />
+        handleLoginForm()
       );
     }
     if (show?.signup) {
@@ -242,6 +255,8 @@ const InterestModal = (props: IInterestModal) => {
     <>
       <CustomModal
         openModal={openModal}
+        isCrossVisible={!myToken ? true : false}
+        onClose={hideModal}
         modalHeading={selectedHeading()}
         customWidthClass="lg:w-[40%] md:w-4/5 sm:w-3/5 w-11/12"
       >

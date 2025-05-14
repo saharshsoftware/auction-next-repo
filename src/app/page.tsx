@@ -134,12 +134,12 @@ export default async function Home() {
     fetchLocation(),
     getCarouselData(),
   ])) as unknown as [
-    IAssetType[],
-    ICategoryCollection[],
-    IBanks[],
-    ILocations[],
-    any[]
-  ];
+      IAssetType[],
+      ICategoryCollection[],
+      IBanks[],
+      ILocations[],
+      any[]
+    ];
 
   const renderHomeCollection = () => {
     if (carouselResponse) {
@@ -162,9 +162,8 @@ export default async function Home() {
               return (
                 <div
                   key={index}
-                  className={`${
-                    index % 2 === 0 ? "bg-odd-color" : "bg-even-color"
-                  }`}
+                  className={`${index % 2 === 0 ? "bg-odd-color" : "bg-even-color"
+                    }`}
                 >
                   <CustomReactCarousel
                     desc={item?.description ?? ""}

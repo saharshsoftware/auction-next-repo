@@ -1,3 +1,5 @@
+import { faX } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 
 interface Props {
@@ -26,14 +28,14 @@ const CustomModal = ({
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div
-        className={`bg-white rounded-lg flex flex-col gap-4 p-6 ${getRequiredWidth()}`}
+        className={`relative bg-white rounded-lg flex flex-col gap-4 p-6 ${getRequiredWidth()}`}
       >
         {isCrossVisible && (
           <button
             onClick={onClose}
-            className="absolute -top-[0.8rem] -right-[0.5rem] bg-white text-black rounded-full w-6 h-6 flex items-center justify-center font-bold z-[60]"
+            className="absolute top-[1.2rem] right-[1.2rem] bg-white text-black rounded-full w-6 h-6 flex items-center justify-center font-bold z-[60]"
           >
-            ×
+            <FontAwesomeIcon icon={faX} />
           </button>
         )}
         {modalHeading && (

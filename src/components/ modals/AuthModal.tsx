@@ -6,6 +6,7 @@ import LoginComp from "../templates/LoginComp";
 import SignupComp from "../templates/SignupComp";
 import { getCookie } from "cookies-next";
 import { useRouter } from "next/navigation";
+import OtpVerificationForm from "../templates/OtpVerificationForm";
 
 interface IAuthModal {
   openModal: boolean;
@@ -14,8 +15,10 @@ interface IAuthModal {
 
 const AuthModal = (props: IAuthModal) => {
   const router = useRouter();
-  const { openModal, hideModal = () => {} } = props;
+  const { openModal, hideModal = () => { } } = props;
   const [show, setShow] = useState({ login: true, signup: false });
+  const [showOtpForm, setShowOtpForm] = useState(false);
+
   // const token = getCookie(COOKIES.TOKEN_KEY) ?? "";
 
   const [myToken, setMyToken] = useState(getCookie(COOKIES.TOKEN_KEY) ?? "");
@@ -29,15 +32,25 @@ const AuthModal = (props: IAuthModal) => {
     router.refresh();
   };
 
+  const handleLoginForm = () => {
+    if (showOtpForm) {
+      return (
+        <OtpVerificationForm isAuthModal={true} loginApiCallback={hideModal} setShowOtpForm={() => setShowOtpForm(false)} />
+      )
+    }
+    return (
+      <LoginComp
+        isAuthModal={true}
+        handleLinkclick={handleShowRegister}
+        closeModal={hideModal}
+        setShowOtpForm={() => setShowOtpForm(true)}
+      />
+    );
+  }
+
   const renderAuthComponent = () => {
     if (show?.login) {
-      return (
-        <LoginComp
-          isAuthModal={true}
-          handleLinkclick={handleShowRegister}
-          closeModal={hideModal}
-        />
-      );
+      return handleLoginForm();
     }
     if (show?.signup) {
       return (
@@ -81,6 +94,8 @@ const AuthModal = (props: IAuthModal) => {
     <>
       <CustomModal
         openModal={openModal}
+        isCrossVisible={true}
+        onClose={hideModal}
         modalHeading={selectedHeading()}
         customWidthClass="lg:w-[40%] md:w-4/5 sm:w-3/5 w-11/12"
       >

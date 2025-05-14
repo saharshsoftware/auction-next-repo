@@ -12,7 +12,7 @@ interface ILoginModal {
 }
 
 const LoginModal = (props: ILoginModal) => {
-  const { openModal, hideModal = () => {} } = props;
+  const { openModal, hideModal = () => { } } = props;
   const router = useRouter();
   const [show, setShow] = useState({ login: true, signup: false });
   const handleShowRegister = () => {
