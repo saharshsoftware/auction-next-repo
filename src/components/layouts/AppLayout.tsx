@@ -14,14 +14,25 @@ import {
 
 import useModal from "@/hooks/useModal";
 import SurveyModal from "../ modals/SurveyModal";
-import { SESSIONS_STORAGE_KEYS, STORAGE_KEYS } from "@/shared/Constants";
+import { COOKIES, STORAGE_KEYS } from "@/shared/Constants";
 import { USER_SURVEY_STATUS } from "@/types";
+import { setUserIdInDataLayer } from "@/helpers/WindowHelper";
+import { getCookie } from "cookies-next";
 
-const AppLayout = ({ children }: { children: React.ReactNode }) => {
+const AppLayout = ({
+  children,
+  isAuthenticated = false,
+}: {
+  children: React.ReactNode;
+  isAuthenticated: boolean;
+}) => {
   const { openModal, showModal, hideModal } = useModal();
   const { data } = useQuerySurvey();
   const { setSurveyData } = useSurveyStore();
   const pathname = usePathname();
+  const userData = getCookie(COOKIES.AUCTION_USER_KEY)
+    ? JSON.parse(getCookie(COOKIES.AUCTION_USER_KEY) ?? "")
+    : null;
 
   // Extract survey ID safely
   const surveyId = data?.data?.[0]?.id || null;
@@ -64,13 +75,16 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
     }
   }, [surveyId, setSurveyData]);
 
+  useEffect(() => {
+    setUserIdInDataLayer(isAuthenticated ? userData?.id : null);
+  }, [isAuthenticated, userData?.id]);
+
   const isAuthRoute = AUTH_ROUTES.some((route) => route.path === pathname);
 
   return (
     <div
-      className={`flex-1 ${
-        isAuthRoute ? "flex items-center justify-center" : ""
-      }`}
+      className={`flex-1 ${isAuthRoute ? "flex items-center justify-center" : ""
+        }`}
     >
       {children}
       {openModal && <SurveyModal openModal={openModal} hideModal={hideModal} />}

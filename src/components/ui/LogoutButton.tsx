@@ -4,13 +4,15 @@ import { logout } from "@/server/actions";
 import { redirect } from "next/navigation";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
 import Link from "next/link";
+import { setUserIdInDataLayer } from "@/helpers/WindowHelper";
 
-const LogoutButton = (props: {customClass?: string, handleClick?: ()=> void}) => {
+const LogoutButton = (props: { customClass?: string, handleClick?: () => void }) => {
   const { customClass, handleClick } = props;
   const handleLogout = () => {
+    setUserIdInDataLayer(null);
     if (handleClick) {
       handleClick?.();
-    } 
+    }
     logout();
     // redirect(ROUTE_CONSTANTS.DASHBOARD)
   };

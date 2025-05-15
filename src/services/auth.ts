@@ -1,3 +1,4 @@
+import { setUserIdInDataLayer } from "@/helpers/WindowHelper";
 import { ILogin, ISignup } from "@/interfaces/Auth";
 import { API_BASE_URL, API_ENPOINTS } from "@/services/api";
 import { deleteRequest, postRequest } from "@/shared/Axios";
@@ -36,6 +37,7 @@ export const loginClient = async (payload: ILogin) => {
     const { jwt, user } = data as IUserData;
     setCookie(COOKIES.TOKEN_KEY, jwt);
     setCookie(COOKIES.AUCTION_USER_KEY, JSON.stringify(user));
+    setUserIdInDataLayer(user?.id);
     return data;
   } catch (error: any) {
     throw error.response.data?.error;
@@ -120,6 +122,7 @@ export const siginUsingOtpClient = async (payload: { email: string, otp: string 
     const { jwt, user } = data as IUserData;
     setCookie(COOKIES.TOKEN_KEY, jwt);
     setCookie(COOKIES.AUCTION_USER_KEY, JSON.stringify(user));
+    setUserIdInDataLayer(user?.id)
     return data;
   } catch (error: any) {
     throw error.response.data?.error;
