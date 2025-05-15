@@ -1,3 +1,10 @@
+// Extend the Window interface to include dataLayer
+declare global {
+  interface Window {
+    dataLayer?: any[];
+  }
+}
+
 declare module "react-slick";
 declare module "react-range-slider-input";
 declare module "markdown-it";
@@ -51,7 +58,7 @@ export interface IUserData {
 }
 
 export interface User {
-  id: number;
+  id: string;
   username: string;
   email: string;
   provider: string;
