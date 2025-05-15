@@ -7,4 +7,5 @@ export const setUserIdInDataLayer = (userId: string | null) => {
   window.dataLayer.push({
     userId: userId,
   });
+  (window as Window & { userId?: string | null }).userId = userId;
 }
