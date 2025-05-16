@@ -32,7 +32,6 @@ import { useRouter } from "next/navigation";
 import { loginLogic } from "@/utilies/LoginHelper";
 import { useLoginFormTrigger } from "@/hooks/useLoginTrigger";
 import LoginModal from "../ modals/LoginModal";
-import { setAuctionDetailPropertyInId } from "@/helpers/WindowHelper";
 
 const auctionLabelClass = () => "text-sm text-gray-400 font-bold";
 
@@ -52,7 +51,6 @@ const AuctionDetail = (props: { auctionDetail: IAuction, slug: string }) => {
   }, [tokenFromCookie]);
 
   useEffect(() => {
-    setAuctionDetailPropertyInId(auctionDetail?.propertyType);
     if (!token) {
       loginLogic.markAuctionDetailVisited(slug); // Pass unique ID
     }

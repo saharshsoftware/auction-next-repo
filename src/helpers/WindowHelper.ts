@@ -10,8 +10,3 @@ export const setUserIdInDataLayer = (userId: string | null) => {
   (window as Window & { userId?: string | null }).userId = userId;
 }
 
-// set aucitondetail propertytype in window.id
-export const setAuctionDetailPropertyInId = (propertyType: string | null) => {
-  if (!isBrowser) return;
-  (window as Window & { id?: string | null }).id = propertyType;
-}

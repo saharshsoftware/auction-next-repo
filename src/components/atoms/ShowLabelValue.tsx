@@ -1,5 +1,6 @@
 import React from "react";
 import BlurredFieldWrapper from "./BlurredFieldWrapper";
+import { STRING_DATA } from "@/shared/Constants";
 
 interface IShowData {
   hasChildren?: boolean;
@@ -29,16 +30,19 @@ const ShowLabelValue: React.FC<IShowData> = (props) => {
       return children;
     }
     return (
-      <BlurredFieldWrapper isBlurred={isBlurred}>{value}</BlurredFieldWrapper>
+      <BlurredFieldWrapper isBlurred={isBlurred}>
+        <div id={heading === STRING_DATA.PROPERTY_TYPE ? 'property-type' : undefined}>
+          {value}
+        </div>
+      </BlurredFieldWrapper>
     );
   };
 
   return (
     <div className={`grid grid-cols-12 ${sizeClass ? sizeClass : ""}`}>
       <div
-        className={`font-bold ${
-          headingClass ?? "lg:col-span-4 col-span-full"
-        } `}
+        className={`font-bold ${headingClass ?? "lg:col-span-4 col-span-full"
+          } `}
       >
         {heading}
       </div>
