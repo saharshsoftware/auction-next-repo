@@ -27,7 +27,7 @@ interface IInterestModal {
 const InterestModal = (props: IInterestModal) => {
   const router = useRouter();
   const { openModal, hideModal = () => { }, userData, auctionDetail } = props;
-  const [show, setShow] = useState({ login: true, signup: false });
+  const [show, setShow] = useState({ login: false, signup: true });
   // const token = getCookie(COOKIES.TOKEN_KEY) ?? "";
   const [showOtpForm, setShowOtpForm] = useState(false);
 

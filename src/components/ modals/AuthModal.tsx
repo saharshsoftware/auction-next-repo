@@ -16,7 +16,7 @@ interface IAuthModal {
 const AuthModal = (props: IAuthModal) => {
   const router = useRouter();
   const { openModal, hideModal = () => { } } = props;
-  const [show, setShow] = useState({ login: true, signup: false });
+  const [show, setShow] = useState({ login: false, signup: true });
   const [showOtpForm, setShowOtpForm] = useState(false);
 
   // const token = getCookie(COOKIES.TOKEN_KEY) ?? "";
