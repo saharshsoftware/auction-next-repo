@@ -14,7 +14,7 @@ interface ILoginModal {
 const LoginModal = (props: ILoginModal) => {
   const { openModal, hideModal = () => { } } = props;
   const router = useRouter();
-  const [show, setShow] = useState({ login: true, signup: false });
+  const [show, setShow] = useState({ login: false, signup: true });
   const handleShowRegister = () => {
     setShow({ login: false, signup: true });
     router.refresh();
