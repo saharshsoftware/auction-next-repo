@@ -1,5 +1,5 @@
-export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
-// export const API_BASE_URL = 'http://localhost:1009';
+// export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+export const API_BASE_URL = 'http://localhost:1009';
 export const API_ENPOINTS = {
   NOTICES: "/api/notices",
   SIGNUP: "/api/auth/local/register",
@@ -40,4 +40,6 @@ export const API_ENPOINTS = {
   SEND_SIGNIN_OTP: "/api/auth/send-signin-otp",
   SIGNIN_USING_OTP: "/api/auth/signin-using-otp",
   CONTACT_BROKERS: "/api/contact-brokers",
+  RAZORPAY_PLAN: "/api/razorpay-plans",
+  CREATE_RAZORPAY_ORDER: "/api/user-subscription/create",
 };

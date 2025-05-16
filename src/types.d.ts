@@ -280,3 +280,13 @@ export type INSTRUCTIONS_FOLDER_NAME =
   | "alerts-instructions"
   | "saved-search-instructions"
   | "wishlist-instructions";
+
+
+export interface Plan {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  razorpayPlanId: string;
+  highlighted?: boolean;
+}

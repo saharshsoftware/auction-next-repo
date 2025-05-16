@@ -7,7 +7,8 @@ import { COOKIES } from "./Constants";
 export type RequestMethod = "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
 
 const instance: AxiosInstance = axios.create({
-  baseURL: API_BASE_URL,
+  // baseURL: API_BASE_URL,
+  baseURL: "http://localhost:1009",
   withCredentials: true,
 });
 

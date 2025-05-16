@@ -35,6 +35,7 @@ export const PAGE_REVALIDATE_TIME_FOR_AUCTION_LIST = 3600; // 1 hr
 export const FILTER_API_REVALIDATE_TIME = 300; // 5 min
 
 export const STRING_DATA = {
+  CONTINUE: "Continue",
   BLOGS: "Blogs",
   SAVE: "Save",
   LOGIN_VIEW_DOC: "Login to view",
