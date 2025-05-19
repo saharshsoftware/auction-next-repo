@@ -20,7 +20,7 @@ import { ROUTE_CONSTANTS } from "@/shared/Routes";
 import useModal from "@/hooks/useModal";
 import { getCookie } from "cookies-next";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft, faHeart } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft, faCheck } from "@fortawesome/free-solid-svg-icons";
 import { WhatsappShareWithIcon } from "../atoms/SocialIcons";
 import { WishlistSvg } from "../svgIcons/WishlistSvg";
 import InterestModal from "../ modals/InterestModal";
@@ -35,8 +35,8 @@ import LoginModal from "../ modals/LoginModal";
 
 const auctionLabelClass = () => "text-sm text-gray-400 font-bold";
 
-const AuctionDetail = (props: { auctionDetail: IAuction, slug: string }) => {
-  const { auctionDetail, slug } = props;
+const AuctionDetail = (props: { auctionDetail: IAuction, slug: string, isInterested: boolean }) => {
+  const { auctionDetail, slug, isInterested = false } = props;
   const showLogin = loginLogic.getShouldShowLogin()
   const router = useRouter();
   const noticeImageUrl = auctionDetail?.noticeImageURL
@@ -150,6 +150,27 @@ const AuctionDetail = (props: { auctionDetail: IAuction, slug: string }) => {
     router.back();
   };
 
+  const renderInterestContainer = () => {
+    if (isInterested) {
+      return (
+        <div className="flex items-center gap-2 bg-green-50 p-3 rounded-md shadow-sm">
+          <FontAwesomeIcon
+            icon={faCheck}
+            className="text-green-700 text"
+          />
+          <span className="text-sm text-green-700 font-bold uppercase">
+            {STRING_DATA.ALREADY_INTERESTED}
+          </span>
+        </div>
+      )
+    }
+    return <ActionButton
+      text={STRING_DATA.SHOW_INTEREST.toUpperCase()}
+      onclick={showModal}
+      icon={<WishlistSvg />}
+    />
+  }
+
   if (!auctionDetail) return <p>Loading...</p>;
 
   return (
@@ -185,11 +206,7 @@ const AuctionDetail = (props: { auctionDetail: IAuction, slug: string }) => {
           </em>
           {/* </Link> */}
 
-          <ActionButton
-            text={STRING_DATA.SHOW_INTEREST.toUpperCase()}
-            onclick={showModal}
-            icon={<WishlistSvg />}
-          />
+          {renderInterestContainer()}
         </div>
         <div className="flex lg:flex-row flex-col gap-4 justify-between items-start">
           <h1 className="custom-h2-class break-words">
