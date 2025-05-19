@@ -46,6 +46,7 @@ const InterestModal = (props: IInterestModal) => {
             position: "top-center",
           });
           hideModal?.();
+          router.refresh();
         },
         fail: (error: any) => {
           const { message } = error;

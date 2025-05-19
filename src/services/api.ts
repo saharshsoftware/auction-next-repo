@@ -40,4 +40,5 @@ export const API_ENPOINTS = {
   SEND_SIGNIN_OTP: "/api/auth/send-signin-otp",
   SIGNIN_USING_OTP: "/api/auth/signin-using-otp",
   CONTACT_BROKERS: "/api/contact-brokers",
+  USER_INTERESTS: "/api/user-interests",
 };

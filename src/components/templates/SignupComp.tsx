@@ -20,11 +20,12 @@ import OtpVerificationForm from "./OtpVerificationForm";
 
 const validationSchema = Yup.object({
   name: Yup.string().trim().required(ERROR_MESSAGE.NAME_REQUIRED),
-  email: Yup.string().trim().required(ERROR_MESSAGE.EMAIL_REQUIRED),
+  email: Yup.string().email(ERROR_MESSAGE.VALID_EMAIL).required(ERROR_MESSAGE.EMAIL_REQUIRED),
   phoneNumber: Yup.string()
     .trim()
     .required(ERROR_MESSAGE.PHONE_REQUIRED)
     .min(10, ERROR_MESSAGE.MIN_PHONE_LENGTH)
+    .max(10, ERROR_MESSAGE.MAX_PHONE_LENGTH)
     .matches(/^[0-9]+$/, ERROR_MESSAGE.PHONE_NUMERIC), // Add pattern validation
   password: Yup.string()
     .trim()
@@ -51,8 +52,8 @@ export default function SignupComp(props: {
 }) {
   const {
     isAuthModal = false,
-    handleLinkclick = () => {},
-    closeModal = () => {},
+    handleLinkclick = () => { },
+    closeModal = () => { },
   } = props;
   const router = useRouter();
   const [formValues, setFormValues] = useState<FormikValues>(initialValues);

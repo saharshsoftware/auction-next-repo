@@ -35,6 +35,7 @@ export const PAGE_REVALIDATE_TIME_FOR_AUCTION_LIST = 3600; // 1 hr
 export const FILTER_API_REVALIDATE_TIME = 300; // 5 min
 
 export const STRING_DATA = {
+  ALREADY_INTERESTED: "Interested",
   BLOGS: "Blogs",
   SAVE: "Save",
   LOGIN_VIEW_DOC: "Login to view",
@@ -200,6 +201,8 @@ export const ERROR_MESSAGE = {
   MIN_PHONE_LENGTH: "Invalid number",
   EMAIL_INVALID: "Invalid email address",
   MOBILE_REQUIRED: "Mobile number is required",
+  MAX_PHONE_LENGTH: "Phone number should not exceed 10 digits",
+  VALID_EMAIL: "Please enter a valid email address",
 };
 
 export const NAV_LINKS = [

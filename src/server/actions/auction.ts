@@ -497,3 +497,35 @@ export const fetchFavoriteListServer = async () => {
     return []
   }
 };
+
+export const fetchIsInterestedNotice = async ({
+  noticeId,
+  userId,
+}: {
+  noticeId: string;
+  userId: string;
+}) => {
+  try {
+    const cookieStore = cookies();
+    const token = cookieStore.get(COOKIES.TOKEN_KEY)?.value;
+    const filter = `?filters[notice][id][$eq]=${noticeId}&filters[user][id][$eq]=${userId}`;
+    const URL = API_BASE_URL + API_ENPOINTS.USER_INTERESTS + filter;
+    // console.log(URL, "fetchIsInterestedNotice-URL");
+    const response = await fetch(URL, {
+      method: "GET",
+      cache: "no-store",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: token ? `Bearer ${token}` : "",
+      },
+    });
+    if (!response.ok) {
+      throw new Error("Failed to faviourite list");
+    }
+    const data = await response.json();
+    return data;
+  } catch (e) {
+    console.log(e, "fetchIsInterestedNotice error");
+    return []
+  }
+};

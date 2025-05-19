@@ -8,7 +8,7 @@ import {
   ILocations,
 } from "@/types";
 import AuctionDetail from "@/components/templates/AuctionDetail";
-import { fetchAssetType, fetchCategories } from "@/server/actions/auction";
+import { fetchAssetType, fetchCategories, fetchIsInterestedNotice } from "@/server/actions/auction";
 import { sanitizeReactSelectOptionsPage } from "@/shared/Utilies";
 import FindAuctionServer from "@/components/molecules/FindAuctionServer";
 import RecentData from "@/components/molecules/RecentData";
@@ -85,10 +85,13 @@ export default async function Page({
   const { slug } = params;
   const cookieStore = cookies();
   const token = cookieStore.get(COOKIES.TOKEN_KEY)?.value || null; // Replace with your actual cookie name
+  const userData = cookieStore.get(COOKIES.AUCTION_USER_KEY)?.value ?
+    JSON.parse(cookieStore.get(COOKIES.AUCTION_USER_KEY)?.value ?? "")
+    : null;
 
   const auctionDetail = (await getAuctionDetail({ slug })) as IAuction;
   // Fetch data in parallel
-  const [rawAssetTypes, rawBanks, rawCategories, rawLocations]: any =
+  const [rawAssetTypes, rawBanks, rawCategories, rawLocations,]: any =
     await Promise.all([
       fetchAssetType(),
       fetchBanks(),
@@ -97,13 +100,25 @@ export default async function Page({
     ]);
 
   let faviouriteList: any[] = [];
+  let isInterested = false;
   if (token) {
-    const res = await fetchFavoriteList();
-    faviouriteList =
-      res?.map((item: any) => ({
-        value: item.id,
-        label: item.name,
-      })) || [];
+    const [favoriteResponse, userInterestResponse] = await Promise.all([
+      fetchFavoriteList(),
+      fetchIsInterestedNotice({
+        noticeId: auctionDetail?.id,
+        userId: userData?.id,
+      }),
+    ]);
+
+    // Format favorite list
+    faviouriteList = favoriteResponse?.map((item: any) => ({
+      value: item.id,
+      label: item.name,
+    })) || [];
+
+    // Determine if the user is interested
+    isInterested = Array.isArray(userInterestResponse?.data) && userInterestResponse.data.length > 0;
+
   }
 
   // Type assertions are no longer necessary if functions return correctly typed data
@@ -148,7 +163,7 @@ export default async function Page({
         <div className="common-section">
           <div className="grid grid-cols-12 gap-4 py-4">
             <div className="lg:col-span-8 col-span-full ">
-              <AuctionDetail auctionDetail={auctionDetail} slug={slug} />
+              <AuctionDetail auctionDetail={auctionDetail} slug={slug} isInterested={isInterested} />
             </div>
             <div className="lg:col-span-4 col-span-full">
               {renderWishlistComponent()}
