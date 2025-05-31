@@ -7,5 +7,8 @@
         "paths": ["/", "/auction-details/*"]
       }
     ]
+  },
+   "webcredentials": {
+    "apps": ["BW2XNV947S.com.eauctiondekho"]
   }
 }
