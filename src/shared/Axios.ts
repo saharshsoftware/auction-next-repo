@@ -1,7 +1,7 @@
 import { IRequest } from "@/interfaces/RequestInteface";
 import { API_BASE_URL } from "@/services/api";
 import axios, { AxiosInstance, AxiosResponse } from "axios";
-import { getCookie } from "cookies-next";
+import { deleteCookie, getCookie } from "cookies-next";
 import { COOKIES } from "./Constants";
 
 export type RequestMethod = "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
@@ -28,11 +28,21 @@ instance.interceptors.request.use(
   }
 );
 
+// ❌ Response Interceptor — handle 401
 instance.interceptors.response.use(
-  (response: AxiosResponse) => {
-    return response;
-  },
+  (response: AxiosResponse) => response,
   (error) => {
+    console.log("🚨 Axios Error Interceptor Triggered");
+
+    if (error?.response?.status === 401) {
+      console.log("❌ Unauthorized: Clearing cookies and redirecting");
+      deleteCookie(COOKIES.TOKEN_KEY);
+
+      if (typeof window !== "undefined") {
+        window.location.href = "/";
+      }
+    }
+
     return Promise.reject(error);
   }
 );
