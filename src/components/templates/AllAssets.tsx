@@ -40,13 +40,13 @@ const AllAssets = (props: { data: IAssetType[] }) => {
               >
                 <div className="w-full border border-gray-400 rounded-lg shadow p-4">
                   <div className="flex flex-col items-center justify-center gap-2">
-                    <div className="relative w-12 h-12">
+                    {/* <div className="relative w-12 h-12">
                       <ImageTag
                         imageUrl={imageUrl}
                         alt={"i"}
                         customClass="object-contain bg-contain "
                       />
-                    </div>
+                    </div> */}
                     <div>{item?.totalNotices}</div>
                     {item?.name}
                   </div>
