@@ -249,11 +249,7 @@ const AuctionDetail = (props: { auctionDetail: IAuction, slug: string, isInteres
           <ShowLabelValue
             heading={STRING_DATA.CITY}
             value={auctionDetail?.city}
-          />
-          <ShowLabelValue
-            heading={STRING_DATA.BORROW_NAME}
-            value={auctionDetail?.borrowerName}
-          />
+          />        
           <ShowLabelValue
             isBlurred={token === null && showLogin}
             heading={STRING_DATA.CONTACT}
