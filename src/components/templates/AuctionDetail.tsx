@@ -173,6 +173,32 @@ const AuctionDetail = (props: { auctionDetail: IAuction, slug: string, isInteres
 
   if (!auctionDetail) return <p>Loading...</p>;
 
+  const renderTermsAndConditions = () => {
+    return (
+      <div className="text-sm mt-2 cursor-pointer  link link-primary font-semibold underline">
+        <a href="/terms" rel="noopener noreferrer">
+          Terms & Conditions
+        </a>
+      </div>
+    );
+  };
+
+  const renderAuctionExpiredNotice = () => {
+    const isPastDate =
+      auctionDetail?.auctionEndDate &&
+      new Date(auctionDetail.auctionEndDate) < new Date();
+
+    if (isPastDate) {
+      return (
+        <div className="text-red-600 text-sm font-semibold flex items-center gap-1">
+          ⚠ Notice: This auction notice is from a past date. The information shown may be outdated or no longer valid. Please verify details with the official source if you intend to take action.
+        </div>
+      );
+    }
+    return null;
+  };
+
+
   return (
     <>
       {/* Create alert Modal */}
@@ -213,6 +239,7 @@ const AuctionDetail = (props: { auctionDetail: IAuction, slug: string, isInteres
             {auctionDetail?.title}
           </h1>
         </div>
+        {renderAuctionExpiredNotice()}
         <div className={`flex gap-4 justify-between items-start flex-wrap `}>
           {/* <div className="flex flex-col gap-2 items-start justify-start">
             {renderPriceDetails()}
@@ -249,7 +276,7 @@ const AuctionDetail = (props: { auctionDetail: IAuction, slug: string, isInteres
           <ShowLabelValue
             heading={STRING_DATA.CITY}
             value={auctionDetail?.city}
-          />        
+          />
           <ShowLabelValue
             isBlurred={token === null && showLogin}
             heading={STRING_DATA.CONTACT}
@@ -298,6 +325,7 @@ const AuctionDetail = (props: { auctionDetail: IAuction, slug: string, isInteres
             </ShowLabelValue>
           ) : null}
         </div>
+        {renderTermsAndConditions()}
       </div>
     </>
   );
