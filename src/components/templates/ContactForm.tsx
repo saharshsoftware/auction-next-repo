@@ -25,6 +25,7 @@ const validationSchema = Yup.object({
     .integer("Must be an integer"),
   subject: Yup.string().trim().required(ERROR_MESSAGE.SUBJECT_REQUIRED),
   message: Yup.string().trim().required(ERROR_MESSAGE.MESSAGE_REQUIRED),
+  auctionLink: Yup.string().trim().url("Please enter a valid URL").optional(),
 });
 
 const initialValues = {
@@ -33,6 +34,7 @@ const initialValues = {
   mobile: STRING_DATA.EMPTY,
   subject: STRING_DATA.EMPTY,
   message: STRING_DATA.EMPTY,
+  auctionLink: STRING_DATA.EMPTY,
 };
 
 const ContactForm = () => {
@@ -66,6 +68,7 @@ const ContactForm = () => {
       subject: string;
       mobile: string;
       name: string;
+      auctionLink: string;
     },
     helpers: FormikHelpers<FormikValues>
   ) => {
@@ -168,6 +171,17 @@ const ContactForm = () => {
                       label="Message *"
                       placeholder="Enter message"
                     />
+
+                    <TextField
+                      value={values?.auctionLink}
+                      type="text"
+                      name="auctionLink"
+                      label="Auction Link (optional)"
+                      placeholder="Enter auction link"
+                    />
+                    <p className="text-sm text-gray-600 -mt-2">
+                      If you want to enquire about a particular auction please provide the link
+                    </p>
 
                     {respError ? (
                       <span className="text-center text-sm text-red-700">
