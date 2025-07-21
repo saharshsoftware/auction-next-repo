@@ -67,6 +67,7 @@ export interface User {
   createdAt: Date;
   updatedAt: Date;
   name: null;
+  interestedCities?: string;
 }
 
 export interface IBanks {

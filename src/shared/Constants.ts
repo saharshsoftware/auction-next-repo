@@ -44,6 +44,7 @@ export const STRING_DATA = {
   DELETE_ACCOUNT: "Delete account",
   EDIT_ALERT: "Edit alert",
   UPDATE_PASSWORD: "Update password",
+  EDIT_PROFILE: "Edit Profile",
   YOUR_ALERTS: "Your alerts",
   TOP_ASSETS: "Top assets",
   ASSETS: "Assets",
@@ -203,6 +204,7 @@ export const ERROR_MESSAGE = {
   MOBILE_REQUIRED: "Mobile number is required",
   MAX_PHONE_LENGTH: "Phone number should not exceed 10 digits",
   VALID_EMAIL: "Please enter a valid email address",
+  INTERESTED_CITIES_REQUIRED: "Interested cities are required",
 };
 
 export const NAV_LINKS = [
@@ -1133,6 +1135,7 @@ export const REACT_QUERY = {
   CATEGORY_ASSETS_TYPE: "Category-Assets-type",
   SURVEYS: "Surveys",
   USERS_SURVEYS: "Users-surveys",
+  USER_PROFILE: "User-profile",
 };
 
 export const SAMPLE_CITY = [

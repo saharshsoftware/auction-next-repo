@@ -1,10 +1,23 @@
 import { setUserIdInDataLayer } from "@/helpers/WindowHelper";
 import { ILogin, ISignup } from "@/interfaces/Auth";
 import { API_BASE_URL, API_ENPOINTS } from "@/services/api";
-import { deleteRequest, postRequest } from "@/shared/Axios";
+import { deleteRequest, getRequest, postRequest, putRequest } from "@/shared/Axios";
 import { COOKIES } from "@/shared/Constants";
 import { IUserData } from "@/types";
 import { setCookie, deleteCookie } from "cookies-next";
+
+export const getUserDetails = async () => {
+  const URL = API_BASE_URL + API_ENPOINTS.USER_ME;
+  try {
+    const { data } = await getRequest({
+      API: URL,
+    });
+    return data;
+  }
+  catch (error: any) {
+    throw error.response.data?.error;
+  }
+};
 
 export const signupClient = async (payload: ISignup) => {
   const { formData } = payload;
@@ -77,6 +90,21 @@ export const deleteUserAccount = async () => {
     return data;
   } catch (error: any) {
     throw error.response.data?.error;
+  }
+};
+
+export const updateProfileServiceClient = async (body: {
+  interestedCities: string;
+}) => {
+  try {
+    const URL = API_BASE_URL + API_ENPOINTS.USER_ME;
+    const { data } = await putRequest({
+      API: URL,
+      DATA: body,
+    });
+    return data;
+  } catch (error: any) {
+    return error.response.data;
   }
 };
 

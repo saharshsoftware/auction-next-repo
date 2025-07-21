@@ -44,7 +44,7 @@ const initialValues = {
   email: STRING_DATA.EMPTY,
   password: STRING_DATA.EMPTY,
   phoneNumber: STRING_DATA.EMPTY,
-  cities: STRING_DATA.EMPTY,
+  interestedCities: STRING_DATA.EMPTY,
 };
 
 export default function SignupComp(props: {
@@ -104,15 +104,15 @@ export default function SignupComp(props: {
   const handleRegister = async (values: FormikValues) => {
     setFormValues(values); // Save the form values
     const locations =
-    values?.location?.length > 0
-      ? getCityNamesCommaSeparated(values?.location as unknown as any[])
+    values?.interestedCities?.length > 0
+      ? getCityNamesCommaSeparated(values?.interestedCities as unknown as any[])
       : "";
     const formData = {
       username: values.phoneNumber,
       email: values.email,
       password: values.password,
       name: values.name,
-      cities: locations,
+      interestedCities: locations,
     };
     console.log(formData, "formdata");
     mutate({ formData });
@@ -185,14 +185,14 @@ export default function SignupComp(props: {
                   </TextField>
                   <TextField
                       label={"Interested Cities (Upto 5 cites) "}
-                      name={"cities"}
+                      name={"interestedCities"}
                       hasChildren={true}
-                      value={values?.cities}
+                      value={values?.interestedCities}
                     >
-                      <Field name="cities">
+                      <Field name="interestedCities">
                         {() => (
                           <ReactSelectDropdown
-                            defaultValue={values?.cities}
+                            defaultValue={values?.interestedCities}
                             loading={isLoadingLocation}
                             options={citiesList}
                             placeholder="E.g., Jaipur, Jodhpur, Udaipur"
@@ -202,7 +202,7 @@ export default function SignupComp(props: {
                             hidePlaceholder={true}
                             onChange={(e) => {
                               setFieldValue(
-                                "cities",
+                                "interestedCities",
                                 e.label === STRING_DATA.ALL
                                   ? getEmptyAllObject()
                                   : e
