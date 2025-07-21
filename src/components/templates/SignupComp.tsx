@@ -1,22 +1,23 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import TextField from "../../components/atoms/TextField";
 import CustomFormikForm from "../../components/atoms/CustomFormikForm";
 import ActionButton from "../../components/atoms/ActionButton";
-import { ERROR_MESSAGE, STRING_DATA } from "../../shared/Constants";
+import { ERROR_MESSAGE, getEmptyAllObject, REACT_QUERY, STRING_DATA } from "../../shared/Constants";
 import * as Yup from "yup";
 import ActionCheckbox from "../atoms/ActionCheckbox";
 import { Field, Form, FormikValues } from "formik";
 
-import { signup } from "@/server/actions";
-import { useMutation } from "@tanstack/react-query";
-import { handleOnSettled } from "@/shared/Utilies";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { getCityNamesCommaSeparated, sanitizeReactSelectOptions } from "@/shared/Utilies";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { IUserData } from "@/types";
-import { signupClient, signupCustomClient } from "@/services/auth";
+import { ILocations } from "@/types";
+import { signupCustomClient } from "@/services/auth";
 import OtpVerificationForm from "./OtpVerificationForm";
+import ReactSelectDropdown from "../atoms/ReactSelectDropdown";
+import { fetchLocationClient } from "@/services/location";
 
 const validationSchema = Yup.object({
   name: Yup.string().trim().required(ERROR_MESSAGE.NAME_REQUIRED),
@@ -43,6 +44,7 @@ const initialValues = {
   email: STRING_DATA.EMPTY,
   password: STRING_DATA.EMPTY,
   phoneNumber: STRING_DATA.EMPTY,
+  interestedCities: STRING_DATA.EMPTY,
 };
 
 export default function SignupComp(props: {
@@ -62,33 +64,26 @@ export default function SignupComp(props: {
   const [respError, setRespError] = useState<string>("");
   const [otpVerification, setOtpVerification] = useState(false);
   const [email, setEmail] = useState("");
+  const { data: locationOptions, isLoading: isLoadingLocation } = useQuery({
+    queryKey: [REACT_QUERY.AUCTION_LOCATION],
+    queryFn: async () => {
+      const res = (await fetchLocationClient()) as unknown as ILocations[];
+      const responseData = res ?? [];
+      const updatedData = [...sanitizeReactSelectOptions(responseData)];
+      return updatedData ?? [];
+    },
+  });
 
-  // Mutations
-  // const { mutate, isPending, error } = useMutation({
-  //   mutationFn: signupClient,
-  //   onSettled: async (data) => {
-  //     console.log(data);
-  //     const response = {
-  //       data,
-  //       success: (data: IUserData) => {
-  //         // console.log(data);
-  //         if (isAuthModal) {
-  //           closeModal?.();
-  //           return;
-  //         }
-  //         router.push(ROUTE_CONSTANTS.DASHBOARD);
-  //       },
-  //       fail: (error: any) => {
-  // const { message } = error;
-  // setRespError(message);
-  //       },
-  //     };
-  //     handleOnSettled(response);
-  //   },
-  //   onError: (error) => {
-  //     console.log(error, "error");
-  //   },
-  // });
+  const [citiesList, setCitiesList] = useState<ILocations[]>(locationOptions ?? []);
+
+  useEffect(() => {
+    if (locationOptions) {
+      const updatedData = locationOptions.filter(
+        (item: ILocations) => item.type === "city"
+      );
+      setCitiesList(updatedData);
+    }
+  }, [locationOptions]);
 
   const { mutate, isPending } = useMutation({
     mutationFn: signupCustomClient,
@@ -108,11 +103,16 @@ export default function SignupComp(props: {
 
   const handleRegister = async (values: FormikValues) => {
     setFormValues(values); // Save the form values
+    const locations =
+    values?.interestedCities?.length > 0
+      ? getCityNamesCommaSeparated(values?.interestedCities as unknown as any[])
+      : "";
     const formData = {
       username: values.phoneNumber,
       email: values.email,
       password: values.password,
       name: values.name,
+      interestedCities: locations,
     };
     console.log(formData, "formdata");
     mutate({ formData });
@@ -183,6 +183,35 @@ export default function SignupComp(props: {
                       )}
                     </Field>
                   </TextField>
+                  <TextField
+                      label={"Interested Cities (Upto 5 cites) "}
+                      name={"interestedCities"}
+                      hasChildren={true}
+                      value={values?.interestedCities}
+                    >
+                      <Field name="interestedCities">
+                        {() => (
+                          <ReactSelectDropdown
+                            defaultValue={values?.interestedCities}
+                            loading={isLoadingLocation}
+                            options={citiesList}
+                            placeholder="E.g., Jaipur, Jodhpur, Udaipur"
+                            name="partner-location"
+                            customClass="w-full"
+                            isMulti={true}
+                            hidePlaceholder={true}
+                            onChange={(e) => {
+                              setFieldValue(
+                                "interestedCities",
+                                e.label === STRING_DATA.ALL
+                                  ? getEmptyAllObject()
+                                  : e
+                              );
+                            }}
+                          />
+                        )}
+                      </Field>
+                    </TextField>
                   <TextField
                     value={values.password}
                     type={!showPassword ? "password" : "text"}

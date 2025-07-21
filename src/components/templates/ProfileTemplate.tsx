@@ -1,19 +1,14 @@
 "use client";
-// import ShowLabelValue from "@/components/atoms/ShowLabelValue";
-import dynamic from "next/dynamic";
-const ShowLabelValue = dynamic(
-  () => import("@/components/atoms/ShowLabelValue"),
-  {
-    ssr: false,
-  }
-);
-import { COOKIES, STRING_DATA } from "@/shared/Constants";
-import { getCookie } from "cookies-next";
-import { useEffect, useState } from "react";
-import ActionButton from "../atoms/ActionButton";
+import ShowLabelValue from "@/components/atoms/ShowLabelValue";
+import { STRING_DATA } from "@/shared/Constants";
 import DeleteUserConfirmationModal from "../ modals/DeleteUserConfirmationModal";
 import useModal from "@/hooks/useModal";
 import UpdatePasswordModal from "../ modals/UpdatePasswordModal";
+import EditProfileModal from "../ modals/EditProfileModal";
+import { useUserProfile } from "@/hooks/useUserProfile";
+import FallbackLoading from "../atoms/FallbackLoading";
+import { faEdit } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function ProfileTemplate() {
   const { showModal, openModal, hideModal } = useModal();
@@ -22,27 +17,34 @@ export default function ProfileTemplate() {
     openModal: openModalDelete,
     hideModal: hideModalDelete,
   } = useModal();
+  const {
+    showModal: showModalEdit,
+    openModal: openModalEdit,
+    hideModal: hideModalEdit,
+  } = useModal();
 
-  const userData = getCookie(COOKIES.AUCTION_USER_KEY)
-    ? JSON.parse(getCookie(COOKIES.AUCTION_USER_KEY) ?? "")
-    : null;
+  const { userProfileData: userData, isLoading, error, refetch: refetchUserProfile } = useUserProfile();
 
-  return (
-    <>
-      {/* Delete User*/}
-      {openModalDelete && (
-        <DeleteUserConfirmationModal
-          openModal={openModalDelete}
-          hideModal={hideModalDelete}
-        />
-      )}
+  const renderUserProfile = () => {
+    if (isLoading) {
+      return <FallbackLoading />;
+    }
+    if (error) {
+      return <div>Error: {error.message}</div>;
+    }
 
-      {/* Delete User*/}
-      <UpdatePasswordModal openModal={openModal} hideModal={hideModal} />
+    return (
       <div className="flex flex-col gap-4">
         <div>
           <div className="custom-common-header-class">
-            {STRING_DATA.PROFILE}
+            <div className="flex items-center justify-between gap-2">
+              <div className="text-white">
+                {STRING_DATA.PROFILE}
+              </div>
+              <div className="text-white text-sm font-bold cursor-pointer" onClick={showModalEdit}>
+                <FontAwesomeIcon icon={faEdit} size="lg" />
+              </div>
+            </div>
           </div>
           <div className="custom-common-header-detail-class">
             <div className="flex flex-col gap-4 p-4  w-full min-h-12">
@@ -58,6 +60,10 @@ export default function ProfileTemplate() {
                 heading={"Phone number"}
                 value={userData?.username ?? "-"}
               />
+              <ShowLabelValue
+                heading={"Interested Cities"}
+                value={userData?.interestedCities ?? "-"}
+              />
             </div>
           </div>
         </div>
@@ -70,6 +76,41 @@ export default function ProfileTemplate() {
           </div>
         </div>
       </div>
+    )
+  }
+
+  return (
+    <>
+      {/* Delete User*/}
+      {openModalDelete && (
+        <DeleteUserConfirmationModal
+          openModal={openModalDelete}
+          hideModal={hideModalDelete}
+        />
+      )}
+
+      {/* Edit Profile */}
+      {openModalEdit && (
+        <EditProfileModal
+          openModal={openModalEdit}
+          hideModal={hideModalEdit}
+          currentInterestedCities={userData?.interestedCities}
+          refetchUserProfile={refetchUserProfile}
+        />
+      )}
+
+      {/* Update Password */}
+      <UpdatePasswordModal openModal={openModal} hideModal={hideModal} />
+      
+      {/* Delete User */}
+      {openModalDelete && (
+        <DeleteUserConfirmationModal
+          openModal={openModalDelete}
+          hideModal={hideModalDelete}
+        />
+      )}
+      
+      {renderUserProfile()}
     </>
   );
 }
