@@ -13,6 +13,7 @@ import { getEmptyAllObject, STORAGE_KEYS, STRING_DATA } from "./Constants";
 import { ROUTE_CONSTANTS } from "./Routes";
 import MarkdownIt from "markdown-it";
 import { CONFIG } from "@/utilies/Config";
+import { USER_TYPE } from "@/types.d";
 
 export const getDataFromLocalStorage = () => {
   const storedData = localStorage.getItem(STORE_KEY);
@@ -677,6 +678,10 @@ export const getCityNamesCommaSeparated = (cities: any[]): string => {
   return cities.map((city) => city.name).join(", ");
 };
 
+export const getCategoryNamesCommaSeparated = (categories: any[]): string => {
+  return categories.map((category) => category.name).join(", ");
+};
+
 export const slugify = (text: string) =>
   text.toLowerCase().trim().replace(/\s+/g, "-");
 
@@ -712,3 +717,10 @@ export function stripHtmlTags(html: string): string {
     .replace(/\s+/g, " ")
     .trim();
 }
+
+
+export const userTypeOptions = [
+  { value: USER_TYPE.REGULAR, label: STRING_DATA.REGULAR, name: USER_TYPE.REGULAR },
+  { value: USER_TYPE.INVESTOR, label: STRING_DATA.INVESTOR, name: USER_TYPE.INVESTOR },
+  { value: USER_TYPE.BROKER, label: STRING_DATA.BROKER, name: USER_TYPE.BROKER },
+];

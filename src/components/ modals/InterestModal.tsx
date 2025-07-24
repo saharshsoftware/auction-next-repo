@@ -258,6 +258,7 @@ const InterestModal = (props: IInterestModal) => {
         openModal={openModal}
         isCrossVisible={!myToken ? true : false}
         onClose={hideModal}
+        useStickyHeader={true}
         modalHeading={selectedHeading()}
         customWidthClass="lg:w-[40%] md:w-4/5 sm:w-3/5 w-11/12"
       >

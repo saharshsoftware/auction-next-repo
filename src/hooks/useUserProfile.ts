@@ -7,7 +7,7 @@ import { REACT_QUERY } from '@/shared/Constants';
 import { QueryObserverResult, useQuery } from '@tanstack/react-query';
 
 interface IUserProfile {
-  userProfileData: Pick<User, "name" | "email" | "username" | "interestedCities"> | null;
+  userProfileData: Pick<User, "name" | "email" | "username" | "interestedCities" | "interestedCategories" | "userType"> | null;
   isLoading: boolean;
   error: Error | null;
   refetch: () => Promise<QueryObserverResult<any, Error>>;

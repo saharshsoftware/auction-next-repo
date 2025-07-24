@@ -15,4 +15,5 @@ export interface IReactSelectDropdown {
   isMulti?: boolean;
   maxMultiSelectOptions?: number;
   hidePlaceholder?: boolean;
+  isSearchable?: boolean;
 }

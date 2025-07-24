@@ -57,6 +57,12 @@ export interface IUserData {
   user: User;
 }
 
+export enum USER_TYPE {
+  REGULAR = "REGULAR",
+  INVESTOR = "INVESTOR",
+  BROKER = "BROKER",
+}
+
 export interface User {
   id: string;
   username: string;
@@ -68,6 +74,8 @@ export interface User {
   updatedAt: Date;
   name: null;
   interestedCities?: string;
+  interestedCategories?: string;
+  userType?: USER_TYPE;
 }
 
 export interface IBanks {
