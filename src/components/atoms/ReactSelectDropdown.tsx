@@ -15,6 +15,7 @@ const ReactSelectDropdown: React.FC<IReactSelectDropdown> = (props) => {
     isMulti = false,
     hidePlaceholder = false,
     maxMultiSelectOptions = 5,
+    isSearchable = true,
   } = props;
   const [mounted, setMounted] = useState(false);
 
@@ -77,7 +78,7 @@ const ReactSelectDropdown: React.FC<IReactSelectDropdown> = (props) => {
           isMulti={isMulti}
           isDisabled={loading}
           name={name}
-          isSearchable={true}
+          isSearchable={isSearchable}
           isClearable={clearable}
           value={defaultValue ?? null}
           onChange={handleChange}

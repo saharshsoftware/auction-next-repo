@@ -9,6 +9,7 @@ import { useUserProfile } from "@/hooks/useUserProfile";
 import FallbackLoading from "../atoms/FallbackLoading";
 import { faEdit } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { USER_TYPE } from "@/types.d";
 
 export default function ProfileTemplate() {
   const { showModal, openModal, hideModal } = useModal();
@@ -24,6 +25,19 @@ export default function ProfileTemplate() {
   } = useModal();
 
   const { userProfileData: userData, isLoading, error, refetch: refetchUserProfile } = useUserProfile();
+
+  const renderUserType = (userType: USER_TYPE | undefined) => {
+    if (userType === USER_TYPE.INDIVIDUAL) {
+      return STRING_DATA.INDIVIDUAL;
+    }
+    if (userType === USER_TYPE.INVESTOR) {
+      return STRING_DATA.INVESTOR;
+    }
+    if (userType === USER_TYPE.BROKER) {
+      return STRING_DATA.BROKER;
+    }
+    return "-";
+  }
 
   const renderUserProfile = () => {
     if (isLoading) {
@@ -64,6 +78,20 @@ export default function ProfileTemplate() {
                 heading={"Interested Cities"}
                 value={userData?.interestedCities ?? "-"}
               />
+              <ShowLabelValue
+                heading={"Interested Categories"}
+                value={userData?.interestedCategories ?? "-"}
+              />
+              <ShowLabelValue
+                heading={"User Type"}
+                hasChildren={true}
+              >
+                <div className="flex items-center gap-2">
+                  <div className="text-sm font-medium text-gray-700">
+                    {renderUserType(userData?.userType)}
+                  </div>
+                </div>
+              </ShowLabelValue>
             </div>
           </div>
         </div>
@@ -95,6 +123,8 @@ export default function ProfileTemplate() {
           openModal={openModalEdit}
           hideModal={hideModalEdit}
           currentInterestedCities={userData?.interestedCities}
+          currentInterestedCategories={userData?.interestedCategories}
+          currentUserType={userData?.userType}
           refetchUserProfile={refetchUserProfile}
         />
       )}

@@ -104,7 +104,7 @@ export const updateProfileServiceClient = async (body: {
     });
     return data;
   } catch (error: any) {
-    return error.response.data;
+    throw error.response.data?.error;
   }
 };
 

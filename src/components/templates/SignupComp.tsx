@@ -9,15 +9,17 @@ import ActionCheckbox from "../atoms/ActionCheckbox";
 import { Field, Form, FormikValues } from "formik";
 
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { getCityNamesCommaSeparated, sanitizeReactSelectOptions } from "@/shared/Utilies";
+import { getCityNamesCommaSeparated, getCategoryNamesCommaSeparated, sanitizeReactSelectOptions, userTypeOptions } from "@/shared/Utilies";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ILocations } from "@/types";
+import { ICategoryCollection, ILocations } from "@/types";
 import { signupCustomClient } from "@/services/auth";
 import OtpVerificationForm from "./OtpVerificationForm";
 import ReactSelectDropdown from "../atoms/ReactSelectDropdown";
+import UserTypeRadio from "../atoms/UserTypeRadio";
 import { fetchLocationClient } from "@/services/location";
+import { getCategoryBoxCollectionClient } from "@/services/auction";
 
 const validationSchema = Yup.object({
   name: Yup.string().trim().required(ERROR_MESSAGE.NAME_REQUIRED),
@@ -45,6 +47,8 @@ const initialValues = {
   password: STRING_DATA.EMPTY,
   phoneNumber: STRING_DATA.EMPTY,
   interestedCities: STRING_DATA.EMPTY,
+  interestedCategories: STRING_DATA.EMPTY,
+  userType: userTypeOptions[0],
 };
 
 export default function SignupComp(props: {
@@ -70,6 +74,16 @@ export default function SignupComp(props: {
       const res = (await fetchLocationClient()) as unknown as ILocations[];
       const responseData = res ?? [];
       const updatedData = [...sanitizeReactSelectOptions(responseData)];
+      return updatedData ?? [];
+    },
+  });
+
+  const { data: categoryOptions, isLoading: isLoadingCategory } = useQuery({
+    queryKey: [REACT_QUERY.CATEGORY_BOX_COLLECITON_OPTIONS],
+    queryFn: async () => {
+      const res =
+        (await getCategoryBoxCollectionClient()) as unknown as ICategoryCollection[];
+      const updatedData = [...sanitizeReactSelectOptions(res)];
       return updatedData ?? [];
     },
   });
@@ -104,15 +118,23 @@ export default function SignupComp(props: {
   const handleRegister = async (values: FormikValues) => {
     setFormValues(values); // Save the form values
     const locations =
-    values?.interestedCities?.length > 0
-      ? getCityNamesCommaSeparated(values?.interestedCities as unknown as any[])
-      : "";
+      values?.interestedCities?.length > 0
+        ? getCityNamesCommaSeparated(values?.interestedCities as unknown as any[])
+        : "";
+    const categories =
+      values?.interestedCategories?.length > 0
+        ? getCategoryNamesCommaSeparated(values?.interestedCategories as unknown as any[])
+        : "";
+
+    const userType = values.userType.value || userTypeOptions[0].value;
     const formData = {
       username: values.phoneNumber,
       email: values.email,
       password: values.password,
       name: values.name,
       interestedCities: locations,
+      interestedCategories: categories,
+      userType: userType,
     };
     console.log(formData, "formdata");
     mutate({ formData });
@@ -183,7 +205,35 @@ export default function SignupComp(props: {
                       )}
                     </Field>
                   </TextField>
+
                   <TextField
+                    value={values.password}
+                    type={!showPassword ? "password" : "text"}
+                    name="password"
+                    label="Password"
+                    placeholder="Enter password"
+                    className="form-control1"
+                  />
+                  <ActionCheckbox
+                    checkboxLabel={"Show password"}
+                    checked={showPassword}
+                    onChange={() => setShowPassword((prev) => !prev)}
+                  />
+                  <TextField
+                    value={values.confirmPassword}
+                    type="password"
+                    name="confirmPassword"
+                    label="Confirm password"
+                    placeholder="Enter confirm password"
+                  />
+
+
+                  {/* Optional Fields Section */}
+                  <div className="border-t pt-4 mt-4 space-y-4">
+                    <h3 className="text-lg font-semibold mb-4 text-gray-700">
+                      {STRING_DATA.HELPS_US_PERSONALIZE_RECOMMENDATIONS_FOR_YOU}
+                    </h3>
+                    <TextField
                       label={"Interested Cities (Upto 5 cites) "}
                       name={"interestedCities"}
                       hasChildren={true}
@@ -212,26 +262,45 @@ export default function SignupComp(props: {
                         )}
                       </Field>
                     </TextField>
-                  <TextField
-                    value={values.password}
-                    type={!showPassword ? "password" : "text"}
-                    name="password"
-                    label="Password"
-                    placeholder="Enter password"
-                    className="form-control1"
-                  />
-                  <ActionCheckbox
-                    checkboxLabel={"Show password"}
-                    checked={showPassword}
-                    onChange={() => setShowPassword((prev) => !prev)}
-                  />
-                  <TextField
-                    value={values.confirmPassword}
-                    type="password"
-                    name="confirmPassword"
-                    label="Confirm password"
-                    placeholder="Enter confirm password"
-                  />
+                    <TextField
+                      label={STRING_DATA.INTERESTED_CATEGORIES}
+                      name={"interestedCategories"}
+                      hasChildren={true}
+                      value={values?.interestedCategories}
+                    >
+                      <Field name="interestedCategories">
+                        {() => (
+                          <ReactSelectDropdown
+                            defaultValue={values?.interestedCategories}
+                            loading={isLoadingCategory}
+                            options={categoryOptions}
+                            placeholder="E.g., Residential, Commercial, Industrial"
+                            name="partner-categories"
+                            customClass="w-full"
+                            isMulti={true}
+                            hidePlaceholder={true}
+                            onChange={(e) => {
+                              setFieldValue("interestedCategories", e);
+                            }}
+                          />
+                        )}
+                      </Field>
+                    </TextField>
+
+                    <TextField
+                      label="Who are you?"
+                      name={"userType"}
+                      hasChildren={true}
+                      value={values?.userType}
+                    >
+                      <Field name="userType">
+                        {() => (
+                          <UserTypeRadio value={values?.userType} onChange={(e) => setFieldValue("userType", e)} />
+                        )}
+                      </Field>
+                    </TextField>
+                  </div>
+
                   {respError ? (
                     <span className="text-center text-sm text-red-700">
                       {respError}
