@@ -58,7 +58,7 @@ export interface IUserData {
 }
 
 export enum USER_TYPE {
-  REGULAR = "REGULAR",
+  INDIVIDUAL = "INDIVIDUAL",
   INVESTOR = "INVESTOR",
   BROKER = "BROKER",
 }

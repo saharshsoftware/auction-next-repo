@@ -720,7 +720,7 @@ export function stripHtmlTags(html: string): string {
 
 
 export const userTypeOptions = [
-  { value: USER_TYPE.REGULAR, label: STRING_DATA.REGULAR, name: USER_TYPE.REGULAR },
+  { value: USER_TYPE.INDIVIDUAL, label: STRING_DATA.INDIVIDUAL, name: USER_TYPE.INDIVIDUAL },
   { value: USER_TYPE.INVESTOR, label: STRING_DATA.INVESTOR, name: USER_TYPE.INVESTOR },
   { value: USER_TYPE.BROKER, label: STRING_DATA.BROKER, name: USER_TYPE.BROKER },
 ];

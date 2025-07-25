@@ -48,6 +48,7 @@ const initialValues = {
   phoneNumber: STRING_DATA.EMPTY,
   interestedCities: STRING_DATA.EMPTY,
   interestedCategories: STRING_DATA.EMPTY,
+  userType: userTypeOptions[0],
 };
 
 export default function SignupComp(props: {
@@ -150,7 +151,7 @@ export default function SignupComp(props: {
           className={`${isAuthModal ? "" : "common-auth-section-class"} my-4`}
         >
           <CustomFormikForm
-            initialValues={{...formValues, userType: userTypeOptions[0]}}
+            initialValues={formValues}
             validationSchema={validationSchema}
             handleSubmit={handleRegister}
             wantToUseFormikEvent={true}

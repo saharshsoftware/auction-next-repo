@@ -27,8 +27,8 @@ export default function ProfileTemplate() {
   const { userProfileData: userData, isLoading, error, refetch: refetchUserProfile } = useUserProfile();
 
   const renderUserType = (userType: USER_TYPE | undefined) => {
-    if (userType === USER_TYPE.REGULAR) {
-      return STRING_DATA.REGULAR;
+    if (userType === USER_TYPE.INDIVIDUAL) {
+      return STRING_DATA.INDIVIDUAL;
     }
     if (userType === USER_TYPE.INVESTOR) {
       return STRING_DATA.INVESTOR;
