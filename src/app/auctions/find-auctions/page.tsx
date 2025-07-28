@@ -102,6 +102,7 @@ export default async function Page({
       reservePrice: filterQueryData?.price ?? [],
       locationType: filterQueryData?.location?.type ?? "",
       page: filterQueryData?.page?.toString() ?? "1",
+      serviceProvider: filterQueryData?.serviceProvider ?? "",
     }),
     fetchPopularLocations(),
   ]);

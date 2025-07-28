@@ -9,6 +9,7 @@ import {
   sanitizeStrapiData,
   sanitizedAuctionData,
   sanitizedAuctionDetail,
+  transformProperty,
 } from "@/shared/Utilies";
 import { IAssetType, IAuction, ICategoryCollection } from "@/types";
 import { COOKIES, FILTER_API_REVALIDATE_TIME } from "@/shared/Constants";
@@ -94,10 +95,11 @@ export const getAuctionDetail = async ({ slug }: { slug: string }) => {
   try {
     const filter = `?filters[slug][$eq]=${slug}`;
     const URL = API_BASE_URL + API_ENPOINTS.NOTICES + `${filter}`;
-
+    console.log(URL, "INFO-getAuctionDetail");
     const { data } = await getRequest({ API: URL });
     // console.log(data, ">>detail")
-    const sendResponse = sanitizedAuctionDetail(data.data?.[0]) as IAuction;
+    // const sendResponse = sanitizedAuctionDetail(data.data?.[0]) as IAuction;
+    const sendResponse = transformProperty(data.data?.[0]) as IAuction;
     return sendResponse;
   } catch (e) {
     console.log(e, "auctionDetail error auction detail");
@@ -333,6 +335,7 @@ export const getAuctionsServer = async (payload: {
   keyword?: string;
   propertyType?: string;
   locationType?: string;
+  serviceProvider?: string;
 }) => {
   "use server";
   let URL;
@@ -346,6 +349,7 @@ export const getAuctionsServer = async (payload: {
       keyword,
       propertyType,
       locationType,
+      serviceProvider,
     } = payload;
     const pageSize = 10;
 
@@ -389,22 +393,32 @@ export const getAuctionsServer = async (payload: {
         filter += `filters[$and][${index++}][reservePrice][$gte]=${reservePrice[0]
           }&filters[$and][${index++}][reservePrice][$lte]=${reservePrice[1]}&`;
       }
+
+      if (serviceProvider) {
+        filter += `filters[$and][${index++}][serviceProvider][$eq]=${encodeURI(serviceProvider)}&`;
+      }
     }
-    const requiredkeys = generateQueryParamString([
-      "bankName",
-      "slug",
-      "assetCategory",
-      "title",
-      "estimatedMarketPrice",
-      "assetType",
-      "reservePrice",
-      "auctionDate",
-      "branchName",
-    ]);
-    URL =
-      API_ENPOINTS.NOTICES +
-      filter.slice(0, -1) +
-      `&${requiredkeys}&sort=auctionDate:desc`;
+    // const requiredkeys = generateQueryParamString([
+    //   "bankName",
+    //   "slug",
+    //   "assetCategory",
+    //   "title",
+    //   "estimatedMarketPrice",
+    //   "assetType",
+    //   "reservePrice",
+    //   "auctionDate",
+    //   "branchName",
+    //   "serviceProvider",
+    // ]);
+    // URL =
+    //   API_ENPOINTS.NOTICES +
+    //   filter.slice(0, -1) +
+    //   `&${requiredkeys}&sort=auctionDate:desc`;
+
+      URL =
+        API_ENPOINTS.NOTICES +
+        filter.slice(0, -1) +
+        `&sort=auctionDate:desc`;
     const UPDATE_URL = API_BASE_URL + URL;
     console.log({ UPDATE_URL }, "auction-detail");
     const { data } = await getRequest({ API: URL });

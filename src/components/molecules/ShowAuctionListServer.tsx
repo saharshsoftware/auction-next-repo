@@ -1,4 +1,6 @@
+'use client'
 import AuctionCard from "@/components/atoms/AuctionCard";
+import { AuctionCard2 } from "@/components/atoms/AuctionCard2";
 import PaginationCompServer, {
   ILocalFilter,
 } from "@/components/atoms/PaginationCompServer";
@@ -15,6 +17,7 @@ const ShowAuctionListServer = ({
   activePage: number;
   filterData: ILocalFilter;
 }) => {
+  console.table(auctions);
   return (
     <div className="flex flex-col gap-4 w-full">
       {auctions.length === 0 ? (
@@ -24,7 +27,7 @@ const ShowAuctionListServer = ({
       ) : (
         <>
           {auctions.map((item, index) => (
-            <AuctionCard key={index} item={item} />
+            <AuctionCard2 key={index} property={item} />
           ))}
           <PaginationCompServer
             totalPage={totalPages}

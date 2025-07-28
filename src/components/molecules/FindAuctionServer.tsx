@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilter, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import TextField from "../atoms/TextField";
 import RangeSliderCustom from "../atoms/RangeSliderCustom";
-import { formatPrice } from "@/shared/Utilies";
+import { formatPrice, SERVICE_PROVIDER_OPTIONS } from "@/shared/Utilies";
 import useResize from "@/hooks/useResize";
 import {
   getEmptyAllObject,
@@ -31,6 +31,7 @@ interface FindAuctionProps {
   selectedBank?: IBanks;
   selectedLocation?: ILocations;
   selectedPrice?: number[];
+  selectedServiceProvider?: string;
 }
 
 const gridElementClass = () => "lg:col-span-2  col-span-full";
@@ -47,6 +48,7 @@ const FindAuction: React.FC<FindAuctionProps> = ({
   selectedBank = getEmptyAllObject(),
   selectedLocation = getEmptyAllObject(),
   selectedPrice = [RANGE_PRICE.MIN, RANGE_PRICE.MAX],
+  selectedServiceProvider = getEmptyAllObject(),
 }) => {
   const router = useRouter();
   const { setDataInQueryParamsMethod } = useCustomParamsData();
@@ -66,6 +68,7 @@ const FindAuction: React.FC<FindAuctionProps> = ({
     bank: selectedBank || getEmptyAllObject(),
     propertyType: selectedAsset || getEmptyAllObject(),
     price: selectedPrice || [RANGE_PRICE.MIN, RANGE_PRICE.MAX],
+    serviceProvider: selectedServiceProvider || getEmptyAllObject(),
   };
 
   const handleBack = () => {
@@ -85,7 +88,7 @@ const FindAuction: React.FC<FindAuctionProps> = ({
 
   const handleSubmit = (values: any) => {
     console.log(values, "values123");
-    const { category, price, bank, location, propertyType } = values;
+    const { category, price, bank, location, propertyType, serviceProvider } = values;
     const { type, name } = location ?? {};
     const filter = {
       page: 1,
@@ -100,6 +103,11 @@ const FindAuction: React.FC<FindAuctionProps> = ({
         propertyType?.label === STRING_DATA.ALL
           ? STRING_DATA.EMPTY
           : propertyType,
+
+      serviceProvider:
+        serviceProvider?.label === STRING_DATA.ALL
+          ? STRING_DATA.EMPTY
+          : serviceProvider.value,
     };
     //   console.log(filter);
     //   setFilter(filter);
@@ -144,6 +152,7 @@ const FindAuction: React.FC<FindAuctionProps> = ({
         bank: selectedBank,
         location: selectedLocation,
         price: selectedPrice,
+        serviceProvider: selectedServiceProvider,
       }}
       enableReinitialize={true}
       onSubmit={handleSubmit}
@@ -211,21 +220,40 @@ const FindAuction: React.FC<FindAuctionProps> = ({
                 </TextField>
               </div>
               <div className={gridElementClass()}>
-                <TextField label="Bank" name="bank" hasChildren>
-                  <Field name="bank">
+                <TextField
+                  label="Location (City & State)"
+                  name="location"
+                  hasChildren
+                >
+                  <Field name="location">
                     {() => (
                       <ReactSelectDropdown
-                        name="bank"
-                        options={banks}
-                        placeholder={"Bank"}
-                        defaultValue={values.bank}
-                        onChange={(value) => setFieldValue("bank", value)}
+                        name="location"
+                        options={locations}
+                        placeholder={"Location"}
+                        defaultValue={values.location}
+                        onChange={(value) => setFieldValue("location", value)}
                       />
                     )}
                   </Field>
                 </TextField>
               </div>
-              <div className={`lg:col-span-4  col-span-full`}>
+              <div className={gridElementClass()}>
+                <TextField label="Service Provider" name="serviceProvider" hasChildren>
+                  <Field name="serviceProvider">
+                    {() => (
+                      <ReactSelectDropdown
+                        name="serviceProvider"
+                        options={SERVICE_PROVIDER_OPTIONS}
+                        placeholder={"Service Provider"}
+                        defaultValue={values.serviceProvider}
+                        onChange={(value) => setFieldValue("serviceProvider", value)}
+                      />
+                    )}
+                  </Field>
+                </TextField>
+              </div>
+              <div className={gridElementClass()}>
                 <TextField label="Price range" name="price" hasChildren>
                   <Field name="price">
                     {() => (

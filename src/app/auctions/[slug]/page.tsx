@@ -17,6 +17,7 @@ import AddToWishlist from "@/components/templates/AddToWishlist";
 import { cookies } from "next/headers";
 import { COOKIES } from "@/shared/Constants";
 import { fetchFavoriteList } from "@/server/actions/favouriteList";
+import { AuctionDetailPage } from "@/components/templates/AuctionDetail2";
 
 async function getAuctionDetailData(slug: string) {
   const res = await getAuctionDetail({ slug });
@@ -163,7 +164,7 @@ export default async function Page({
         <div className="common-section">
           <div className="grid grid-cols-12 gap-4 py-4">
             <div className="lg:col-span-8 col-span-full ">
-              <AuctionDetail auctionDetail={auctionDetail} slug={slug} isInterested={isInterested} />
+              <AuctionDetailPage auctionDetail={auctionDetail} slug={slug} isInterested={isInterested} />
             </div>
             <div className="lg:col-span-4 col-span-full">
               {renderWishlistComponent()}

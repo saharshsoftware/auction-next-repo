@@ -50,6 +50,30 @@ export interface IAuction {
   contactNo: string;
   auctionId: string;
   description: string;
+  slug: string;
+  title: string;
+  contactNo?: string;
+  auctionId?: string;
+  description?: string;
+  state?: string;
+  city?: string;
+  area?: string;
+  noticeLink?: string;
+  noticeImageURLs?: string[];
+  noticeImageUrl?: string;
+  estimatedMarketPrice?: number;
+  assetType?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  publishedAt?: string;
+  createdById?: string;
+  auctionDate?: string;
+  auctionStartTime?: string;
+  auctionEndDate?: string;
+  applicationSubmissionDate?: string;
+  reservePrice?: number;
+  emd?: number;
+  title?: string;
 }
 
 export interface IUserData {

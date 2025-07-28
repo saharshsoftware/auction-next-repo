@@ -14,6 +14,7 @@ import { ROUTE_CONSTANTS } from "./Routes";
 import MarkdownIt from "markdown-it";
 import { CONFIG } from "@/utilies/Config";
 import { USER_TYPE } from "@/types.d";
+import { safeArray, safeNumber, safeString } from "@/utilies/imageUtils";
 
 export const getDataFromLocalStorage = () => {
   const storedData = localStorage.getItem(STORE_KEY);
@@ -143,6 +144,81 @@ const formatValidDate = (date: Date): string => {
 
 export const sanitizedAuctionData = (data: any[]) => {
   return data.map((item: any) => ({ id: item.id, ...item.attributes }));
+};
+
+// Transform the data structure to match our expected format with safe handling
+export const transformProperty = (item: IAuction): IAuction => {
+  if (!item || !item.attributes) {
+    throw new Error('Invalid property data structure');
+  }
+
+  const attrs = item.attributes;
+  return {
+    id: item.id?.toString() || '0',
+    bankName: safeString(attrs.bankName) || "",
+    branchName: safeString(attrs.branchName) || "",
+    serviceProvider: safeString(attrs.serviceProvider) || "",
+    borrowerName: safeString(attrs.borrowerName) || "",
+    assetCategory: safeString(attrs.assetCategory) || "",
+    auctionType: safeString(attrs.auctionType) || "",
+    noticeLink: safeString(attrs.noticeLink) || "",
+    authorisedOfficerContactPerson: safeString(attrs.authorisedOfficerContactPerson) || "",
+    auctionDate: new Date(safeString(attrs.auctionDate) || ""),
+    auctionStartTime: new Date(safeString(attrs.auctionStartTime) || ""), 
+    auctionEndDate: new Date(safeString(attrs.auctionEndDate) || ""),
+    applicationSubmissionDate: new Date(safeString(attrs.applicationSubmissionDate) || ""),
+    reservePrice: safeNumber(attrs.reservePrice) || 0,
+    emd: safeNumber(attrs.emd) || 0,
+    title: safeString(attrs.title) || "",
+    contactNo: safeString(attrs.contactNo) || "",
+    description: safeString(attrs.description) || "",
+    state: safeString(attrs.state) || "",
+    city: safeString(attrs.city) || "",
+    area: safeString(attrs.area) || "",
+    contact: safeString(attrs.contact) || "",
+    noticeImageUrl: safeString(attrs.noticeImageUrl) || "",
+    slug: safeString(attrs.slug) || "",
+    search: safeString(attrs.search) || "",
+    estimatedMarketPrice: safeNumber(attrs.estimatedMarketPrice) || 0,
+    assetType: safeString(attrs.assetType) || "",
+    createdAt: new Date(safeString(attrs.createdAt) || ""),
+    updatedAt: new Date(safeString(attrs.updatedAt) || ""),
+    createdById: attrs.createdById || null,
+    updatedById: attrs.updatedById || null,
+    sitemapExclude: attrs.sitemapExclude || false,
+    owner_name: safeString(attrs.ownerName),
+    propertyAddress: safeString(attrs.propertyAddress),
+    bankPropertyId: safeString(attrs.bankPropertyId),
+    propertyTitleDeedType: safeString(attrs.propertyTitleDeedType),
+    propertyOwnerShipType: safeString(attrs.propertyOwnerShipType),
+    propertyPossessionType: safeString(attrs.propertyPossessionType),
+    residentialDetail: safeString(attrs.residentialDetail),
+    commercialDetail: safeString(attrs.commercialDetail),
+    industryDetail: safeString(attrs.industryDetail),
+    agricultureDetail: safeString(attrs.agricultureDetail),
+    pincode: safeString(attrs.pincode),
+    dealingOfficerName: safeString(attrs.dealingOfficerName),
+    inspectionDateFrom: safeString(attrs.inspectionDateFrom),
+    inspectionDateTo: safeString(attrs.inspectionDateTo),
+    emdStartDateTime: safeString(attrs.emdStartDateTime),
+    emdEndDateTime: safeString(attrs.emdEndDateTime),
+    borrowerAddress: safeString(attrs.borrowerAddress),
+    incrementPrice: safeNumber(attrs.incrementPrice),
+    lat: safeString(attrs.lat),
+    lng: safeString(attrs.lng),
+    noticeImageURLs: safeArray(attrs.noticeImageURLs) || [],
+    inspectionOfficerName: safeString(attrs.inspectionOfficerName),
+    inspectionOfficerMobileNo: safeString(attrs.inspectionOfficerMobileNo),
+    inspectionBranchAddress: safeString(attrs.inspectionBranchAddress),
+    officerNameAndDesignation: safeString(attrs.officerNameAndDesignation),
+    extendTimeInMinutes: safeString(attrs.extendTimeInMinutes),
+    propertyType: safeString(attrs.propertyType) || "",
+    location: safeString(attrs.location) || "",
+  };
+};
+
+export const sanitizedAuctionData2 = (data: any[]) => {
+  return data.map((item: any) => transformProperty(item));
 };
 
 export const sanitizedAuctionDetail = (data: any) => {
@@ -723,4 +799,14 @@ export const userTypeOptions = [
   { value: USER_TYPE.INDIVIDUAL, label: STRING_DATA.INDIVIDUAL, name: USER_TYPE.INDIVIDUAL },
   { value: USER_TYPE.INVESTOR, label: STRING_DATA.INVESTOR, name: USER_TYPE.INVESTOR },
   { value: USER_TYPE.BROKER, label: STRING_DATA.BROKER, name: USER_TYPE.BROKER },
+];
+
+
+export const SERVICE_PROVIDER_OPTIONS = [
+  { value: '', label: 'All Service Providers', name: '' },
+  { value: 'baanknet', label: 'BaankNet', name: 'BaankNet' },
+  { value: 'ibapi', label: 'IBAPI', name: 'IBAPI' },
+  { value: 'bankauctions', label: 'Bank Auctions', name: 'Bank Auctions' },
+  { value: 'bankeauctions', label: 'Bank E-Auctions', name: 'Bank E-Auctions' },
+  { value: 'drtauctiontiger', label: 'DRT Auction Tiger', name: 'DRT Auction Tiger' }
 ];
