@@ -317,7 +317,7 @@ export default function SignupComp(props: {
                     <ActionButton
                       text={STRING_DATA.CREATE_ACCOUNT.toUpperCase()}
                       isSubmit={true}
-                      id="signup"
+                      id={`create-account-btn`}
                       isLoading={isPending}
                       customClass={`${isAuthModal ? null : "w-full"}`}
                     />

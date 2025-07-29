@@ -137,6 +137,7 @@ const Navbar: React.FC = () => {
       <div className="md:flex hidden items-center gap-8">
         <Link href={ROUTE_CONSTANTS.LOGIN}>{STRING_DATA.LOGIN}</Link>
         <ActionButton
+          id={`signup-btn`}
           text={STRING_DATA.REGISTER}
           onclick={() => router.push(ROUTE_CONSTANTS.REGISTER)}
         />
