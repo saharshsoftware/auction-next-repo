@@ -42,12 +42,12 @@ const SkeletonAuctionPage = () => {
     <div className="flex flex-col gap-6 mb-2">
       <SkeletonFilter />
       <div className="grid grid-cols-12 gap-4 common-section">
-        <div className="lg:col-span-8 col-span-full flex flex-col gap-6">
+        <div className="grid-col-span-9  flex flex-col gap-6">
           {Array.from({ length: 2 }).map((_, index) => (
             <SkeletonAuctionCard key={index} />
           ))}
         </div>
-        <div className="lg:col-span-4 col-span-full">
+        <div className="grid-col-span-3">
           <SkeletonSidebar />
         </div>
       </div>

@@ -801,9 +801,14 @@ export const userTypeOptions = [
   { value: USER_TYPE.BROKER, label: STRING_DATA.BROKER, name: USER_TYPE.BROKER },
 ];
 
+export interface IServiceProviders {
+  value: string;
+  label: string;
+  name: string;
+}
 
-export const SERVICE_PROVIDER_OPTIONS = [
-  { value: '', label: 'All Service Providers', name: '' },
+export const SERVICE_PROVIDER_OPTIONS: IServiceProviders[]  = [
+  { value: '', label: 'All', name: 'All' },
   { value: 'baanknet', label: 'BaankNet', name: 'BaankNet' },
   { value: 'ibapi', label: 'IBAPI', name: 'IBAPI' },
   { value: 'bankauctions', label: 'Bank Auctions', name: 'Bank Auctions' },

@@ -179,7 +179,7 @@ export default async function Page({
       />
       <div className="common-section">
         <div className="grid grid-cols-12 gap-4 py-4">
-          <div className="lg:col-span-8 col-span-full">
+          <div className="grid-col-span-9 ">
             <AuctionHeaderServer
               total={response?.meta?.total}
               heading={`${sanitizeCategorySEOH1title(
@@ -193,7 +193,7 @@ export default async function Page({
               filterData={urlFilterdata}
             />
           </div>
-          <div className="lg:col-span-4 col-span-full">
+          <div className="grid-col-span-3">
             <div className="mb-4">
               <TopCategory categoryOptions={popularCategories} />
             </div>

@@ -24,7 +24,7 @@ export const constructImageUrls = (imagePaths: string[] | null | undefined): str
 
 export const getPropertyImages = (property: any): string[] => {
   // First try to get images from noticeImageURLs array
-  if (property.noticeImageURLs && Array.isArray(property.noticeImageURLs)) {
+  if (property?.noticeImageURLs && Array.isArray(property?.noticeImageURLs)) {
     const cloudFrontImages = constructImageUrls(property.noticeImageURLs);
     if (cloudFrontImages.length > 0) {
       return cloudFrontImages;
@@ -32,8 +32,8 @@ export const getPropertyImages = (property: any): string[] => {
   }
   
   // Fallback to single notice_image_url
-  if (property.noticeImageUrl) {
-    const singleImage = constructImageUrl(property.noticeImageUrl);
+  if (property?.noticeImageUrl) {
+    const singleImage = constructImageUrl(property?.noticeImageUrl);
     if (singleImage) {
       return [singleImage];
     }

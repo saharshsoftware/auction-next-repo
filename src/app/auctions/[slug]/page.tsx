@@ -163,10 +163,10 @@ export default async function Page({
         />
         <div className="common-section">
           <div className="grid grid-cols-12 gap-4 py-4">
-            <div className="lg:col-span-8 col-span-full ">
+            <div className="grid-col-span-9">
               <AuctionDetailPage auctionDetail={auctionDetail} slug={slug} isInterested={isInterested} />
             </div>
-            <div className="lg:col-span-4 col-span-full">
+            <div className="grid-col-span-3">
               {renderWishlistComponent()}
             </div>
           </div>

@@ -379,4 +379,12 @@ blockquote {
   @apply text-brand-color 
 }
 
+.grid-col-span-9 {
+  @apply lg:col-span-9 col-span-full;
+}
+
+.grid-col-span-3 {    
+  @apply lg:col-span-3 col-span-full;
+}
+
 
