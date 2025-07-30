@@ -40,7 +40,7 @@ export default function RootLayout({
           <Providers>
             <div className="flex flex-col h-screen">
               <NextTopLoader
-                color="#000"
+                color="#5356FF"
                 initialPosition={0.08}
                 crawlSpeed={200}
                 height={3}

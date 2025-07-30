@@ -15,6 +15,7 @@ import dynamic from "next/dynamic";
 import { IFilters, useFilterStore } from "@/zustandStore/filters";
 import { trackSearch } from "@/helpers/SurveyHelper";
 import { IAssetType } from "@/types";
+import { SERVICE_PROVIDER_OPTIONS } from "@/shared/Utilies";
 
 interface IFilter {
   category: string;
@@ -30,6 +31,7 @@ const initialValues = {
   bank: STRING_DATA.EMPTY,
   keyword: STRING_DATA.EMPTY,
   price: [0, RANGE_PRICE.MAX],
+  serviceProvider: STRING_DATA.EMPTY,
 };
 
 const gridElementClass = () => "lg:col-span-6 col-span-full";
@@ -57,9 +59,10 @@ const HeroSearchBox = (props: {
     location: any;
     propertyType: any;
     keyword?: string;
+    serviceProvider?: string;
   }) => {
     // console.log(values, "Vakyes");
-    const { category, price, bank, location, propertyType, keyword } = values;
+    const { category, price, bank, location, propertyType, keyword, serviceProvider } = values;
     const { type, name } = location ?? {};
     const filter = {
       page: 1,
@@ -70,6 +73,7 @@ const HeroSearchBox = (props: {
       location,
       propertyType,
       keyword,
+      serviceProvider,
     };
     // console.log(filter, "hero-filter");
     // debugger
@@ -201,7 +205,23 @@ const HeroSearchBox = (props: {
                     </Field>
                   </TextField>
                 </div>
-                <div className={"col-span-full"}>
+                <div className={gridElementClass()}>
+
+                <TextField label="Service Provider" name="serviceProvider" hasChildren>
+                  <Field name="serviceProvider">
+                    {() => (
+                      <ReactSelectDropdown
+                        name="serviceProvider"
+                        options={SERVICE_PROVIDER_OPTIONS}
+                        placeholder={"Service Provider"}
+                        defaultValue={values.serviceProvider}
+                        onChange={(value) => setFieldValue("serviceProvider", value)}
+                      />
+                    )}
+                  </Field>
+                </TextField>
+                </div>
+                <div className={gridElementClass()}>
                   <TextField
                     label="Price range"
                     name="price"

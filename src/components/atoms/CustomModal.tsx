@@ -1,6 +1,6 @@
 import { faX } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React from "react";
+import React, { useEffect } from "react";
 
 interface Props {
   children: React.ReactElement;
@@ -24,6 +24,30 @@ const CustomModal = ({
   const getRequiredWidth = () => {
     return customWidthClass || "lg:w-1/2 md:w-3/5 sm:w-4/5 w-11/12";
   };
+
+  // Prevent body scroll when modal is open
+  useEffect(() => {
+    if (openModal) {
+      // Store the current scroll position
+      const scrollY = window.scrollY;
+      
+      // Add styles to prevent body scroll
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = '100%';
+      document.body.style.overflow = 'hidden';
+      
+      // Cleanup function to restore body scroll
+      return () => {
+        document.body.style.position = '';
+        document.body.style.top = '';
+        document.body.style.width = '';
+        document.body.style.overflow = '';
+        // Restore scroll position
+        window.scrollTo(0, scrollY);
+      };
+    }
+  }, [openModal]);
 
   if (!openModal) return null;
 

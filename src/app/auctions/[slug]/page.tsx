@@ -161,7 +161,7 @@ export default async function Page({
           banks={bankOptions}
           locations={locationOptions}
         />
-        <div className="common-section">
+        <div className="lg:px-32 px-2">
           <div className="grid grid-cols-12 gap-4 py-4">
             <div className="grid-col-span-9">
               <AuctionDetailPage auctionDetail={auctionDetail} slug={slug} isInterested={isInterested} />

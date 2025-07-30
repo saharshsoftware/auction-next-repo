@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilter, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import TextField from "../atoms/TextField";
 import RangeSliderCustom from "../atoms/RangeSliderCustom";
-import { formatPrice, SERVICE_PROVIDER_OPTIONS } from "@/shared/Utilies";
+import { formatPrice, IServiceProviders, SERVICE_PROVIDER_OPTIONS } from "@/shared/Utilies";
 import useResize from "@/hooks/useResize";
 import {
   getEmptyAllObject,
@@ -31,7 +31,7 @@ interface FindAuctionProps {
   selectedBank?: IBanks;
   selectedLocation?: ILocations;
   selectedPrice?: number[];
-  selectedServiceProvider?: string;
+  selectedServiceProvider?: IServiceProviders;
 }
 
 const gridElementClass = () => "lg:col-span-2  col-span-full";
@@ -48,7 +48,7 @@ const FindAuction: React.FC<FindAuctionProps> = ({
   selectedBank = getEmptyAllObject(),
   selectedLocation = getEmptyAllObject(),
   selectedPrice = [RANGE_PRICE.MIN, RANGE_PRICE.MAX],
-  selectedServiceProvider = getEmptyAllObject(),
+  selectedServiceProvider = getEmptyAllObject() as IServiceProviders,
 }) => {
   const router = useRouter();
   const { setDataInQueryParamsMethod } = useCustomParamsData();
@@ -107,7 +107,7 @@ const FindAuction: React.FC<FindAuctionProps> = ({
       serviceProvider:
         serviceProvider?.label === STRING_DATA.ALL
           ? STRING_DATA.EMPTY
-          : serviceProvider.value,
+          : serviceProvider,
     };
     //   console.log(filter);
     //   setFilter(filter);
@@ -220,19 +220,15 @@ const FindAuction: React.FC<FindAuctionProps> = ({
                 </TextField>
               </div>
               <div className={gridElementClass()}>
-                <TextField
-                  label="Location (City & State)"
-                  name="location"
-                  hasChildren
-                >
-                  <Field name="location">
+                <TextField label="Bank" name="bank" hasChildren>
+                  <Field name="bank">
                     {() => (
                       <ReactSelectDropdown
-                        name="location"
-                        options={locations}
-                        placeholder={"Location"}
-                        defaultValue={values.location}
-                        onChange={(value) => setFieldValue("location", value)}
+                        name="bank"
+                        options={banks}
+                        placeholder={"Bank"}
+                        defaultValue={values.bank}
+                        onChange={(value) => setFieldValue("bank", value)}
                       />
                     )}
                   </Field>
@@ -324,6 +320,7 @@ const FindAuction: React.FC<FindAuctionProps> = ({
               {renderFilterTabs(initialValueData?.location?.name)}
               {renderFilterTabs(initialValueData?.bank?.name)}
               {renderFilterTabs(initialValueData?.propertyType?.name)}
+              {renderFilterTabs(initialValueData?.serviceProvider?.name)}
               {initialValueData?.price?.length ? (
                 <div className={mobileViewFilterClass()}>
                   {formatPrice(initialValueData?.price?.[0])} -{" "}

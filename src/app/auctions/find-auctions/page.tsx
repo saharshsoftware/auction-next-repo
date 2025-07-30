@@ -4,6 +4,7 @@ import FindAuctionServer from "@/components/molecules/FindAuctionServer";
 import {
   getDataFromQueryParamsMethod,
   sanitizeReactSelectOptionsPage,
+  SERVICE_PROVIDER_OPTIONS,
 } from "@/shared/Utilies";
 import {
   fetchAssetType,
@@ -102,7 +103,7 @@ export default async function Page({
       reservePrice: filterQueryData?.price ?? [],
       locationType: filterQueryData?.location?.type ?? "",
       page: filterQueryData?.page?.toString() ?? "1",
-      serviceProvider: filterQueryData?.serviceProvider ?? "",
+      serviceProvider: filterQueryData?.serviceProvider?.value ?? "",
     }),
     fetchPopularLocations(),
   ]);
@@ -135,6 +136,9 @@ export default async function Page({
   const selectedAssetType = assetsTypeOptions.find(
     (item) => item.name === filterQueryData?.propertyType?.name
   );
+  const selectedServiceProvider = SERVICE_PROVIDER_OPTIONS.find(
+    (item) => item.value === filterQueryData?.serviceProvider?.value
+  );
 
   console.log("selectedLocationselectedLocation", selectedLocation);
   const urlFilterdata = {
@@ -144,8 +148,8 @@ export default async function Page({
     price: filterQueryData?.price,
     category: selectedCategory,
     propertyType: selectedAssetType,
+    serviceProvider: selectedServiceProvider,
   } as ILocalFilter;
-
   return (
     <section>
       <FindAuctionServer
@@ -158,10 +162,11 @@ export default async function Page({
         selectedCategory={selectedCategory}
         selectedAsset={selectedAssetType}
         selectedPrice={filterQueryData?.price}
+        selectedServiceProvider={selectedServiceProvider}
       />
       <div className="common-section">
         <div className="grid grid-cols-12 gap-4 py-4">
-          <div className="lg:col-span-8 col-span-full">
+          <div className="grid-col-span-9">
             <AuctionHeaderSaveSearch />
             <ShowAuctionListServer
               auctions={auctionList}
@@ -172,7 +177,7 @@ export default async function Page({
               filterData={urlFilterdata}
             />
           </div>
-          <div className="lg:col-span-4 col-span-full">
+          <div className="grid-col-span-3">
             <TopCities locationOptions={popularLocations} />
           </div>
         </div>
