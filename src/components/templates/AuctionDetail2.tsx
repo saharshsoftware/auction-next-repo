@@ -30,6 +30,7 @@ import { useRouter } from 'next/navigation';
 import InterestModal from '../ modals/InterestModal';
 import useModal from '@/hooks/useModal';
 import { getCookie } from 'cookies-next';
+import SurveyCard from "../atoms/SurveySection";
 
 // add props type
 interface AuctionDetailPageProps {
@@ -550,6 +551,11 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
 
             </div>
           </div>
+      
+        {/* Survey Card - Always visible on detail pages after 10 days */}
+        <div className="mt-6">
+          <SurveyCard isRandom={false} isAuctionDetail={true} />
+        </div>
 
           {/* Property Map - Full width */}
           {(property.lat && property.lng) && (

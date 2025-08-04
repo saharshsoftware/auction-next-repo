@@ -6,6 +6,7 @@ import {
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import { ROUTE_CONSTANTS } from "./Routes";
+import { CONFIG } from "@/utilies/Config";
 
 export const COOKIES = {
   TOKEN_KEY: "auction-token",
@@ -408,3 +409,10 @@ export const IMAGES_NAME = {
   NINE: "9",
   TEN: "10",
 };
+
+// App Store URLs for Survey Card
+export const APP_STORE_URLS = {
+  GOOGLE_PLAY: CONFIG.PLAYSTORE_URL,
+  APP_STORE: CONFIG.APPSTORE_URL,
+  GOOGLE_REVIEW: CONFIG.GOOGLE_REVIEW_URL,
+} as const;

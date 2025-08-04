@@ -14,9 +14,10 @@ import { getCookie } from "cookies-next";
 interface ISurveyModal {
   openModal: boolean;
   hideModal?: () => void;
+  isSurveySection?: boolean;
 }
 
-const SurveyModal = ({ openModal, hideModal = () => {} }: ISurveyModal) => {
+const SurveyModal = ({ openModal, hideModal = () => {}, isSurveySection = false }: ISurveyModal) => {
   const { handleReminder, isPendingRemainLater } = useSurveyModal(hideModal);
   const {
     currentQuestion,
@@ -48,6 +49,12 @@ const SurveyModal = ({ openModal, hideModal = () => {} }: ISurveyModal) => {
       setAnimate(false);
     }
   }, [openModal]);
+
+  useEffect(() => {
+    if (isSurveySection) {
+      setShowSurvey(true);
+    }
+  }, [isSurveySection]);
 
   const remainderHandler = () => {
     handleReminder();
@@ -175,7 +182,7 @@ const SurveyModal = ({ openModal, hideModal = () => {} }: ISurveyModal) => {
           />
         </div>
         {showSurvey && (
-          <div className="absolute top-2 right-2 p-2">
+          <div className="absolute top-2 right-12 p-2">
             {currentIndex + 1} of 9
           </div>
         )}

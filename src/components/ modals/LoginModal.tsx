@@ -58,6 +58,8 @@ const LoginModal = (props: ILoginModal) => {
     <>
       <CustomModal
         openModal={openModal}
+        isCrossVisible={true}
+        onClose={hideModal}
         modalHeading={selectedHeading()}
         useStickyHeader={true}
         customWidthClass="lg:w-[40%] md:w-4/5 sm:w-3/5 w-11/12"
