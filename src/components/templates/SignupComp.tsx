@@ -231,7 +231,7 @@ export default function SignupComp(props: {
                   {/* Optional Fields Section */}
                   <div className="border-t pt-4 mt-4 space-y-4">
                     <h3 className="text-lg font-semibold mb-4 text-gray-700">
-                      {STRING_DATA.HELPS_US_PERSONALIZE_RECOMMENDATIONS_FOR_YOU}
+                      {STRING_DATA.HELPS_US_PERSONALIZE_RECOMMENDATIONS_FOR_YOU} (optional)
                     </h3>
                     <TextField
                       label={"Interested Cities (Upto 5 cites) "}
@@ -317,6 +317,7 @@ export default function SignupComp(props: {
                     <ActionButton
                       text={STRING_DATA.CREATE_ACCOUNT.toUpperCase()}
                       isSubmit={true}
+                      id={`create-account-btn`}
                       isLoading={isPending}
                       customClass={`${isAuthModal ? null : "w-full"}`}
                     />

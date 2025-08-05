@@ -1,5 +1,5 @@
 import { IRequest } from "@/interfaces/RequestInteface";
-import { API_BASE_URL } from "@/services/api";
+import { API_BASE_URL, API_ENPOINTS } from "@/services/api";
 import axios, { AxiosInstance, AxiosResponse } from "axios";
 import { deleteCookie, getCookie } from "cookies-next";
 import { COOKIES } from "./Constants";
@@ -34,7 +34,16 @@ instance.interceptors.response.use(
   (error) => {
     console.log("🚨 Axios Error Interceptor Triggered");
 
+    const fullUrl = error?.config?.url;
+    const endpoint = fullUrl?.match(/^https?:\/\/[^/]+(\/.*)$/)?.[1];
+
     if (error?.response?.status === 401) {
+      // Skip 401 handling for the OTP signin endpoint
+      if (endpoint === API_ENPOINTS.SIGNIN_USING_OTP) {
+        console.log("🔁 Skipping 401 handling for:", endpoint);
+        return Promise.reject(error);
+      }
+
       console.log("❌ Unauthorized: Clearing cookies and redirecting");
       deleteCookie(COOKIES.TOKEN_KEY);
 
