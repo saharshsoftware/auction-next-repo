@@ -20,6 +20,7 @@ import ReactSelectDropdown from "../atoms/ReactSelectDropdown";
 import UserTypeRadio from "../atoms/UserTypeRadio";
 import { fetchLocationClient } from "@/services/location";
 import { getCategoryBoxCollectionClient } from "@/services/auction";
+import CustomModal from "../atoms/CustomModal";
 
 const validationSchema = Yup.object({
   name: Yup.string().trim().required(ERROR_MESSAGE.NAME_REQUIRED),
@@ -48,7 +49,7 @@ const initialValues = {
   phoneNumber: STRING_DATA.EMPTY,
   interestedCities: STRING_DATA.EMPTY,
   interestedCategories: STRING_DATA.EMPTY,
-  userType: userTypeOptions[0],
+  userType: '',
 };
 
 export default function SignupComp(props: {
@@ -68,6 +69,9 @@ export default function SignupComp(props: {
   const [respError, setRespError] = useState<string>("");
   const [otpVerification, setOtpVerification] = useState(false);
   const [email, setEmail] = useState("");
+  const [showProfileModal, setShowProfileModal] = useState(false);
+  const [signupFormData, setSignupFormData] = useState<any>(null);
+  
   const { data: locationOptions, isLoading: isLoadingLocation } = useQuery({
     queryKey: [REACT_QUERY.AUCTION_LOCATION],
     queryFn: async () => {
@@ -112,31 +116,40 @@ export default function SignupComp(props: {
     onError: (error) => {
       const { message } = error;
       setRespError(message);
+      // Close the profile modal when there's an error
+      setShowProfileModal(false);
+      setSignupFormData(null);
     },
   });
 
   const handleRegister = async (values: FormikValues) => {
     setFormValues(values); // Save the form values
+    setSignupFormData(values);
+    setShowProfileModal(true);
+  };
+
+  const handleProfileSubmit = (profileValues: any) => {
     const locations =
-      values?.interestedCities?.length > 0
-        ? getCityNamesCommaSeparated(values?.interestedCities as unknown as any[])
+      profileValues?.interestedCities?.length > 0
+        ? getCityNamesCommaSeparated(profileValues?.interestedCities as unknown as any[])
         : "";
     const categories =
-      values?.interestedCategories?.length > 0
-        ? getCategoryNamesCommaSeparated(values?.interestedCategories as unknown as any[])
+      profileValues?.interestedCategories?.length > 0
+        ? getCategoryNamesCommaSeparated(profileValues?.interestedCategories as unknown as any[])
         : "";
 
-    const userType = values.userType.value || userTypeOptions[0].value;
+    const userType = profileValues.userType.value;
     const formData = {
-      username: values.phoneNumber,
-      email: values.email,
-      password: values.password,
-      name: values.name,
+      username: signupFormData.phoneNumber,
+      email: signupFormData.email,
+      password: signupFormData.password,
+      name: signupFormData.name,
       interestedCities: locations,
       interestedCategories: categories,
       userType: userType,
     };
     console.log(formData, "formdata");
+    setShowProfileModal(false);
     mutate({ formData });
   };
 
@@ -144,6 +157,133 @@ export default function SignupComp(props: {
     setOtpVerification(false);
     setRespError("");
   };
+
+  // Reset modal state when there's an error
+  useEffect(() => {
+    if (respError) {
+      setShowProfileModal(false);
+      setSignupFormData(null);
+    }
+  }, [respError]);
+
+  // Cleanup modal state on unmount
+  useEffect(() => {
+    return () => {
+      setShowProfileModal(false);
+      setSignupFormData(null);
+    };
+  }, []);
+
+  const ProfileModal = () => (
+    <CustomModal
+      openModal={showProfileModal}
+      modalHeading="Complete Your Profile"
+      customWidthClass="md:w-[50%] sm:w-3/5 w-11/12"
+      onClose={() => {
+        setShowProfileModal(false);
+        setSignupFormData(null);
+      }}
+      isCrossVisible={true}
+    >
+      <CustomFormikForm
+        initialValues={{
+          interestedCities: [],
+          interestedCategories: [],
+          userType: '',
+        }}
+        wantToUseFormikEvent={true}
+        handleSubmit={handleProfileSubmit}
+        enableReinitialize={true}
+      >
+        {({ values, setFieldValue }: any) => (
+          <Form className="w-full">
+            <div className="flex flex-col gap-4">
+              <div className="mb-4">
+                <h3 className="text-lg font-semibold mb-2 text-gray-700">
+                  {STRING_DATA.HELPS_US_PERSONALIZE_RECOMMENDATIONS_FOR_YOU} (optional)
+                </h3>
+                <p className="text-sm text-gray-600">
+                  This information helps us personalize your experience. You can skip this step.
+                </p>
+              </div>
+              
+              <TextField
+                label={"Interested Cities (Upto 5 cities)"}
+                name={"interestedCities"}
+                hasChildren={true}
+                value={values?.interestedCities}
+              >
+                <Field name="interestedCities">
+                  {() => (
+                    <ReactSelectDropdown
+                      defaultValue={values?.interestedCities}
+                      loading={isLoadingLocation}
+                      options={citiesList}
+                      placeholder="E.g., Jaipur, Jodhpur, Udaipur"
+                      name="signup-interested-cities"
+                      customClass="w-full"
+                      isMulti={true}
+                      hidePlaceholder={true}
+                      onChange={(e) => {
+                        setFieldValue("interestedCities", e);
+                      }}
+                    />
+                  )}
+                </Field>
+              </TextField>
+              
+              <TextField
+                label={STRING_DATA.INTERESTED_CATEGORIES}
+                name={"interestedCategories"}
+                hasChildren={true}
+                value={values?.interestedCategories}
+              >
+                <Field name="interestedCategories">
+                  {() => (
+                    <ReactSelectDropdown
+                      defaultValue={values?.interestedCategories}
+                      loading={isLoadingCategory}
+                      options={categoryOptions}
+                      placeholder="E.g., Residential, Commercial, Industrial"
+                      name="signup-interested-categories"
+                      customClass="w-full"
+                      isMulti={true}
+                      hidePlaceholder={true}
+                      onChange={(e) => {
+                        setFieldValue("interestedCategories", e);
+                      }}
+                    />
+                  )}
+                </Field>
+              </TextField>
+
+              <TextField
+                label="Who are you?"
+                name={"userType"}
+                hasChildren={true}
+                value={values?.userType}
+              >
+                <Field name="userType">
+                  {() => (
+                    <UserTypeRadio value={values?.userType} onChange={(e) => setFieldValue("userType", e)} />
+                  )}
+                </Field>
+              </TextField>
+
+              <div className="flex justify-end items-center pt-4">
+                <ActionButton
+                  text="Create Account"
+                  isSubmit={true}
+                  customClass="btn btn-sm"
+                />
+              </div>
+            </div>
+          </Form>
+        )}
+      </CustomFormikForm>
+    </CustomModal>
+  );
+
   return (
     <>
       {!otpVerification ? (
@@ -227,80 +367,6 @@ export default function SignupComp(props: {
                     placeholder="Enter confirm password"
                   />
 
-
-                  {/* Optional Fields Section */}
-                  <div className="border-t pt-4 mt-4 space-y-4">
-                    <h3 className="text-lg font-semibold mb-4 text-gray-700">
-                      {STRING_DATA.HELPS_US_PERSONALIZE_RECOMMENDATIONS_FOR_YOU} (optional)
-                    </h3>
-                    <TextField
-                      label={"Interested Cities (Upto 5 cites) "}
-                      name={"interestedCities"}
-                      hasChildren={true}
-                      value={values?.interestedCities}
-                    >
-                      <Field name="interestedCities">
-                        {() => (
-                          <ReactSelectDropdown
-                            defaultValue={values?.interestedCities}
-                            loading={isLoadingLocation}
-                            options={citiesList}
-                            placeholder="E.g., Jaipur, Jodhpur, Udaipur"
-                            name="partner-location"
-                            customClass="w-full"
-                            isMulti={true}
-                            hidePlaceholder={true}
-                            onChange={(e) => {
-                              setFieldValue(
-                                "interestedCities",
-                                e.label === STRING_DATA.ALL
-                                  ? getEmptyAllObject()
-                                  : e
-                              );
-                            }}
-                          />
-                        )}
-                      </Field>
-                    </TextField>
-                    <TextField
-                      label={STRING_DATA.INTERESTED_CATEGORIES}
-                      name={"interestedCategories"}
-                      hasChildren={true}
-                      value={values?.interestedCategories}
-                    >
-                      <Field name="interestedCategories">
-                        {() => (
-                          <ReactSelectDropdown
-                            defaultValue={values?.interestedCategories}
-                            loading={isLoadingCategory}
-                            options={categoryOptions}
-                            placeholder="E.g., Residential, Commercial, Industrial"
-                            name="partner-categories"
-                            customClass="w-full"
-                            isMulti={true}
-                            hidePlaceholder={true}
-                            onChange={(e) => {
-                              setFieldValue("interestedCategories", e);
-                            }}
-                          />
-                        )}
-                      </Field>
-                    </TextField>
-
-                    <TextField
-                      label="Who are you?"
-                      name={"userType"}
-                      hasChildren={true}
-                      value={values?.userType}
-                    >
-                      <Field name="userType">
-                        {() => (
-                          <UserTypeRadio value={values?.userType} onChange={(e) => setFieldValue("userType", e)} />
-                        )}
-                      </Field>
-                    </TextField>
-                  </div>
-
                   {respError ? (
                     <span className="text-center text-sm text-red-700">
                       {respError}
@@ -353,6 +419,7 @@ export default function SignupComp(props: {
           registerFormCallback={handleRegisterCallback}
         />
       )}
+      <ProfileModal />
     </>
   );
 }
