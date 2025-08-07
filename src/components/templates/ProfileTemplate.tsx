@@ -76,11 +76,11 @@ export default function ProfileTemplate() {
               />
               <ShowLabelValue
                 heading={"Interested Cities"}
-                value={userData?.interestedCities ?? "-"}
+                value={userData?.interestedCities || "-"}
               />
               <ShowLabelValue
                 heading={"Interested Categories"}
-                value={userData?.interestedCategories ?? "-"}
+                value={userData?.interestedCategories || "-"}
               />
               <ShowLabelValue
                 heading={"User Type"}
