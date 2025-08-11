@@ -813,5 +813,7 @@ export const SERVICE_PROVIDER_OPTIONS: IServiceProviders[]  = [
   { value: 'ibapi', label: 'IBAPI', name: 'IBAPI' },
   { value: 'bankauctions', label: 'Bank Auctions', name: 'Bank Auctions' },
   { value: 'bankeauctions', label: 'Bank E-Auctions', name: 'Bank E-Auctions' },
-  { value: 'drtauctiontiger', label: 'DRT Auction Tiger', name: 'DRT Auction Tiger' }
+  { value: 'drtauctiontiger', label: 'DRT Auction Tiger', name: 'DRT Auction Tiger' },
+  { value: 'auctionfocus', label: 'Auction Focus', name: 'AuctionFocus' },
+  { value: 'eauctions', label: 'Eauctions', name: 'Eauctions' }
 ];
