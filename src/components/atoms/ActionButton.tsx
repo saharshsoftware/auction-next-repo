@@ -14,6 +14,7 @@ interface IActionButton {
   isActionButton?: boolean;
   isDeleteButton?: boolean;
   isOutline?: boolean; // ✅ New flag added
+  id?: string;
 }
 
 const ActionButton: React.FC<IActionButton> = (props) => {
@@ -29,6 +30,7 @@ const ActionButton: React.FC<IActionButton> = (props) => {
     isActionButton = true,
     isDeleteButton = false,
     isOutline = false, // ✅ Destructure it here
+    id,
   } = props;
 
   const getButtonClass = () => {
@@ -55,6 +57,7 @@ const ActionButton: React.FC<IActionButton> = (props) => {
           customClass ?? "custom-action-button-class"
         } btn ${getButtonClass()}`}
         onClick={onclick}
+        id={id}
       >
         {iconLeft ? iconLeft : null}
         {isLoading ? <CustomLoading /> : text}
