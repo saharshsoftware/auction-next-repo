@@ -47,12 +47,10 @@ export interface IAuction {
   updatedAt: Date;
   publishedAt: Date;
   title: string;
-  contactNo: string;
   auctionId: string;
   description: string;
   slug: string;
   title: string;
-  contactNo?: string;
   auctionId?: string;
   description?: string;
   state?: string;
@@ -74,6 +72,7 @@ export interface IAuction {
   reservePrice?: number;
   emd?: number;
   title?: string;
+  contact?: string
 }
 
 export interface IUserData {

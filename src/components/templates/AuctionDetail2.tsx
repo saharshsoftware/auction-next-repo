@@ -532,12 +532,12 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
                       Contact Number
                     </div>
                     <div className="text-sm font-semibold text-gray-900">
-                      {property.contactNo ? (
+                      {property.contact ? (
                         <a
-                          href={`tel:${property.contactNo}`}
+                          href={`tel:${property.contact}`}
                           className="hover:text-gray-700 transition-colors"
                         >
-                          {property.contactNo}
+                          {property.contact}
                         </a>
                       ) : (
                         '-'
