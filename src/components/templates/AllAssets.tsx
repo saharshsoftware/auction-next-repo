@@ -47,8 +47,8 @@ const AllAssets = (props: { data: IAssetType[] }) => {
                         customClass="object-contain bg-contain "
                       />
                     </div> */}
-                    <div>{item?.totalNotices}</div>
-                    {item?.name}
+                    <div className="text-sm-xs">{item?.totalNotices}</div>
+                    <div className="text-sm-xs">{item?.name}</div>
                   </div>
                 </div>
               </Link>

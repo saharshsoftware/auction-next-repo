@@ -200,7 +200,7 @@ const CreateAlert = (props: ICreateFavList) => {
                       </div>
                       <div className={gridElementClass()}>
                         <TextField
-                          label={"Categories23"}
+                          label={"Categories"}
                           name={"category"}
                           hasChildren={true}
                         >

@@ -276,7 +276,7 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
                 <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4 leading-tight">
                   {property.title || 'Property Title Not Available'}
                 </h1>
-                <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600 mb-4">
+                <div className="flex flex-wrap items-center gap-4 text-sm-xs text-gray-600 mb-4">
                   <div className="flex items-center">
                     <MapPin className="h-4 w-4 mr-2 text-gray-400" />
                     <span>{property.city && property.state ? `${property.city}, ${property.state}` : 'Location not specified'}</span>
@@ -301,7 +301,7 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
                 {/* Reserved Price */}
                 <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs font-medium text-gray-600 uppercase tracking-wide">Reserved Price</span>
+                    <span className="text-sm-xs font-medium text-gray-600 uppercase tracking-wide">Reserved Price</span>
                     <Info className="h-3 w-3 text-gray-500" />
                   </div>
                   <div className="text-xl font-bold text-gray-900">
@@ -312,7 +312,7 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
                 {/* Service Provider */}
                 <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs font-medium text-gray-600 uppercase tracking-wide">Service Provider</span>
+                    <span className="text-sm-xs font-medium text-gray-600 uppercase tracking-wide">Service Provider</span>
                     <Building className="h-3 w-3 text-gray-500" />
                   </div>
                   <div className="text-lg font-bold text-gray-900">
@@ -323,7 +323,7 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
                 {/* Auction Start Time */}
                 <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs font-medium text-gray-600 uppercase tracking-wide">Auction Start Time</span>
+                    <span className="text-sm-xs font-medium text-gray-600 uppercase tracking-wide">Auction Start Time</span>
                     <Calendar className="h-3 w-3 text-gray-500" />
                   </div>
                   <div className="text-lg font-bold text-gray-900">
@@ -337,7 +337,7 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
                 {/* Ownership Type */}
                 <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs font-medium text-gray-600 uppercase tracking-wide">Ownership Type</span>
+                    <span className="text-sm-xs font-medium text-gray-600 uppercase tracking-wide">Ownership Type</span>
                     <Home className="h-3 w-3 text-gray-500" />
                   </div>
                   <div className="text-lg font-bold text-gray-900">
@@ -348,7 +348,7 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
                 {/* Possession Type */}
                 <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs font-medium text-gray-600 uppercase tracking-wide">Possession Type</span>
+                    <span className="text-sm-xs font-medium text-gray-600 uppercase tracking-wide">Possession Type</span>
                     <Building className="h-3 w-3 text-gray-500" />
                   </div>
                   <div className="text-lg font-bold text-gray-900">
@@ -359,7 +359,7 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
                 {/* Title Deed Type */}
                 <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs font-medium text-gray-600 uppercase tracking-wide">Title Deed Type</span>
+                    <span className="text-sm-xs font-medium text-gray-600 uppercase tracking-wide">Title Deed Type</span>
                     <FileText className="h-3 w-3 text-gray-500" />
                   </div>
                   <div className="text-lg font-bold text-gray-900">
@@ -394,7 +394,7 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {/* Auction Start Date & Time */}
                   <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
-                    <div className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">
+                    <div className="text-sm-xs font-medium text-gray-500 uppercase tracking-wide mb-2">
                       Auction Start Date & Time
                     </div>
                     <div className="text-lg font-bold text-gray-900">
@@ -414,7 +414,7 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
 
                   {/* Auction End Date & Time */}
                   <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
-                    <div className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">
+                    <div className="text-sm-xs font-medium text-gray-500 uppercase tracking-wide mb-2">
                       Auction End Date & Time
                     </div>
                     <div className="text-lg font-bold text-gray-900">
@@ -434,7 +434,7 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
 
                   {/* Press Release Date */}
                   <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
-                    <div className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">
+                    <div className="text-sm-xs font-medium text-gray-500 uppercase tracking-wide mb-2">
                       Press Release Date
                     </div>
                     <div className="text-lg font-bold text-gray-900">
@@ -444,7 +444,7 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
 
                   {/* Property Inspection Date and Time */}
                   <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
-                    <div className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">
+                    <div className="text-sm-xs font-medium text-gray-500 uppercase tracking-wide mb-2">
                       Property Inspection Date and Time
                     </div>
                     <div className="text-lg font-bold text-gray-900">
@@ -466,7 +466,7 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {/* Reserve Price */}
                   <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-                    <div className="text-xs font-medium text-gray-600 uppercase tracking-wide mb-2 flex items-center">
+                    <div className="text-sm-xs font-medium text-gray-600 uppercase tracking-wide mb-2 flex items-center">
                       <DollarSign className="h-3 w-3 mr-1" />
                       Reserve Price
                     </div>
@@ -477,7 +477,7 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
 
                   {/* EMD Amount */}
                   <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-                    <div className="text-xs font-medium text-gray-600 uppercase tracking-wide mb-2 flex items-center">
+                    <div className="text-sm-xs font-medium text-gray-600 uppercase tracking-wide mb-2 flex items-center">
                       <CreditCard className="h-3 w-3 mr-1" />
                       EMD Amount
                     </div>
@@ -488,7 +488,7 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
 
                   {/* Increment Price */}
                   <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-                    <div className="text-xs font-medium text-gray-600 uppercase tracking-wide mb-2 flex items-center">
+                    <div className="text-sm-xs font-medium text-gray-600 uppercase tracking-wide mb-2 flex items-center">
                       <Banknote className="h-3 w-3 mr-1" />
                       Increment Price
                     </div>
@@ -577,7 +577,7 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
                   href={property.noticeLink}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors shadow-sm"
+                  className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors shadow-sm text-sm-xs"
                 >
                   <Download className="h-5 w-5 mr-2" />
                   Download Auction Notice

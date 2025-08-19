@@ -16,11 +16,11 @@ const TopCities = (props: {
       ROUTE_CONSTANTS.BANKS
     }/${bankSlug}`;
     if (isBankRoute) {
-      return <Link href={URL}>{item?.name}</Link>;
+      return <Link href={URL} className="text-sm-xs">{item?.name}</Link>;
     }
 
     return (
-      <Link href={`${ROUTE_CONSTANTS.LOCATION}/${item?.slug}`}>
+      <Link href={`${ROUTE_CONSTANTS.LOCATION}/${item?.slug}`} className="text-sm-xs">
         {item?.name}
       </Link>
     );

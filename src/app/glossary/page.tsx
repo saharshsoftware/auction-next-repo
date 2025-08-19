@@ -1,295 +1,244 @@
-"use client";
-import React, { useEffect, useRef } from "react";
-import Link from "next/link";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft, faSearch } from "@fortawesome/free-solid-svg-icons";
-import { useRouter, useSearchParams } from "next/navigation";
+'use client'
+import React, { useState } from 'react';
+import { Search, BookOpen, ChevronDown, ChevronUp } from 'lucide-react';
+import Link from 'next/link';
+import { ROUTE_CONSTANTS } from '@/shared/Routes';
 
-interface IGlossaryItem {
+interface GlossaryTerm {
   term: string;
-  acronym?: string;
   definition: string;
-  example?: string;
-  relatedTerms?: string[];
+  category: string;
 }
 
-const glossaryData: IGlossaryItem[] = [
-  {
-    term: "EMD",
-    acronym: "Earnest Money Deposit",
-    definition: "A security deposit required to participate in an auction. It demonstrates your serious intent to bid and is typically a percentage of the property's value.",
-    example: "For a property worth ₹1 crore, the EMD might be ₹5-10 lakhs (5-10% of the property value).",
-    relatedTerms: ["Reserve Price", "Auction", "Bidding", "EMD Submission"]
-  },
-  {
-    term: "EMD Submission",
-    definition: "The deadline by which you must submit your Earnest Money Deposit to participate in the auction. This is typically the same as the auction end date and is a critical deadline that cannot be extended.",
-    example: "If the EMD submission deadline is September 25th at 5:00 PM, you must complete the payment and submit all required documents before this time to be eligible to bid.",
-    relatedTerms: ["EMD", "Auction End Date", "Bidding", "Deadline"]
-  },
+const glossaryTerms: GlossaryTerm[] = [
   {
     term: "Reserve Price",
-    definition: "The minimum price at which the property will be sold. Bids below this amount will not be accepted, even if they are the highest bid.",
-    example: "If the reserve price is ₹50 lakhs, the property will only be sold if someone bids ₹50 lakhs or higher.",
-    relatedTerms: ["EMD", "Bidding", "Auction"]
+    definition: "The minimum price set by the seller below which the property will not be sold. This is the starting point for bidding in an auction.",
+    category: "Pricing"
   },
   {
-    term: "Auction",
-    definition: "A public sale where goods or property are sold to the highest bidder. In property auctions, bidders compete by offering increasingly higher prices.",
-    example: "Bank auctions, government auctions, and foreclosure auctions are common types of property auctions.",
-    relatedTerms: ["EMD", "Reserve Price", "Bidding", "Auction End Date", "EMD Submission"]
+    term: "EMD (Earnest Money Deposit)",
+    definition: "A refundable security deposit that bidders must pay to participate in the auction. It demonstrates serious intent to purchase and is typically 5-10% of the reserve price.",
+    category: "Payments"
   },
   {
-    term: "Bidding",
-    definition: "The process of making offers to purchase a property during an auction. Bidders compete by offering higher amounts than other participants.",
-    example: "Bidding starts at the reserve price and continues until no one offers a higher amount.",
-    relatedTerms: ["Auction", "EMD", "Reserve Price"]
+    term: "Increment Price",
+    definition: "The minimum amount by which each bid must increase from the previous bid. This ensures orderly bidding and prevents minimal increases.",
+    category: "Bidding"
   },
   {
-    term: "Auction End Date",
-    definition: "The final date and time when the auction closes. All EMD submissions and final bids must be completed before this deadline.",
-    example: "If the auction ends on September 25th at 5:00 PM, you must submit your EMD and final bid before that time.",
-    relatedTerms: ["EMD", "Auction", "Bidding", "EMD Submission"]
+    term: "Auction Notice",
+    definition: "An official document published by the bank containing all details about the property, auction terms, conditions, and legal information.",
+    category: "Documentation"
+  },
+  {
+    term: "Property Inspection",
+    definition: "A scheduled period when potential bidders can physically visit and examine the property before the auction date.",
+    category: "Process"
+  },
+  {
+    term: "Authorized Officer",
+    definition: "A bank official who is legally authorized to conduct the auction and make decisions on behalf of the lending institution.",
+    category: "Personnel"
+  },
+  {
+    term: "Borrower",
+    definition: "The original owner of the property who took a loan against it and defaulted on payments, leading to the auction.",
+    category: "Legal"
+  },
+  {
+    term: "Asset Category",
+    definition: "Classification of the property type such as Residential, Commercial, Industrial, or Agricultural land.",
+    category: "Property Types"
+  },
+  {
+    term: "Title Deed",
+    definition: "Legal document that proves ownership of the property. Types include Sale Deed, Lease Deed, or Gift Deed.",
+    category: "Legal"
+  },
+  {
+    term: "Possession Type",
+    definition: "Indicates whether the property possession is Physical (vacant) or Symbolic (occupied by borrower/tenant).",
+    category: "Legal"
+  },
+  {
+    term: "Freehold Property",
+    definition: "Property where you own both the land and the building permanently without any time limit.",
+    category: "Ownership"
+  },
+  {
+    term: "Leasehold Property",
+    definition: "Property where you own the building but the land is leased for a specific period (usually 99 years).",
+    category: "Ownership"
   },
   {
     term: "Service Provider",
-    definition: "The platform or service that conducts the auction on behalf of the bank or property owner. They handle the technical aspects of the auction process.",
-    example: "Companies like auctiontiger.com, bankbazaar.com, or bank-specific platforms.",
-    relatedTerms: ["Auction", "Bank", "Platform"]
+    definition: "Third-party platforms like BankNet, IBAPI, or Bank E-Auctions that facilitate online auction processes for banks.",
+    category: "Technology"
   },
   {
-    term: "Property Type",
-    definition: "The category or classification of the property being auctioned, such as residential, commercial, industrial, or agricultural.",
-    example: "Residential properties include houses, apartments, and plots. Commercial properties include shops, offices, and warehouses.",
-    relatedTerms: ["Area", "City", "Property"]
+    term: "Bid Submission",
+    definition: "The process of placing your offer amount during the live auction within the specified time frame.",
+    category: "Bidding"
   },
   {
-    term: "Area",
-    definition: "The physical location or region where the property is situated. This can include the neighborhood, district, or specific area within a city.",
-    example: "Jodhpur area in Ahmedabad, Gujarat refers to a specific neighborhood within the city.",
-    relatedTerms: ["City", "Property Type", "Location"]
+    term: "Highest Bidder",
+    definition: "The participant who places the highest valid bid above the reserve price when the auction closes.",
+    category: "Bidding"
+  },
+  {
+    term: "Sale Certificate",
+    definition: "Official document issued to the successful bidder confirming the purchase and transfer of property ownership.",
+    category: "Documentation"
+  },
+  {
+    term: "Encumbrance",
+    definition: "Any legal claims, liens, or restrictions on the property that may affect its ownership or transfer.",
+    category: "Legal"
+  },
+  {
+    term: "Market Value",
+    definition: "The estimated current market price of the property based on location, condition, and comparable sales.",
+    category: "Pricing"
   }
 ];
 
+const categories = Array.from(new Set(glossaryTerms.map(term => term.category))).sort();
+
 const GlossaryPage: React.FC = () => {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const [searchTerm, setSearchTerm] = React.useState("");
-  const [selectedCategory, setSelectedCategory] = React.useState<string>("all");
-  const [highlightedTerm, setHighlightedTerm] = React.useState<string>("");
-  
-  const termRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [expandedTerms, setExpandedTerms] = useState<Set<string>>(new Set());
 
-  // Handle URL parameter for direct term navigation
-  useEffect(() => {
-    const termFromUrl = searchParams.get('term');
-    if (termFromUrl) {
-      setSearchTerm(termFromUrl);
-      setHighlightedTerm(termFromUrl);
-      
-      // Scroll to the term after a short delay to ensure the page is rendered
-      setTimeout(() => {
-        const termRef = termRefs.current[termFromUrl];
-        if (termRef) {
-          termRef.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          // Add highlight effect
-          termRef.classList.add('ring-2', 'ring-blue-500', 'ring-opacity-50');
-          setTimeout(() => {
-            termRef.classList.remove('ring-2', 'ring-blue-500', 'ring-opacity-50');
-          }, 3000);
-        }
-      }, 100);
-    }
-  }, [searchParams]);
-
-  const handleBackClick = () => {
-    router.back();
-  };
-
-  const filteredGlossary = glossaryData.filter(item => {
-    const matchesSearch = item.term.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         item.acronym?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         item.definition.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    if (selectedCategory === "all") return matchesSearch;
-    
-    // Simple categorization logic
-    if (selectedCategory === "financial" && (item.term === "EMD" || item.term === "Reserve Price")) return matchesSearch;
-    if (selectedCategory === "process" && (item.term === "Auction" || item.term === "Bidding" || item.term === "Auction End Date" || item.term === "EMD Submission")) return matchesSearch;
-    if (selectedCategory === "property" && (item.term === "Property Type" || item.term === "Area")) return matchesSearch;
-    
-    return matchesSearch;
+  const filteredTerms = glossaryTerms.filter(term => {
+    const matchesSearch = term.term.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         term.definition.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory = selectedCategory === 'All' || term.category === selectedCategory;
+    return matchesSearch && matchesCategory;
   });
 
-  const categories = [
-    { key: "all", label: "All Terms", count: glossaryData.length },
-    { key: "financial", label: "Financial Terms", count: 2 },
-    { key: "process", label: "Auction Process", count: 4 },
-    { key: "property", label: "Property Details", count: 2 }
-  ];
+  const toggleTerm = (term: string) => {
+    const newExpanded = new Set(expandedTerms);
+    if (newExpanded.has(term)) {
+      newExpanded.delete(term);
+    } else {
+      newExpanded.add(term);
+    }
+    setExpandedTerms(newExpanded);
+  };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-6xl mx-auto px-4 py-8">
+    <>
+      <div className="common-section py-8">
         {/* Header */}
-        <div className="flex items-center gap-4 mb-8">
-          <button
-            onClick={handleBackClick}
-            className="rounded-full bg-white p-3 shadow-sm hover:shadow-md transition-shadow"
-          >
-            <FontAwesomeIcon icon={faArrowLeft} className="text-gray-600" />
-          </button>
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">Auction Glossary & FAQ</h1>
-            <p className="text-gray-600 mt-2">Understand key terms and concepts related to property auctions</p>
+        <div className="text-center mb-8">
+          <div className="flex items-center justify-center mb-4">
+            <BookOpen className="h-8 w-8 text-blue-600 mr-3" />
+            <h1 className="text-3xl font-bold text-gray-900">Glossary</h1>
           </div>
+          <p className="text-sm-xs mx-auto">
+            Understanding key terms and concepts in property auctions to help you make informed decisions.
+          </p>
         </div>
 
-        {/* Search and Filters */}
-        <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
-          <div className="flex flex-col lg:flex-row gap-4">
-            {/* Search Bar */}
-            <div className="flex-1 relative">
-              <FontAwesomeIcon 
-                icon={faSearch} 
-                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" 
-              />
+        {/* Search and Filter */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
+          <div className="flex flex-col sm:flex-row gap-4">
+            {/* Search */}
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
               <input
                 type="text"
-                placeholder="Search for terms, acronyms, or definitions..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Search terms or definitions..."
+                className="text-sm-xs w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
               />
             </div>
-            
+
             {/* Category Filter */}
-            <div className="flex flex-wrap gap-2">
-              {categories.map((category) => (
-                <button
-                  key={category.key}
-                  onClick={() => setSelectedCategory(category.key)}
-                  className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                    selectedCategory === category.key
-                      ? "bg-blue-600 text-white"
-                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                  }`}
-                >
-                  {category.label} ({category.count})
-                </button>
-              ))}
+            <div className="sm:w-48">
+              <select
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+              >
+                <option value="All">All Categories</option>
+                {categories.map(category => (
+                  <option key={category} value={category}>{category}</option>
+                ))}
+              </select>
             </div>
           </div>
         </div>
 
-        {/* Glossary Content */}
-        <div className="space-y-6">
-          {filteredGlossary.length === 0 ? (
-            <div className="text-center py-12">
-              <div className="text-gray-400 text-6xl mb-4">🔍</div>
-              <h3 className="text-xl font-semibold text-gray-600 mb-2">No terms found</h3>
-              <p className="text-gray-500">Try adjusting your search terms or category filter</p>
-            </div>
-          ) : (
-            filteredGlossary.map((item, index) => (
-              <div 
-                key={index} 
-                ref={(el) => { termRefs.current[item.term] = el; }}
-                className="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-all duration-300"
+        {/* Results Count */}
+        <div className="mb-6">
+          <p className="text-sm-xs">
+            Showing {filteredTerms.length} of {glossaryTerms.length} terms
+          </p>
+        </div>
+
+        {/* Glossary Terms */}
+        <div className="space-y-4">
+          {filteredTerms.map((item, index) => (
+            <div key={index} className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+              <button
+                onClick={() => toggleTerm(item.term)}
+                className="w-full px-6 py-4 text-left hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset"
               >
-                <div className="flex items-start justify-between mb-3">
-                  <div>
-                    <h3 className="text-xl font-bold text-gray-900 mb-1">
-                      {item.term}
-                      {item.acronym && (
-                        <span className="text-sm font-normal text-gray-500 ml-2">
-                          ({item.acronym})
-                        </span>
-                      )}
-                    </h3>
-                  </div>
-                </div>
-                
-                <p className="text-gray-700 mb-4 leading-relaxed">{item.definition}</p>
-                
-                {item.example && (
-                  <div className="bg-blue-50 border-l-4 border-blue-400 p-4 mb-4">
-                    <p className="text-sm font-medium text-blue-800 mb-1">Example:</p>
-                    <p className="text-blue-700">{item.example}</p>
-                  </div>
-                )}
-                
-                {item.relatedTerms && item.relatedTerms.length > 0 && (
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm font-medium text-gray-600">Related terms:</span>
-                    <div className="flex flex-wrap gap-2">
-                      {item.relatedTerms.map((term, termIndex) => (
-                        <span
-                          key={termIndex}
-                          className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full hover:bg-gray-200 cursor-pointer"
-                          onClick={() => setSearchTerm(term)}
-                        >
-                          {term}
-                        </span>
-                      ))}
+                <div className="flex items-center justify-between">
+                  <div className="flex-1">
+                    <div className="flex items-center space-x-3">
+                      <h3 className="text-sm-xs font-semibold text-gray-900">{item.term}</h3>
+                      <span className="px-2 py-1 bg-blue-100 text-blue-800 text-sm-xs font-medium rounded-full">
+                        {item.category}
+                      </span>
                     </div>
                   </div>
-                )}
-              </div>
-            ))
-          )}
+                  {expandedTerms.has(item.term) ? (
+                    <ChevronUp className="h-5 w-5 text-gray-400" />
+                  ) : (
+                    <ChevronDown className="h-5 w-5 text-gray-400" />
+                  )}
+                </div>
+              </button>
+              
+              {expandedTerms.has(item.term) && (
+                <div className="px-6 pb-4 border-t border-gray-100">
+                  <p className="text-sm-xs leading-relaxed pt-4">{item.definition}</p>
+                </div>
+              )}
+            </div>
+          ))}
         </div>
 
-        {/* FAQ Section */}
-        <div className="mt-16 bg-white rounded-lg shadow-sm p-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Frequently Asked Questions</h2>
-          
-          <div className="space-y-6">
-            <div className="border-b border-gray-200 pb-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-3">How much EMD do I need to pay?</h3>
-              <p className="text-gray-700">EMD typically ranges from 5% to 10% of the property&apos;s reserve price. The exact amount is specified in the auction notice. For example, if a property has a reserve price of ₹1 crore, you might need to pay ₹5-10 lakhs as EMD.</p>
-            </div>
-            
-            <div className="border-b border-gray-200 pb-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-3">Is EMD refundable?</h3>
-              <p className="text-gray-700">Yes, EMD is refundable if you don&apos;t win the auction. However, if you win and then fail to complete the purchase, the EMD may be forfeited. Always read the auction terms carefully.</p>
-            </div>
-            
-            <div className="border-b border-gray-200 pb-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-3">What is the EMD Submission deadline?</h3>
-              <p className="text-gray-700">The EMD Submission deadline is the final date and time by which you must submit your Earnest Money Deposit to participate in the auction. This deadline is typically the same as the auction end date and is critical - missing it means you cannot participate in the auction.</p>
-            </div>
-            
-            <div className="border-b border-gray-200 pb-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-3">What happens if no one bids above the reserve price?</h3>
-              <p className="text-gray-700">If no one bids above the reserve price, the auction is considered unsuccessful and the property is not sold. The bank may re-auction the property later, possibly with a lower reserve price.</p>
-            </div>
-            
-            <div className="border-b border-gray-200 pb-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-3">Can I participate in multiple auctions simultaneously?</h3>
-              <p className="text-gray-700">Yes, you can participate in multiple auctions, but you&apos;ll need to pay EMD for each one separately. Make sure you have sufficient funds to cover all EMD requirements.</p>
-            </div>
-            
-            <div className="pb-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-3">What documents do I need for auction participation?</h3>
-              <p className="text-gray-700">Typically, you&apos;ll need identity proof, address proof, PAN card, and the EMD amount. Some auctions may require additional documents like income proof or bank statements. Check the specific auction notice for requirements.</p>
-            </div>
+        {/* No Results */}
+        {filteredTerms.length === 0 && (
+          <div className="text-center py-12">
+            <BookOpen className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+            <h3 className="text-sm-xs font-medium text-gray-900 mb-2">No terms found</h3>
+            <p className="text-sm-xs">
+              Try adjusting your search or filter to find what you&apos;re looking for.
+            </p>
           </div>
-        </div>
+        )}
 
-        {/* Contact Section */}
-        <div className="mt-16 bg-blue-50 rounded-lg p-8 text-center">
-          <h2 className="text-2xl font-bold text-blue-900 mb-4">Still have questions?</h2>
-          <p className="text-blue-700 mb-6">Our team is here to help you understand the auction process better.</p>
+        {/* Help Section */}
+        <div className="mt-12 bg-blue-50 rounded-lg p-6 border border-blue-200">
+          <h3 className="text-sm-xs font-semibold text-blue-900 mb-2">Need More Help?</h3>
+          <p className="text-blue-800 mb-4 text-sm-xs">
+            Can&apos;t find the term you&apos;re looking for? Our support team is here to help you understand any auction-related concepts.
+          </p>
           <Link
-            href="/contact"
-            className="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors"
+            href={ROUTE_CONSTANTS.CONTACT}
+            className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
           >
-            Contact Us
+            Contact Support
           </Link>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

@@ -387,4 +387,6 @@ blockquote {
   @apply lg:col-span-3 col-span-full;
 }
 
-
+.text-sm-xs {
+  @apply text-xs lg:text-sm
+}

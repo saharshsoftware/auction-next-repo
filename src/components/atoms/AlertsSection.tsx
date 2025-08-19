@@ -81,7 +81,7 @@ export function AlertsSection({
                 <h3 className="text-2xl font-semibold mb-4">
                   Stay Ahead with Property Alerts
                 </h3>
-                <p className="text-gray-600">
+                <p className="text-sm-xs">
                   Be the first to know when your perfect property becomes
                   available. Follow these steps to set up your personalized
                   alerts.

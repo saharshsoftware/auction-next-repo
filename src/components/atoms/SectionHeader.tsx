@@ -16,7 +16,7 @@ export function SectionHeader({
       <h2 className="text-2xl font-semibold my-2">
         {title} <span className="text-blue-600">{highlightedText}</span>
       </h2>
-      <p className="text-gray-600 max-w-2xl mx-auto">{description}</p>
+      <p className="max-w-2xl mx-auto text-sm-xs">{description}</p>
     </div>
   );
 }

@@ -70,7 +70,7 @@ export function SavedSearchesSection({
                 <h3 className="text-2xl font-semibold mb-4">
                   Streamline Your Property Search
                 </h3>
-                <p className="text-gray-600">
+                <p className="text-sm-xs">
                   Stop repeating your search filters every time. Save your
                   preferences once and access them instantly with these simple
                   steps.

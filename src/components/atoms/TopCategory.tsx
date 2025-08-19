@@ -12,7 +12,7 @@ const TopCategory = (props: {
 
   const renderLink = (item: ICategoryCollection) => {
     return (
-      <Link href={`${ROUTE_CONSTANTS.CATEGORY}/${item?.slug}`}>
+      <Link href={`${ROUTE_CONSTANTS.CATEGORY}/${item?.slug}`} className="text-sm-xs">
         {item?.name}
       </Link>
     );

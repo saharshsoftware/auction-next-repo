@@ -35,7 +35,7 @@ const AllBanks = (props: { data: any[] }) => {
                   >
                     <p>
                       <Link
-                        className={`text-blue-600`}
+                        className={`text-blue-600 text-sm-xs`}
                         href={`${ROUTE_CONSTANTS.BANKS}/${bank?.slug}`}
                         onClick={() => handleLinkClick(bank)}
                         prefetch={false}

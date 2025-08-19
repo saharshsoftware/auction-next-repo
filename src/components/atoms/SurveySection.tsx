@@ -76,7 +76,7 @@ const SurveySection: React.FC<SurveyCardProps> = ({
           <h3 className="text-xl font-bold text-gray-800 mb-2">
             Help us improve your experience! 
           </h3>
-          <p className="text-sm text-gray-600 leading-relaxed mx-auto mb-4">
+          <p className="text-sm-xs text-gray-600 leading-relaxed mx-auto mb-4">
             Your valuable feedback helps us make our platform better for everyone.
             Share your thoughts and help us serve you better.
           </p>
@@ -90,7 +90,7 @@ const SurveySection: React.FC<SurveyCardProps> = ({
             className="group flex items-center justify-center gap-3 px-4 py-3  rounded-lg border border-gray-200 hover:shadow-lg"
           >
             <GoogleIcon className="w-5 h-5" />
-            <span className="font-medium">
+            <span className="font-medium text-sm-xs">
               Google Review
             </span>
           </button>
@@ -101,7 +101,7 @@ const SurveySection: React.FC<SurveyCardProps> = ({
             className="group flex items-center justify-center gap-3 px-4 py-3 rounded-lg border border-gray-200 hover:shadow-lg"
           >
             <AndroidIcon className="w-5 h-5" />
-            <span className="font-medium">Android App</span>
+            <span className="font-medium text-sm-xs">Android App</span>
           </button>
 
           {/* iOS App Button */}
@@ -110,7 +110,7 @@ const SurveySection: React.FC<SurveyCardProps> = ({
             className="group flex items-center justify-center gap-3 px-4 py-3 rounded-lg border border-gray-200 hover:shadow-lg"
           >
             <IosIcon className="w-5 h-5" />
-            <span className="font-medium">iOS App</span>
+            <span className="font-medium text-sm-xs">iOS App</span>
           </button>
 
           {/* Take Survey Button */}
@@ -119,7 +119,7 @@ const SurveySection: React.FC<SurveyCardProps> = ({
             className="group flex items-center justify-center gap-3 px-4 py-3 rounded-lg border border-gray-200 hover:shadow-lg"
           >
             <NotesIcon className="w-5 h-5" />
-            <span className="font-medium">Take Survey</span>
+            <span className="font-medium text-sm-xs">Take Survey</span>
           </button>
         </div>
 

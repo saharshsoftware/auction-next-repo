@@ -14,8 +14,8 @@ const BubbleButton: React.FC<BubbleButtonProps> = ({ label, path }) => {
       href={path || "#"}
       className=" md:border border-gray-300 md:rounded-full px-4 py-2 text-brand-color font-bold flex md:items-center justify-between space-x-2 w-full md:w-auto"
     >
-      <span className="text-left">{label}</span>
-      <span className="text-md">›</span>
+      <span className="text-left text-sm-xs">{label}</span>
+      <span className="text-md text-sm-xs">›</span>
     </Link>
   );
 };

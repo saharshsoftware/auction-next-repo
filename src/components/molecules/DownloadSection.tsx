@@ -19,7 +19,7 @@ export default function DownloadBanner() {
               app
             </h2>
 
-            <p className=" mb-6 text-center">
+            <p className="text-sm-xs mb-6 text-center">
               Get instant access to thousands of bank auctions right from your
               phone. Set alerts, save searches, and never miss a great deal
               again!

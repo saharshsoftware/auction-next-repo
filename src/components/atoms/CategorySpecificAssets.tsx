@@ -31,14 +31,14 @@ const CategorySpecificAssets = (props: {
       ROUTE_CONSTANTS.CATEGORY
     }/${categorySlug}/${STRING_DATA.TYPES?.toLowerCase()}/${item?.slug}`;
     if (isCategoryRoute) {
-      return <Link href={URL}>{item?.name}</Link>;
+      return <Link href={URL} className="text-sm-xs">{item?.name}</Link>;
     }
     URL = `${
       ROUTE_CONSTANTS.BANKS
     }/${bankSlug}/${STRING_DATA.TYPES?.toLowerCase()}/${item?.slug}`;
     // console.log("INFO:: (URL)", { URL, params });
     if (isBankCategoriesRoute) {
-      return <Link href={URL}>{item?.name}</Link>;
+      return <Link href={URL} className="text-sm-xs">{item?.name}</Link>;
     }
   };
 
