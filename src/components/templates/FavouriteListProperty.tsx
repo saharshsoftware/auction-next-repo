@@ -43,8 +43,14 @@ const FavouriteListProperty = (props: IFavouriteListPropertyComp) => {
       })) as unknown as IFavouriteListProperty[];
       return res ?? [];
     },
-    enabled: !!listId,
   });
+
+  useEffect(() => {
+    if (listId) {
+      refetch();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [listId]);
 
   // Mutations
   const { mutate, isPending } = useMutation({

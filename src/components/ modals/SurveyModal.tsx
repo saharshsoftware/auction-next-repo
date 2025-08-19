@@ -182,7 +182,7 @@ const SurveyModal = ({ openModal, hideModal = () => {}, isSurveySection = false 
           />
         </div>
         {showSurvey && (
-          <div className="absolute top-2 right-12 p-2">
+          <div className="absolute top-2 right-10 p-2">
             {currentIndex + 1} of 9
           </div>
         )}
