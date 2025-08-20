@@ -24,7 +24,6 @@ export const InfoTooltip: React.FC<InfoTooltipProps> = ({
 
   const showTooltip = () => {
     setIsVisible(true);
-    updateTooltipPosition();
   };
 
   const hideTooltip = () => {
@@ -76,7 +75,11 @@ export const InfoTooltip: React.FC<InfoTooltipProps> = ({
 
   useEffect(() => {
     if (isVisible) {
-      updateTooltipPosition();
+      const timer = setTimeout(() => {
+        updateTooltipPosition();
+      }, 10);
+      
+      return () => clearTimeout(timer);
     }
   }, [isVisible]);
 
@@ -128,10 +131,11 @@ export const InfoTooltip: React.FC<InfoTooltipProps> = ({
           {/* Tooltip content */}
           <div
             ref={tooltipRef}
-            className={`fixed z-50 bg-white rounded-xl shadow-xl border border-gray-200 max-w-xs md:max-w-sm transition-all duration-200 ${tooltipClassName}`}
+            className={`fixed z-50 bg-white rounded-xl shadow-xl border border-gray-200 max-w-xs md:max-w-sm ${tooltipClassName}`}
             style={{
               top: `${tooltipPosition.top}px`,
               left: `${tooltipPosition.left}px`,
+              opacity: tooltipPosition.top === 0 && tooltipPosition.left === 0 ? 0 : 1,
             }}
           >
             {/* Arrow */} 

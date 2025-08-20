@@ -179,9 +179,9 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
             {/* Date and Asset Info - Mobile Stack */}
             <div className="space-y-2 mb-4">
               <div className="text-sm-xs font-semibold text-gray-900">
-                {formatDate(property?.auctionDate?.toString())}
-                {property?.auctionDate && (
-                  <span>, {formatTime(property?.auctionDate?.toString())}</span>
+                {formatDate(property?.auctionStartTime?.toString())}
+                {property?.auctionStartTime && (
+                  <span>, {formatTime(property?.auctionStartTime?.toString())}</span>
                 )}
               </div>
               <div className="flex items-center space-x-2 text-sm-xs text-gray-600">
@@ -295,9 +295,9 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
                 {/* Auction Date and Time */}
                 <div className="flex items-center">
                   <span className="font-semibold">
-                    {formatDate(property?.auctionDate?.toString())}
-                    {property?.auctionDate && (
-                      <span>, {formatTime(property?.auctionDate?.toString())}</span>
+                    {formatDate(property?.auctionStartTime?.toString())}
+                    {property?.auctionStartTime && (
+                      <span>, {formatTime(property?.auctionStartTime?.toString())}</span>
                     )}
                   </span>
                 </div>

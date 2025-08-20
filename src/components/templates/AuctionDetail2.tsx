@@ -139,10 +139,10 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
     }
   };
 
-  const getStatusFromDate = (auctionDate: string | null | undefined) => {
-    if (!auctionDate) return 'unknown';
+  const getStatusFromDate = (auctionStartTime: string | null | undefined) => {
+    if (!auctionStartTime) return 'unknown';
     const now = new Date();
-    const auction = new Date(auctionDate);
+    const auction = new Date(auctionStartTime);
 
     if (auction > now) return 'upcoming';
 
@@ -217,7 +217,7 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
     </div>
   );
 
-  const status = getStatusFromDate(property.auctionDate?.toString());
+  const status = getStatusFromDate(property.auctionStartTime?.toString());
   const images = getPropertyImages(property);
   const hasRealImages = images.length > 0 && !images[0].includes('no-image-placeholder.png');
   const handleBackClick = () => {
@@ -328,7 +328,7 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
                     <Calendar className="h-3 w-3 text-gray-500" />
                   </div>
                   <div className="text-lg font-bold text-gray-900">
-                    {property.auctionDate ? formatDateForDisplay(property.auctionDate?.toString()) : 'Not specified'}
+                    {property.auctionStartTime ? formatDateForDisplay(property.auctionStartTime?.toString()) : 'Not specified'}
                   </div>
                 </div>
               </div>
@@ -399,7 +399,7 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
                       Auction Start Date & Time
                     </div>
                     <div className="text-lg font-bold text-gray-900">
-                      {formatDateForDisplay(property.auctionDate?.toString())}
+                      {formatDateForDisplay(property.auctionStartTime?.toString())}
                     </div>
                     <div className="text-sm text-gray-600 mt-2 font-semibold">
                       {property.auctionStartTime ?

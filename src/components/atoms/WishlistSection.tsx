@@ -19,7 +19,7 @@ interface Property {
   bank: string;
   area: string;
   image: string;
-  auctionDate: string;
+  auctionStartTime: string;
 }
 
 interface FavoriteList {

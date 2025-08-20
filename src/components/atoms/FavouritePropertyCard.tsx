@@ -37,9 +37,9 @@ const FavouritePropertyCard: React.FC<IFavouritePropertyCardComp> = (props) => {
         <p className="flex-1 line-clamp-4">{propertyData?.location}</p>
         <div className="flex lg:flex-row flex-col gap-4 justify-between items-start">
           <div className="flex items-center justify-start gap-4 flex-wrap">
-            {propertyData?.auctionDate ? (
+            {propertyData?.auctionStartTime ? (
               <span className="font-bold text-sm">
-                {formattedDate(propertyData?.auctionDate)}
+                {formattedDate(propertyData?.auctionStartTime)}
               </span>
             ) : null}
 

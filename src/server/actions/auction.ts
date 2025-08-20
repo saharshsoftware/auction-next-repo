@@ -406,19 +406,19 @@ export const getAuctionsServer = async (payload: {
     //   "estimatedMarketPrice",
     //   "assetType",
     //   "reservePrice",
-    //   "auctionDate",
+    //   "auctionStartTime",
     //   "branchName",
     //   "serviceProvider",
     // ]);
     // URL =
     //   API_ENPOINTS.NOTICES +
     //   filter.slice(0, -1) +
-    //   `&${requiredkeys}&sort=auctionDate:desc`;
+    //   `&${requiredkeys}&sort=auctionStartTime:desc`;
 
       URL =
         API_ENPOINTS.NOTICES +
         filter.slice(0, -1) +
-        `&sort=auctionDate:desc`;
+        `&sort=auctionStartTime:desc`;
     const UPDATE_URL = API_BASE_URL + URL;
     console.log({ UPDATE_URL }, "auction-detail");
     const { data } = await getRequest({ API: URL });

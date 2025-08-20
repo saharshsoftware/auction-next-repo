@@ -37,7 +37,7 @@ export interface IAuction {
   auctionType: string;
   noticeLink: string;
   authorisedOfficerContactPerson: string;
-  auctionDate: Date;
+  auctionStartTime: Date;
   auctionStartTime: Date;
   auctionEndDate: Date;
   applicationSubmissionDate: Date;
@@ -65,7 +65,7 @@ export interface IAuction {
   updatedAt?: string;
   publishedAt?: string;
   createdById?: string;
-  auctionDate?: string;
+  auctionStartTime?: string;
   auctionStartTime?: string;
   auctionEndDate?: string;
   applicationSubmissionDate?: string;
@@ -177,7 +177,7 @@ export interface IProperty {
   auctionType: string;
   noticeLink: string;
   authorisedOfficerContactPerson: null;
-  auctionDate: Date;
+  auctionStartTime: Date;
   auctionStartTime: Date;
   auctionEndDate: Date;
   applicationSubmissionDate: Date;

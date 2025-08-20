@@ -1,5 +1,5 @@
 import React from 'react';
-import { MapPin, ExternalLink, Navigation } from 'lucide-react';
+import { MapPin, Navigation } from 'lucide-react';
 
 interface PropertyMapProps {
   lat: string | null;
@@ -64,54 +64,22 @@ export const PropertyMap: React.FC<PropertyMapProps> = ({
           </div>
         )}
 
-        {/* Coordinates Section */}
-        <div className="mb-6">
-          <div className="bg-gray-50 rounded-lg p-4">
-            <h4 className="text-sm font-medium text-gray-900 mb-2">GPS Coordinates</h4>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
-              <div>
-                <span className="text-gray-600">Latitude:</span>
-                <span className="ml-2 font-mono text-gray-900">{latitude.toFixed(6)}</span>
-              </div>
-              <div>
-                <span className="text-gray-600">Longitude:</span>
-                <span className="ml-2 font-mono text-gray-900">{longitude.toFixed(6)}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Action Button */}
-        <div className="flex flex-col sm:flex-row gap-3">
+        {/* Google Maps Button */}
+        <div className="flex justify-center">
           <a
             href={mapLinkUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex-1 flex items-center justify-center px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium shadow-sm hover:shadow-md"
+            className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium shadow-sm hover:shadow-md"
           >
-            <ExternalLink className="h-4 w-4 mr-2" />
-            View on Google Maps
-          </a>
-          
-          {/* Get Directions Button */}
-          <a
-            href={`https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex-1 flex items-center justify-center px-4 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium shadow-sm hover:shadow-md"
-          >
-            <Navigation className="h-4 w-4 mr-2" />
-            Get Directions
+            {/* Google Maps Icon (using a simple map icon as substitute) */}
+            <svg className="h-4 w-4 mr-2" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+            </svg>
+            Google Maps
           </a>
         </div>
 
-        {/* Additional Info */}
-        <div className="mt-4 p-3 bg-blue-50 rounded-lg">
-          <p className="text-xs text-blue-700 text-center">
-            <MapPin className="h-3 w-3 inline mr-1" />
-            Tap the buttons above to open in Google Maps app or get turn-by-turn directions
-          </p>
-        </div>
       </div>
     </div>
   );
