@@ -15,6 +15,15 @@ export const getPrivacyData = async () => {
   }
 };
 
+export const getFaqData = async () => {
+  try {
+    const URL = API_BASE_URL + API_ENPOINTS.FAQ;
+    const { data } = await getRequest({ API: URL });
+    return sanitizeStrapiData(data?.data, true);
+  } catch (e) {
+    console.log(e, "faq error");
+  }
+};
 
 export const getAboutUsData = async () => {
   try {

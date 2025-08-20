@@ -131,10 +131,10 @@ const PartnerForm = () => {
             </div>
             <div className="text-center space-y-3">
               <h2 className="custom-h2-class">Contact Us</h2>
-              <p>Reach out to our broker support team</p>
+              <p className="text-sm-xs">Reach out to our broker support team</p>
               <a
                 href="mailto:broker@eauctiondekho.com"
-                className="text-blue-500 underline"
+                className="text-blue-500 underline text-sm-xs"
               >
                 broker@eauctiondekho.com
               </a>
@@ -242,7 +242,7 @@ const PartnerForm = () => {
                     </TextField>
 
                     <div>
-                      <label className="block font-medium mb-1">
+                      <label className="block mb-1 text-sm-xs">
                         Are You Currently Active in Auction Deals?
                       </label>
                       <div className="flex gap-4">

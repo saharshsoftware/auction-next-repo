@@ -111,9 +111,9 @@ const TextField: React.FC<FieldHookConfig<string> & ICustomInput> = (props) => {
       {label ? (
         <label
           htmlFor={name}
-          className={`flex justify-between items-center w-full `}
+          className={`flex justify-between items-center w-full text-sm-xs text-black`}
         >
-          <span className="text-sm-xs text-gray-900">{label} </span>
+          {label}
           {showPriceValue() ? (
             <span className="font-bold text-lg custom-prize-color">
               {formatPrice(field.value)}

@@ -142,7 +142,7 @@ const GlossaryPage: React.FC = () => {
         </div>
 
         {/* Search and Filter */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200  mb-8">
           <div className="flex flex-col sm:flex-row gap-4">
             {/* Search */}
             <div className="relative flex-1">
@@ -156,19 +156,6 @@ const GlossaryPage: React.FC = () => {
               />
             </div>
 
-            {/* Category Filter */}
-            <div className="sm:w-48">
-              <select
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-              >
-                <option value="All">All Categories</option>
-                {categories.map(category => (
-                  <option key={category} value={category}>{category}</option>
-                ))}
-              </select>
-            </div>
           </div>
         </div>
 
@@ -185,15 +172,12 @@ const GlossaryPage: React.FC = () => {
             <div key={index} className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
               <button
                 onClick={() => toggleTerm(item.term)}
-                className="w-full px-6 py-4 text-left hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset"
+                className="w-full px-6 py-4 text-left"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
                     <div className="flex items-center space-x-3">
                       <h3 className="text-sm-xs font-semibold text-gray-900">{item.term}</h3>
-                      <span className="px-2 py-1 bg-blue-100 text-blue-800 text-sm-xs font-medium rounded-full">
-                        {item.category}
-                      </span>
                     </div>
                   </div>
                   {expandedTerms.has(item.term) ? (

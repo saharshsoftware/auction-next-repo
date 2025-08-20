@@ -31,6 +31,7 @@ import InterestModal from '../ modals/InterestModal';
 import useModal from '@/hooks/useModal';
 import { getCookie } from 'cookies-next';
 import SurveyCard from "../atoms/SurveySection";
+import { InfoTooltip } from '../atoms/InfoTooltip';
 
 // add props type
 interface AuctionDetailPageProps {
@@ -477,9 +478,18 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
 
                   {/* EMD Amount */}
                   <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-                    <div className="text-sm-xs font-medium text-gray-600 uppercase tracking-wide mb-2 flex items-center">
+                    <div className="text-sm-xs font-medium text-gray-600 tracking-wide mb-2 flex items-center gap-1">
                       <CreditCard className="h-3 w-3 mr-1" />
-                      EMD Amount
+                      <span className="uppercase">EMD Amount</span>
+                      <InfoTooltip
+                        content={
+                          <div>
+                            <p className="font-semibold text-gray-900 mb-2">What is EMD?</p>
+                            <p className="text-sm-xs text-gray-700">A refundable security deposit required to participate in the auction. It&apos;s fully refunded if you don&apos;t win.</p>
+                          </div>
+                        }
+                        position="top"
+                      />
                     </div>
                     <div className="text-lg font-bold text-gray-900">
                       {formatPrice(property?.emd?.toString() || '0')}
@@ -551,11 +561,11 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
 
             </div>
           </div>
-      
-        {/* Survey Card - Always visible on detail pages after 10 days */}
-        <div className="mt-6">
-          <SurveyCard isRandom={false} isAuctionDetail={true} />
-        </div>
+
+          {/* Survey Card - Always visible on detail pages after 10 days */}
+          <div className="mt-6">
+            <SurveyCard isRandom={false} isAuctionDetail={true} />
+          </div>
 
           {/* Property Map - Full width */}
           {(property.lat && property.lng) && (

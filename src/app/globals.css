@@ -70,6 +70,7 @@ body :focus-within {
     background-color: #333; /* Adjust input background for dark mode */
     color: #f0f0f0; /* Adjust text color for dark mode */
     border-color: var(--brand-color);
+    font-size: 14px;
   }
 
   /* Customize any other specific elements as necessary */
@@ -124,19 +125,23 @@ body :focus-within {
 }
 
 .danger-blog-class p {
-  @apply text-base leading-relaxed mb-4;
+  @apply text-sm-xs leading-relaxed mb-4;
 }
 
 .danger-blog-class ul {
   @apply list-disc list-inside mb-4;
 }
 
+.danger-blog-class ol {
+  @apply list-decimal list-inside mb-4 text-sm-xs;
+}
+
 .danger-blog-class li {
-  @apply text-base leading-relaxed mb-2;
+  @apply text-sm-xs leading-relaxed mb-2;
 }
 
 .danger-blog-class  a {
-  @apply text-blue-600 underline hover:text-blue-800;
+  @apply text-blue-600 underline hover:text-blue-800 text-sm-xs;
 
 }
 
@@ -208,7 +213,7 @@ blockquote {
 }
 
 .react-dropdown-select-content {
-  @apply text-base line-clamp-1
+  @apply text-sm-xs line-clamp-1
 }
 
 .react-dropdown-select-dropdown {
@@ -388,5 +393,5 @@ blockquote {
 }
 
 .text-sm-xs {
-  @apply text-xs lg:text-sm
+  @apply text-[13px] lg:text-[14px]
 }

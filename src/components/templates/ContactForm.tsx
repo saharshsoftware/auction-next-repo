@@ -100,20 +100,20 @@ const ContactForm = () => {
             </div>
             <div className="text-center space-y-3">
               <h2 className="custom-h2-class">Contact & Feedback</h2>
-              <p>Contact our support staff</p>
+              <p className="text-sm-xs">Contact our support staff</p>
               <a
                 href="mailto:contact@eauctiondekho.com"
-                className="text-blue-500 underline"
+                className="text-blue-500 underline text-sm-xs"
               >
                 contact@eauctiondekho.com
               </a>
             </div>
             <div className="text-center space-y-3">
               <h2 className="custom-h2-class ">Sales</h2>
-              <p>For promotion and business </p>
+              <p className="text-sm-xs">For promotion and business </p>
               <a
                 href="mailto:sales@eauctiondekho.com"
-                className="text-blue-500 underline"
+                className="text-blue-500 underline text-sm-xs"
               >
                 sales@eauctiondekho.com
               </a>
@@ -179,7 +179,7 @@ const ContactForm = () => {
                       label="Auction Link (optional)"
                       placeholder="Enter auction link"
                     />
-                    <p className="text-sm text-gray-600 -mt-2">
+                    <p className="text-sm-xs text-gray-600 -mt-2">
                       If you want to enquire about a particular auction please provide the link
                     </p>
 

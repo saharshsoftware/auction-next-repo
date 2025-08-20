@@ -7,6 +7,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { ROUTE_CONSTANTS } from "./Routes";
 import { CONFIG } from "@/utilies/Config";
+import { FAQItem } from "@/components/templates/FaqPage";
 
 export const COOKIES = {
   TOKEN_KEY: "auction-token",
@@ -416,3 +417,81 @@ export const APP_STORE_URLS = {
   APP_STORE: CONFIG.APPSTORE_URL,
   GOOGLE_REVIEW: CONFIG.GOOGLE_REVIEW_URL,
 } as const;
+
+export const faqData: FAQItem[] = [
+  {
+    question: "How do I participate in a property auction?",
+    answer: "To participate in a property auction, you need to: 1) Register on the auction platform, 2) Pay the Earnest Money Deposit (EMD), 3) Submit required documents, 4) Attend the property inspection (if needed), and 5) Place your bids during the live auction.",
+    tags: "Getting Started"
+  },
+  {
+    question: "What is Earnest Money Deposit (EMD) and is it refundable?",
+    answer: "EMD is a security deposit (typically 5-10% of reserve price) that shows your serious intent to purchase. It's fully refundable if you don't win the auction or if the auction is cancelled. However, if you win and fail to complete the purchase, the EMD may be forfeited.",
+    tags: "Payments"
+  },
+  {
+    question: "What happens if I win the auction?",
+    answer: "If you're the highest bidder: 1) You'll receive a confirmation, 2) Pay the remaining amount (usually within 15-30 days), 3) Complete legal formalities, 4) Receive the sale certificate, and 5) Get possession of the property as per the terms.",
+    tags: "Winning Process"
+  },
+  {
+    question: "Can I inspect the property before bidding?",
+    answer: "Yes, banks typically schedule property inspection dates before the auction. You can visit the property during these specified times to assess its condition. Some properties may have restricted access if they're occupied.",
+    tags: "Property Inspection"
+  },
+  {
+    question: "What documents do I need to participate?",
+    answer: "Required documents typically include: Valid ID proof (Aadhaar/PAN), Address proof, Bank statements, Income proof, EMD payment receipt, and a signed undertaking. Specific requirements may vary by bank and property value.",
+    tags: "Documentation"
+  },
+  {
+    question: "Are there any hidden costs in property auctions?",
+    answer: "Apart from the bid amount, you may need to pay: Registration charges, stamp duty, legal fees, property transfer costs, and any pending dues like property tax or maintenance charges. Always factor these into your budget.",
+    tags: "Costs"
+  },
+  {
+    question: "What if the property has legal issues or encumbrances?",
+    answer: "Banks are required to disclose known legal issues in the auction notice. However, you should conduct your own due diligence. Properties are typically sold 'as is where is' basis, so any legal complications become the buyer's responsibility.",
+    tags: "Legal Issues"
+  },
+  {
+    question: "Can I get a loan to buy an auction property?",
+    answer: "Yes, you can apply for a home loan to purchase auction properties. However, loan approval depends on the property's legal status, your eligibility, and the lender's policies. It's advisable to get pre-approval before bidding.",
+    tags: "Financing"
+  },
+  {
+    question: "What is the difference between reserve price and market value?",
+    answer: "Reserve price is the minimum amount set by the bank below which they won't sell. Market value is the estimated current worth based on location and condition. Reserve price is often lower than market value, creating potential bargains.",
+    tags: "Pricing"
+  },
+  {
+    question: "How long does the entire process take?",
+    answer: "From auction announcement to possession, the process typically takes 2-4 months. This includes: Auction notice period (30 days), auction day, payment period (15-30 days), and legal formalities (30-60 days).",
+    tags: "Timeline"
+  },
+  {
+    question: "Can I cancel my bid after placing it?",
+    answer: "No, bids are binding and cannot be cancelled once placed during the live auction. Make sure you're certain about your bid amount and have arranged financing before participating.",
+    tags: "Bidding Rules"
+  },
+  {
+    question: "What happens if no one bids above the reserve price?",
+    answer: "If no valid bids are received above the reserve price, the auction is considered unsuccessful. The bank may re-auction the property at a later date, possibly with a revised reserve price.",
+    tags: "Auction Outcomes"
+  },
+  {
+    question: "Are auction properties always cheaper than market rates?",
+    answer: "Not always. While many auction properties sell below market value, competitive bidding can drive prices up. Popular locations and well-maintained properties may sell at or near market rates.",
+    tags: "Pricing"
+  },
+  {
+    question: "Can I bid online or do I need to be physically present?",
+    answer: "Most modern auctions are conducted online through platforms like BankNet, IBAPI, or Bank E-Auctions. You can participate from anywhere with internet access. Physical presence is rarely required.",
+    tags: "Auction Process"
+  },
+  {
+    question: "What if I face technical issues during online bidding?",
+    answer: "Contact the auction platform's technical support immediately. Most platforms have dedicated helplines during auction hours. It's advisable to test your internet connection and have backup options ready.",
+    tags: "Technical Support"
+  }
+];

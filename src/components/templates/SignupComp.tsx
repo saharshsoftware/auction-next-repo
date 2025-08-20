@@ -327,14 +327,14 @@ export default function SignupComp(props: {
                     <Field name="phoneNumber">
                       {() => (
                         <div className="relative w-full">
-                          <div className="absolute inset-y-0 start-0 top-0 flex items-center ps-3.5 pointer-events-none text-base sm:text-sm">
+                          <div className="absolute inset-y-0 start-0 top-0 flex items-center ps-3.5 pointer-events-none text-sm-xs">
                             + 91
                           </div>
                           <input
                             type="text"
                             value={values.phoneNumber}
                             name={"phoneNumber"}
-                            className="bg-gray-50 border border-brand-color text-gray-900 sm:text-sm hover:bg-gray-100 block w-full p-2 ps-12 rounded"
+                            className="bg-gray-50 border border-brand-color text-gray-900 sm:text-sm hover:bg-gray-100 block w-full p-2 ps-12 rounded text-sm-xs"
                             autoComplete="false"
                             placeholder="Enter phone number"
                             onChange={(e) => {
@@ -352,7 +352,7 @@ export default function SignupComp(props: {
                     name="password"
                     label="Password"
                     placeholder="Enter password"
-                    className="form-control1"
+                    customClass="form-controls"
                   />
                   <ActionCheckbox
                     checkboxLabel={"Show password"}

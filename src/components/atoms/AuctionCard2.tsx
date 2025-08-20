@@ -12,6 +12,8 @@ import { WhatsappShareWithIcon } from "./SocialIcons";
 import { faX } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ActionButton from "./ActionButton";
+import FullScreenImageModal from "../ modals/FullScreenImageModal";
+import useModal from "@/hooks/useModal";
 
 interface PropertyCardProps {
   property: IAuction;
@@ -33,6 +35,11 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
     propertyId = '',
     handleRemove = () => { },
   } = props;
+  const {
+    showModal: showImageModal,
+    openModal: openImageModal,
+    hideModal: hideImageModal,
+  } = useModal();
 
   const sharedUrl = getSharedAuctionUrl(property);
   const isViewNoticeVisible = property?.noticeLink && isAdmin;
@@ -88,6 +95,13 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
 
   return (
     <>
+      {openImageModal ? (
+        <FullScreenImageModal
+          openModal={openImageModal}
+          hideModal={hideImageModal}
+          imageUrl={imageUrl || ''}
+        />
+      ) : null}
       <div className={`bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden border border-gray-200`}>
         {/* Mobile Layout */}
         <div className="block md:hidden">
@@ -98,6 +112,7 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
                 src={imageUrl!}
                 alt={property?.title || 'Property'}
                 className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                onClick={showImageModal}
               />
 
               {/* Asset Type Badge */}
@@ -208,7 +223,8 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
               <img
                 src={imageUrl!}
                 alt={property?.title || 'Property'}
-                className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                className="w-full h-full object-cover transition-transform duration-300 hover:scale-105 cursor-pointer"
+                onClick={showImageModal}
               />
 
               {/* Asset Type Badge */}
