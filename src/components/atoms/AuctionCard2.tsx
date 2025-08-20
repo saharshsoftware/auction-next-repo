@@ -2,6 +2,7 @@
 "use client";
 import React from "react";
 import {
+  formatISTDateTime,
   getSharedAuctionUrl,
 } from "../../shared/Utilies";
 import { IAuction } from "@/types";
@@ -60,32 +61,6 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
       formattedPrice = numPrice.toLocaleString();
     }
     return `₹ ${formattedPrice}`;
-  };
-
-  const formatDate = (dateString: string | null | undefined) => {
-    if (!dateString) return 'Not specified';
-    try {
-      return new Date(dateString).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric'
-      });
-    } catch (error) {
-      return 'Invalid date';
-    }
-  };
-
-  const formatTime = (dateString: string | null | undefined) => {
-    if (!dateString) return '';
-    try {
-      return new Date(dateString).toLocaleTimeString('en-US', {
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: true
-      });
-    } catch (error) {
-      return '';
-    }
   };
 
 
@@ -179,9 +154,8 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
             {/* Date and Asset Info - Mobile Stack */}
             <div className="space-y-2 mb-4">
               <div className="text-sm-xs font-semibold text-gray-900">
-                {formatDate(property?.auctionStartTime?.toString())}
                 {property?.auctionStartTime && (
-                  <span>, {formatTime(property?.auctionStartTime?.toString())}</span>
+                  <span>{formatISTDateTime(property?.auctionStartTime?.toString())}</span>
                 )}
               </div>
               <div className="flex items-center space-x-2 text-sm-xs text-gray-600">
@@ -295,9 +269,8 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
                 {/* Auction Date and Time */}
                 <div className="flex items-center">
                   <span className="font-semibold">
-                    {formatDate(property?.auctionStartTime?.toString())}
                     {property?.auctionStartTime && (
-                      <span>, {formatTime(property?.auctionStartTime?.toString())}</span>
+                      <span>{formatISTDateTime(property?.auctionStartTime?.toString())}</span>
                     )}
                   </span>
                 </div>

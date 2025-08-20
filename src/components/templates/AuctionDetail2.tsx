@@ -32,6 +32,7 @@ import useModal from '@/hooks/useModal';
 import { getCookie } from 'cookies-next';
 import SurveyCard from "../atoms/SurveySection";
 import { InfoTooltip } from '../atoms/InfoTooltip';
+import { formatDateAndTimeForDisplay, formatDateForDisplay, formatISTDateTime, formatISTTimeOnly } from '@/shared/Utilies';
 
 // add props type
 interface AuctionDetailPageProps {
@@ -103,54 +104,7 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
     return `₹ ${numPrice.toLocaleString('en-IN')}`;
   };
 
-  const formatDateForDisplay = (dateString: string | null | undefined) => {
-    if (!dateString) return 'Not specified';
-    try {
-      const date = new Date(dateString);
-      return date.toLocaleDateString('en-GB', {
-        day: '2-digit',
-        month: 'short',
-        year: '2-digit'
-      }).replace(/ /g, '-');
-    } catch (error) {
-      return 'Invalid date';
-    }
-  };
 
-  const formatDateAndTimeForDisplay = (dateString: string | null | undefined) => {
-    if (!dateString) return 'Not specified';
-    try {
-      const date = new Date(dateString);
-      const formattedDate = date.toLocaleDateString('en-GB', {
-        day: '2-digit',
-        month: 'short',
-        year: '2-digit'
-      }).replace(/ /g, '-');
-
-      const formattedTime = date.toLocaleTimeString('en-IN', {
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: true
-      });
-
-      return `${formattedDate}, ${formattedTime}`;
-    } catch (error) {
-      return 'Invalid date';
-    }
-  };
-
-  const getStatusFromDate = (auctionStartTime: string | null | undefined) => {
-    if (!auctionStartTime) return 'unknown';
-    const now = new Date();
-    const auction = new Date(auctionStartTime);
-
-    if (auction > now) return 'upcoming';
-
-    const auctionEnd = new Date(auction.getTime() + 6 * 60 * 60 * 1000);
-    if (now > auctionEnd) return 'ended';
-
-    return 'live';
-  };
 
   // About Property Section Component
   const renderAboutPropertySection = () => {
@@ -217,7 +171,6 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
     </div>
   );
 
-  const status = getStatusFromDate(property.auctionStartTime?.toString());
   const images = getPropertyImages(property);
   const hasRealImages = images.length > 0 && !images[0].includes('no-image-placeholder.png');
   const handleBackClick = () => {
@@ -324,7 +277,7 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
                 {/* Auction Start Time */}
                 <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm-xs font-medium text-gray-600 uppercase tracking-wide">Auction Start Time</span>
+                    <span className="text-sm-xs font-medium text-gray-600 uppercase tracking-wide">Auction Start Date</span>
                     <Calendar className="h-3 w-3 text-gray-500" />
                   </div>
                   <div className="text-lg font-bold text-gray-900">
@@ -402,14 +355,7 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
                       {formatDateForDisplay(property.auctionStartTime?.toString())}
                     </div>
                     <div className="text-sm text-gray-600 mt-2 font-semibold">
-                      {property.auctionStartTime ?
-                        new Date(property.auctionStartTime).toLocaleTimeString('en-IN', {
-                          hour: '2-digit',
-                          minute: '2-digit',
-                          hour12: true
-                        }) :
-                        'Not specified'
-                      }
+                      {formatISTTimeOnly(property.auctionStartTime)} 
                     </div>
                   </div>
 
@@ -422,14 +368,7 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
                       {property.auctionEndDate ? formatDateForDisplay(property.auctionEndDate?.toString()) : 'Not specified'}
                     </div>
                     <div className="text-sm text-gray-600 mt-2 font-semibold">
-                      {property.auctionEndDate ?
-                        new Date(property.auctionEndDate).toLocaleTimeString('en-IN', {
-                          hour: '2-digit',
-                          minute: '2-digit',
-                          hour12: true
-                        }) :
-                        'Not specified'
-                      }
+                      {formatISTTimeOnly(property.auctionEndDate)}
                     </div>
                   </div>
 

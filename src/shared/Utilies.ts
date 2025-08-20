@@ -163,9 +163,9 @@ export const transformProperty = (item: IAuction): IAuction => {
     auctionType: safeString(attrs.auctionType) || "",
     noticeLink: safeString(attrs.noticeLink) || "",
     authorisedOfficerContactPerson: safeString(attrs.authorisedOfficerContactPerson) || "",
-    auctionStartTime: new Date(safeString(attrs.auctionStartTime) || ""),
-    auctionEndDate: new Date(safeString(attrs.auctionEndDate) || ""),
-    applicationSubmissionDate: new Date(safeString(attrs.applicationSubmissionDate) || ""),
+    auctionStartTime: safeString(attrs.auctionStartTime) || "",
+    auctionEndDate: safeString(attrs.auctionEndDate) || "",
+    applicationSubmissionDate: safeString(attrs.applicationSubmissionDate) || "",
     reservePrice: safeNumber(attrs.reservePrice) || 0,
     emd: safeNumber(attrs.emd) || 0,
     title: safeString(attrs.title) || "",
@@ -180,8 +180,8 @@ export const transformProperty = (item: IAuction): IAuction => {
     search: safeString(attrs.search) || "",
     estimatedMarketPrice: safeNumber(attrs.estimatedMarketPrice) || 0,
     assetType: safeString(attrs.assetType) || "",
-    createdAt: new Date(safeString(attrs.createdAt) || ""),
-    updatedAt: new Date(safeString(attrs.updatedAt) || ""),
+    createdAt: safeString(attrs.createdAt) || "",
+    updatedAt: safeString(attrs.updatedAt) || "",
     createdById: attrs.createdById || null,
     updatedById: attrs.updatedById || null,
     sitemapExclude: attrs.sitemapExclude || false,
@@ -816,3 +816,77 @@ export const SERVICE_PROVIDER_OPTIONS: IServiceProviders[]  = [
   { value: 'auctionfocus', label: 'Auction Focus', name: 'AuctionFocus' },
   { value: 'eauctions', label: 'Eauctions', name: 'Eauctions' }
 ];
+
+export const formatISTDateTime = (dateString: string | null | undefined): string => {
+  if (!dateString) return 'Not specified';
+  try {
+    const date = new Date(dateString.replace('Z', ''));
+
+    return date.toLocaleString('en-IN', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true,
+      timeZone: 'Asia/Kolkata', // Force IST
+    }).replace(',', ''); // optional: remove comma between date & time
+  } catch (error) {
+    return 'Invalid date';
+  }
+};
+
+export const formatISTTimeOnly = (dateString: string | null | undefined): string => {
+  if (!dateString) return 'Not specified';
+  try {
+    const date = new Date(dateString.replace('Z', ''));
+
+    return date.toLocaleString('en-IN', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true,
+      timeZone: 'Asia/Kolkata', // Force IST
+    }).replace(',', ''); // optional: remove comma between date & time
+  } catch (error) {
+    return 'Invalid date';
+  }
+};
+
+export const formatDateForDisplay = (dateString: string | null | undefined) => {
+  if (!dateString) return 'Not specified';
+  try {
+    const date = new Date(dateString.replace('Z', ''));
+    return date.toLocaleDateString('en-GB', {
+      day: '2-digit',
+      month: 'short',
+      year: '2-digit',
+      timeZone: 'Asia/Kolkata'
+    }).replace(/ /g, '-');
+  } catch (error) {
+    return 'Invalid date';
+  }
+};
+
+export const formatDateAndTimeForDisplay = (dateString: string | null | undefined) => {
+  if (!dateString) return 'Not specified';
+  try {
+    const date = new Date(dateString.replace('Z', ''));
+    const formattedDate = date.toLocaleDateString('en-GB', {
+      day: '2-digit',
+      month: 'short',
+      year: '2-digit',
+      timeZone: 'Asia/Kolkata'
+    }).replace(/ /g, '-');
+
+    const formattedTime = date.toLocaleTimeString('en-IN', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true,
+      timeZone: 'Asia/Kolkata'
+    });
+
+    return `${formattedDate}, ${formattedTime}`;
+  } catch (error) {
+    return 'Invalid date';
+  }
+};
