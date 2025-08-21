@@ -14,10 +14,12 @@ import {
 
 import useModal from "@/hooks/useModal";
 import SurveyModal from "../ modals/SurveyModal";
+import ProfileCompletionModal from "../ modals/ProfileCompletionModal";
 import { COOKIES, STORAGE_KEYS } from "@/shared/Constants";
 import { USER_SURVEY_STATUS } from "@/types";
 import { setUserIdInDataLayer } from "@/helpers/WindowHelper";
 import { getCookie } from "cookies-next";
+import { useAuthStore } from "@/zustandStore/authStore";
 
 const AppLayout = ({
   children,
@@ -27,9 +29,11 @@ const AppLayout = ({
   isAuthenticated: boolean;
 }) => {
   const { openModal, showModal, hideModal } = useModal();
+  const { openModal: openProfileModal, showModal: showProfileModal, hideModal: hideProfileModal } = useModal();
   const { data } = useQuerySurvey();
   const { setSurveyData } = useSurveyStore();
   const pathname = usePathname();
+  const { isNewUser } = useAuthStore();
   const userData = getCookie(COOKIES.AUCTION_USER_KEY)
     ? JSON.parse(getCookie(COOKIES.AUCTION_USER_KEY) ?? "")
     : null;
@@ -79,7 +83,19 @@ const AppLayout = ({
     setUserIdInDataLayer(isAuthenticated ? userData?.id : null);
   }, [isAuthenticated, userData?.id]);
 
+  // Open profile completion modal for new users or users with incomplete profiles
+  useEffect(() => {
+    if (isAuthenticated && isNewUser) {
+      showProfileModal();
+    }
+  }, [isNewUser, isAuthenticated]);
+
   const isAuthRoute = AUTH_ROUTES.some((route) => route.path === pathname);
+
+  const handleCloseProfileModal = () => {
+    hideProfileModal();
+    useAuthStore.getState().setNewUserStatus(false);
+  };
 
   return (
     <div
@@ -88,6 +104,12 @@ const AppLayout = ({
     >
       {children}
       {openModal && <SurveyModal openModal={openModal} hideModal={hideModal} />}
+      {openProfileModal && (
+        <ProfileCompletionModal
+          openModal={openProfileModal}
+          hideModal={handleCloseProfileModal}
+        />
+      )}
     </div>
   );
 };

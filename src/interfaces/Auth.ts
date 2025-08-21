@@ -3,7 +3,6 @@ export interface IData {
   email: string;
   password: string;
   name: string;
-  interestedCities: string;
 }
 
 

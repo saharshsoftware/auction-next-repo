@@ -1,5 +1,4 @@
 import { IActionResponse } from "../interfaces/RequestInteface";
-import { STORE_KEY } from "../zustandStore/store";
 import {
   IAssetType,
   IAuction,
@@ -15,16 +14,6 @@ import MarkdownIt from "markdown-it";
 import { CONFIG } from "@/utilies/Config";
 import { USER_TYPE } from "@/types.d";
 import { safeArray, safeNumber, safeString } from "@/utilies/imageUtils";
-
-export const getDataFromLocalStorage = () => {
-  const storedData = localStorage.getItem(STORE_KEY);
-  return storedData ? JSON.parse(storedData) : null;
-};
-
-export const setTokenInLocalStorage = (data: any) => {
-  const stringifiedData = JSON.stringify(data);
-  localStorage.setItem(STORE_KEY, stringifiedData);
-};
 
 export const setDataInQueryParams = (values: any) => {
   const data = btoa(JSON.stringify(values));
