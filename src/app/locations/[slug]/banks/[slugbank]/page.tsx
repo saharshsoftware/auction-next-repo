@@ -7,6 +7,8 @@ import TopBanks from "@/components/atoms/TopBanks";
 import FindAuctionServer from "@/components/molecules/FindAuctionServer";
 import RecentData from "@/components/molecules/RecentData";
 import ShowAuctionListServer from "@/components/molecules/ShowAuctionListServer";
+import { SkeletonAuctionList } from "@/components/skeltons/SkeletonAuctionList";
+import AuctionResults from "@/components/templates/AuctionResults";
 import { getCategoryBoxCollection } from "@/server/actions";
 import {
   fetchAssetType,
@@ -35,6 +37,7 @@ import {
 } from "@/types";
 import { IPaginationData } from "@/zustandStore/auctionStore";
 import { Metadata, ResolvingMetadata } from "next";
+import { Suspense } from "react";
 
 async function getSlugData(
   slug: string,
@@ -137,7 +140,7 @@ export default async function Page({
     slugbank
   );
   // console.log(locationData, "location-slug");
-  const { name, type } = locationData;
+  const { name, type } = locationData || {};
 
   console.log("filterQueryDataLOcationAndBank", slug);
 
@@ -147,22 +150,15 @@ export default async function Page({
     rawBanks,
     rawCategories,
     rawLocations,
-    response,
     popularBanks,
   ]: any = await Promise.all([
     fetchAssetType(),
     fetchBanks(),
     fetchCategories(),
     fetchLocation(),
-    getAuctionsServer({
-      location: name ?? "",
-      locationType: type ?? "",
-      bankName: bankData?.name ?? "",
-      page: String(page) || "1",
-      reservePrice: [RANGE_PRICE.MIN, RANGE_PRICE.MAX],
-    }),
     fetchPopularBanks(),
   ]);
+
 
   // Type assertions are no longer necessary if functions return correctly typed data
   const assetsTypeOptions = sanitizeReactSelectOptionsPage(
@@ -176,10 +172,6 @@ export default async function Page({
     rawLocations
   ) as ILocations[];
 
-  const auctionList =
-    (response as { sendResponse: IAuction[]; meta: IPaginationData })
-      ?.sendResponse ?? [];
-
   const selectionLocation = locationOptions.find(
     (item) => item.name === locationData?.name
   );
@@ -192,6 +184,16 @@ export default async function Page({
     page: String(page) || "1",
     price: [RANGE_PRICE.MIN, RANGE_PRICE.MAX],
   } as ILocalFilter;
+  
+  const getRequiredParameters = () => {
+    return {
+      location: name ?? "",
+      locationType: type ?? "",
+      bankName: bankData?.name ?? "",
+      page: String(page) || "1",
+      reservePrice: [RANGE_PRICE.MIN, RANGE_PRICE.MAX],
+    }
+  }
   return (
     <section>
       <FindAuctionServer
@@ -205,16 +207,15 @@ export default async function Page({
       <div className="common-section">
         <div className="grid grid-cols-12 gap-4 py-4">
           <div className="lg:col-span-9 col-span-full">
-            <AuctionHeaderServer
-              total={response?.meta?.total}
-              heading={`${bankData.name} Auction Properties in ${name}`}
-            />
-            <ShowAuctionListServer
-              auctions={auctionList}
-              totalPages={response?.meta?.pageCount || 1}
-              activePage={page ? Number(page) : 1}
-              filterData={urlFilterdata}
-            />
+            <Suspense key={page?.toString()} fallback={<SkeletonAuctionList />}>
+              <AuctionResults
+                searchParams={searchParams}
+                heading={`${bankData.name} Auction Properties in ${name}`}
+                useCustomFilters={true}
+                customFilters={getRequiredParameters()}
+                urlFilterdata={urlFilterdata}
+              />
+            </Suspense>
           </div>
           <div className="lg:col-span-3 col-span-full">
             <TopBanks
