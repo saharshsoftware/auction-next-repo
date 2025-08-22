@@ -241,7 +241,7 @@ const CreateAlert = (props: ICreateFavList) => {
                       </div>
                       <div className={gridElementClass()}>
                         <TextField
-                          label={"Asset type"}
+                          label={"Property type"}
                           name={"propertyType"}
                           hasChildren={true}
                         >
@@ -255,7 +255,7 @@ const CreateAlert = (props: ICreateFavList) => {
                                     : assetsTypeOptions ?? []
                                 }
                                 loading={isLoadingAssetsTypeCategory}
-                                placeholder={"Asset type"}
+                                placeholder={"Property type"}
                                 name="asset-type-create-alert"
                                 customClass="w-full "
                                 onChange={(e) => {

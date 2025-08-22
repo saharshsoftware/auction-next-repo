@@ -165,7 +165,7 @@ const FindAuction: React.FC<FindAuctionProps> = ({
             } items-end justify-between gap-4 `}
           >
             <div className="grid gap-4 grid-cols-12 w-full ">
-              <div className={gridElementClass()}>
+              {/* <div className={gridElementClass()}>
                 <TextField label="Categories" name="category" hasChildren>
                   <Field name="category">
                     {() => (
@@ -182,15 +182,15 @@ const FindAuction: React.FC<FindAuctionProps> = ({
                     )}
                   </Field>
                 </TextField>
-              </div>
+              </div> */}
               <div className={gridElementClass()}>
-                <TextField label="Asset Type" name="propertyType" hasChildren>
+                <TextField label="Property Type" name="propertyType" hasChildren>
                   <Field name="propertyType">
                     {() => (
                       <ReactSelectDropdown
                         name="propertyType"
                         options={filteredAssets}
-                        placeholder={"Asset Type"}
+                        placeholder={"Property Type"}
                         defaultValue={values.propertyType}
                         onChange={(value) =>
                           setFieldValue("propertyType", value)
@@ -249,7 +249,7 @@ const FindAuction: React.FC<FindAuctionProps> = ({
                   </Field>
                 </TextField>
               </div>
-              <div className={gridElementClass()}>
+              <div className={`lg:col-span-4  col-span-full`}>
                 <TextField label="Price range" name="price" hasChildren>
                   <Field name="price">
                     {() => (

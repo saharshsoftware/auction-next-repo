@@ -519,7 +519,7 @@ const FindAuction = (props: IFindAuction) => {
                   <div className={gridElementClass()}>
                     {/* {JSON.stringify(initialValueData?.propertyType)} */}
                     <TextField
-                      label={"Asset type"}
+                      label={"Property type"}
                       name={"propertyType"}
                       hasChildren={true}
                     >

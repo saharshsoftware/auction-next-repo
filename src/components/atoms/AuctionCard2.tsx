@@ -90,7 +90,7 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
                 onClick={showImageModal}
               />
 
-              {/* Asset Type Badge */}
+              {/* Property Type Badge */}
               <div className="absolute top-3 right-3">
                 <span className="bg-blue-600 text-white px-2.5 py-1 rounded-lg text-xs font-medium">
                   {property?.assetType || 'Property'}
@@ -111,7 +111,7 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
 
           {/* Content Section - Mobile */}
           <div className="p-4">
-            {/* Asset Type badge when no image - Mobile */}
+            {/* Property Type badge when no image - Mobile */}
             {!hasRealImages && (
               <div className="flex justify-start items-center mb-3">
                 <span className="bg-blue-600 text-white px-2.5 py-1 rounded-lg text-xs font-medium">
@@ -144,10 +144,6 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
               <div className="text-sm-xs text-gray-600">
                 <span className="font-medium">Seller - </span>
                 <span>{property?.bankName || 'Not specified'}</span>
-              </div>
-              <div className="text-sm-xs text-gray-600">
-                <span className="font-medium">Branch Name - </span>
-                <span>{property?.branchName || 'Not specified'}</span>
               </div>
             </div>
 
@@ -201,7 +197,7 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
                 onClick={showImageModal}
               />
 
-              {/* Asset Type Badge */}
+              {/* Property Type Badge */}
               <div className="absolute top-3 right-3">
                 <span className="bg-blue-600 text-white px-2.5 py-1 rounded-lg text-xs font-medium">
                   {property?.assetType || 'Property'}
@@ -222,7 +218,7 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
 
           {/* Content Section - Desktop */}
           <div className="flex-1 p-6">
-            {/* Asset Type badge when no image - Desktop */}
+            {/* Property Type badge when no image - Desktop */}
             {!hasRealImages && (
               <div className="flex justify-start items-center mb-4">
                 <span className="bg-blue-600 text-white px-2.5 py-1 rounded-lg text-xs font-medium">
@@ -257,13 +253,9 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
                 <span className="font-medium">Seller - </span>
                 <span>{property?.bankName || 'Not specified'}</span>
               </div>
-              <div className="text-sm-xs text-gray-600">
-                <span className="font-medium">Branch Name - </span>
-                <span>{property?.branchName || 'Not specified'}</span>
-              </div>
             </div>
 
-            {/* Bottom Row - Date, Asset Type, and Button */}
+            {/* Bottom Row - Date, Property Type, and Button */}
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-4 text-sm-xs text-gray-900">
                 {/* Auction Date and Time */}
@@ -286,7 +278,7 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
                 {/* Separator */}
                 <div className="w-px h-4 bg-gray-300"></div>
 
-                {/* Asset Type */}
+                {/* Property Type */}
                 <div className="font-medium">
                   {property?.assetType || 'Asset'}
                 </div>

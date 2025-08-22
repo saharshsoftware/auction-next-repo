@@ -187,7 +187,7 @@ export const INPUT_TYPE = {
 export const ERROR_MESSAGE = {
   CURRENT_PASSWORD: "Current password is required",
   NEW_PASSWORD_REQUIRED: "New password is required",
-  ASSET_TYPE_REQ: "Asset type is required",
+  ASSET_TYPE_REQ: "Property type is required",
   EMAIL_REQUIRED: "Email is required",
   PASSWORD_REQUIRED: "Password is required",
   CATEGORY_REQUIRED: "Category is required",

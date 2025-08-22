@@ -251,7 +251,7 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
 
             {/* Key Auction Details - Quick Overview */}
             <div className="border-t border-gray-200 pt-6">
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                 {/* Reserved Price */}
                 <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
                   <div className="flex items-center justify-between mb-2">
@@ -284,10 +284,21 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
                     {property.auctionStartTime ? formatDateForDisplay(property.auctionStartTime?.toString()) : 'Not specified'}
                   </div>
                 </div>
+
+                {/* Bank Name */}
+                <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm-xs font-medium text-gray-600 uppercase tracking-wide">Bank Name</span>
+                    <Building className="h-3 w-3 text-gray-500" />
+                  </div>
+                  <div className="text-lg font-bold text-gray-900">
+                    {property.bankName || 'Not specified'}
+                  </div>
+                </div>
               </div>
 
               {/* Second Row */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                 {/* Ownership Type */}
                 <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
                   <div className="flex items-center justify-between mb-2">
@@ -318,6 +329,17 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
                   </div>
                   <div className="text-lg font-bold text-gray-900">
                     {property.propertyTitleDeedType || 'Not specified'}
+                  </div>
+                </div>
+
+                {/* Branch Name */}
+                <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm-xs font-medium text-gray-600 uppercase tracking-wide">Branch Name</span>
+                    <FileText className="h-3 w-3 text-gray-500" />
+                  </div>
+                  <div className="text-lg font-bold text-gray-900">
+                    {property.branchName || 'Not specified'}
                   </div>
                 </div>
               </div>
