@@ -65,22 +65,22 @@ const FullScreenImageModal: React.FC<IFullScreenImageModal> = ({
     setIsLoading(false);
   };
 
+  const handleBackdropClick = (e: React.MouseEvent) => {
+    // Only close if clicking on the backdrop, not on the image or its container
+    if (e.target === e.currentTarget) {
+      hideModal();
+    }
+  };
+
   if (!openModal) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center">
-      {/* Close Button */}
-      <button
-        onClick={handleClose}
-        className="absolute top-4 right-4 z-[9999] bg-white/20 hover:bg-white/30 text-white rounded-full w-10 h-10 flex items-center justify-center transition-all duration-200 hover:scale-110 cursor-pointer"
-        aria-label="Close modal"
-        type="button"
-      >
-        <FontAwesomeIcon icon={faX} className="text-lg" />
-      </button>
-
+    <div 
+      className="fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center"
+      onClick={handleBackdropClick}
+    >
       {/* Main Image Container */}
-      <div className="relative w-full h-full flex items-center justify-center p-8">
+      <div className="relative flex items-center justify-center p-8 z-20">
         {/* Loading State */}
         {isLoading && (
           <div className="flex flex-col items-center gap-4 text-white">
@@ -104,7 +104,7 @@ const FullScreenImageModal: React.FC<IFullScreenImageModal> = ({
         <img
           src={imageUrl || placeholderImage}
           alt="Displayed Image"
-          className={`max-w-full max-h-full object-contain rounded-lg shadow-2xl transition-opacity duration-300 ${
+          className={`max-w-[85vw] max-h-[85vh] object-contain rounded-lg shadow-2xl transition-opacity duration-300 ${
             isLoading || hasError ? 'opacity-0' : 'opacity-100'
           }`}
           onLoad={handleImageLoad}
@@ -112,11 +112,17 @@ const FullScreenImageModal: React.FC<IFullScreenImageModal> = ({
           style={{ display: isLoading || hasError ? 'none' : 'block' }}
         />
       </div>
-
-      {/* Instructions */}
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-[9999] text-white/60 text-xs">
-        <p>Press ESC to close</p>
-      </div>
+      {/* Close Button - Responsive positioning */}
+      <button
+        onClick={handleClose}
+        className="absolute z-30 bg-white/20 hover:bg-white/30 text-white rounded-full w-12 h-12 flex items-center justify-center transition-all duration-200 hover:scale-110 cursor-pointer shadow-lg
+          bottom-6 left-1/2 -translate-x-1/2 
+          md:bottom-auto md:left-auto md:translate-x-0 md:top-6 md:right-6"
+        aria-label="Close modal"
+        type="button"
+      >
+      <FontAwesomeIcon icon={faX} className="text-2xl" />
+      </button>
     </div>
   );
 };

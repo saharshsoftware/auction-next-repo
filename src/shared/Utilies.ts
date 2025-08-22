@@ -803,7 +803,7 @@ export const SERVICE_PROVIDER_OPTIONS: IServiceProviders[]  = [
   { value: 'bankeauctions', label: 'Bank E-Auctions', name: 'Bank E-Auctions' },
   { value: 'drtauctiontiger', label: 'DRT Auction Tiger', name: 'DRT Auction Tiger' },
   { value: 'auctionfocus', label: 'Auction Focus', name: 'AuctionFocus' },
-  { value: 'eauctions', label: 'Eauctions', name: 'Eauctions' }
+  { value: 'eauctionsindia', label: 'E-auctionindia', name: 'E-auctionindia' }
 ];
 
 export const formatISTDateTime = (dateString: string | null | undefined): string => {
