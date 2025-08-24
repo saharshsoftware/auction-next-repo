@@ -389,10 +389,11 @@ export const getAuctionsServer = async (payload: {
         )}&`;
       }
 
-      if (reservePrice && reservePrice.length > 0) {
-        filter += `filters[$and][${index++}][reservePrice][$gte]=${reservePrice[0]
-          }&filters[$and][${index++}][reservePrice][$lte]=${reservePrice[1]}&`;
-      }
+      if (reservePrice && reservePrice.length === 2) {
+        const [min, max] = reservePrice;
+        filter += `filters[reservePrice][$between][0]=${encodeURIComponent(min)}&` +
+                  `filters[reservePrice][$between][1]=${encodeURIComponent(max)}&`;
+      }    
 
       if (serviceProvider) {
         filter += `filters[$and][${index++}][serviceProvider][$eq]=${encodeURI(serviceProvider)}&`;
@@ -415,10 +416,7 @@ export const getAuctionsServer = async (payload: {
     //   filter.slice(0, -1) +
     //   `&${requiredkeys}&sort=auctionStartTime:desc`;
 
-      URL =
-        API_ENPOINTS.NOTICES +
-        filter.slice(0, -1) +
-        `&sort=auctionStartTime:desc`;
+    URL = API_ENPOINTS.NOTICES + filter.slice(0, -1) + `&sort[0]=auctionStartTime:desc&sort[1]=id:desc`;
     const UPDATE_URL = API_BASE_URL + URL;
     console.log({ UPDATE_URL }, "auction-detail");
     const { data } = await getRequest({ API: URL });
