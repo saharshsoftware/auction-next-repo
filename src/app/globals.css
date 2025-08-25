@@ -395,3 +395,7 @@ blockquote {
 .text-sm-xs {
   @apply text-[13px] lg:text-[14px]
 }
+
+.property-id-badge {
+  @apply bg-[#fff8eb] text-[#7a5000] px-2 py-1 text-sm-xs font-mono font-bold border border-[#FFBB38] rounded-lg
+}

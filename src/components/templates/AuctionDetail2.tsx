@@ -34,6 +34,7 @@ import SurveyCard from "../atoms/SurveySection";
 import { InfoTooltip } from '../atoms/InfoTooltip';
 import { formatDateAndTimeForDisplay, formatDateForDisplay, formatISTDateTime, formatISTTimeOnly, getSharedAuctionUrl } from '@/shared/Utilies';
 import { WhatsappShareWithIcon } from '../atoms/SocialIcons';
+import { ROUTE_CONSTANTS } from '@/shared/Routes';
 
 // add props type
 interface AuctionDetailPageProps {
@@ -279,7 +280,7 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
                     <Info className="h-3 w-3 text-gray-500" />
                   </div>
                   <div className="text-xl font-bold text-gray-900">
-                    {formatPrice(property.reservePrice?.toString())}
+                    {property.reservePrice ? formatPrice(property.reservePrice?.toString()) : 'Not specified'}
                   </div>
                 </div>
 
@@ -394,10 +395,10 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
                       Auction Start Date & Time
                     </div>
                     <div className="text-lg font-bold text-gray-900">
-                      {formatDateForDisplay(property.auctionStartTime?.toString())}
+                      {property.auctionStartTime ? formatDateForDisplay(property.auctionStartTime?.toString()) : 'Not specified'}
                     </div>
                     <div className="text-sm text-gray-600 mt-2 font-semibold">
-                      {formatISTTimeOnly(property.auctionStartTime)} 
+                      {property.auctionStartTime ? formatISTTimeOnly(property.auctionStartTime) : 'Not specified'} 
                     </div>
                   </div>
 
@@ -410,7 +411,7 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
                       {property.auctionEndDate ? formatDateForDisplay(property.auctionEndDate?.toString()) : 'Not specified'}
                     </div>
                     <div className="text-sm text-gray-600 mt-2 font-semibold">
-                      {formatISTTimeOnly(property.auctionEndDate)}
+                      {property.auctionEndDate ? formatISTTimeOnly(property.auctionEndDate) : 'Not specified'}
                     </div>
                   </div>
 
@@ -420,7 +421,7 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
                       Press Release Date
                     </div>
                     <div className="text-lg font-bold text-gray-900">
-                      {formatDateForDisplay(property.createdAt?.toString())}
+                      {property.createdAt ? formatDateForDisplay(property.createdAt?.toString()) : 'Not specified'}
                     </div>
                   </div>
 
@@ -430,7 +431,7 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
                       Property Inspection Date and Time
                     </div>
                     <div className="text-lg font-bold text-gray-900">
-                      {formatDateAndTimeForDisplay(property.inspectionDateFrom?.toString())}
+                      {property.inspectionDateFrom ? formatDateAndTimeForDisplay(property.inspectionDateFrom?.toString()) : 'Not specified'}
                     </div>
                     {property.inspectionDateTo && (
                       <div className="text-sm text-gray-600 mt-1 font-medium">
@@ -453,7 +454,7 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
                       Reserve Price
                     </div>
                     <div className="text-lg font-bold text-gray-900">
-                      {formatPrice(property?.reservePrice?.toString())}
+                      {property?.reservePrice ? formatPrice(property?.reservePrice?.toString()) : 'Not specified'}
                     </div>
                   </div>
 
@@ -473,7 +474,7 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
                       />
                     </div>
                     <div className="text-lg font-bold text-gray-900">
-                      {formatPrice(property?.emd?.toString() || '0')}
+                      {property?.emd ? formatPrice(property?.emd?.toString()) : 'Not specified'}
                     </div>
                   </div>
 
@@ -484,7 +485,7 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
                       Increment Price
                     </div>
                     <div className="text-lg font-bold text-gray-900">
-                      {formatPrice(property?.incrementPrice?.toString() || '0')}
+                      {property?.incrementPrice ? formatPrice(property?.incrementPrice?.toString()) : 'Not specified'}
                     </div>
                   </div>
                 </div>
@@ -581,21 +582,25 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
            <div className="mt-6 bg-gray-50 rounded-lg border border-gray-200 p-6">
              <h3 className="text-lg font-semibold text-gray-900 mb-4">Disclaimer</h3>
              <div className="text-sm-xs text-gray-700 space-y-3 leading-relaxed">
-               <p>
-                 Information is shared on an &quot;as-is&quot; basis. Buyers must exercise discretion and carry out due diligence. Refer to our T&C for details.
-               </p>
-               <p>
+              <ul className="list-disc list-inside text-sm-xs">
+               <li>
+                 Information is shared on an &quot;as-is&quot; basis. Buyers must exercise discretion and carry out due diligence. Refer to our 
+                 <Link href={ROUTE_CONSTANTS.TERMS} className="text-blue-600 hover:text-blue-700"> T&C </Link>
+                  for details.
+               </li>
+               <li>
                  e-auctiondekho is operated by Omnistack Innovation Private Limited (CIN: U62099RJ2023PTC086380). Use of this site implies acceptance of our Terms of Service and Privacy Policy.
-               </p>
-               <p>
+               </li>
+               <li>
                  While efforts are made to keep listings accurate, we do not guarantee the authenticity or completeness of property information and are not liable for losses arising from its use.
-               </p>
-               <p>
+               </li>
+               <li>
                  Real estate investments carry risks. Property values may fluctuate, and buyers/investors should verify details independently and be prepared for potential losses.
-               </p>
-               <p>
+               </li>
+               <li>
                  e-auctiondekho does not endorse or recommend any property listed. Listings are for informational purposes only and do not constitute an offer or solicitation.
-               </p>
+               </li>
+              </ul>
              </div>
            </div>
         </div>

@@ -312,9 +312,6 @@ const FindAuction: React.FC<FindAuctionProps> = ({
       <div className="flex flex-col gap-4 p-4">
         <div className="flex items-start justify-between">
           <div className="flex items-start gap-2">
-            <button onClick={handleBack} className="text-lg">
-              <FontAwesomeIcon icon={faArrowLeft} />
-            </button>
             <div className="grid grid-cols-2 gap-2">
               {renderFilterTabs(initialValueData?.category?.name)}
               {renderFilterTabs(initialValueData?.location?.name)}

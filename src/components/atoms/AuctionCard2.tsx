@@ -68,6 +68,41 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
   const hasRealImages = propertyImages.length > 0 && !propertyImages[0].includes('no-image-placeholder.png');
   const imageUrl = hasRealImages ? propertyImages[0] : null;
 
+  // Function to check if area should be displayed
+  const shouldShowArea = (area: string | null | undefined, city: string | null | undefined): boolean => {
+    if (!area || !city) return false;
+
+    const normalizedArea = area.toLowerCase().trim();
+    const normalizedCity = city.toLowerCase().trim();
+
+    return normalizedArea !== normalizedCity && normalizedArea.length > 0;
+  };
+
+  // Function to render enhanced property title with area
+  const renderEnhancedTitle = (isMobile: boolean = false) => {
+    const title = property?.title || 'Property Title Not Available';
+    const shouldShowAreaBadge = shouldShowArea(property?.area, property?.city);
+
+    const titleClasses = isMobile
+      ? "text-lg font-bold text-gray-900 leading-tight"
+      : "text-xl font-bold text-gray-900 leading-tight";
+
+    if (!shouldShowAreaBadge) {
+      return <h3 className={titleClasses}>
+        {title}
+      </h3>;
+    }
+
+    return (
+      <h3 className={titleClasses}>
+        {title}
+        <span className="text-sm font-normal text-gray-600 ml-2">
+          ({property?.area})
+        </span>
+      </h3>
+    );
+  };
+
   return (
     <>
       {openImageModal ? (
@@ -92,8 +127,8 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
 
               {/* Debug: Property ID */}
               <div className="absolute top-3 left-3">
-                <span className="bg-red-600 text-white px-2 py-1 rounded text-xs font-mono font-bold">
-                  ID: {property?.id}
+                <span className="property-id-badge">
+                  {`P${property?.id}`}
                 </span>
               </div>
 
@@ -129,24 +164,26 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
               </div>
             )}
 
-            {/* Title and Share Button */}
-            <div className="flex justify-between items-start mb-3">
-              <h3 className="text-lg font-bold text-gray-900 leading-tight flex-1 mr-3">
-                {property?.title || 'Property Title Not Available'}
-              </h3>
-              <button className="flex items-center px-2 py-1 text-green-600 border border-green-300 rounded-lg hover:bg-green-50 transition-colors text-xs font-medium flex-shrink-0">
+            {/* Title */}
+            <div className="mb-3">
+              {renderEnhancedTitle(true)}
+            </div>
+
+            {/* Reserve Price and Share Button Row */}
+            <div className="flex justify-between items-end mb-3">
+              <div className="flex-1">
+                <div className="text-xs text-gray-600 mb-1">Reserve price</div>
+                <div className="text-xl font-bold text-green-600">
+                  {property?.reservePrice ? formatPrice(property?.reservePrice?.toString()) : 'Not specified'}
+                </div>
+              </div>
+              <button className="flex items-center px-2 py-1 text-green-600 border border-green-300 rounded-lg hover:bg-green-50 transition-colors text-xs font-medium flex-shrink-0 ml-4">
                 <Share className="h-3 w-3 mr-1" />
                 Share
               </button>
             </div>
 
-            {/* Reserve Price */}
-            <div className="mb-3">
-              <div className="text-xs text-gray-600 mb-1">Reserve price</div>
-              <div className="text-xl font-bold text-green-600">
-                {formatPrice(property?.reservePrice?.toString())}
-              </div>
-            </div>
+
 
             {/* Seller and Branch Info */}
             <div className="mb-3 space-y-1">
@@ -154,19 +191,12 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
                 <span className="font-medium">Seller - </span>
                 <span>{property?.bankName || 'Not specified'}</span>
               </div>
-              {property?.area && (
-                <div className="text-sm-xs text-gray-600">
-                  <span className="font-medium">Area - </span>
-                  <span>{property.area}</span>
-                </div>
-              )}
             </div>
 
             {/* Date and Asset Info - Mobile Stack */}
             <div className="space-y-2 mb-4">
               <div className="text-sm-xs font-semibold text-gray-900">
-                <span>{formatISTDateTime(property?.auctionStartTime?.toString())}</span>
-
+                <span>{property?.auctionStartTime ? formatISTDateTime(property?.auctionStartTime?.toString()) : 'Not specified'}</span>
               </div>
               <div className="flex items-center space-x-2 text-sm-xs text-gray-600">
                 <span className="font-medium">{property?.assetCategory || 'Property'}</span>
@@ -213,8 +243,8 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
 
               {/* Debug: Property ID */}
               <div className="absolute top-3 left-3">
-                <span className="bg-red-600 text-white px-2 py-1 rounded text-xs font-mono font-bold">
-                  ID: {property?.id}
+                <span className="property-id-badge">
+                  {`P${property?.id}`}
                 </span>
               </div>
 
@@ -249,25 +279,22 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
                 </span>
               </div>
             )}
-
-            <div className="flex justify-between items-start mb-4">
-              {/* Title */}
-              <h3 className="text-xl font-bold text-gray-900 leading-tight flex-1 mr-4">
-                {property?.title || 'Property Title Not Available'}
-              </h3>
-
-              {/* Share Button */}
-              <button className="flex items-center px-3 py-1.5 text-green-600 border border-green-300 rounded-lg hover:bg-green-50 transition-colors text-sm-xs font-medium">
-                {WhatsappShareWithIcon({ url: sharedUrl })}
-              </button>
+            {/* Title */}
+            <div className="mb-4">
+              {renderEnhancedTitle(false)}
             </div>
 
-            {/* Reserve Price */}
-            <div className="mb-4">
-              <div className="text-sm-xs text-gray-600 mb-1">Reserve price</div>
-              <div className="text-2xl font-bold text-green-600">
-                {formatPrice(property?.reservePrice?.toString())}
+            {/* Reserve Price and Share Button Row */}
+            <div className="flex justify-between items-end mb-4">
+              <div className="flex-1">
+                <div className="text-sm-xs text-gray-600 mb-1">Reserve price</div>
+                <div className="text-2xl font-bold text-green-600">
+                  {property?.reservePrice ? formatPrice(property?.reservePrice?.toString()) : 'Not specified'}
+                </div>
               </div>
+              <button className="flex items-center px-3 py-1.5 text-green-600 border border-green-300 rounded-lg hover:bg-green-50 transition-colors text-sm-xs font-medium ml-6">
+                {WhatsappShareWithIcon({ url: sharedUrl })}
+              </button>
             </div>
 
             {/* Seller and Branch Info */}
@@ -276,12 +303,7 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
                 <span className="font-medium">Seller - </span>
                 <span>{property?.bankName || 'Not specified'}</span>
               </div>
-              {property?.area && (
-                <div className="text-sm-xs text-gray-600">
-                  <span className="font-medium">Area - </span>
-                  <span>{property.area}</span>
-                </div>
-              )}
+
             </div>
 
             {/* Bottom Row - Date, Property Type, and Button */}
@@ -290,7 +312,7 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
                 {/* Auction Date and Time */}
                 <div className="flex items-center">
                   <span className="font-semibold">
-                    <span>{formatISTDateTime(property?.auctionStartTime?.toString())}</span>
+                    <span>{property?.auctionStartTime ? formatISTDateTime(property?.auctionStartTime?.toString()) : 'Not specified'}</span>
                   </span>
                 </div>
 
