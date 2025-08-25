@@ -415,16 +415,6 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
                     </div>
                   </div>
 
-                  {/* Press Release Date */}
-                  <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
-                    <div className="text-sm-xs font-medium text-gray-500 uppercase tracking-wide mb-2">
-                      Press Release Date
-                    </div>
-                    <div className="text-lg font-bold text-gray-900">
-                      {property.createdAt ? formatDateForDisplay(property.createdAt?.toString()) : 'Not specified'}
-                    </div>
-                  </div>
-
                   {/* Property Inspection Date and Time */}
                   <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
                     <div className="text-sm-xs font-medium text-gray-500 uppercase tracking-wide mb-2">
@@ -582,7 +572,7 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
            <div className="mt-6 bg-gray-50 rounded-lg border border-gray-200 p-6">
              <h3 className="text-lg font-semibold text-gray-900 mb-4">Disclaimer</h3>
              <div className="text-sm-xs text-gray-700 space-y-3 leading-relaxed">
-              <ul className="list-disc list-inside text-sm-xs">
+              <ul className="list-disc list-outside text-sm-xs  ">
                <li>
                  Information is shared on an &quot;as-is&quot; basis. Buyers must exercise discretion and carry out due diligence. Refer to our 
                  <Link href={ROUTE_CONSTANTS.TERMS} className="text-blue-600 hover:text-blue-700"> T&C </Link>

@@ -103,6 +103,9 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
     );
   };
 
+  const PROPERTY_ID = `E${property.id}`; // Property ID
+
+
   return (
     <>
       {openImageModal ? (
@@ -128,7 +131,7 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
               {/* Debug: Property ID */}
               <div className="absolute top-3 left-3">
                 <span className="property-id-badge">
-                  {`P${property?.id}`}
+                  {PROPERTY_ID}
                 </span>
               </div>
 
@@ -244,7 +247,7 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
               {/* Debug: Property ID */}
               <div className="absolute top-3 left-3">
                 <span className="property-id-badge">
-                  {`P${property?.id}`}
+                  {PROPERTY_ID}
                 </span>
               </div>
 
