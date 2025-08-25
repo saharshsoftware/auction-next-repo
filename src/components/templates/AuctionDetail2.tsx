@@ -255,47 +255,43 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
                   </span>
                 </div>
                 <div className="flex flex-wrap items-center gap-4 text-sm-xs text-gray-600 mb-4">
-                   <div className="flex items-center justify-between w-full">
-                     <div className="flex items-center">
-                       <MapPin className="h-4 w-4 mr-2 text-gray-400" />
-                       <span>{property.city && property.state ? `${property.city}, ${property.state}` : 'Location not specified'}</span>
-                     </div>
-                     {/* Google Maps Link - Moved to the right */}
-                     {(property.lat && property.lng) && (
-                       <a
-                         href={`https://www.google.com/maps?q=${property.lat},${property.lng}`}
-                         target="_blank"
-                         rel="noopener noreferrer"
-                         className="inline-flex items-center px-4 py-1 min-h-8 h-10 font-normal bg-action-btn text-white  rounded-lg "
-                       >
-                         <svg className="h-4 w-4 mr-1.5" viewBox="0 0 24 24" fill="currentColor" width="1.4rem" height="1.4rem">
-                           <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-                         </svg>
-                         VIEW ON MAP
-                       </a>
-                     )}
-                   </div>
-                   <div className="flex items-center">
-                     <Building className="h-4 w-4 mr-2 text-gray-400" />
-                     <span>{property.assetType || 'Asset type not specified'}</span>
-                   </div>
-                   {property.area && (
-                     <div className="flex items-center">
-                       <Building className="h-4 w-4 mr-2 text-gray-400" />
-                       <span>{property.area}</span>
-                     </div>
-                   )}
-                 </div>
-                 
-                 {/* Property Address */}
-                 {property.propertyAddress && (
-                   <div className="flex items-start text-sm-xs text-gray-600">
-                     <MapPin className="h-4 w-4 mt-0.5 text-gray-400 flex-shrink-0 mr-2" />
-                     <div className="flex-1">
-                       <span className="break-words">{property.propertyAddress}</span>
-                     </div>
-                   </div>
-                 )}
+                  <div className="flex items-center justify-between w-full">
+                    <div className="flex items-center">
+                      <MapPin className="h-4 w-4 mr-2 text-gray-400" />
+                      <span>{property.city && property.state ? `${property.city}, ${property.state}` : 'Location not specified'}</span>
+                    </div>
+                    {/* Google Maps Link - Moved to the right */}
+                    {(property.lat && property.lng) && (
+                      <ActionButton
+                        text={"VIEW ON MAP"}
+                        onclick={() => {
+                          window.open(`https://www.google.com/maps?q=${property.lat},${property.lng}`, '_blank');
+                        }}
+                        icon={<MapPin className="h-4 w-4 mr-2" />}
+                      />
+                    )}
+                  </div>
+                  <div className="flex items-center">
+                    <Building className="h-4 w-4 mr-2 text-gray-400" />
+                    <span>{property.assetType || 'Asset type not specified'}</span>
+                  </div>
+                  {property.area && (
+                    <div className="flex items-center">
+                      <Building className="h-4 w-4 mr-2 text-gray-400" />
+                      <span>{property.area}</span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Property Address */}
+                {property.propertyAddress && (
+                  <div className="flex items-start text-sm-xs text-gray-600">
+                    <MapPin className="h-4 w-4 mt-0.5 text-gray-400 flex-shrink-0 mr-2" />
+                    <div className="flex-1">
+                      <span className="break-words">{property.propertyAddress}</span>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -427,7 +423,7 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
                       {property.auctionStartTime ? formatDateForDisplay(property.auctionStartTime?.toString()) : 'Not specified'}
                     </div>
                     <div className="text-sm text-gray-600 mt-2 font-semibold">
-                      {property.auctionStartTime ? formatISTTimeOnly(property.auctionStartTime) : 'Not specified'} 
+                      {property.auctionStartTime ? formatISTTimeOnly(property.auctionStartTime) : 'Not specified'}
                     </div>
                   </div>
 
@@ -569,47 +565,47 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
           </div>
 
           {/* Action Button - Download Notice */}
-           {property.noticeLink && (
-             <div className="mt-6 bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-               <div className="text-center">
-                 <a
-                   href={property.noticeLink}
-                   target="_blank"
-                   rel="noopener noreferrer"
-                   className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors shadow-sm text-sm-xs"
-                 >
-                   <Download className="h-5 w-5 mr-2" />
-                   Download Auction Notice
-                 </a>
-               </div>
-             </div>
-           )}
+          {property.noticeLink && (
+            <div className="mt-6 bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+              <div className="text-center">
+                <a
+                  href={property.noticeLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors shadow-sm text-sm-xs"
+                >
+                  <Download className="h-5 w-5 mr-2" />
+                  Download Auction Notice
+                </a>
+              </div>
+            </div>
+          )}
 
-           {/* Disclaimer Section */}
-           <div className="mt-6 bg-gray-50 rounded-lg border border-gray-200 p-6">
-             <h3 className="text-lg font-semibold text-gray-900 mb-4">Disclaimer</h3>
-             <div className="text-sm-xs text-gray-700 space-y-3 leading-relaxed">
+          {/* Disclaimer Section */}
+          <div className="mt-6 bg-gray-50 rounded-lg border border-gray-200 p-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Disclaimer</h3>
+            <div className="text-sm-xs text-gray-700 space-y-3 leading-relaxed">
               <ul className="list-disc list-outside text-sm-xs  ">
-               <li>
-                 Information is shared on an &quot;as-is&quot; basis. Buyers must exercise discretion and carry out due diligence. Refer to our 
-                 <Link href={ROUTE_CONSTANTS.TERMS} className="text-blue-600 hover:text-blue-700"> T&C </Link>
+                <li>
+                  Information is shared on an &quot;as-is&quot; basis. Buyers must exercise discretion and carry out due diligence. Refer to our
+                  <Link href={ROUTE_CONSTANTS.TERMS} className="text-blue-600 hover:text-blue-700"> T&C </Link>
                   for details.
-               </li>
-               <li>
-                 e-auctiondekho is operated by Omnistack Innovation Private Limited (CIN: U62099RJ2023PTC086380). Use of this site implies acceptance of our Terms of Service and Privacy Policy.
-               </li>
-               <li>
-                 While efforts are made to keep listings accurate, we do not guarantee the authenticity or completeness of property information and are not liable for losses arising from its use.
-               </li>
-               <li>
-                 Real estate investments carry risks. Property values may fluctuate, and buyers/investors should verify details independently and be prepared for potential losses.
-               </li>
-               <li>
-                 e-auctiondekho does not endorse or recommend any property listed. Listings are for informational purposes only and do not constitute an offer or solicitation.
-               </li>
+                </li>
+                <li>
+                  e-auctiondekho is operated by Omnistack Innovation Private Limited (CIN: U62099RJ2023PTC086380). Use of this site implies acceptance of our Terms of Service and Privacy Policy.
+                </li>
+                <li>
+                  While efforts are made to keep listings accurate, we do not guarantee the authenticity or completeness of property information and are not liable for losses arising from its use.
+                </li>
+                <li>
+                  Real estate investments carry risks. Property values may fluctuate, and buyers/investors should verify details independently and be prepared for potential losses.
+                </li>
+                <li>
+                  e-auctiondekho does not endorse or recommend any property listed. Listings are for informational purposes only and do not constitute an offer or solicitation.
+                </li>
               </ul>
-             </div>
-           </div>
+            </div>
+          </div>
         </div>
       </div>
     </>
