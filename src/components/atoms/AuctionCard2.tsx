@@ -90,12 +90,21 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
                 onClick={showImageModal}
               />
 
-              {/* Property Type Badge */}
-              <div className="absolute top-3 right-3">
-                <span className="bg-blue-600 text-white px-2.5 py-1 rounded-lg text-xs font-medium">
-                  {property?.assetType || 'Property'}
+              {/* Debug: Property ID */}
+              <div className="absolute top-3 left-3">
+                <span className="bg-red-600 text-white px-2 py-1 rounded text-xs font-mono font-bold">
+                  ID: {property?.id}
                 </span>
               </div>
+
+              {/* Property Type Badge - Hide for Gold Auctions */}
+              {property?.assetCategory !== 'Gold Auctions' && (
+                <div className="absolute top-3 right-3">
+                  <span className="bg-blue-600 text-white px-2.5 py-1 rounded-lg text-xs font-medium">
+                    {property?.assetType || 'Property'}
+                  </span>
+                </div>
+              )}
 
               {/* Image Count Indicator */}
               {property?.images?.length > 1 && (
@@ -112,7 +121,7 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
           {/* Content Section - Mobile */}
           <div className="p-4">
             {/* Property Type badge when no image - Mobile */}
-            {!hasRealImages && (
+            {!hasRealImages && property?.assetCategory !== 'Gold Auctions' && (
               <div className="flex justify-start items-center mb-3">
                 <span className="bg-blue-600 text-white px-2.5 py-1 rounded-lg text-xs font-medium">
                   {property?.assetType || 'Property'}
@@ -145,14 +154,19 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
                 <span className="font-medium">Seller - </span>
                 <span>{property?.bankName || 'Not specified'}</span>
               </div>
+              {property?.area && (
+                <div className="text-sm-xs text-gray-600">
+                  <span className="font-medium">Area - </span>
+                  <span>{property.area}</span>
+                </div>
+              )}
             </div>
 
             {/* Date and Asset Info - Mobile Stack */}
             <div className="space-y-2 mb-4">
               <div className="text-sm-xs font-semibold text-gray-900">
-                {property?.auctionStartTime && (
-                  <span>{formatISTDateTime(property?.auctionStartTime?.toString())}</span>
-                )}
+                <span>{formatISTDateTime(property?.auctionStartTime?.toString())}</span>
+
               </div>
               <div className="flex items-center space-x-2 text-sm-xs text-gray-600">
                 <span className="font-medium">{property?.assetCategory || 'Property'}</span>
@@ -197,12 +211,21 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
                 onClick={showImageModal}
               />
 
-              {/* Property Type Badge */}
-              <div className="absolute top-3 right-3">
-                <span className="bg-blue-600 text-white px-2.5 py-1 rounded-lg text-xs font-medium">
-                  {property?.assetType || 'Property'}
+              {/* Debug: Property ID */}
+              <div className="absolute top-3 left-3">
+                <span className="bg-red-600 text-white px-2 py-1 rounded text-xs font-mono font-bold">
+                  ID: {property?.id}
                 </span>
               </div>
+
+              {/* Property Type Badge - Hide for Gold Auctions */}
+              {property?.assetCategory !== 'Gold Auctions' && (
+                <div className="absolute top-3 right-3">
+                  <span className="bg-blue-600 text-white px-2.5 py-1 rounded-lg text-xs font-medium">
+                    {property?.assetType || 'Property'}
+                  </span>
+                </div>
+              )}
 
               {/* Image Count Indicator */}
               {property?.images?.length > 1 && (
@@ -219,7 +242,7 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
           {/* Content Section - Desktop */}
           <div className="flex-1 p-6">
             {/* Property Type badge when no image - Desktop */}
-            {!hasRealImages && (
+            {!hasRealImages && property?.assetCategory !== 'Gold Auctions' && (
               <div className="flex justify-start items-center mb-4">
                 <span className="bg-blue-600 text-white px-2.5 py-1 rounded-lg text-xs font-medium">
                   {property?.assetType || 'Property'}
@@ -253,6 +276,12 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
                 <span className="font-medium">Seller - </span>
                 <span>{property?.bankName || 'Not specified'}</span>
               </div>
+              {property?.area && (
+                <div className="text-sm-xs text-gray-600">
+                  <span className="font-medium">Area - </span>
+                  <span>{property.area}</span>
+                </div>
+              )}
             </div>
 
             {/* Bottom Row - Date, Property Type, and Button */}
@@ -261,9 +290,7 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
                 {/* Auction Date and Time */}
                 <div className="flex items-center">
                   <span className="font-semibold">
-                    {property?.auctionStartTime && (
-                      <span>{formatISTDateTime(property?.auctionStartTime?.toString())}</span>
-                    )}
+                    <span>{formatISTDateTime(property?.auctionStartTime?.toString())}</span>
                   </span>
                 </div>
 

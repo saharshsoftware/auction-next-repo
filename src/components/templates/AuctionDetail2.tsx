@@ -32,7 +32,8 @@ import useModal from '@/hooks/useModal';
 import { getCookie } from 'cookies-next';
 import SurveyCard from "../atoms/SurveySection";
 import { InfoTooltip } from '../atoms/InfoTooltip';
-import { formatDateAndTimeForDisplay, formatDateForDisplay, formatISTDateTime, formatISTTimeOnly } from '@/shared/Utilies';
+import { formatDateAndTimeForDisplay, formatDateForDisplay, formatISTDateTime, formatISTTimeOnly, getSharedAuctionUrl } from '@/shared/Utilies';
+import { WhatsappShareWithIcon } from '../atoms/SocialIcons';
 
 // add props type
 interface AuctionDetailPageProps {
@@ -198,6 +199,8 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
     />
   }
 
+  const sharedUrl = getSharedAuctionUrl(property);
+
 
   return (
     <>
@@ -220,7 +223,14 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
             >
               <FontAwesomeIcon icon={faArrowLeft} />
             </em>
-            {renderInterestContainer()}
+            <div className="flex items-center gap-3">
+              {/* Share Button */}
+              <button className="flex items-center px-4 py-2 text-green-600 border border-green-300 rounded-lg hover:bg-green-50 transition-colors text-sm font-medium">
+                <WhatsappShareWithIcon url={sharedUrl} />
+              </button>
+              {/* Interest Button */}
+              {renderInterestContainer()}
+            </div>
           </div>
           {/* Property Header */}
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
@@ -231,21 +241,31 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
                   {property.title || 'Property Title Not Available'}
                 </h1>
                 <div className="flex flex-wrap items-center gap-4 text-sm-xs text-gray-600 mb-4">
-                  <div className="flex items-center">
-                    <MapPin className="h-4 w-4 mr-2 text-gray-400" />
-                    <span>{property.city && property.state ? `${property.city}, ${property.state}` : 'Location not specified'}</span>
-                  </div>
-                  <div className="flex items-center">
-                    <Building className="h-4 w-4 mr-2 text-gray-400" />
-                    <span>{property.assetType || 'Asset type not specified'}</span>
-                  </div>
-                  {property.area && (
-                    <div className="flex items-center">
-                      <Building className="h-4 w-4 mr-2 text-gray-400" />
-                      <span>{property.area}</span>
-                    </div>
-                  )}
-                </div>
+                   <div className="flex items-center">
+                     <MapPin className="h-4 w-4 mr-2 text-gray-400" />
+                     <span>{property.city && property.state ? `${property.city}, ${property.state}` : 'Location not specified'}</span>
+                   </div>
+                   <div className="flex items-center">
+                     <Building className="h-4 w-4 mr-2 text-gray-400" />
+                     <span>{property.assetType || 'Asset type not specified'}</span>
+                   </div>
+                   {property.area && (
+                     <div className="flex items-center">
+                       <Building className="h-4 w-4 mr-2 text-gray-400" />
+                       <span>{property.area}</span>
+                     </div>
+                   )}
+                 </div>
+                 
+                 {/* Property Address */}
+                 {property.propertyAddress && (
+                   <div className="flex items-start text-sm-xs text-gray-600">
+                     <MapPin className="h-4 w-4 mt-0.5 text-gray-400 flex-shrink-0 mr-2" />
+                     <div className="flex-1">
+                       <span className="break-words">{property.propertyAddress}</span>
+                     </div>
+                   </div>
+                 )}
               </div>
             </div>
 
@@ -541,21 +561,43 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
           )}
 
           {/* Action Button - Download Notice */}
-          {property.noticeLink && (
-            <div className="mt-6 bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-              <div className="text-center">
-                <a
-                  href={property.noticeLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors shadow-sm text-sm-xs"
-                >
-                  <Download className="h-5 w-5 mr-2" />
-                  Download Auction Notice
-                </a>
-              </div>
-            </div>
-          )}
+           {property.noticeLink && (
+             <div className="mt-6 bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+               <div className="text-center">
+                 <a
+                   href={property.noticeLink}
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors shadow-sm text-sm-xs"
+                 >
+                   <Download className="h-5 w-5 mr-2" />
+                   Download Auction Notice
+                 </a>
+               </div>
+             </div>
+           )}
+
+           {/* Disclaimer Section */}
+           <div className="mt-6 bg-gray-50 rounded-lg border border-gray-200 p-6">
+             <h3 className="text-lg font-semibold text-gray-900 mb-4">Disclaimer</h3>
+             <div className="text-sm-xs text-gray-700 space-y-3 leading-relaxed">
+               <p>
+                 Information is shared on an &quot;as-is&quot; basis. Buyers must exercise discretion and carry out due diligence. Refer to our T&C for details.
+               </p>
+               <p>
+                 e-auctiondekho is operated by Omnistack Innovation Private Limited (CIN: U62099RJ2023PTC086380). Use of this site implies acceptance of our Terms of Service and Privacy Policy.
+               </p>
+               <p>
+                 While efforts are made to keep listings accurate, we do not guarantee the authenticity or completeness of property information and are not liable for losses arising from its use.
+               </p>
+               <p>
+                 Real estate investments carry risks. Property values may fluctuate, and buyers/investors should verify details independently and be prepared for potential losses.
+               </p>
+               <p>
+                 e-auctiondekho does not endorse or recommend any property listed. Listings are for informational purposes only and do not constitute an offer or solicitation.
+               </p>
+             </div>
+           </div>
         </div>
       </div>
     </>
