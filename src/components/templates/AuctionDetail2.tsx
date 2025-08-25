@@ -266,12 +266,12 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
                          href={`https://www.google.com/maps?q=${property.lat},${property.lng}`}
                          target="_blank"
                          rel="noopener noreferrer"
-                         className="inline-flex items-center px-3 py-1.5 bg-blue-600 text-white text-xs rounded-lg hover:bg-blue-700 transition-colors shadow-sm"
+                         className="inline-flex items-center px-4 py-1 min-h-8 h-10 font-normal bg-action-btn text-white  rounded-lg "
                        >
-                         <svg className="h-3 w-3 mr-1.5" viewBox="0 0 24 24" fill="currentColor">
+                         <svg className="h-4 w-4 mr-1.5" viewBox="0 0 24 24" fill="currentColor" width="1.4rem" height="1.4rem">
                            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
                          </svg>
-                         View on Map
+                         VIEW ON MAP
                        </a>
                      )}
                    </div>
