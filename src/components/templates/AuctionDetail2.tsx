@@ -255,9 +255,25 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
                   </span>
                 </div>
                 <div className="flex flex-wrap items-center gap-4 text-sm-xs text-gray-600 mb-4">
-                   <div className="flex items-center">
-                     <MapPin className="h-4 w-4 mr-2 text-gray-400" />
-                     <span>{property.city && property.state ? `${property.city}, ${property.state}` : 'Location not specified'}</span>
+                   <div className="flex items-center justify-between w-full">
+                     <div className="flex items-center">
+                       <MapPin className="h-4 w-4 mr-2 text-gray-400" />
+                       <span>{property.city && property.state ? `${property.city}, ${property.state}` : 'Location not specified'}</span>
+                     </div>
+                     {/* Google Maps Link - Moved to the right */}
+                     {(property.lat && property.lng) && (
+                       <a
+                         href={`https://www.google.com/maps?q=${property.lat},${property.lng}`}
+                         target="_blank"
+                         rel="noopener noreferrer"
+                         className="inline-flex items-center px-3 py-1.5 bg-blue-600 text-white text-xs rounded-lg hover:bg-blue-700 transition-colors shadow-sm"
+                       >
+                         <svg className="h-3 w-3 mr-1.5" viewBox="0 0 24 24" fill="currentColor">
+                           <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                         </svg>
+                         View on Map
+                       </a>
+                     )}
                    </div>
                    <div className="flex items-center">
                      <Building className="h-4 w-4 mr-2 text-gray-400" />
@@ -271,8 +287,9 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
                    )}
                  </div>
                  
-                 {/* Property Address */}
-                 {property.propertyAddress && (
+                 {/* Property Address - Only show if different from city/state */}
+                 {property.propertyAddress && 
+                   property.propertyAddress !== `${property.city}, ${property.state}` && (
                    <div className="flex items-start text-sm-xs text-gray-600">
                      <MapPin className="h-4 w-4 mt-0.5 text-gray-400 flex-shrink-0 mr-2" />
                      <div className="flex-1">
@@ -551,18 +568,6 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
           <div className="mt-6">
             <SurveyCard isRandom={false} isAuctionDetail={true} />
           </div>
-
-          {/* Property Map - Full width */}
-          {(property.lat && property.lng) && (
-            <div className="mt-6">
-              <PropertyMap
-                lat={property.lat}
-                lng={property.lng}
-                title="Property Location"
-                address={property.propertyAddress || undefined}
-              />
-            </div>
-          )}
 
           {/* Action Button - Download Notice */}
            {property.noticeLink && (
