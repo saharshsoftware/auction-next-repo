@@ -32,7 +32,7 @@ import useModal from '@/hooks/useModal';
 import { getCookie } from 'cookies-next';
 import SurveyCard from "../atoms/SurveySection";
 import { InfoTooltip } from '../atoms/InfoTooltip';
-import { formatDateAndTimeForDisplay, formatDateForDisplay, formatISTDateTime, formatISTTimeOnly, getSharedAuctionUrl } from '@/shared/Utilies';
+import { extractPhoneNumbers, formatDateAndTimeForDisplay, formatDateForDisplay, formatISTDateTime, formatISTTimeOnly, getSharedAuctionUrl } from '@/shared/Utilies';
 import { WhatsappShareWithIcon } from '../atoms/SocialIcons';
 import { ROUTE_CONSTANTS } from '@/shared/Routes';
 import { useScrollToTop } from '@/hooks/useScrollToTop';
@@ -523,10 +523,10 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
                     <div className="text-sm font-semibold text-gray-900">
                       {property.contact ? (
                         <a
-                          href={`tel:${property.contact}`}
+                          href={`tel:${extractPhoneNumbers(property.contact)[0]}`}
                           className="hover:text-gray-700 transition-colors"
                         >
-                          {property.contact}
+                          {extractPhoneNumbers(property.contact)[0]}
                         </a>
                       ) : (
                         '-'

@@ -879,3 +879,22 @@ export const formatDateAndTimeForDisplay = (dateString: string | null | undefine
     return 'Invalid date';
   }
 };
+
+
+export function extractPhoneNumbers(contactString: string): string[] {
+  // Remove common prefixes and labels
+  const cleanedString = contactString
+    .replace(/Contact\s*(Mr\.\/Mrs\.)?\s*(No|Number|Mobile|Tel|Phone)\s*:?\s*/gi, '')
+    .trim();
+
+  // Match phone numbers with optional country code and optional separators
+  const phonePattern =
+    /(?:\+?91[-.\s]?)?(?:\d{5}[-.\s]?\d{5})/g;
+
+  const matches = cleanedString.match(phonePattern) || [];
+
+  // Normalize: remove all non-digit characters
+  const normalized = matches.map(num => num.replace(/\D/g, ''));
+  // Remove duplicates and return
+  return Array.from(new Set(normalized));
+}
