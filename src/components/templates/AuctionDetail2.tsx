@@ -287,9 +287,8 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
                    )}
                  </div>
                  
-                 {/* Property Address - Only show if different from city/state */}
-                 {property.propertyAddress && 
-                   property.propertyAddress !== `${property.city}, ${property.state}` && (
+                 {/* Property Address */}
+                 {property.propertyAddress && (
                    <div className="flex items-start text-sm-xs text-gray-600">
                      <MapPin className="h-4 w-4 mt-0.5 text-gray-400 flex-shrink-0 mr-2" />
                      <div className="flex-1">
