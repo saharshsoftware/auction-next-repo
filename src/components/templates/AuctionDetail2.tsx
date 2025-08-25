@@ -35,6 +35,7 @@ import { InfoTooltip } from '../atoms/InfoTooltip';
 import { formatDateAndTimeForDisplay, formatDateForDisplay, formatISTDateTime, formatISTTimeOnly, getSharedAuctionUrl } from '@/shared/Utilies';
 import { WhatsappShareWithIcon } from '../atoms/SocialIcons';
 import { ROUTE_CONSTANTS } from '@/shared/Routes';
+import { useScrollToTop } from '@/hooks/useScrollToTop';
 
 // add props type
 interface AuctionDetailPageProps {
@@ -55,6 +56,12 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isAdmin] = useState(true); // Default to true as requested
+
+  // Use scroll to top hook for property detail pages
+  useScrollToTop({
+    scrollOnRouteChange: true,
+    preserveOnBack: true
+  });
 
   if (loading) {
     return (

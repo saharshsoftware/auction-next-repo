@@ -20,6 +20,7 @@ import { USER_SURVEY_STATUS } from "@/types";
 import { setUserIdInDataLayer } from "@/helpers/WindowHelper";
 import { getCookie } from "cookies-next";
 import { useAuthStore } from "@/zustandStore/authStore";
+import { useScrollToTop } from "@/hooks/useScrollToTop";
 
 const AppLayout = ({
   children,
@@ -89,6 +90,13 @@ const AppLayout = ({
       showProfileModal();
     }
   }, [isNewUser, isAuthenticated]);
+
+  // Global scroll to top behavior
+  useScrollToTop({
+    scrollOnRouteChange: true,
+    scrollOnSearchChange: true,
+    preserveOnBack: true
+  });
 
   const isAuthRoute = AUTH_ROUTES.some((route) => route.path === pathname);
 
