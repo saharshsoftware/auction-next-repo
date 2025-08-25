@@ -208,7 +208,7 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
   }
 
   const sharedUrl = getSharedAuctionUrl(property);
-
+  const PROPERTY_ID = `E${property.id}`; // Property ID
 
   return (
     <>
@@ -248,6 +248,12 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
                 <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4 leading-tight">
                   {property.title || 'Property Title Not Available'}
                 </h1>
+                {/* Property ID */}
+                <div className="mb-3">
+                  <span className="property-id-badge">
+                    {PROPERTY_ID}
+                  </span>
+                </div>
                 <div className="flex flex-wrap items-center gap-4 text-sm-xs text-gray-600 mb-4">
                    <div className="flex items-center">
                      <MapPin className="h-4 w-4 mr-2 text-gray-400" />
