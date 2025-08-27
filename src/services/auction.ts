@@ -114,7 +114,7 @@ export const getAuctionDataClient = async (payload: {
       URL =
         API_ENPOINTS.NOTICES +
         filter.slice(0, -1) +
-        `&${requiredkeys}&sort=auctionStartTime:desc`; // Remove the trailing '&' if present
+        `&${requiredkeys}&sort=effectiveAuctionStartTime:desc`; // Remove the trailing '&' if present
     }
 
     const { data } = await getRequest({ API: URL });
@@ -367,7 +367,7 @@ export const noticeSearch = async (payload: {
     const URL =
       API_BASE_URL +
       API_ENPOINTS.NOTICE_SEARCH +
-      `${filter}q=${searchParams}&sort=auctionStartTime:desc`;
+      `${filter}q=${searchParams}&sort=effectiveAuctionStartTime:desc`;
     const { data } = await getRequest({ API: URL });
     // console.log(data, "responsefetch");
     const sendResponse = sanitizedAuctionData(data.data) as IAuction[];
