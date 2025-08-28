@@ -361,3 +361,41 @@ export function removeDownstreamResponses(
 
   return responses;
 }
+
+export const SHOW_SURVEY_SECTION_TIME_IN_MS = 1 * 60 * 1000; // 1 minute in milliseconds only for testing 
+// 10 * 24 * 60 * 60 * 1000; // TODO: 10 days in milliseconds
+
+/**
+ * Checks if the survey should be shown on auction list pages based on page number.
+ * Only shows on even-numbered pages (0, 2, 4, 6, etc.).
+ * @param {number} pageNumber - The current page number .
+ * @returns {boolean} - Returns true if survey should be shown on this page.
+ */
+export function shouldShowSurveyOnAuctionList(pageNumber: number): boolean {
+  try {
+    const zeroBasedPage = pageNumber > 0 ? pageNumber : pageNumber + 1;
+    
+    // After 2nd , page we go jump to 4th page 
+    const shouldShow = zeroBasedPage === 0 || zeroBasedPage === 2 || (zeroBasedPage > 2 && (zeroBasedPage - 2) % 4 === 0);
+   
+    console.log("AuctionList Survey Check:", {
+      pageNumber,
+      zeroBasedPage,
+      shouldShow
+    });
+    
+    return shouldShow;
+  } catch (error) {
+    console.error("Error checking survey for auction list:", error);
+    return false;
+  }
+}
+
+/**
+ * Checks if the survey should be shown on auction detail pages.
+ * Always returns true for auction detail pages.
+ * @returns {boolean} - Always returns true for auction detail pages.
+ */
+export function shouldShowSurveyOnAuctionDetail(): boolean {
+  return true;
+}

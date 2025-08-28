@@ -15,10 +15,10 @@ const TopAssets = (props: {
     const URL = `${ROUTE_CONSTANTS.BANKS}/${bankSlug}/${STRING_DATA.TYPES}/${item?.slug}`;
     // console.log("INFO:: (URL)", { URL, params });
     if (isBankTypesRoute) {
-      return <Link href={URL}>{item?.name}</Link>;
+      return <Link href={URL} className="text-sm-xs">{item?.name}</Link>;
     }
     return (
-      <Link href={`${ROUTE_CONSTANTS.TYPES}/${item?.slug}`}>{item?.name}</Link>
+      <Link href={`${ROUTE_CONSTANTS.TYPES}/${item?.slug}`} className="text-sm-xs">{item?.name}</Link>
     );
   };
 

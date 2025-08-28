@@ -17,7 +17,7 @@ const NextLink = (props: {
       return (
         <Link
           href={href}
-          className={`${customClass} cursor-pointer `}
+          className={`${customClass} cursor-pointer text-sm-xs`}
           onClick={onClick}
           prefetch={false}
         >
@@ -29,7 +29,7 @@ const NextLink = (props: {
       <>
         <Link
           href={href}
-          className={`${customClass} cursor-pointer `}
+          className={`${customClass} cursor-pointer text-sm-xs`}
           onClick={onClick}
           prefetch={false}
         >

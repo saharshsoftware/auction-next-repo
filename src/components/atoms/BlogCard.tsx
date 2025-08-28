@@ -57,11 +57,11 @@ export function BlogCard({ post }: BlogCardProps) {
             }}
           ></div>
           <div className="flex items-center gap-4 text-sm text-gray-500">
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1 text-sm-xs">
               <FontAwesomeIcon icon={faCalendar} />
               <span>{formattedDate(post.publishedAt)}</span>
             </div>
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1 text-sm-xs">
               <FontAwesomeIcon icon={faClock} />
               <span>{post?.reading_time ?? "5 min read"}</span>
             </div>

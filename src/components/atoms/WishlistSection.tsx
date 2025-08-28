@@ -19,7 +19,7 @@ interface Property {
   bank: string;
   area: string;
   image: string;
-  auctionDate: string;
+  auctionStartTime: string;
 }
 
 interface FavoriteList {
@@ -85,7 +85,7 @@ export function WishlistSection({
                 <h3 className="text-2xl font-semibold mb-4">
                   Start Building Your Collection
                 </h3>
-                <p className="text-gray-600">
+                <p className="text-sm-xs">
                   Creating a wishlist helps you keep track of properties
                   you&#39;re interested in. Follow these simple steps to get
                   started with your first collection.

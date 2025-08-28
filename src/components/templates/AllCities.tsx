@@ -65,7 +65,7 @@ const AllCities = (props: { data: ILocations[] }) => {
                     >
                       <p>
                         <Link
-                          className={`text-blue-600`}
+                          className={`text-blue-600 text-sm-xs`}
                           href={`${ROUTE_CONSTANTS.LOCATION}/${cityObj?.slug}`}
                           onClick={() => handleLinkClick(cityObj)}
                           prefetch={false}

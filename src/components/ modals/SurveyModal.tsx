@@ -14,10 +14,17 @@ import { getCookie } from "cookies-next";
 interface ISurveyModal {
   openModal: boolean;
   hideModal?: () => void;
+  isSurveySection?: boolean;
 }
 
-const SurveyModal = ({ openModal, hideModal = () => {} }: ISurveyModal) => {
+const SurveyModal = ({ openModal, hideModal = () => {}, isSurveySection = false }: ISurveyModal) => {
   const { handleReminder, isPendingRemainLater } = useSurveyModal(hideModal);
+  const [showContactForm, setShowContactForm] = useState(false);
+  
+  const handleAuthenticatedSubmit = () => {
+    setShowThankYou(true);
+  };
+  
   const {
     currentQuestion,
     currentIndex,
@@ -29,9 +36,10 @@ const SurveyModal = ({ openModal, hideModal = () => {} }: ISurveyModal) => {
     isPendingFinished,
     questionKey,
     currentQuestionData,
-  } = useSurvey(hideModal);
+  } = useSurvey(hideModal, handleAuthenticatedSubmit);
+  
+  const [showThankYou, setShowThankYou] = useState(false);
   const [showSurvey, setShowSurvey] = useState(false);
-  const [showContactForm, setShowContactForm] = useState(false);
   const userData = getCookie(COOKIES.AUCTION_USER_KEY)
     ? JSON.parse(getCookie(COOKIES.AUCTION_USER_KEY) ?? "")
     : null;
@@ -39,7 +47,6 @@ const SurveyModal = ({ openModal, hideModal = () => {} }: ISurveyModal) => {
 
   // Local state to trigger the transition (in case the modal stays mounted)
   const [animate, setAnimate] = useState(false);
-
   useEffect(() => {
     if (openModal) {
       // Delay a tick to allow the component to mount before applying the transition classes.
@@ -48,6 +55,12 @@ const SurveyModal = ({ openModal, hideModal = () => {} }: ISurveyModal) => {
       setAnimate(false);
     }
   }, [openModal]);
+
+  useEffect(() => {
+    if (isSurveySection) {
+      setShowSurvey(true);
+    }
+  }, [isSurveySection]);
 
   const remainderHandler = () => {
     handleReminder();
@@ -71,7 +84,39 @@ const SurveyModal = ({ openModal, hideModal = () => {} }: ISurveyModal) => {
     }
   };
 
+  const handleContactFormSubmit = (email: string, phone: string) => {
+    handleSubmit(email, phone, true);
+    setShowThankYou(true);
+  };
+
+  const renderThankYouMessage = () => {
+    return (
+      <div className="p-6 text-center">
+        <div className="mb-6">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-600 rounded-full mb-4 shadow-lg">
+            <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+          <h3 className="text-2xl font-bold text-gray-800 mb-3">
+            Thank You! 🎉
+          </h3>
+          <p className="text-gray-600 text-lg leading-relaxed mb-6">
+            Your feedback is incredibly valuable to us. We appreciate you taking the time to share your thoughts and help us improve our platform.
+          </p>
+          <p className="text-gray-500 text-sm">
+            Your responses will help us make our services better for everyone.
+          </p>
+        </div>
+      </div>
+    );
+  };
+
   const renderSurveyQuestionContainer = () => {
+    if (showThankYou) {
+      return renderThankYouMessage();
+    }
+
     if (showSurvey && _.isObject(currentQuestion)) {
       return (
         <>
@@ -114,7 +159,7 @@ const SurveyModal = ({ openModal, hideModal = () => {} }: ISurveyModal) => {
           <div className={`${showContactForm ? "" : "hidden"}`}>
             <EmailPhoneSurveyForm
               isSubmitting={isPendingFinished}
-              handleSubmit={(email, phone) => handleNext(email, phone, true)}
+              handleSubmit={handleContactFormSubmit}
             />
           </div>
         </>
@@ -150,8 +195,12 @@ const SurveyModal = ({ openModal, hideModal = () => {} }: ISurveyModal) => {
   };
 
   const handleCrossClick = () => {
-    hideModal();
-    handleSubmit();
+    if (showThankYou) {
+      hideModal();
+    } else {
+      hideModal();
+      handleSubmit();
+    }
   };
 
   return (
@@ -174,8 +223,8 @@ const SurveyModal = ({ openModal, hideModal = () => {} }: ISurveyModal) => {
             objectPosition="center"
           />
         </div>
-        {showSurvey && (
-          <div className="absolute top-2 right-2 p-2">
+        {showSurvey && !showThankYou && (
+          <div className="absolute top-2 right-10 p-2">
             {currentIndex + 1} of 9
           </div>
         )}

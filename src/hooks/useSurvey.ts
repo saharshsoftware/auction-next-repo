@@ -16,7 +16,7 @@ import _ from "lodash";
 import surveyData from "@/data/survey.json";
 import { ISurveyOptions, Question } from "@/types";
 
-export function useSurvey(hideModalFn?: () => void) {
+export function useSurvey(hideModalFn?: () => void, onSurveyComplete?: () => void) {
   const router = useRouter();
   // const { questions } = surveyData as any;
   const surveyStoreData = useSurveyStore((state) => state.surveyData) ?? null;
@@ -43,7 +43,6 @@ export function useSurvey(hideModalFn?: () => void) {
         surveyStoreData?.[0]?.id ?? "",
         survey_status
       );
-      hideModalFn?.();
     },
     onSettled: async (data) => {
       console.log(data);
@@ -230,6 +229,12 @@ export function useSurvey(hideModalFn?: () => void) {
     console.log("(useSurvey :: ) payload data:", payload);
 
     handleSurveyApiCall(payload);
+    
+    // Call the completion callback if provided and survey is finished
+    if (isFinished && onSurveyComplete) {
+      onSurveyComplete();
+    }
+    
     // if (!isAuthenticated) {
     //   setActiveSurveyStorageStatus(surveyStoreData?.[0]?.id ?? "", "COMPLETED");
     // }

@@ -5,6 +5,7 @@ import { STRING_DATA } from "@/shared/Constants";
 import LoginComp from "../templates/LoginComp";
 import SignupComp from "../templates/SignupComp";
 import { useRouter } from "next/navigation";
+import OtpVerificationForm from "../templates/OtpVerificationForm";
 
 interface ILoginModal {
   openModal: boolean;
@@ -15,22 +16,37 @@ const LoginModal = (props: ILoginModal) => {
   const { openModal, hideModal = () => { } } = props;
   const router = useRouter();
   const [show, setShow] = useState({ login: false, signup: true });
+  const [showOtpForm, setShowOtpForm] = useState(false);
+
   const handleShowRegister = () => {
     setShow({ login: false, signup: true });
     router.refresh();
   };
 
+  const handleLoginForm = () => {
+    if (showOtpForm) {
+      return (
+        <OtpVerificationForm isAuthModal={true} loginApiCallback={hideModal} setShowOtpForm={() => setShowOtpForm(false)} />
+      )
+    }
+    return (
+      <LoginComp
+        isAuthModal={true}
+        handleLinkclick={handleShowRegister}
+        closeModal={hideModal}
+        setShowOtpForm={() => setShowOtpForm(true)}
+      />
+    );
+  }
+
   const handleShowLogin = () => {
     setShow({ login: true, signup: false });
   };
+
   const renderAuthComponent = () => {
     if (show?.login) {
       return (
-        <LoginComp
-          isAuthModal={true}
-          handleLinkclick={handleShowRegister}
-          closeModal={hideModal}
-        />
+        handleLoginForm()
       );
     }
     if (show?.signup) {
@@ -54,12 +70,15 @@ const LoginModal = (props: ILoginModal) => {
     }
     return heading;
   };
+
   return (
     <>
       <CustomModal
         openModal={openModal}
-        modalHeading={selectedHeading()}
+        modalHeading={selectedHeading()}  
         useStickyHeader={true}
+        isCrossVisible={true}
+        onClose={hideModal}
         customWidthClass="lg:w-[40%] md:w-4/5 sm:w-3/5 w-11/12"
       >
         <div className="w-full">{renderAuthComponent()}</div>

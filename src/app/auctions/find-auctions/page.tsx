@@ -1,9 +1,10 @@
-import React from "react";
+import React, { Suspense } from "react";
 import type { Metadata } from "next";
 import FindAuctionServer from "@/components/molecules/FindAuctionServer";
 import {
   getDataFromQueryParamsMethod,
   sanitizeReactSelectOptionsPage,
+  SERVICE_PROVIDER_OPTIONS,
 } from "@/shared/Utilies";
 import {
   fetchAssetType,
@@ -27,6 +28,8 @@ import ShowAuctionListServer from "@/components/molecules/ShowAuctionListServer"
 import AuctionHeaderSaveSearch from "@/components/atoms/AuctionHeaderSaveSearch";
 import TopCities from "@/components/atoms/TopCities";
 import { fetchPopularLocations } from "@/server/actions/location";
+import AuctionResults from "../../../components/templates/AuctionResults";
+import { SkeletonAuctionList } from "@/components/skeltons/SkeletonAuctionList";
 
 export const metadata: Metadata = {
   title: "Search Results | eauctiondekho",
@@ -87,22 +90,13 @@ export default async function Page({
     rawBanks,
     rawCategories,
     rawLocations,
-    response,
+
     popularLocations,
   ]: any = await Promise.all([
     fetchAssetType(),
     fetchBanks(),
     fetchCategories(),
     fetchLocation(),
-    getAuctionsServer({
-      category: filterQueryData?.category?.name ?? "",
-      bankName: filterQueryData?.bank?.name ?? "",
-      location: filterQueryData?.location?.name ?? "",
-      propertyType: filterQueryData?.propertyType?.name ?? "",
-      reservePrice: filterQueryData?.price ?? [],
-      locationType: filterQueryData?.location?.type ?? "",
-      page: filterQueryData?.page?.toString() ?? "1",
-    }),
     fetchPopularLocations(),
   ]);
 
@@ -118,9 +112,6 @@ export default async function Page({
     rawLocations
   ) as ILocations[];
 
-  const auctionList =
-    (response as { sendResponse: IAuction[]; meta: IPaginationData })
-      ?.sendResponse ?? [];
 
   const selectedBank = bankOptions.find(
     (item) => item.name === filterQueryData?.bank?.name
@@ -134,8 +125,12 @@ export default async function Page({
   const selectedAssetType = assetsTypeOptions.find(
     (item) => item.name === filterQueryData?.propertyType?.name
   );
+  const selectedServiceProvider = SERVICE_PROVIDER_OPTIONS.find(
+    (item) => item.value === filterQueryData?.serviceProvider?.value
+  );
 
   console.log("selectedLocationselectedLocation", selectedLocation);
+
   const urlFilterdata = {
     location: selectedLocation,
     bank: selectedBank,
@@ -143,8 +138,8 @@ export default async function Page({
     price: filterQueryData?.price,
     category: selectedCategory,
     propertyType: selectedAssetType,
+    serviceProvider: selectedServiceProvider,
   } as ILocalFilter;
-
   return (
     <section>
       <FindAuctionServer
@@ -157,21 +152,16 @@ export default async function Page({
         selectedCategory={selectedCategory}
         selectedAsset={selectedAssetType}
         selectedPrice={filterQueryData?.price}
+        selectedServiceProvider={selectedServiceProvider}
       />
       <div className="common-section">
         <div className="grid grid-cols-12 gap-4 py-4">
-          <div className="lg:col-span-8 col-span-full">
-            <AuctionHeaderSaveSearch />
-            <ShowAuctionListServer
-              auctions={auctionList}
-              totalPages={response?.meta?.pageCount || 1}
-              activePage={
-                filterQueryData?.page ? Number(filterQueryData?.page) : 1
-              }
-              filterData={urlFilterdata}
-            />
+          <div className="grid-col-span-9">
+            <Suspense key={Array.isArray(searchParams?.q) ? searchParams.q[0] : searchParams?.q ?? ""} fallback={<SkeletonAuctionList />}>
+              <AuctionResults searchParams={searchParams} isFindAuction={true} urlFilterdata={urlFilterdata} />
+            </Suspense>
           </div>
-          <div className="lg:col-span-4 col-span-full">
+          <div className="grid-col-span-3">
             <TopCities locationOptions={popularLocations} />
           </div>
         </div>

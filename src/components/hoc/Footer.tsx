@@ -23,9 +23,6 @@ const Footer: React.FC = () => {
         <div className="grid grid-cols-12 gap-2">
           {" "}
           <div className="lg:col-span-4 col-span-full  space-y-4 flex flex-col h-full lg:items-start mb-2">
-            <h3 className="text-lg font-semibold lg:text-left text-center">
-              Download e-auctiondekho app
-            </h3>
             <DownloadStoreButton />
           </div>
           <p
@@ -81,6 +78,12 @@ const Footer: React.FC = () => {
               </Link>
               <Link href={ROUTE_CONSTANTS.CONTACT} className="link link-hover">
                 {STRING_DATA.CONTACT_US}
+              </Link>
+              <Link href={ROUTE_CONSTANTS.GLOSSARY} className="link link-hover">
+                Glossary
+              </Link>
+              <Link href={ROUTE_CONSTANTS.FAQ} className="link link-hover">
+                FAQ
               </Link>
               <Link
                 href={"/sitemap.xml.gz"}

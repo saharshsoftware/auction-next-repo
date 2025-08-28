@@ -1,5 +1,6 @@
 import React from "react";
 import BlurredFieldWrapper from "./BlurredFieldWrapper";
+import Link from "next/link";
 import { STRING_DATA } from "@/shared/Constants";
 
 interface IShowData {
@@ -11,6 +12,10 @@ interface IShowData {
   value?: any;
   children?: React.ReactNode;
   isBlurred?: boolean; // New flag to blur the field
+  glossaryLink?: {
+    term: string;
+    text: string;
+  };
 }
 
 const ShowLabelValue: React.FC<IShowData> = (props) => {
@@ -23,6 +28,7 @@ const ShowLabelValue: React.FC<IShowData> = (props) => {
     value,
     children,
     isBlurred = false, // Default to false
+    glossaryLink,
   } = props;
 
   const renderValueContainer = () => {
@@ -38,13 +44,31 @@ const ShowLabelValue: React.FC<IShowData> = (props) => {
     );
   };
 
+  const renderHeadingWithGlossaryLink = () => {
+    if (!glossaryLink) {
+      return heading;
+    }
+
+    return (
+      <div className="flex items-center gap-2">
+        <span className="font-bold">{heading}</span>
+        <Link
+          href={`/glossary?term=${encodeURIComponent(glossaryLink.term)}`}
+          className="text-sm text-brand-color underline hover:no-underline transition-colors"
+        >
+          {glossaryLink.text}
+        </Link>
+      </div>
+    );
+  };
+
   return (
-    <div className={`grid grid-cols-12 ${sizeClass ? sizeClass : ""}`}>
+    <div className={`grid grid-cols-12 gap-1 ${sizeClass ? sizeClass : ""}`}>
       <div
-        className={`font-bold ${headingClass ?? "lg:col-span-4 col-span-full"
+        className={`font-bold flex items-center min-w-0 ${headingClass ?? "lg:col-span-4 col-span-full"
           } `}
       >
-        {heading}
+        {renderHeadingWithGlossaryLink()}
       </div>
       <div className={`${valueClass ?? "lg:col-span-8 col-span-full"}`}>
         {renderValueContainer()}

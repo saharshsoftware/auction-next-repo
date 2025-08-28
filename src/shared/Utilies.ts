@@ -1,5 +1,4 @@
 import { IActionResponse } from "../interfaces/RequestInteface";
-import { STORE_KEY } from "../zustandStore/store";
 import {
   IAssetType,
   IAuction,
@@ -14,16 +13,7 @@ import { ROUTE_CONSTANTS } from "./Routes";
 import MarkdownIt from "markdown-it";
 import { CONFIG } from "@/utilies/Config";
 import { USER_TYPE } from "@/types.d";
-
-export const getDataFromLocalStorage = () => {
-  const storedData = localStorage.getItem(STORE_KEY);
-  return storedData ? JSON.parse(storedData) : null;
-};
-
-export const setTokenInLocalStorage = (data: any) => {
-  const stringifiedData = JSON.stringify(data);
-  localStorage.setItem(STORE_KEY, stringifiedData);
-};
+import { safeArray, safeNumber, safeString } from "@/utilies/imageUtils";
 
 export const setDataInQueryParams = (values: any) => {
   const data = btoa(JSON.stringify(values));
@@ -143,6 +133,80 @@ const formatValidDate = (date: Date): string => {
 
 export const sanitizedAuctionData = (data: any[]) => {
   return data.map((item: any) => ({ id: item.id, ...item.attributes }));
+};
+
+// Transform the data structure to match our expected format with safe handling
+export const transformProperty = (item: IAuction): IAuction => {
+  if (!item || !item.attributes) {
+    throw new Error('Invalid property data structure');
+  }
+
+  const attrs = item.attributes;
+  return {
+    id: item.id?.toString() || '0',
+    bankName: safeString(attrs.bankName) || "",
+    branchName: safeString(attrs.branchName) || "",
+    serviceProvider: safeString(attrs.serviceProvider) || "",
+    borrowerName: safeString(attrs.borrowerName) || "",
+    assetCategory: safeString(attrs.assetCategory) || "",
+    auctionType: safeString(attrs.auctionType) || "",
+    noticeLink: safeString(attrs.noticeLink) || "",
+    authorisedOfficerContactPerson: safeString(attrs.authorisedOfficerContactPerson) || "",
+    auctionStartTime: safeString(attrs.auctionStartTime) || "",
+    auctionEndDate: safeString(attrs.auctionEndDate) || "",
+    applicationSubmissionDate: safeString(attrs.applicationSubmissionDate) || "",
+    reservePrice: safeNumber(attrs.reservePrice) || 0,
+    emd: safeNumber(attrs.emd) || 0,
+    title: safeString(attrs.title) || "",
+    contactNo: safeString(attrs.contactNo) || "",
+    description: safeString(attrs.description) || "",
+    state: safeString(attrs.state) || "",
+    city: safeString(attrs.city) || "",
+    area: safeString(attrs.area) || "",
+    contact: safeString(attrs.contact) || "",
+    noticeImageUrl: safeString(attrs.noticeImageUrl) || "",
+    slug: safeString(attrs.slug) || "",
+    search: safeString(attrs.search) || "",
+    estimatedMarketPrice: safeNumber(attrs.estimatedMarketPrice) || 0,
+    assetType: safeString(attrs.assetType) || "",
+    createdAt: safeString(attrs.createdAt) || "",
+    updatedAt: safeString(attrs.updatedAt) || "",
+    createdById: attrs.createdById || null,
+    updatedById: attrs.updatedById || null,
+    sitemapExclude: attrs.sitemapExclude || false,
+    owner_name: safeString(attrs.ownerName),
+    propertyAddress: safeString(attrs.propertyAddress),
+    bankPropertyId: safeString(attrs.bankPropertyId),
+    propertyTitleDeedType: safeString(attrs.propertyTitleDeedType),
+    propertyOwnerShipType: safeString(attrs.propertyOwnerShipType),
+    propertyPossessionType: safeString(attrs.propertyPossessionType),
+    residentialDetail: safeString(attrs.residentialDetail),
+    commercialDetail: safeString(attrs.commercialDetail),
+    industryDetail: safeString(attrs.industryDetail),
+    agricultureDetail: safeString(attrs.agricultureDetail),
+    pincode: safeString(attrs.pincode),
+    dealingOfficerName: safeString(attrs.dealingOfficerName),
+    inspectionDateFrom: safeString(attrs.inspectionDateFrom),
+    inspectionDateTo: safeString(attrs.inspectionDateTo),
+    emdStartDateTime: safeString(attrs.emdStartDateTime),
+    emdEndDateTime: safeString(attrs.emdEndDateTime),
+    borrowerAddress: safeString(attrs.borrowerAddress),
+    incrementPrice: safeNumber(attrs.incrementPrice),
+    lat: safeString(attrs.lat),
+    lng: safeString(attrs.lng),
+    noticeImageURLs: safeArray(attrs.noticeImageURLs) || [],
+    inspectionOfficerName: safeString(attrs.inspectionOfficerName),
+    inspectionOfficerMobileNo: safeString(attrs.inspectionOfficerMobileNo),
+    inspectionBranchAddress: safeString(attrs.inspectionBranchAddress),
+    officerNameAndDesignation: safeString(attrs.officerNameAndDesignation),
+    extendTimeInMinutes: safeString(attrs.extendTimeInMinutes),
+    propertyType: safeString(attrs.propertyType) || "",
+    location: safeString(attrs.location) || "",
+  };
+};
+
+export const sanitizedAuctionData2 = (data: any[]) => {
+  return data.map((item: any) => transformProperty(item));
 };
 
 export const sanitizedAuctionDetail = (data: any) => {
@@ -724,3 +788,132 @@ export const userTypeOptions = [
   { value: USER_TYPE.INVESTOR, label: STRING_DATA.INVESTOR, name: USER_TYPE.INVESTOR },
   { value: USER_TYPE.BROKER, label: STRING_DATA.BROKER, name: USER_TYPE.BROKER },
 ];
+
+export interface IServiceProviders {
+  value: string;
+  label: string;
+  name: string;
+}
+
+export const SERVICE_PROVIDER_OPTIONS: IServiceProviders[]  = [
+  { value: '', label: 'All', name: 'All' },
+  { value: 'baanknet', label: 'BaankNet', name: 'BaankNet' },
+  { value: 'ibapi', label: 'IBAPI', name: 'IBAPI' },
+  { value: 'bankauctions', label: 'Bank Auctions', name: 'Bank Auctions' },
+  { value: 'bankeauctions', label: 'Bank E-Auctions', name: 'Bank E-Auctions' },
+  { value: 'drtauctiontiger', label: 'DRT Auction Tiger', name: 'DRT Auction Tiger' },
+  { value: 'auctionfocus', label: 'Auction Focus', name: 'AuctionFocus' },
+  { value: 'eauctionsindia', label: 'E-auctionindia', name: 'E-auctionindia' }
+];
+
+export const formatISTDateTime = (dateString: string | null | undefined): string => {
+  if (!dateString) return 'Not specified';
+  try {
+    const date = new Date(dateString.replace('Z', ''));
+
+    return date.toLocaleString('en-IN', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true,
+      timeZone: 'Asia/Kolkata', // Force IST
+    }).replace(',', ''); // optional: remove comma between date & time
+  } catch (error) {
+    return 'Invalid date';
+  }
+};
+
+export const formatISTTimeOnly = (dateString: string | null | undefined): string => {
+  if (!dateString) return 'Not specified';
+  try {
+    const date = new Date(dateString.replace('Z', ''));
+
+    return date.toLocaleString('en-IN', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true,
+      timeZone: 'Asia/Kolkata', // Force IST
+    }).replace(',', ''); // optional: remove comma between date & time
+  } catch (error) {
+    return 'Invalid date';
+  }
+};
+
+export const getDateAndTimeFromISOString = (isoString: string): { date: string, timePart: string } => {
+  const [year, month, day] = isoString?.split("T")[0]?.split("-");
+  const formattedDate = `${day}-${month}-${year}`; // "09-04-2025"
+  const timePart = isoString?.split("T")[1]?.replace("Z", ""); // "10:30:00.000"
+  if (!timePart) return { date: formattedDate, timePart: 'Not specified' };
+
+  const ampm = parseInt(timePart?.split(":")[0]) >= 12 ? "pm" : "am";
+  const h = parseInt(timePart?.split(":")[0]) % 12 || 12;
+  const minutes = timePart?.split(":")[1];
+  const formattedTime = `${h}:${minutes} ${ampm}`;
+
+  return { date: formattedDate, timePart: formattedTime };
+};
+
+export const getDateAndTimeFromISOStringForDisplay = (isoString: string): string => {
+  return isoString ? `${getDateAndTimeFromISOString(isoString).date} ${getDateAndTimeFromISOString(isoString).timePart}` : 'Not specified';
+}
+
+
+export const formatDateForDisplay = (dateString: string | null | undefined) => {
+  if (!dateString) return 'Not specified';
+  try {
+    const date = new Date(dateString.replace('Z', ''));
+    return date.toLocaleDateString('en-GB', {
+      day: '2-digit',
+      month: 'short',
+      year: '2-digit',
+      timeZone: 'Asia/Kolkata'
+    }).replace(/ /g, '-');
+  } catch (error) {
+    return 'Invalid date';
+  }
+};
+
+export const formatDateAndTimeForDisplay = (dateString: string | null | undefined) => {
+  if (!dateString) return 'Not specified';
+  try {
+    const date = new Date(dateString.replace('Z', ''));
+    const formattedDate = date.toLocaleDateString('en-GB', {
+      day: '2-digit',
+      month: 'short',
+      year: '2-digit',
+      timeZone: 'Asia/Kolkata'
+    }).replace(/ /g, '-');
+
+    const formattedTime = date.toLocaleTimeString('en-IN', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true,
+      timeZone: 'Asia/Kolkata'
+    });
+
+    return `${formattedDate}, ${formattedTime}`;
+  } catch (error) {
+    return 'Invalid date';
+  }
+};
+
+
+export function extractPhoneNumbers(contactString: string): string[] {
+  // Remove common prefixes and labels
+  const cleanedString = contactString
+    .replace(/Contact\s*(Mr\.\/Mrs\.)?\s*(No|Number|Mobile|Tel|Phone)\s*:?\s*/gi, '')
+    .trim();
+
+  // Match phone numbers with optional country code and optional separators
+  const phonePattern =
+    /(?:\+?91[-.\s]?)?(?:\d{5}[-.\s]?\d{5})/g;
+
+  const matches = cleanedString.match(phonePattern) || [];
+
+  // Normalize: remove all non-digit characters
+  const normalized = matches.map(num => num.replace(/\D/g, ''));
+  // Remove duplicates and return
+  return Array.from(new Set(normalized));
+}

@@ -12,7 +12,7 @@ export default async function BlogsPage() {
           <h1 className="text-3xl font-bold mb-4">
             Latest <span className="text-blue-600">Insights</span>
           </h1>
-          <p className="text-gray-600 max-w-2xl mx-auto">
+          <p className="text-gray-600 max-w-2xl mx-auto text-sm-xs">
             Stay informed with our latest articles about bank auctions, property
             investments, and market trends. Knowledge is your best tool in the
             auction market.

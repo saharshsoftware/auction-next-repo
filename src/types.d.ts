@@ -37,19 +37,42 @@ export interface IAuction {
   auctionType: string;
   noticeLink: string;
   authorisedOfficerContactPerson: string;
-  auctionDate: Date;
-  auctionStartTime: Date;
-  auctionEndDate: Date;
-  applicationSubmissionDate: Date;
+  auctionStartTime: string;
+  auctionStartTime: string;
+  auctionEndDate: string;
+  applicationSubmissionDate: string;
   reservePrice: number;
   emd: number;
-  createdAt: Date;
-  updatedAt: Date;
-  publishedAt: Date;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string;
   title: string;
-  contactNo: string;
   auctionId: string;
   description: string;
+  slug: string;
+  title: string;
+  auctionId?: string;
+  description?: string;
+  state?: string;
+  city?: string;
+  area?: string;
+  noticeLink?: string;
+  noticeImageURLs?: string[];
+  noticeImageUrl?: string;
+  estimatedMarketPrice?: number;
+  assetType?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  publishedAt?: string;
+  createdById?: string;
+  auctionStartTime?: string;
+  auctionStartTime?: string;
+  auctionEndDate?: string;
+  applicationSubmissionDate?: string;
+  reservePrice?: number;
+  emd?: number;
+  title?: string;
+  contact?: string
 }
 
 export interface IUserData {
@@ -154,7 +177,7 @@ export interface IProperty {
   auctionType: string;
   noticeLink: string;
   authorisedOfficerContactPerson: null;
-  auctionDate: Date;
+  auctionStartTime: Date;
   auctionStartTime: Date;
   auctionEndDate: Date;
   applicationSubmissionDate: Date;

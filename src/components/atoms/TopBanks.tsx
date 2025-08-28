@@ -22,13 +22,14 @@ const TopBanks = (props: {
       return (
         <Link
           href={`${ROUTE_CONSTANTS.LOCATION}/${locationSlug}${ROUTE_CONSTANTS.BANKS}/${item?.slug}`}
+          className="text-sm-xs"
         >
           {item?.name}
         </Link>
       );
     }
     return (
-      <Link href={`${ROUTE_CONSTANTS.BANKS}/${item?.slug}`}>{item?.name}</Link>
+      <Link href={`${ROUTE_CONSTANTS.BANKS}/${item?.slug}`} className="text-sm-xs">{item?.name}</Link>
     );
   };
 

@@ -26,11 +26,11 @@ const PartnerAndHelpSection = () => {
               />
             </div>
             <h3 className="text-2xl font-bold mb-2">Partner With Us</h3>
-            <p className="text-gray-600 mb-2">
+            <p className="text-sm-xs mb-2">
               Are you a broker or financial institution interested in
               collaborating?
             </p>
-            <p className="text-gray-600">
+            <p className="text-sm-xs">
               We&apos;re building India&apos;s most trusted community for bank
               auctions. Let&apos;s work together to simplify the auction journey
               for everyone.
@@ -56,8 +56,8 @@ const PartnerAndHelpSection = () => {
             <h3 className="text-2xl font-bold mb-2">
               Need Help or Have a Query?
             </h3>
-            <p className="text-gray-600 mb-2">We&apos;re here to assist you.</p>
-            <p className="text-gray-600">
+            <p className="text-sm-xs mb-2">We&apos;re here to assist you.</p>
+            <p className="text-sm-xs">
               Whether you&apos;re a customer, broker, or just curious about bank
               auctions — feel free to reach out.
             </p>

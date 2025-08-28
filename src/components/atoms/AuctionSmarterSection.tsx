@@ -58,7 +58,7 @@ export function AuctionSmarterSection(props: { isAuthenticated?: boolean }) {
                 <h3 className="text-2xl font-semibold mb-4">
                   Save Your Search
                 </h3>
-                <p className="text-gray-600 mb-6">
+                <p className="text-sm-xs mb-6">
                   Tired of applying filters again and again? Save your search
                   preferences once and access them instantly whenever you need.
                   Perfect for regular property hunters and investors looking to
@@ -106,7 +106,7 @@ export function AuctionSmarterSection(props: { isAuthenticated?: boolean }) {
                 <h3 className="text-2xl font-semibold mb-4">
                   Get Notified Instantly
                 </h3>
-                <p className="text-gray-600 mb-6">
+                <p className="text-sm-xs mb-6">
                   Stay ahead of the competition with real-time property alerts.
                   Get instant notifications when properties matching your
                   criteria are listed for auction. Never miss out on potential
@@ -156,7 +156,7 @@ export function AuctionSmarterSection(props: { isAuthenticated?: boolean }) {
                 <h3 className="text-2xl font-semibold mb-4">
                   Keep Track of Favorites
                 </h3>
-                <p className="text-gray-600 mb-6">
+                <p className="text-sm-xs mb-6">
                   Create multiple wishlists to organize properties based on your
                   investment goals. Compare properties, track prices, and make
                   informed decisions. Perfect for managing different investment

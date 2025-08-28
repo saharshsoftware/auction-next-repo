@@ -16,6 +16,7 @@ import {
   removePropertyFromFavoriteListClient,
 } from "@/services/favouriteList";
 import AuctionCard from "../atoms/AuctionCard";
+import { AuctionCard2 } from "../atoms/AuctionCard2";
 
 interface IFavouriteListPropertyComp {
   listId: string;
@@ -43,8 +44,14 @@ const FavouriteListProperty = (props: IFavouriteListPropertyComp) => {
       })) as unknown as IFavouriteListProperty[];
       return res ?? [];
     },
-    enabled: !!listId,
   });
+
+  useEffect(() => {
+    if (listId) {
+      refetch();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [listId]);
 
   // Mutations
   const { mutate, isPending } = useMutation({
@@ -105,9 +112,9 @@ const FavouriteListProperty = (props: IFavouriteListPropertyComp) => {
               const propertyInformation = item?.property as unknown as IAuction;
               return (
                 <div key={index}>
-                  <AuctionCard
+                  <AuctionCard2
                     showRemoveButton={true}
-                    item={propertyInformation}
+                    property={propertyInformation}
                     // propertyData={propertyInformation}
                     propertyId={item?.id}
                     handleRemove={handleRemove}

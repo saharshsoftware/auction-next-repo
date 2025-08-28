@@ -71,9 +71,9 @@ const AuctionCard: React.FC<IAuctionCard> = (props) => {
   const renderAuctionDetails = () => {
     return (
       <div className="flex items-center justify-start gap-4 flex-wrap">
-        {item?.auctionDate && (
+        {item?.auctionStartTime && (
           <span className="font-bold text-xs">
-            {formattedDate(item?.auctionDate)}
+            {formattedDate(item?.auctionStartTime)}
           </span>
         )}
         {item?.assetCategory && (

@@ -19,7 +19,7 @@ interface PropertyProps {
   bank: string;
   area: string;
   image: string;
-  auctionDate: string;
+  auctionStartTime: string;
 }
 
 export function PropertyCard({
@@ -30,7 +30,7 @@ export function PropertyCard({
   bank,
   area,
   image,
-  auctionDate,
+  auctionStartTime,
 }: PropertyProps) {
   const header = <h3 className="font-medium text-lg">{title}</h3>;
 
@@ -66,7 +66,7 @@ export function PropertyCard({
           </div>
           <div className="flex items-center gap-2 text-sm text-gray-600">
             <FontAwesomeIcon icon={faCalendarDays} className="h-4 w-4" />
-            <span>Auction Date: {auctionDate}</span>
+            <span>Auction Date: {auctionStartTime}</span>
           </div>
         </div>
       </div>

@@ -247,7 +247,7 @@ const EditAlert = (props: ICreateFavList) => {
                       </div>
                       <div className={gridElementClass()}>
                         <TextField
-                          label={"Asset type"}
+                          label={"Property type"}
                           name={"propertyType"}
                           hasChildren={true}
                         >
@@ -257,7 +257,7 @@ const EditAlert = (props: ICreateFavList) => {
                                 defaultValue={values?.propertyType}
                                 options={assetsTypeOptions ?? []}
                                 loading={isLoadingAssetsTypeCategory}
-                                placeholder={"Asset type"}
+                                placeholder={"Property type"}
                                 name="asset-type-edit-alert"
                                 customClass="w-full "
                                 onChange={(e) => {

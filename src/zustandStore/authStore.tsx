@@ -1,14 +1,10 @@
-import { StateCreator } from "zustand";
+import { create, StateCreator } from "zustand";
 import { AuthStoreType } from "../interfaces/AuthStore";
+import { devtools } from "zustand/middleware";
 
-export const authStore: StateCreator<AuthStoreType> = (set) => ({
-  isAuthenticated: false,
-  token: "",
-  userData: {
-    user: null,
-  },
-  setToken: (payload: string) =>
-    set(() => ({ token: payload, isAuthenticated: !!payload })),
-  setUser: (payload: any) => set(() => ({ userData: payload })),
-  resetAuthStore: () => set(() => ({ token: "", userData: {} })),
-});
+export const useAuthStore = create<AuthStoreType>()(
+  devtools((set) => ({
+    isNewUser: false,
+    setNewUserStatus: (status: boolean) => set({ isNewUser: status }),
+  }))
+);

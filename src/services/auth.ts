@@ -26,7 +26,7 @@ export const signupClient = async (payload: ISignup) => {
     console.log(URL);
     const { data } = await postRequest({
       API: URL,
-      DATA: formData,
+      DATA: {...formData, email: formData.email.toLowerCase()},
     });
     console.log(data);
     const { jwt, user } = data as IUserData;
@@ -45,7 +45,7 @@ export const loginClient = async (payload: ILogin) => {
     console.log(URL);
     const { data } = await postRequest({
       API: URL,
-      DATA: formData,
+      DATA: {...formData, identifier: formData.identifier.toLowerCase()},
     });
     const { jwt, user } = data as IUserData;
     setCookie(COOKIES.TOKEN_KEY, jwt);
@@ -115,7 +115,7 @@ export const sendSignInOtpClient = async (payload: { email: string }) => {
     console.log(URL);
     const { data } = await postRequest({
       API: URL,
-      DATA: { email },
+      DATA: { email: email.toLowerCase() },
     });
     return data;
   } catch (error: any) {
@@ -130,7 +130,7 @@ export const signupCustomClient = async (payload: ISignup) => {
     console.log(URL);
     const { data } = await postRequest({
       API: URL,
-      DATA: formData,
+      DATA: {...formData, email: formData.email.toLowerCase()},
     });
     return data;
   } catch (error: any) {
@@ -145,7 +145,7 @@ export const siginUsingOtpClient = async (payload: { email: string, otp: string 
     console.log(URL);
     const { data } = await postRequest({
       API: URL,
-      DATA: { email, otp },
+      DATA: { email: email.toLowerCase(), otp },
     });
     const { jwt, user } = data as IUserData;
     setCookie(COOKIES.TOKEN_KEY, jwt);

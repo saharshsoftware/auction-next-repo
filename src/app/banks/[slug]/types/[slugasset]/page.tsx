@@ -8,6 +8,7 @@ import TopCities from "@/components/atoms/TopCities";
 import FindAuctionServer from "@/components/molecules/FindAuctionServer";
 import RecentData from "@/components/molecules/RecentData";
 import ShowAuctionListServer from "@/components/molecules/ShowAuctionListServer";
+import { SkeletonAuctionList } from "@/components/skeltons/SkeletonAuctionList";
 import { getCategoryBoxCollection, fetchLocation } from "@/server/actions";
 import {
   fetchAssetTypeBySlug,
@@ -37,7 +38,8 @@ import {
 import { IPaginationData } from "@/zustandStore/auctionStore";
 import { Metadata, ResolvingMetadata } from "next";
 import dynamic from "next/dynamic";
-import React, { lazy } from "react";
+import React, { lazy, Suspense } from "react";
+import AuctionResults from "@/components/templates/AuctionResults";
 
 async function getSlugData(
   slug: string,
@@ -128,7 +130,6 @@ export default async function Page({
     rawBanks,
     rawCategories,
     rawLocations,
-    response,
     popularLocations,
     popularAssets,
   ]: any = await Promise.all([
@@ -136,12 +137,6 @@ export default async function Page({
     fetchBanks(),
     fetchCategories(),
     fetchLocation(),
-    getAuctionsServer({
-      bankName: bankData?.name ?? "",
-      propertyType: assetTypeData?.name ?? "",
-      page: String(page) || "1",
-      reservePrice: [RANGE_PRICE.MIN, RANGE_PRICE.MAX],
-    }),
     fetchPopularLocations(),
     fetchPopularAssetTypes(),
   ]);
@@ -157,10 +152,6 @@ export default async function Page({
   const locationOptions = sanitizeReactSelectOptionsPage(
     rawLocations
   ) as ILocations[];
-
-  const auctionList =
-    (response as { sendResponse: IAuction[]; meta: IPaginationData })
-      ?.sendResponse ?? [];
 
   const selectedAsset = assetsTypeOptions.find(
     (item) => item.name === assetTypeData?.name
@@ -178,6 +169,17 @@ export default async function Page({
       ? bankData?.secondarySlug?.toUpperCase() ?? (bankData?.name || "")
       : bankData?.name || "";
 
+  const getRequiredParameters = () => {
+    return {
+      bankName: bankData?.name ?? "",
+      propertyType: assetTypeData?.name ?? "",
+      page: String(page) || "1",
+      reservePrice: [RANGE_PRICE.MIN, RANGE_PRICE.MAX],
+    }
+  }
+
+  const key = page?.toString();
+
   return (
     <section>
       <FindAuctionServer
@@ -190,19 +192,18 @@ export default async function Page({
       />
       <div className="common-section">
         <div className="grid grid-cols-12 gap-4 py-4">
-          <div className="lg:col-span-8 col-span-full">
-            <AuctionHeaderServer
-              total={response?.meta?.total}
-              heading={`${bankNamePrimary} ${assetTypeData?.name} auctions`}
-            />
-            <ShowAuctionListServer
-              auctions={auctionList}
-              totalPages={response?.meta?.pageCount || 1}
-              activePage={page ? Number(page) : 1}
-              filterData={urlFilterdata}
-            />
+          <div className="grid-col-span-9 ">
+            <Suspense key={key} fallback={<SkeletonAuctionList />}>
+              <AuctionResults
+                searchParams={searchParams}
+                heading={`${bankNamePrimary} ${assetTypeData?.name} auctions`}
+                useCustomFilters={true}
+                customFilters={getRequiredParameters()}
+                urlFilterdata={urlFilterdata}
+              />
+            </Suspense>
           </div>
-          <div className="lg:col-span-4 col-span-full">
+          <div className="grid-col-span-3">
             <div className="mb-4">
               <TopCities
                 locationOptions={popularLocations}

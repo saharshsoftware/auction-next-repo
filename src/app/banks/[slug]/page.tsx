@@ -8,6 +8,8 @@ import TopCities from "@/components/atoms/TopCities";
 import FindAuctionServer from "@/components/molecules/FindAuctionServer";
 import RecentData from "@/components/molecules/RecentData";
 import ShowAuctionListServer from "@/components/molecules/ShowAuctionListServer";
+import { SkeletonAuctionList } from "@/components/skeltons/SkeletonAuctionList";
+import AuctionResults from "@/components/templates/AuctionResults";
 import { getCategoryBoxCollection, fetchLocation } from "@/server/actions";
 import {
   fetchAssetType,
@@ -32,6 +34,7 @@ import {
 } from "@/types";
 import { IPaginationData } from "@/zustandStore/auctionStore";
 import { Metadata, ResolvingMetadata } from "next";
+import { Suspense } from "react";
 
 async function getSlugData(slug: string) {
   const selectedBank = (await fetchBanksBySlug({
@@ -122,18 +125,12 @@ export default async function Page({
     rawBanks,
     rawCategories,
     rawLocations,
-    response,
     popularLocations,
   ]: any = await Promise.all([
     fetchAssetType(),
     fetchBanks(),
     fetchCategories(),
     fetchLocation(),
-    getAuctionsServer({
-      bankName: bankData?.name ?? "",
-      page: String(page) || "1",
-      reservePrice: [RANGE_PRICE.MIN, RANGE_PRICE.MAX],
-    }),
     fetchPopularLocations(),
   ]);
 
@@ -149,9 +146,13 @@ export default async function Page({
     rawLocations
   ) as ILocations[];
 
-  const auctionList =
-    (response as { sendResponse: IAuction[]; meta: IPaginationData })
-      ?.sendResponse ?? [];
+  const getRequiredParameters = () => {
+    return {
+      bankName: bankData?.name ?? "",
+      page: String(page) || "1",
+      reservePrice: [RANGE_PRICE.MIN, RANGE_PRICE.MAX],
+    }
+  }
 
   const selectedBank = bankOptions.find((item) => item.name === bankData?.name);
   const urlFilterdata = {
@@ -171,19 +172,18 @@ export default async function Page({
       />
       <div className="common-section">
         <div className="grid grid-cols-12 gap-4 py-4">
-          <div className="lg:col-span-8 col-span-full">
-            <AuctionHeaderServer
-              total={response?.meta?.total}
-              heading={`${bankData.name} Auction Properties`}
-            />
-            <ShowAuctionListServer
-              auctions={auctionList}
-              totalPages={response?.meta?.pageCount || 1}
-              activePage={page ? Number(page) : 1}
-              filterData={urlFilterdata}
-            />
+          <div className="grid-col-span-9 ">
+            <Suspense key={page?.toString()} fallback={<SkeletonAuctionList />}>
+              <AuctionResults
+                searchParams={searchParams}
+                heading={`${bankData.name} Auction Properties`}
+                useCustomFilters={true}
+                customFilters={getRequiredParameters()}
+                urlFilterdata={urlFilterdata}
+              />
+            </Suspense>
           </div>
-          <div className="lg:col-span-4 col-span-full">
+          <div className="grid-col-span-3">
             <TopCities
               locationOptions={popularLocations}
               isBankRoute={true}

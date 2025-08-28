@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilter, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import TextField from "../atoms/TextField";
 import RangeSliderCustom from "../atoms/RangeSliderCustom";
-import { formatPrice } from "@/shared/Utilies";
+import { formatPrice, IServiceProviders, SERVICE_PROVIDER_OPTIONS } from "@/shared/Utilies";
 import useResize from "@/hooks/useResize";
 import {
   getEmptyAllObject,
@@ -31,6 +31,7 @@ interface FindAuctionProps {
   selectedBank?: IBanks;
   selectedLocation?: ILocations;
   selectedPrice?: number[];
+  selectedServiceProvider?: IServiceProviders;
 }
 
 const gridElementClass = () => "lg:col-span-2  col-span-full";
@@ -47,6 +48,7 @@ const FindAuction: React.FC<FindAuctionProps> = ({
   selectedBank = getEmptyAllObject(),
   selectedLocation = getEmptyAllObject(),
   selectedPrice = [RANGE_PRICE.MIN, RANGE_PRICE.MAX],
+  selectedServiceProvider = getEmptyAllObject() as IServiceProviders,
 }) => {
   const router = useRouter();
   const { setDataInQueryParamsMethod } = useCustomParamsData();
@@ -66,6 +68,7 @@ const FindAuction: React.FC<FindAuctionProps> = ({
     bank: selectedBank || getEmptyAllObject(),
     propertyType: selectedAsset || getEmptyAllObject(),
     price: selectedPrice || [RANGE_PRICE.MIN, RANGE_PRICE.MAX],
+    serviceProvider: selectedServiceProvider || getEmptyAllObject(),
   };
 
   const handleBack = () => {
@@ -85,7 +88,7 @@ const FindAuction: React.FC<FindAuctionProps> = ({
 
   const handleSubmit = (values: any) => {
     console.log(values, "values123");
-    const { category, price, bank, location, propertyType } = values;
+    const { category, price, bank, location, propertyType, serviceProvider } = values;
     const { type, name } = location ?? {};
     const filter = {
       page: 1,
@@ -100,6 +103,11 @@ const FindAuction: React.FC<FindAuctionProps> = ({
         propertyType?.label === STRING_DATA.ALL
           ? STRING_DATA.EMPTY
           : propertyType,
+
+      serviceProvider:
+        serviceProvider?.label === STRING_DATA.ALL
+          ? STRING_DATA.EMPTY
+          : serviceProvider,
     };
     //   console.log(filter);
     //   setFilter(filter);
@@ -144,6 +152,7 @@ const FindAuction: React.FC<FindAuctionProps> = ({
         bank: selectedBank,
         location: selectedLocation,
         price: selectedPrice,
+        serviceProvider: selectedServiceProvider,
       }}
       enableReinitialize={true}
       onSubmit={handleSubmit}
@@ -175,13 +184,13 @@ const FindAuction: React.FC<FindAuctionProps> = ({
                 </TextField>
               </div>
               <div className={gridElementClass()}>
-                <TextField label="Asset Type" name="propertyType" hasChildren>
+                <TextField label="Property Type" name="propertyType" hasChildren>
                   <Field name="propertyType">
                     {() => (
                       <ReactSelectDropdown
                         name="propertyType"
                         options={filteredAssets}
-                        placeholder={"Asset Type"}
+                        placeholder={"Property Type"}
                         defaultValue={values.propertyType}
                         onChange={(value) =>
                           setFieldValue("propertyType", value)
@@ -225,6 +234,21 @@ const FindAuction: React.FC<FindAuctionProps> = ({
                   </Field>
                 </TextField>
               </div>
+              {/* <div className={gridElementClass()}>
+                <TextField label="Service Provider" name="serviceProvider" hasChildren>
+                  <Field name="serviceProvider">
+                    {() => (
+                      <ReactSelectDropdown
+                        name="serviceProvider"
+                        options={SERVICE_PROVIDER_OPTIONS}
+                        placeholder={"Service Provider"}
+                        defaultValue={values.serviceProvider}
+                        onChange={(value) => setFieldValue("serviceProvider", value)}
+                      />
+                    )}
+                  </Field>
+                </TextField>
+              </div> */}
               <div className={`lg:col-span-4  col-span-full`}>
                 <TextField label="Price range" name="price" hasChildren>
                   <Field name="price">
@@ -288,14 +312,12 @@ const FindAuction: React.FC<FindAuctionProps> = ({
       <div className="flex flex-col gap-4 p-4">
         <div className="flex items-start justify-between">
           <div className="flex items-start gap-2">
-            <button onClick={handleBack} className="text-lg">
-              <FontAwesomeIcon icon={faArrowLeft} />
-            </button>
             <div className="grid grid-cols-2 gap-2">
               {renderFilterTabs(initialValueData?.category?.name)}
               {renderFilterTabs(initialValueData?.location?.name)}
               {renderFilterTabs(initialValueData?.bank?.name)}
               {renderFilterTabs(initialValueData?.propertyType?.name)}
+              {/* {renderFilterTabs(initialValueData?.serviceProvider?.name)} */}
               {initialValueData?.price?.length ? (
                 <div className={mobileViewFilterClass()}>
                   {formatPrice(initialValueData?.price?.[0])} -{" "}
