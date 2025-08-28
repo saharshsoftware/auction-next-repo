@@ -32,7 +32,7 @@ import useModal from '@/hooks/useModal';
 import { getCookie } from 'cookies-next';
 import SurveyCard from "../atoms/SurveySection";
 import { InfoTooltip } from '../atoms/InfoTooltip';
-import { extractPhoneNumbers, formatDateAndTimeForDisplay, formatDateForDisplay, formatISTDateTime, formatISTTimeOnly, getSharedAuctionUrl } from '@/shared/Utilies';
+import { extractPhoneNumbers, getDateAndTimeFromISOString, getDateAndTimeFromISOStringForDisplay, getSharedAuctionUrl } from '@/shared/Utilies';
 import { WhatsappShareWithIcon } from '../atoms/SocialIcons';
 import { ROUTE_CONSTANTS } from '@/shared/Routes';
 import { useScrollToTop } from '@/hooks/useScrollToTop';
@@ -327,7 +327,7 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
                     <Calendar className="h-3 w-3 text-gray-500" />
                   </div>
                   <div className="text-lg font-bold text-gray-900">
-                    {property.auctionStartTime ? formatDateForDisplay(property.auctionStartTime?.toString()) : 'Not specified'}
+                    {property.auctionStartTime ? getDateAndTimeFromISOString(property.auctionStartTime?.toString()).date : 'Not specified'}
                   </div>
                 </div>
 
@@ -420,10 +420,10 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
                       Auction Start Date & Time
                     </div>
                     <div className="text-lg font-bold text-gray-900">
-                      {property.auctionStartTime ? formatDateForDisplay(property.auctionStartTime?.toString()) : 'Not specified'}
+                      {property.auctionStartTime ? getDateAndTimeFromISOString(property.auctionStartTime?.toString()).date : 'Not specified'}
                     </div>
                     <div className="text-sm text-gray-600 mt-2 font-semibold">
-                      {property.auctionStartTime ? formatISTTimeOnly(property.auctionStartTime) : 'Not specified'}
+                      {property.auctionStartTime ? getDateAndTimeFromISOString(property.auctionStartTime).timePart : 'Not specified'}
                     </div>
                   </div>
 
@@ -433,10 +433,10 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
                       Auction End Date & Time
                     </div>
                     <div className="text-lg font-bold text-gray-900">
-                      {property.auctionEndDate ? formatDateForDisplay(property.auctionEndDate?.toString()) : 'Not specified'}
+                      {property.auctionEndDate ? getDateAndTimeFromISOString(property.auctionEndDate?.toString()).date : 'Not specified'}
                     </div>
                     <div className="text-sm text-gray-600 mt-2 font-semibold">
-                      {property.auctionEndDate ? formatISTTimeOnly(property.auctionEndDate) : 'Not specified'}
+                      {property.auctionEndDate ? getDateAndTimeFromISOString(property.auctionEndDate).timePart : 'Not specified'}
                     </div>
                   </div>
 
@@ -446,11 +446,11 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
                       Property Inspection Date and Time
                     </div>
                     <div className="text-lg font-bold text-gray-900">
-                      {property.inspectionDateFrom ? formatDateAndTimeForDisplay(property.inspectionDateFrom?.toString()) : 'Not specified'}
+                      {property.inspectionDateFrom ? getDateAndTimeFromISOStringForDisplay(property.inspectionDateFrom) : 'Not specified'}
                     </div>
                     {property.inspectionDateTo && (
                       <div className="text-sm text-gray-600 mt-1 font-medium">
-                        to {formatDateAndTimeForDisplay(property.inspectionDateTo?.toString())}
+                        to {getDateAndTimeFromISOStringForDisplay(property.inspectionDateTo)}
                       </div>
                     )}
                   </div>

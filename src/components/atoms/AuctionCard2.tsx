@@ -2,8 +2,8 @@
 "use client";
 import React from "react";
 import {
-  formatISTDateTime,
   getSharedAuctionUrl,
+  getDateAndTimeFromISOStringForDisplay,
 } from "../../shared/Utilies";
 import { IAuction } from "@/types";
 import Link from "next/link";
@@ -199,7 +199,7 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
             {/* Date and Asset Info - Mobile Stack */}
             <div className="space-y-2 mb-4">
               <div className="text-sm-xs font-semibold text-gray-900">
-                <span>{property?.auctionStartTime ? formatISTDateTime(property?.auctionStartTime?.toString()) : 'Not specified'}</span>
+                <span>{property?.auctionStartTime ? getDateAndTimeFromISOStringForDisplay(property?.auctionStartTime?.toString()) : 'Not specified'}</span>
               </div>
               <div className="flex items-center space-x-2 text-sm-xs text-gray-600">
                 <span className="font-medium">{property?.assetCategory || 'Property'}</span>
@@ -315,7 +315,7 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
                 {/* Auction Date and Time */}
                 <div className="flex items-center">
                   <span className="font-semibold">
-                    <span>{property?.auctionStartTime ? formatISTDateTime(property?.auctionStartTime?.toString()) : 'Not specified'}</span>
+                    <span>{property?.auctionStartTime ? getDateAndTimeFromISOStringForDisplay(property?.auctionStartTime?.toString()) : 'Not specified'}</span>
                   </span>
                 </div>
 

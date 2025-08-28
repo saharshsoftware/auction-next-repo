@@ -841,6 +841,25 @@ export const formatISTTimeOnly = (dateString: string | null | undefined): string
   }
 };
 
+export const getDateAndTimeFromISOString = (isoString: string): { date: string, timePart: string } => {
+  const [year, month, day] = isoString?.split("T")[0]?.split("-");
+  const formattedDate = `${day}-${month}-${year}`; // "09-04-2025"
+  const timePart = isoString?.split("T")[1]?.replace("Z", ""); // "10:30:00.000"
+  if (!timePart) return { date: formattedDate, timePart: 'Not specified' };
+
+  const ampm = parseInt(timePart?.split(":")[0]) >= 12 ? "pm" : "am";
+  const h = parseInt(timePart?.split(":")[0]) % 12 || 12;
+  const minutes = timePart?.split(":")[1];
+  const formattedTime = `${h}:${minutes} ${ampm}`;
+
+  return { date: formattedDate, timePart: formattedTime };
+};
+
+export const getDateAndTimeFromISOStringForDisplay = (isoString: string): string => {
+  return isoString ? `${getDateAndTimeFromISOString(isoString).date} ${getDateAndTimeFromISOString(isoString).timePart}` : 'Not specified';
+}
+
+
 export const formatDateForDisplay = (dateString: string | null | undefined) => {
   if (!dateString) return 'Not specified';
   try {
