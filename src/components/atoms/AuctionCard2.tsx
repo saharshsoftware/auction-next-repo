@@ -8,7 +8,7 @@ import {
 } from "../../shared/Utilies";
 import { IAuction } from "@/types";
 import Link from "next/link";
-import { Eye, Share } from "lucide-react";
+import { Eye, Share, Building2, UserCheck } from "lucide-react";
 import { getPropertyImages } from "@/utilies/imageUtils";
 import { WhatsappShareWithIcon } from "./SocialIcons";
 import { faX } from "@fortawesome/free-solid-svg-icons";
@@ -216,16 +216,18 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
 
             {/* Seller Info */}
             <div className="mb-3">
-              <div className="text-sm text-gray-600">
-              <span className="font-medium"> Bank:</span> {property?.bankName || 'Not specified'}
+              <div className="text-sm text-gray-600 flex items-center gap-2">
+                <Building2 className="h-4 w-4 text-gray-500" />
+                <span>{property?.bankName || 'Not specified'}</span>
               </div>
             </div>
 
              {/* Possession Type - Mobile */}
              {property?.propertyPossessionType && (
               <div className="mb-3">
-                <div className="text-sm text-gray-600">
-                  <span className="font-medium">Possession:</span> {property.propertyPossessionType}
+                <div className="text-sm text-gray-600 flex items-center gap-2">
+                  <UserCheck className="h-4 w-4 text-gray-500" />
+                  <span>{property.propertyPossessionType}</span>
                 </div>
               </div>
             )}
@@ -361,15 +363,17 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
 
             {/* Seller Info */}
             <div className="mb-4">
-              <div className="text-sm text-gray-600">
-              <span className="font-medium"> Bank:</span> {property?.bankName || 'Not specified'}
+              <div className="text-sm text-gray-600 flex items-center gap-2">
+                <Building2 className="h-4 w-4 text-gray-500" />
+                <span>{property?.bankName || 'Not specified'}</span>
               </div>
             </div>
 
             {property?.propertyPossessionType && (
               <div className="mb-4">
-                <div className="text-sm text-gray-600">
-                  <span className="font-medium">Possession:</span> {property.propertyPossessionType} 
+                <div className="text-sm text-gray-600 flex items-center gap-2">
+                  <UserCheck className="h-4 w-4 text-gray-500" />
+                  <span>{property.propertyPossessionType}</span>
                 </div>
               </div>
             )}
