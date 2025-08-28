@@ -126,7 +126,7 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
           {property?.assetCategory !== 'Gold Auctions' && (
             <div className="absolute top-3 right-3">
               <span className="bg-blue-600 text-white px-2.5 py-1 rounded-lg text-xs font-medium">
-                {property?.assetType || 'Property'}
+                {property?.assetCategory || 'Property'} 
               </span>
             </div>
           )}
@@ -135,7 +135,7 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
     } else {
       // Desktop: Badges in a full-width row with justify-between
       return (
-        <div className="w-full h-12  flex items-center justify-between p-4 md:p-0">
+        <div className="md:w-[11rem] w-full h-12  flex items-center justify-between p-4 md:p-0">
           {/* Property ID Badge - Light yellow with rounded corners */}
           <span className="property-id-badge">
             {PROPERTY_ID}
@@ -144,7 +144,7 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
           {/* Property Type Badge - Blue with rounded corners, hide for Gold Auctions */}
           {property?.assetCategory !== 'Gold Auctions' && (
             <span className="bg-blue-600 text-white px-2.5 py-1 rounded-lg text-xs font-medium">
-              {property?.assetType || 'Property'}
+              {property?.assetCategory || 'Property'}
             </span>
           )}
         </div>
