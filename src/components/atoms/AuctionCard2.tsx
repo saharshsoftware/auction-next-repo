@@ -123,30 +123,26 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
           </div>
 
           {/* Property Type Badge - Blue with rounded corners, hide for Gold Auctions */}
-          {property?.assetCategory !== 'Gold Auctions' && (
             <div className="absolute top-3 right-3">
-              <span className="bg-blue-600 text-white px-2.5 py-1 rounded-lg text-xs font-medium">
-                {property?.assetCategory || 'Property'} 
-              </span>
+              {property?.assetCategory && <span className="bg-blue-600 text-white px-2.5 py-1 rounded-lg text-xs font-medium">
+                  {property?.assetCategory} 
+                </span>}
             </div>
-          )}
         </div>
       );
     } else {
       // Desktop: Badges in a full-width row with justify-between
       return (
-        <div className="md:w-[11rem] w-full h-12  flex items-center justify-between p-4 md:p-0">
+        <div className="md:w-[17.85rem] w-full h-12  flex items-center justify-between p-4 md:p-0">
           {/* Property ID Badge - Light yellow with rounded corners */}
           <span className="property-id-badge">
             {PROPERTY_ID}
           </span>
 
           {/* Property Type Badge - Blue with rounded corners, hide for Gold Auctions */}
-          {property?.assetCategory !== 'Gold Auctions' && (
-            <span className="bg-blue-600 text-white px-2.5 py-1 rounded-lg text-xs font-medium">
-              {property?.assetCategory || 'Property'}
-            </span>
-          )}
+           {property?.assetCategory && <span className="bg-blue-600 text-white px-2.5 py-1 rounded-lg text-xs font-medium">
+              {property?.assetCategory}
+            </span>}
         </div>
       );
     }
@@ -182,14 +178,12 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
               </div>
 
               {/* Property Type Badge - Blue with rounded corners, hide for Gold Auctions */}
-              {property?.assetCategory !== 'Gold Auctions' && (
                 <div className="absolute top-3 right-3">
-                  <span className="bg-blue-600 text-white px-2.5 py-1 rounded-lg text-xs font-medium">
-                    {property?.assetCategory || 'Property'}
-                  </span>
+                  {property?.assetCategory && <span className="bg-blue-600 text-white px-2.5 py-1 rounded-lg text-xs font-medium">
+                    {property?.assetCategory}
+                  </span>}
                 </div>
-              )}
-
+            
 
               {/* Image Count Indicator */}
               {property?.images?.length > 1 && (
@@ -242,11 +236,11 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
                 <div className="text-sm-xs font-bold text-gray-900">
                   {property?.reservePrice ? formatPrice(property?.reservePrice?.toString()) : 'Not specified'}
                 </div>
-                <div className="mt-4">
-                  <span className="bg-gray-100 text-gray-600 px-2 py-1 rounded text-xs">
-                    {property?.assetType || 'Property'}
-                  </span>
-                </div>
+                {property?.assetType &&<div className="mt-4">
+                    <span className="bg-gray-100 text-gray-600 px-2 py-1 rounded text-xs">
+                      {property?.assetType}
+                    </span>
+                  </div>}
               </div>
               <div className="flex flex-col items-end">
                 <div className="text-xs text-gray-600 mb-1">Auction Date</div>
@@ -389,11 +383,11 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
                 <div className="text-2xl font-bold text-gray-900">
                   {property?.reservePrice ? formatPrice(property?.reservePrice?.toString()) : 'Not specified'}
                 </div>
-                <div className="mt-2">
+                {property?.assetType && <div className="mt-2">
                   <span className="bg-gray-100 text-gray-600 px-3 py-1 rounded text-xs">
-                    {property?.assetType || 'Property'}
+                    {property?.assetType }
                   </span>
-                </div>
+                </div>}
               </div>
               <div className="flex flex-col items-end">
                 <div className="text-sm-xs text-gray-600 mb-1">Auction Date</div>
