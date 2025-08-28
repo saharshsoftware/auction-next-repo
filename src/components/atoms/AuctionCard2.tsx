@@ -8,7 +8,7 @@ import {
 } from "../../shared/Utilies";
 import { IAuction } from "@/types";
 import Link from "next/link";
-import { Eye, Share, Building2, UserCheck } from "lucide-react";
+import { Eye, Share, Building2, UserCheck, Clock } from "lucide-react";
 import { getPropertyImages } from "@/utilies/imageUtils";
 import { WhatsappShareWithIcon } from "./SocialIcons";
 import { faX } from "@fortawesome/free-solid-svg-icons";
@@ -45,6 +45,22 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
 
   const sharedUrl = getSharedAuctionUrl(property);
   const isViewNoticeVisible = property?.noticeLink && isAdmin;
+
+  // Function to check if auction end date is in the past
+  const isAuctionEnded = (): boolean => {
+    if (!property?.auctionEndDate) return false;
+    const endDate = new Date(property.auctionEndDate);
+    const currentDate = new Date();
+    const isEnded = endDate < currentDate;
+    console.log('Auction end date check:', {
+      auctionEndDate: property.auctionEndDate,
+      endDate: endDate.toISOString(),
+      currentDate: currentDate.toISOString(),
+      isEnded: isEnded
+    });
+    return isEnded;
+  };
+
   const formatPrice = (price: string | null | undefined) => {
     if (!price || price === '0' || price === 'null') return 'Not specified';
     const numPrice = parseFloat(price);
@@ -64,6 +80,14 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
     return `₹ ${formattedPrice}`;
   };
 
+  const getExpiredContainer = () => {
+    return (
+      <div className="bg-red-600 text-white px-2.5 py-1 rounded-lg text-xs font-medium flex items-center gap-2 shadow-lg ">
+        <Clock className="h-3 w-3" />
+        <span className="text-xs font-bold">EXPIRED</span>
+      </div>
+    )
+  };
 
   const propertyImages = getPropertyImages(property);
   const hasRealImages = propertyImages.length > 0 && !propertyImages[0].includes('no-image-placeholder.png');
@@ -123,26 +147,35 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
           </div>
 
           {/* Property Type Badge - Blue with rounded corners, hide for Gold Auctions */}
-            <div className="absolute top-3 right-3">
-              {property?.assetCategory && <span className="bg-blue-600 text-white px-2.5 py-1 rounded-lg text-xs font-medium">
-                  {property?.assetCategory} 
-                </span>}
-            </div>
+          <div className="absolute top-3 right-3">
+            {property?.assetCategory && <span className="bg-blue-600 text-white px-2.5 py-1 rounded-lg text-xs font-medium">
+              {property?.assetCategory}
+            </span>}
+          </div>
         </div>
       );
     } else {
       // Desktop: Badges in a full-width row with justify-between
       return (
-        <div className="md:w-[17.85rem] w-full h-12  flex items-center justify-between p-4 md:p-0">
+        <div className={`relative w-full h-12  flex items-center gap-4 p-4 md:p-0 ${isAuctionEnded() ? 'md:justify-start justify-between !w-full' : 'md:w-[17.85rem] justify-between '}`}>
           {/* Property ID Badge - Light yellow with rounded corners */}
           <span className="property-id-badge">
             {PROPERTY_ID}
           </span>
 
-          {/* Property Type Badge - Blue with rounded corners, hide for Gold Auctions */}
-           {property?.assetCategory && <span className="bg-blue-600 text-white px-2.5 py-1 rounded-lg text-xs font-medium">
+          <div className="flex items-center gap-2">
+            {/* Property Type Badge - Blue with rounded corners, hide for Gold Auctions */}
+            {property?.assetCategory && <span className="bg-blue-600 text-white px-2.5 py-1 rounded-lg text-xs font-medium">
               {property?.assetCategory}
             </span>}
+
+            {/* Auction Ended Indicator */}
+            {isAuctionEnded() && (
+              <div className="">
+                {getExpiredContainer()}
+              </div>
+            )}
+          </div>
         </div>
       );
     }
@@ -178,12 +211,19 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
               </div>
 
               {/* Property Type Badge - Blue with rounded corners, hide for Gold Auctions */}
-                <div className="absolute top-3 right-3">
-                  {property?.assetCategory && <span className="bg-blue-600 text-white px-2.5 py-1 rounded-lg text-xs font-medium">
-                    {property?.assetCategory}
-                  </span>}
+              <div className="absolute top-3 right-3">
+                {property?.assetCategory && <span className="bg-blue-600 text-white px-2.5 py-1 rounded-lg text-xs font-medium">
+                  {property?.assetCategory}
+                </span>}
+              </div>
+
+              {/* Auction Ended Indicator */}
+              {isAuctionEnded() && (
+                <div className="absolute bottom-2 right-3 z-10">
+                  {getExpiredContainer()}
                 </div>
-            
+              )}
+
 
               {/* Image Count Indicator */}
               {property?.images?.length > 1 && (
@@ -216,8 +256,8 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
               </div>
             </div>
 
-             {/* Possession Type - Mobile */}
-             {property?.propertyPossessionType && (
+            {/* Possession Type - Mobile */}
+            {property?.propertyPossessionType && (
               <div className="mb-3">
                 <div className="text-sm text-gray-600 flex items-center gap-2">
                   <UserCheck className="h-4 w-4 text-gray-500" />
@@ -236,11 +276,11 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
                 <div className="text-sm-xs font-bold text-gray-900">
                   {property?.reservePrice ? formatPrice(property?.reservePrice?.toString()) : 'Not specified'}
                 </div>
-                {property?.assetType &&<div className="mt-4">
-                    <span className="bg-gray-100 text-gray-600 px-2 py-1 rounded text-xs">
-                      {property?.assetType}
-                    </span>
-                  </div>}
+                {property?.assetType && <div className="mt-4">
+                  <span className="bg-gray-100 text-gray-600 px-2 py-1 rounded text-xs">
+                    {property?.assetType}
+                  </span>
+                </div>}
               </div>
               <div className="flex flex-col items-end">
                 <div className="text-xs text-gray-600 mb-1">Auction Date</div>
@@ -304,6 +344,13 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
                   <span className="bg-blue-600 text-white px-2.5 py-1 rounded-lg text-xs font-medium">
                     {property?.assetCategory || 'Property'}
                   </span>
+                </div>
+              )}
+
+              {/* Auction Ended Indicator */}
+              {isAuctionEnded() && (
+                <div className="absolute bottom-2 right-3 z-10">
+                  {getExpiredContainer()}
                 </div>
               )}
 
@@ -385,7 +432,7 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
                 </div>
                 {property?.assetType && <div className="mt-2">
                   <span className="bg-gray-100 text-gray-600 px-3 py-1 rounded text-xs">
-                    {property?.assetType }
+                    {property?.assetType}
                   </span>
                 </div>}
               </div>

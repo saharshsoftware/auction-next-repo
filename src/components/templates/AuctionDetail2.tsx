@@ -209,7 +209,24 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
 
   const sharedUrl = getSharedAuctionUrl(property);
   const PROPERTY_ID = `E${property.id}`; // Property ID
+  const renderAuctionExpiredNotice = () => {
+    if (!property?.auctionEndDate) return null;
+    
+    const endDate = new Date(property.auctionEndDate);
+    const currentDate = new Date();
+    
+    // Consider the auction ended if current time is past the end date
+    const isPastDate = endDate < currentDate;
 
+    if (isPastDate) {
+      return (
+        <div className="text-red-600 text-sm font-semibold flex items-center gap-1">
+          ⚠ Notice: This auction notice is from a past date. The information shown may be outdated or no longer valid. Please verify details with the official source if you intend to take action.
+        </div>
+      );
+    }
+    return null;
+  };
   return (
     <>
       {openModal ? (
@@ -240,8 +257,11 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
               {renderInterestContainer()}
             </div>
           </div>
+
+          {renderAuctionExpiredNotice()}
+
           {/* Property Header */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6 mt-2">
 
             <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4 mb-4">
               <div className="flex-1">
