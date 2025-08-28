@@ -4,6 +4,7 @@ import React from "react";
 import {
   getSharedAuctionUrl,
   getDateAndTimeFromISOStringForDisplay,
+  getDateAndTimeFromISOString,
 } from "../../shared/Utilies";
 import { IAuction } from "@/types";
 import Link from "next/link";
@@ -105,6 +106,51 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
 
   const PROPERTY_ID = `E${property.id}`; // Property ID
 
+  /**
+ * Renders property badges (Property ID and Asset Category) consistently
+ * for both image and non-image scenarios
+ */
+  const renderPropertyBadges = (isMobile: boolean = false) => {
+    if (isMobile) {
+      // Mobile: Badges in a dedicated section with absolute positioning
+      return (
+        <div className="relative h-12 w-full bg-gray-50 border-b border-gray-200">
+          {/* Property ID Badge - Light yellow with rounded corners */}
+          <div className="absolute top-3 left-3">
+            <span className="property-id-badge">
+              {PROPERTY_ID} method
+            </span>
+          </div>
+
+          {/* Property Type Badge - Blue with rounded corners, hide for Gold Auctions */}
+          {property?.assetCategory !== 'Gold Auctions' && (
+            <div className="absolute top-3 right-3">
+              <span className="bg-blue-600 text-white px-2.5 py-1 rounded-lg text-xs font-medium">
+                {property?.assetType || 'Property'}
+              </span>
+            </div>
+          )}
+        </div>
+      );
+    } else {
+      // Desktop: Badges in a full-width row with justify-between
+      return (
+        <div className="w-full h-12  flex items-center justify-between p-4 md:p-0">
+          {/* Property ID Badge - Light yellow with rounded corners */}
+          <span className="property-id-badge">
+            {PROPERTY_ID}
+          </span>
+
+          {/* Property Type Badge - Blue with rounded corners, hide for Gold Auctions */}
+          {property?.assetCategory !== 'Gold Auctions' && (
+            <span className="bg-blue-600 text-white px-2.5 py-1 rounded-lg text-xs font-medium">
+              {property?.assetType || 'Property'}
+            </span>
+          )}
+        </div>
+      );
+    }
+  };
 
   return (
     <>
@@ -128,21 +174,22 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
                 onClick={showImageModal}
               />
 
-              {/* Debug: Property ID */}
+              {/* Property ID Badge - Light yellow with rounded corners */}
               <div className="absolute top-3 left-3">
                 <span className="property-id-badge">
                   {PROPERTY_ID}
                 </span>
               </div>
 
-              {/* Property Type Badge - Hide for Gold Auctions */}
+              {/* Property Type Badge - Blue with rounded corners, hide for Gold Auctions */}
               {property?.assetCategory !== 'Gold Auctions' && (
                 <div className="absolute top-3 right-3">
                   <span className="bg-blue-600 text-white px-2.5 py-1 rounded-lg text-xs font-medium">
-                    {property?.assetType || 'Property'}
+                    {property?.assetCategory || 'Property'}
                   </span>
                 </div>
               )}
+
 
               {/* Image Count Indicator */}
               {property?.images?.length > 1 && (
@@ -156,55 +203,59 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
             </div>
           )}
 
+          {!hasRealImages && renderPropertyBadges()}
+
           {/* Content Section - Mobile */}
           <div className="p-4">
-            {/* Property Type badge when no image - Mobile */}
-            {!hasRealImages && property?.assetCategory !== 'Gold Auctions' && (
-              <div className="flex justify-start items-center mb-3">
-                <span className="bg-blue-600 text-white px-2.5 py-1 rounded-lg text-xs font-medium">
-                  {property?.assetType || 'Property'}
-                </span>
-              </div>
-            )}
+
 
             {/* Title */}
             <div className="mb-3">
               {renderEnhancedTitle(true)}
             </div>
 
-            {/* Reserve Price and Share Button Row */}
-            <div className="flex justify-between items-end mb-3">
-              <div className="flex-1">
-                <div className="text-xs text-gray-600 mb-1">Reserve price</div>
-                <div className="text-xl font-bold text-green-600">
-                  {property?.reservePrice ? formatPrice(property?.reservePrice?.toString()) : 'Not specified'}
+            {/* Seller Info */}
+            <div className="mb-3">
+              <div className="text-sm text-gray-600">
+              <span className="font-medium"> Bank:</span> {property?.bankName || 'Not specified'}
+              </div>
+            </div>
+
+             {/* Possession Type - Mobile */}
+             {property?.propertyPossessionType && (
+              <div className="mb-3">
+                <div className="text-sm text-gray-600">
+                  <span className="font-medium">Possession:</span> {property.propertyPossessionType}
                 </div>
               </div>
-              <button className="flex items-center px-2 py-1 text-green-600 border border-green-300 rounded-lg hover:bg-green-50 transition-colors text-xs font-medium flex-shrink-0 ml-4">
-                <Share className="h-3 w-3 mr-1" />
-                Share
-              </button>
-            </div>
+            )}
 
+            {/* Add a separator */}
+            <div className="my-2 h-px bg-gray-200"></div>
 
-
-            {/* Seller and Branch Info */}
-            <div className="mb-3 space-y-1">
-              <div className="text-sm-xs text-gray-600">
-                <span className="font-medium">Seller - </span>
-                <span>{property?.bankName || 'Not specified'}</span>
+            {/* Reserve Price and Auction Date Row */}
+            <div className="grid grid-cols-2 gap-4 mb-4">
+              <div>
+                <div className="text-xs text-gray-600 mb-1">Reserve Price</div>
+                <div className="text-sm-xs font-bold text-gray-900">
+                  {property?.reservePrice ? formatPrice(property?.reservePrice?.toString()) : 'Not specified'}
+                </div>
+                <div className="mt-4">
+                  <span className="bg-gray-100 text-gray-600 px-2 py-1 rounded text-xs">
+                    {property?.assetType || 'Property'}
+                  </span>
+                </div>
               </div>
-            </div>
-
-            {/* Date and Asset Info - Mobile Stack */}
-            <div className="space-y-2 mb-4">
-              <div className="text-sm-xs font-semibold text-gray-900">
-                <span>{property?.auctionStartTime ? getDateAndTimeFromISOStringForDisplay(property?.auctionStartTime?.toString()) : 'Not specified'}</span>
-              </div>
-              <div className="flex items-center space-x-2 text-sm-xs text-gray-600">
-                <span className="font-medium">{property?.assetCategory || 'Property'}</span>
-                <div className="w-px h-4 bg-gray-300"></div>
-                <span className="font-medium">{property?.assetType || 'Asset'}</span>
+              <div className="flex flex-col items-end">
+                <div className="text-xs text-gray-600 mb-1">Auction Date</div>
+                <div className="text-sm-xs font-bold text-gray-900">
+                  {property?.auctionStartTime ? getDateAndTimeFromISOString(property?.auctionStartTime?.toString())?.date : 'Not specified'}
+                </div>
+                <div className="mt-4 flex justify-end">
+                  <button className="flex items-center px-3 py-1.5 text-green-600 border border-green-300 rounded-lg hover:bg-green-50 transition-colors text-sm-xs font-medium ml-6">
+                    {WhatsappShareWithIcon({ url: sharedUrl })}
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -212,7 +263,7 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
             <div className="space-y-2">
               <Link
                 href={`/auctions/${property?.slug}`}
-                className="block w-full text-center px-4 py-2.5 bg-brand-color text-white rounded-lg hover:bg-blue-700 transition-colors text-sm-xs font-semibold"
+                className="block w-full text-center px-4 py-3 bg-brand-color text-white hover:bg-blue-700 rounded-lg transition-colors text-sm font-semibold"
               >
                 View Auction
               </Link>
@@ -244,18 +295,18 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
                 onClick={showImageModal}
               />
 
-              {/* Debug: Property ID */}
+              {/* Property ID Badge - Light yellow with rounded corners */}
               <div className="absolute top-3 left-3">
                 <span className="property-id-badge">
                   {PROPERTY_ID}
                 </span>
               </div>
 
-              {/* Property Type Badge - Hide for Gold Auctions */}
+              {/* Property Type Badge - Blue with rounded corners, hide for Gold Auctions */}
               {property?.assetCategory !== 'Gold Auctions' && (
                 <div className="absolute top-3 right-3">
                   <span className="bg-blue-600 text-white px-2.5 py-1 rounded-lg text-xs font-medium">
-                    {property?.assetType || 'Property'}
+                    {property?.assetCategory || 'Property'}
                   </span>
                 </div>
               )}
@@ -272,69 +323,94 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
             </div>
           )}
 
+          {/* Badges Section - Always visible (when no image) */}
+          {/* {!hasRealImages && (
+            <div className="relative w-80 h-12 flex-shrink-0 bg-gray-50 border-r border-gray-200">
+              <div className="absolute top-3 left-3">
+                <span className="property-id-badge">
+                  {PROPERTY_ID}
+                </span>
+              </div>
+
+              {property?.assetCategory !== 'Gold Auctions' && (
+                <div className="absolute top-3 right-3">
+                  <span className="bg-blue-600 text-white px-2.5 py-1 rounded-lg text-xs font-medium">
+                    {property?.assetCategory || 'Property'}
+                  </span>
+                </div>
+              )}  
+            </div>
+          )} */}
+
           {/* Content Section - Desktop */}
           <div className="flex-1 p-6">
             {/* Property Type badge when no image - Desktop */}
-            {!hasRealImages && property?.assetCategory !== 'Gold Auctions' && (
+            {/* {!hasRealImages && property?.assetCategory !== 'Gold Auctions' && (
               <div className="flex justify-start items-center mb-4">
                 <span className="bg-blue-600 text-white px-2.5 py-1 rounded-lg text-xs font-medium">
                   {property?.assetType || 'Property'}
                 </span>
               </div>
-            )}
+            )} */}
+            {!hasRealImages && renderPropertyBadges()}
+
             {/* Title */}
             <div className="mb-4">
               {renderEnhancedTitle(false)}
             </div>
 
-            {/* Reserve Price and Share Button Row */}
-            <div className="flex justify-between items-end mb-4">
-              <div className="flex-1">
-                <div className="text-sm-xs text-gray-600 mb-1">Reserve price</div>
-                <div className="text-2xl font-bold text-green-600">
+            {/* Seller Info */}
+            <div className="mb-4">
+              <div className="text-sm text-gray-600">
+              <span className="font-medium"> Bank:</span> {property?.bankName || 'Not specified'}
+              </div>
+            </div>
+
+            {property?.propertyPossessionType && (
+              <div className="mb-4">
+                <div className="text-sm text-gray-600">
+                  <span className="font-medium">Possession:</span> {property.propertyPossessionType} 
+                </div>
+              </div>
+            )}
+
+
+            {/* Add a separator */}
+            <div className="my-3 h-px bg-gray-200"></div>
+
+            {/* Reserve Price and Auction Date Row */}
+            <div className="grid grid-cols-2 gap-6 mb-6">
+              <div>
+                <div className="text-sm-xs text-gray-600 mb-1">Reserve Price</div>
+                <div className="text-2xl font-bold text-gray-900">
                   {property?.reservePrice ? formatPrice(property?.reservePrice?.toString()) : 'Not specified'}
                 </div>
-              </div>
-              <button className="flex items-center px-3 py-1.5 text-green-600 border border-green-300 rounded-lg hover:bg-green-50 transition-colors text-sm-xs font-medium ml-6">
-                {WhatsappShareWithIcon({ url: sharedUrl })}
-              </button>
-            </div>
-
-            {/* Seller and Branch Info */}
-            <div className="mb-4 space-y-1">
-              <div className="text-sm-xs text-gray-600">
-                <span className="font-medium">Seller - </span>
-                <span>{property?.bankName || 'Not specified'}</span>
-              </div>
-
-            </div>
-
-            {/* Bottom Row - Date, Property Type, and Button */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-4 text-sm-xs text-gray-900">
-                {/* Auction Date and Time */}
-                <div className="flex items-center">
-                  <span className="font-semibold">
-                    <span>{property?.auctionStartTime ? getDateAndTimeFromISOStringForDisplay(property?.auctionStartTime?.toString()) : 'Not specified'}</span>
+                <div className="mt-2">
+                  <span className="bg-gray-100 text-gray-600 px-3 py-1 rounded text-xs">
+                    {property?.assetType || 'Property'}
                   </span>
                 </div>
-
-                {/* Separator */}
-                <div className="w-px h-4 bg-gray-300"></div>
-
-                {/* Asset Category */}
-                <div className="font-medium">
-                  {property?.assetCategory || 'Property'}
+              </div>
+              <div className="flex flex-col items-end">
+                <div className="text-sm-xs text-gray-600 mb-1">Auction Date</div>
+                <div className="text-sm-xs font-bold text-gray-900">
+                  {property?.auctionStartTime ? getDateAndTimeFromISOString(property?.auctionStartTime?.toString())?.date : 'Not specified'}
                 </div>
+                {/* <div className="mt-2 flex justify-end">
+                    {WhatsappShareWithIcon({ url: sharedUrl })}
+                  </div> */}
 
-                {/* Separator */}
-                <div className="w-px h-4 bg-gray-300"></div>
-
-                {/* Property Type */}
-                <div className="font-medium">
-                  {property?.assetType || 'Asset'}
+                <div className="mt-4 flex justify-end">
+                  <button type="button" className="flex items-center px-3 py-1.5 text-green-600 border border-green-300 rounded-lg hover:bg-green-50 transition-colors text-sm-xs font-medium ml-6">
+                    {WhatsappShareWithIcon({ url: sharedUrl })}
+                  </button>
                 </div>
               </div>
+            </div>
+
+            {/* Bottom Row - Asset Info and Button */}
+            <div className="flex items-center justify-end">
+
 
               {/* View Auction Button */}
               <div className="flex items-center space-x-3">

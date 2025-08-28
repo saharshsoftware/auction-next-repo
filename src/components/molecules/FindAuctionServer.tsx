@@ -234,7 +234,7 @@ const FindAuction: React.FC<FindAuctionProps> = ({
                   </Field>
                 </TextField>
               </div>
-              <div className={gridElementClass()}>
+              {/* <div className={gridElementClass()}>
                 <TextField label="Service Provider" name="serviceProvider" hasChildren>
                   <Field name="serviceProvider">
                     {() => (
@@ -248,8 +248,8 @@ const FindAuction: React.FC<FindAuctionProps> = ({
                     )}
                   </Field>
                 </TextField>
-              </div>
-              <div className={gridElementClass()}>
+              </div> */}
+              <div className={`lg:col-span-4  col-span-full`}>
                 <TextField label="Price range" name="price" hasChildren>
                   <Field name="price">
                     {() => (
@@ -317,7 +317,7 @@ const FindAuction: React.FC<FindAuctionProps> = ({
               {renderFilterTabs(initialValueData?.location?.name)}
               {renderFilterTabs(initialValueData?.bank?.name)}
               {renderFilterTabs(initialValueData?.propertyType?.name)}
-              {renderFilterTabs(initialValueData?.serviceProvider?.name)}
+              {/* {renderFilterTabs(initialValueData?.serviceProvider?.name)} */}
               {initialValueData?.price?.length ? (
                 <div className={mobileViewFilterClass()}>
                   {formatPrice(initialValueData?.price?.[0])} -{" "}

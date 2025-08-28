@@ -205,7 +205,7 @@ const HeroSearchBox = (props: {
                     </Field>
                   </TextField>
                 </div>
-                <div className={gridElementClass()}>
+                {/* <div className={gridElementClass()}>
 
                 <TextField label="Service Provider" name="serviceProvider" hasChildren>
                   <Field name="serviceProvider">
@@ -220,8 +220,8 @@ const HeroSearchBox = (props: {
                     )}
                   </Field>
                 </TextField>
-                </div>
-                <div className={gridElementClass()}>
+                </div> */}
+                <div className={`col-span-full`}>
                   <TextField
                     label="Price range"
                     name="price"
