@@ -1,4 +1,4 @@
-const CLOUDFRONT_BASE_URL = "https://newscrapperstest.s3.ap-south-1.amazonaws.com";
+const CLOUDFRONT_BASE_URL = process.env.NEXT_PUBLIC_IMAGE_CLOUDFRONT || ""
 
 export const constructImageUrl = (imagePath: string | null | undefined): string | null => {
   if (!imagePath) return null;
