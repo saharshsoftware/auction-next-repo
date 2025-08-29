@@ -16,6 +16,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ActionButton from "./ActionButton";
 import FullScreenImageModal from "../ modals/FullScreenImageModal";
 import useModal from "@/hooks/useModal";
+import { useRouter } from "next/navigation";
 
 interface PropertyCardProps {
   property: IAuction;
@@ -42,7 +43,7 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
     openModal: openImageModal,
     hideModal: hideImageModal,
   } = useModal();
-
+  const router = useRouter();
   const sharedUrl = getSharedAuctionUrl(property);
   const isViewNoticeVisible = property?.noticeLink && isAdmin;
 
@@ -398,7 +399,7 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
             {!hasRealImages && renderPropertyBadges()}
 
             {/* Title */}
-            <div className="mb-4">
+            <div className="mb-4 cursor-pointer" onClick={() => router.push(`/auctions/${property?.slug}`)}>
               {renderEnhancedTitle(false)}
             </div>
 
@@ -431,7 +432,7 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
                   {property?.reservePrice ? formatPrice(property?.reservePrice?.toString()) : 'Not specified'}
                 </div>
                 {property?.assetType && <div className="mt-2">
-                  <span className="bg-gray-100 text-gray-600 px-3 py-1 rounded text-xs">
+                  <span className="bg-gray-100 text-gray-600 px-3 py-1 rounded text-sx-xs">
                     {property?.assetType}
                   </span>
                 </div>}
@@ -459,13 +460,13 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
 
               {/* View Auction Button */}
               <div className="flex items-center space-x-3">
-                <Link
+                {/* <Link
                   href={`/auctions/${property?.slug}`}
                   prefetch={false}
                   className="inline-flex items-center px-6 py-2.5 bg-brand-color text-white rounded-lg hover:bg-blue-700 transition-colors text-sm-xs font-semibold"
                 >
                   View Auction
-                </Link>
+                </Link> */}
 
                 {/* Notice Link - Desktop */}
                 {isViewNoticeVisible && (
