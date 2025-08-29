@@ -90,9 +90,16 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
     )
   };
 
+  const [imageLoadError, setImageLoadError] = React.useState(false);
+
   const propertyImages = getPropertyImages(property);
-  const hasRealImages = propertyImages.length > 0 && !propertyImages[0].includes('no-image-placeholder.png');
+  const hasRealImages = propertyImages.length > 0 && !propertyImages[0].includes('no-image-placeholder.png') && !imageLoadError;
   const imageUrl = hasRealImages ? propertyImages[0] : null;
+
+  // Function to handle image load errors
+  const handleImageError = () => {
+    setImageLoadError(true);
+  };
 
   // Function to check if area should be displayed
   const shouldShowArea = (area: string | null | undefined, city: string | null | undefined): boolean => {
@@ -143,7 +150,7 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
           {/* Property ID Badge - Light yellow with rounded corners */}
           <div className="absolute top-3 left-3">
             <span className="property-id-badge">
-              {PROPERTY_ID} method
+              {PROPERTY_ID}
             </span>
           </div>
 
@@ -202,6 +209,7 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
                 alt={property?.title || 'Property'}
                 className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
                 onClick={showImageModal}
+                onError={handleImageError}
               />
 
               {/* Property ID Badge - Light yellow with rounded corners */}
@@ -330,6 +338,7 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
                 alt={property?.title || 'Property'}
                 className="w-full h-full object-cover transition-transform duration-300 hover:scale-105 cursor-pointer"
                 onClick={showImageModal}
+                onError={handleImageError}
               />
 
               {/* Property ID Badge - Light yellow with rounded corners */}
@@ -432,7 +441,7 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
                   {property?.reservePrice ? formatPrice(property?.reservePrice?.toString()) : 'Not specified'}
                 </div>
                 {property?.assetType && <div className="mt-2">
-                  <span className="bg-gray-100 text-gray-600 px-3 py-1 rounded text-sx-xs">
+                  <span className="bg-gray-100 text-gray-600 px-3 py-1 rounded text-sm-xs">
                     {property?.assetType}
                   </span>
                 </div>}
