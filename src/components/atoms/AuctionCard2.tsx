@@ -16,6 +16,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ActionButton from "./ActionButton";
 import FullScreenImageModal from "../ modals/FullScreenImageModal";
 import useModal from "@/hooks/useModal";
+import { useRouter } from "next/navigation";
 
 interface PropertyCardProps {
   property: IAuction;
@@ -42,7 +43,7 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
     openModal: openImageModal,
     hideModal: hideImageModal,
   } = useModal();
-
+  const router = useRouter();
   const sharedUrl = getSharedAuctionUrl(property);
   const isViewNoticeVisible = property?.noticeLink && isAdmin;
 
@@ -89,9 +90,16 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
     )
   };
 
+  const [imageLoadError, setImageLoadError] = React.useState(false);
+
   const propertyImages = getPropertyImages(property);
-  const hasRealImages = propertyImages.length > 0 && !propertyImages[0].includes('no-image-placeholder.png');
+  const hasRealImages = propertyImages.length > 0 && !propertyImages[0].includes('no-image-placeholder.png') && !imageLoadError;
   const imageUrl = hasRealImages ? propertyImages[0] : null;
+
+  // Function to handle image load errors
+  const handleImageError = () => {
+    setImageLoadError(true);
+  };
 
   // Function to check if area should be displayed
   const shouldShowArea = (area: string | null | undefined, city: string | null | undefined): boolean => {
@@ -142,7 +150,7 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
           {/* Property ID Badge - Light yellow with rounded corners */}
           <div className="absolute top-3 left-3">
             <span className="property-id-badge">
-              {PROPERTY_ID} method
+              {PROPERTY_ID}
             </span>
           </div>
 
@@ -201,6 +209,7 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
                 alt={property?.title || 'Property'}
                 className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
                 onClick={showImageModal}
+                onError={handleImageError}
               />
 
               {/* Property ID Badge - Light yellow with rounded corners */}
@@ -329,6 +338,7 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
                 alt={property?.title || 'Property'}
                 className="w-full h-full object-cover transition-transform duration-300 hover:scale-105 cursor-pointer"
                 onClick={showImageModal}
+                onError={handleImageError}
               />
 
               {/* Property ID Badge - Light yellow with rounded corners */}
@@ -398,7 +408,7 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
             {!hasRealImages && renderPropertyBadges()}
 
             {/* Title */}
-            <div className="mb-4">
+            <div className="mb-4 cursor-pointer" onClick={() => router.push(`/auctions/${property?.slug}`)}>
               {renderEnhancedTitle(false)}
             </div>
 
@@ -431,7 +441,7 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
                   {property?.reservePrice ? formatPrice(property?.reservePrice?.toString()) : 'Not specified'}
                 </div>
                 {property?.assetType && <div className="mt-2">
-                  <span className="bg-gray-100 text-gray-600 px-3 py-1 rounded text-xs">
+                  <span className="bg-gray-100 text-gray-600 px-3 py-1 rounded text-sm-xs">
                     {property?.assetType}
                   </span>
                 </div>}
@@ -459,13 +469,13 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
 
               {/* View Auction Button */}
               <div className="flex items-center space-x-3">
-                <Link
+                {/* <Link
                   href={`/auctions/${property?.slug}`}
                   prefetch={false}
                   className="inline-flex items-center px-6 py-2.5 bg-brand-color text-white rounded-lg hover:bg-blue-700 transition-colors text-sm-xs font-semibold"
                 >
                   View Auction
-                </Link>
+                </Link> */}
 
                 {/* Notice Link - Desktop */}
                 {isViewNoticeVisible && (

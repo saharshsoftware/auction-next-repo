@@ -49,6 +49,7 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
   const id = property?.id;
   const router = useRouter();
   const [noticeImageUrl, setNoticeImageUrl] = useState('');
+  const [imageLoadError, setImageLoadError] = useState(false);
   const userData = getCookie(COOKIES.AUCTION_USER_KEY)
     ? JSON.parse(getCookie(COOKIES.AUCTION_USER_KEY) ?? "")
     : null;
@@ -181,7 +182,14 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
   );
 
   const images = getPropertyImages(property);
-  const hasRealImages = images.length > 0 && !images[0].includes('no-image-placeholder.png');
+  const hasRealImages = images.length > 0 && !images[0].includes('no-image-placeholder.png') && !imageLoadError;
+  
+  // Check if we have any valid images (not failed to load)
+  const hasValidImages = hasRealImages && images.length > 0;
+  
+  const handleImageError = () => {
+    setImageLoadError(true);
+  };
   const handleBackClick = () => {
     router.back();
   };
@@ -413,11 +421,12 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
           </div>
 
           {/* Image Carousel - Only show if we have real property images */}
-          {hasRealImages && (
+          {hasValidImages && (
             <div className="mb-6">
               <ImageCarousel
                 images={images}
                 title={property.title || 'Property Images'}
+                onImageError={handleImageError}
               />
             </div>
           )}
