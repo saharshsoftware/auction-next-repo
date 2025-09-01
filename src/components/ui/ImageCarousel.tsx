@@ -62,7 +62,6 @@ export const ImageCarousel: React.FC<ImageCarouselProps> = ({ images, title = 'P
     initialSlide: currentIndex,
     beforeChange: (_: number, next: number) => setCurrentIndex(next)
   } as const;
-  console.log(validImages, "validImages");
   return (
     <>
       <div className={`relative bg-white rounded-lg shadow-sm overflow-hidden ${className}`}>
