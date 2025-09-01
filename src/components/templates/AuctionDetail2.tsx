@@ -201,10 +201,10 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
 
   const images = getPropertyImages(property);
   const hasRealImages = images.length > 0 && !images[0].includes('no-image-placeholder.png') && !imageLoadError;
-  
+
   // Check if we have any valid images (not failed to load)
   const hasValidImages = hasRealImages && images.length > 0;
-  
+
   const handleImageError = () => {
     setImageLoadError(true);
   };
@@ -237,10 +237,8 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
   const PROPERTY_ID = `E${property.id}`; // Property ID
   const renderAuctionExpiredNotice = () => {
     if (!property?.auctionEndDate) return null;
-    
     const endDate = new Date(property.auctionEndDate);
     const currentDate = new Date();
-    
     // Consider the auction ended if current time is past the end date
     const isPastDate = endDate < currentDate;
 
@@ -330,14 +328,16 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
                 </div>
 
                 {/* Property Address */}
-                {property.propertyAddress && (
-                  <div className="flex items-start text-sm-xs text-gray-600">
-                    <MapPin className="h-4 w-4 mt-0.5 text-gray-400 flex-shrink-0 mr-2" />
-                    <div className="flex-1">
-                      <span className="break-words">{property.propertyAddress}</span>
+                <BlurredFieldWrapper isBlurred={token === null && showLogin}>
+                  {property.propertyAddress && (
+                    <div className="flex items-start text-sm-xs text-gray-600">
+                      <MapPin className="h-4 w-4 mt-0.5 text-gray-400 flex-shrink-0 mr-2" />
+                      <div className="flex-1">
+                        <span className="break-words">{property.propertyAddress}</span>
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
+                </BlurredFieldWrapper>
               </div>
             </div>
 
