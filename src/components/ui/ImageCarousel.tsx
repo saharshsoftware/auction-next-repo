@@ -45,7 +45,7 @@ export const ImageCarousel: React.FC<ImageCarouselProps> = ({ images, title = 'P
   const mainSettings = {
     dots: false,
     arrows: false,
-    infinite: true,
+    infinite: false,
     speed: 300,
     slidesToShow: 1,
     slidesToScroll: 1,
@@ -55,7 +55,7 @@ export const ImageCarousel: React.FC<ImageCarouselProps> = ({ images, title = 'P
   const modalSettings = {
     dots: false,
     arrows: false,
-    infinite: true,
+    infinite: false,
     speed: 300,
     slidesToShow: 1,
     slidesToScroll: 1,
