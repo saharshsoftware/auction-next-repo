@@ -613,7 +613,7 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
           </div>
 
           {/* Action Button - Download Notice */}
-          {property.noticeLink && (
+          {property.noticeLink && false && (
             <div className="mt-6 bg-white rounded-lg shadow-sm border border-gray-200 p-4">
               <div className="text-center">
                 <a
