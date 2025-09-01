@@ -1,6 +1,6 @@
 import { STORAGE_KEYS } from "@/shared/Constants";
 
-const MAX_VISITS = 5;
+const MAX_VISITS = 2;
 const isBrowser = typeof window !== 'undefined';
 
 export const loginLogic = {
