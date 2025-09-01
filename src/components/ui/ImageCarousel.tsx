@@ -1,7 +1,10 @@
+"use client";
 /* eslint-disable @next/next/no-img-element */
-import React, { useState } from 'react';
-import { ChevronLeft, ChevronRight, X } from 'lucide-react';
-
+import React, { useMemo, useRef, useState } from 'react';
+import { ChevronLeft, ChevronRight, Maximize2, Minimize2, X } from 'lucide-react';
+import Slider from 'react-slick';
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 interface ImageCarouselProps {
   images: string[];
   title?: string;
@@ -9,125 +12,129 @@ interface ImageCarouselProps {
   onImageError?: () => void;
 }
 
-export const ImageCarousel: React.FC<ImageCarouselProps> = ({ 
-  images, 
-  title = 'Property Images',
-  className = '',
-  onImageError
-}) => {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+export const ImageCarousel: React.FC<ImageCarouselProps> = ({ images, title = 'Property Images', className = '', onImageError }) => {
+  const [currentIndex, setCurrentIndex] = useState<number>(0);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [failedImages, setFailedImages] = useState<Set<number>>(new Set());
+  const mainSliderRef = useRef<Slider | null>(null);
 
+  const modalSliderRef = useRef<Slider | null>(null);
+  const validImages = useMemo(() => (images || []).filter((_, index) => !failedImages.has(index)), [images, failedImages]);
   if (!images || images.length === 0) {
+    return <div className={`bg-gray-200 rounded-lg flex items-center justify-center h-96 ${className}`}><span className="text-gray-500">No images available</span></div>;
+  }
+  if (validImages.length === 0) {
     return (
-      <div className={`bg-gray-200 rounded-lg flex items-center justify-center h-96 ${className}`}>
-        <span className="text-gray-500">No images available</span>
+      <div className={`relative bg-white rounded-lg shadow-sm overflow-hidden ${className}`}>
+        <div className="relative w-full h-[500px] overflow-hidden rounded-t-lg bg-gray-100 flex items-center justify-center">
+          <span className="text-gray-500 text-sm">Image not available</span>
+        </div>
       </div>
     );
   }
-
-  // Filter out failed images
-  const validImages = images.filter((_, index) => !failedImages.has(index));
-
-  if (validImages.length === 0) {
-    // Return null instead of a fallback message - let parent component handle this
-    return null;
-  }
-
-  const nextImage = () => {
-    setCurrentIndex((prev) => (prev + 1) % validImages.length);
-  };
-
-  const prevImage = () => {
-    setCurrentIndex((prev) => (prev - 1 + validImages.length) % validImages.length);
-  };
-
-  const goToImage = (index: number) => {
-    setCurrentIndex(index);
-  };
-
   const handleImageError = (imageIndex: number) => {
     setFailedImages(prev => new Set(Array.from(prev).concat(imageIndex)));
-    
-    // If the current image failed, move to the next valid image
     if (imageIndex === currentIndex && validImages.length > 1) {
-      const nextValidIndex = validImages.findIndex((_, index) => !failedImages.has(index) && index !== imageIndex);
-      if (nextValidIndex !== -1) {
-        setCurrentIndex(nextValidIndex);
-      }
+      const nextValidIndex = (currentIndex + 1) % validImages.length;
+      setCurrentIndex(nextValidIndex);
+      if (mainSliderRef.current) mainSliderRef.current.slickGoTo(nextValidIndex, true);
+      if (modalSliderRef.current) modalSliderRef.current.slickGoTo(nextValidIndex, true);
     }
-    
-    // Notify parent component about image error
-    if (onImageError) {
-      onImageError();
-    }
+    if (onImageError) onImageError();
   };
-
+  const mainSettings = {
+    dots: false,
+    arrows: false,
+    infinite: false,
+    speed: 300,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    swipeToSlide: true,
+    beforeChange: (_: number, next: number) => setCurrentIndex(next)
+  } as const;
+  const modalSettings = {
+    dots: false,
+    arrows: false,
+    infinite: false,
+    speed: 300,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    initialSlide: currentIndex,
+    beforeChange: (_: number, next: number) => setCurrentIndex(next)
+  } as const;
   return (
     <>
       <div className={`relative bg-white rounded-lg shadow-sm overflow-hidden ${className}`}>
-        {/* Main Image */}
         <div className="relative w-full h-[500px] overflow-hidden rounded-t-lg">
-          <img
-            src={validImages[currentIndex]}
-            alt={`${title} - Image ${currentIndex + 1}`}
-            className="w-full h-full object-contain bg-gray-100"
-            onError={() => handleImageError(currentIndex)}
-          />
-          
-          {/* Navigation Arrows */}
+          <Slider ref={instance => (mainSliderRef.current = instance)} {...mainSettings}>
+            {validImages.map((src, index) => (
+              <div key={index} className="w-full h-[500px] bg-gray-100 flex items-center justify-center" onClick={() => setIsModalOpen(true)}>
+                <img src={src} alt={`${title} - Image ${index + 1}`} className="w-full h-full object-contain select-none" onError={() => handleImageError(index)} />
+              </div>
+            ))}
+          </Slider>
           {validImages.length > 1 && (
             <>
-              <button
-                onClick={prevImage}
-                className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 hover:bg-opacity-70 text-white p-2 rounded-full transition-all duration-200"
-              >
+              <button onClick={() => mainSliderRef.current?.slickPrev()} className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-all">
                 <ChevronLeft className="h-5 w-5" />
               </button>
-              <button
-                onClick={nextImage}
-                className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 hover:bg-opacity-70 text-white p-2 rounded-full transition-all duration-200"
-              >
+              <button onClick={() => mainSliderRef.current?.slickNext()} className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-all">
                 <ChevronRight className="h-5 w-5" />
               </button>
             </>
           )}
-
-          {/* Image Counter */}
-          {validImages.length > 1 && (
-            <div className="absolute top-4 right-4 bg-black bg-opacity-50 text-white px-3 py-1 rounded-full text-sm">
-              {currentIndex + 1} / {validImages.length}
-            </div>
-          )}
+          {/* Counter */}
+          <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-black/50 text-white px-3 py-1 rounded-full text-sm">{currentIndex + 1} / {validImages.length}</div>
+          {/* Fullscreen icon */}
+          <button aria-label="Open fullscreen" onClick={(e) => { e.stopPropagation(); setIsModalOpen(true); }} className="absolute top-4 right-4 bg-black/50 hover:bg-black/70 text-white p-2 rounded-md">
+            <Maximize2 className="h-5 w-5" />
+          </button>
         </div>
 
-        {/* Thumbnail Navigation */}
-        {validImages.length > 1 && (
-          <div className="p-4 bg-gray-50">
-            <div className="flex space-x-2 overflow-x-auto scrollbar-hide">
-              {validImages.map((image, index) => (
-                <button
-                  key={index}
-                  onClick={() => goToImage(index)}
-                  className={`flex-shrink-0 w-20 h-16 rounded-lg overflow-hidden border-2 transition-all duration-200 ${
-                    currentIndex === index
-                      ? 'border-blue-600 ring-2 ring-blue-200'
-                      : 'border-gray-200 hover:border-gray-300'
-                  }`}
-                >
-                  <img
-                    src={image}
-                    alt={`Thumbnail ${index + 1}`}
-                    className="w-full h-full object-cover hover:opacity-80 transition-opacity"
-                    onError={() => handleImageError(index)}
-                  />
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
       </div>
+      {isModalOpen && (
+         <div className="fixed inset-0 z-[9999] bg-black/90 flex items-center justify-center" onClick={() => setIsModalOpen(false)}>
+           <button aria-label="Exit fullscreen" onClick={(e) => { e.stopPropagation(); setIsModalOpen(false); }} className="absolute top-4 right-4 z-[10000] pointer-events-auto text-white bg-black/60 hover:bg-black/80 p-2 rounded-md">
+             <Minimize2 className="h-5 w-5" />
+           </button>
+           <div className="relative w-screen h-screen" onClick={(e) => e.stopPropagation()}>
+             {validImages.length > 0 ? (
+               <Slider ref={instance => (modalSliderRef.current = instance)} {...modalSettings}>
+                 {validImages.map((src, index) => (
+                   <div key={index} className="w-screen h-screen flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
+                     <img src={src} alt={`${title} - Full ${index + 1}`} className="w-full h-full object-contain select-none" onError={() => handleImageError(index)} onClick={(e) => e.stopPropagation()} />
+                   </div>
+                 ))}
+               </Slider>
+             ) : (
+               <div className="w-screen h-screen flex items-center justify-center text-white">Image not available</div>
+             )}
+             {validImages.length > 1 && (
+               <>
+                 <button onClick={() => modalSliderRef.current?.slickPrev()} className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full">
+                   <ChevronLeft className="h-6 w-6" />
+                 </button>
+                 <button onClick={() => modalSliderRef.current?.slickNext()} className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full">
+                   <ChevronRight className="h-6 w-6" />
+                 </button>
+                 <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-black/50 text-white px-3 py-1 rounded-full text-sm">{currentIndex + 1} / {validImages.length}</div>
+               </>
+             )}
+             
+             {/* Mobile-only cross button at bottom of fullscreen modal */}
+             <button 
+               aria-label="Close fullscreen" 
+               className="absolute bottom-6 left-1/2 -translate-x-1/2 md:hidden bg-black/60 hover:bg-black/80 text-white p-4 rounded-full transition-all z-[10001]"
+               onClick={(e) => { 
+                 e.stopPropagation(); 
+                 setIsModalOpen(false);
+               }}
+             >
+               <X className="h-6 w-6" />
+             </button>
+           </div>
+         </div>
+       )}
     </>
   );
 };
