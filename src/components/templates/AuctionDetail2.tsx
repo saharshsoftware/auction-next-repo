@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Calendar,
   MapPin,
@@ -36,6 +36,8 @@ import { extractPhoneNumbers, getDateAndTimeFromISOString, getDateAndTimeFromISO
 import { WhatsappShareWithIcon } from '../atoms/SocialIcons';
 import { ROUTE_CONSTANTS } from '@/shared/Routes';
 import { useScrollToTop } from '@/hooks/useScrollToTop';
+import { loginLogic } from '@/utilies/LoginHelper';
+import BlurredFieldWrapper from '../atoms/BlurredFieldWrapper';
 
 // add props type
 interface AuctionDetailPageProps {
@@ -48,6 +50,7 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
   const property = auctionDetail;
   const id = property?.id;
   const router = useRouter();
+  const showLogin = loginLogic.getShouldShowLogin()
   const [noticeImageUrl, setNoticeImageUrl] = useState('');
   const [imageLoadError, setImageLoadError] = useState(false);
   const userData = getCookie(COOKIES.AUCTION_USER_KEY)
@@ -58,11 +61,24 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
   const [error, setError] = useState<string | null>(null);
   const [isAdmin] = useState(true); // Default to true as requested
 
+  const tokenFromCookie = getCookie(COOKIES.TOKEN_KEY);
+  const [token, setToken] = useState<string | null>(null);
+
+  useEffect(() => {
+    setToken(tokenFromCookie ? String(tokenFromCookie) : null);
+  }, [tokenFromCookie]);
+
   // Use scroll to top hook for property detail pages
   useScrollToTop({
     scrollOnRouteChange: true,
     preserveOnBack: true
   });
+
+  useEffect(() => {
+    if (!token) {
+      loginLogic.markAuctionDetailVisited(slug); // Pass unique ID
+    }
+  }, [slug, token]);
 
   if (loading) {
     return (
@@ -138,7 +154,9 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
         <SectionHeader title="About Property" />
         <div className="text-sm text-gray-700 leading-relaxed">
           {hasDescription ? (
-            <p className="mb-3">{property.description}</p>
+            <BlurredFieldWrapper isBlurred={token === null && showLogin}>
+              <p className="mb-3 ">{auctionDetail?.description}</p>
+            </BlurredFieldWrapper>
           ) : (
             <>
               {hasResidentialDetail && (
@@ -183,10 +201,10 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
 
   const images = getPropertyImages(property);
   const hasRealImages = images.length > 0 && !images[0].includes('no-image-placeholder.png') && !imageLoadError;
-  
+
   // Check if we have any valid images (not failed to load)
   const hasValidImages = hasRealImages && images.length > 0;
-  
+
   const handleImageError = () => {
     setImageLoadError(true);
   };
@@ -219,10 +237,8 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
   const PROPERTY_ID = `E${property.id}`; // Property ID
   const renderAuctionExpiredNotice = () => {
     if (!property?.auctionEndDate) return null;
-    
     const endDate = new Date(property.auctionEndDate);
     const currentDate = new Date();
-    
     // Consider the auction ended if current time is past the end date
     const isPastDate = endDate < currentDate;
 
@@ -312,14 +328,16 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
                 </div>
 
                 {/* Property Address */}
-                {property.propertyAddress && (
-                  <div className="flex items-start text-sm-xs text-gray-600">
-                    <MapPin className="h-4 w-4 mt-0.5 text-gray-400 flex-shrink-0 mr-2" />
-                    <div className="flex-1">
-                      <span className="break-words">{property.propertyAddress}</span>
+                <BlurredFieldWrapper isBlurred={token === null && showLogin}>
+                  {property.propertyAddress && (
+                    <div className="flex items-start text-sm-xs text-gray-600">
+                      <MapPin className="h-4 w-4 mt-0.5 text-gray-400 flex-shrink-0 mr-2" />
+                      <div className="flex-1">
+                        <span className="break-words">{property.propertyAddress}</span>
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
+                </BlurredFieldWrapper>
               </div>
             </div>
 
@@ -538,53 +556,54 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
               {/* Contact Information */}
               <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
                 <SectionHeader title="Contact Information" />
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <BlurredFieldWrapper isBlurred={token === null && showLogin}>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-                  {/* Branch */}
-                  <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
-                    <div className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">
-                      Branch
+                    {/* Branch */}
+                    <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
+                      <div className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">
+                        Branch
+                      </div>
+                      <div className="text-sm font-semibold text-gray-900 break-words">
+                        {property.branchName || '-'}
+                      </div>
                     </div>
-                    <div className="text-sm font-semibold text-gray-900 break-words">
-                      {property.branchName || '-'}
+
+
+                    {/* Inspection Officer */}
+                    <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
+                      <div className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">
+                        Inspection Officer
+                      </div>
+                      <div className="text-sm font-semibold text-gray-900 break-words">
+                        {property.inspectionOfficerName || '-'}
+                      </div>
                     </div>
+
+                    {/* Contact Number */}
+                    <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                      <div className="text-xs font-medium text-gray-600 uppercase tracking-wide mb-2 flex items-center">
+                        <Phone className="h-3 w-3 mr-1" />
+                        Contact Number
+                      </div>
+                      <div className="text-sm font-semibold text-gray-900">
+                        {property.contact ? (
+                          <a
+                            href={`tel:${extractPhoneNumbers(property.contact)[0]}`}
+                            className="hover:text-gray-700 transition-colors"
+                          >
+                            {extractPhoneNumbers(property.contact)[0]}
+                          </a>
+                        ) : (
+                          '-'
+                        )}
+                      </div>
+                    </div>
+
+
                   </div>
-
-
-                  {/* Inspection Officer */}
-                  <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
-                    <div className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">
-                      Inspection Officer
-                    </div>
-                    <div className="text-sm font-semibold text-gray-900 break-words">
-                      {property.inspectionOfficerName || '-'}
-                    </div>
-                  </div>
-
-                  {/* Contact Number */}
-                  <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-                    <div className="text-xs font-medium text-gray-600 uppercase tracking-wide mb-2 flex items-center">
-                      <Phone className="h-3 w-3 mr-1" />
-                      Contact Number
-                    </div>
-                    <div className="text-sm font-semibold text-gray-900">
-                      {property.contact ? (
-                        <a
-                          href={`tel:${extractPhoneNumbers(property.contact)[0]}`}
-                          className="hover:text-gray-700 transition-colors"
-                        >
-                          {extractPhoneNumbers(property.contact)[0]}
-                        </a>
-                      ) : (
-                        '-'
-                      )}
-                    </div>
-                  </div>
-
-
-                </div>
+                </BlurredFieldWrapper>
               </div>
-
             </div>
           </div>
 
