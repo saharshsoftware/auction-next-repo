@@ -1,7 +1,7 @@
 "use client";
 /* eslint-disable @next/next/no-img-element */
 import React, { useMemo, useRef, useState } from 'react';
-import { ChevronLeft, ChevronRight, Maximize2, Minimize2 } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Maximize2, Minimize2, X } from 'lucide-react';
 import Slider from 'react-slick';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -94,36 +94,48 @@ export const ImageCarousel: React.FC<ImageCarouselProps> = ({ images, title = 'P
 
       </div>
       {isModalOpen && (
-        <div className="fixed inset-0 z-[9999] bg-black/90 flex items-center justify-center" onClick={() => setIsModalOpen(false)}>
-          <button aria-label="Exit fullscreen" onClick={(e) => { e.stopPropagation(); setIsModalOpen(false); }} className="absolute top-4 right-4 z-[10000] pointer-events-auto text-white bg-black/60 hover:bg-black/80 p-2 rounded-md">
-            <Minimize2 className="h-5 w-5" />
-          </button>
-          <div className="relative w-screen h-screen" onClick={(e) => e.stopPropagation()}>
-            {validImages.length > 0 ? (
-              <Slider ref={instance => (modalSliderRef.current = instance)} {...modalSettings}>
-                {validImages.map((src, index) => (
-                  <div key={index} className="w-screen h-screen flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
-                    <img src={src} alt={`${title} - Full ${index + 1}`} className="w-full h-full object-contain select-none" onError={() => handleImageError(index)} onClick={(e) => e.stopPropagation()} />
-                  </div>
-                ))}
-              </Slider>
-            ) : (
-              <div className="w-screen h-screen flex items-center justify-center text-white">Image not available</div>
-            )}
-            {validImages.length > 1 && (
-              <>
-                <button onClick={() => modalSliderRef.current?.slickPrev()} className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full">
-                  <ChevronLeft className="h-6 w-6" />
-                </button>
-                <button onClick={() => modalSliderRef.current?.slickNext()} className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full">
-                  <ChevronRight className="h-6 w-6" />
-                </button>
-                <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-black/50 text-white px-3 py-1 rounded-full text-sm">{currentIndex + 1} / {validImages.length}</div>
-              </>
-            )}
-          </div>
-        </div>
-      )}
+         <div className="fixed inset-0 z-[9999] bg-black/90 flex items-center justify-center" onClick={() => setIsModalOpen(false)}>
+           <button aria-label="Exit fullscreen" onClick={(e) => { e.stopPropagation(); setIsModalOpen(false); }} className="absolute top-4 right-4 z-[10000] pointer-events-auto text-white bg-black/60 hover:bg-black/80 p-2 rounded-md">
+             <Minimize2 className="h-5 w-5" />
+           </button>
+           <div className="relative w-screen h-screen" onClick={(e) => e.stopPropagation()}>
+             {validImages.length > 0 ? (
+               <Slider ref={instance => (modalSliderRef.current = instance)} {...modalSettings}>
+                 {validImages.map((src, index) => (
+                   <div key={index} className="w-screen h-screen flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
+                     <img src={src} alt={`${title} - Full ${index + 1}`} className="w-full h-full object-contain select-none" onError={() => handleImageError(index)} onClick={(e) => e.stopPropagation()} />
+                   </div>
+                 ))}
+               </Slider>
+             ) : (
+               <div className="w-screen h-screen flex items-center justify-center text-white">Image not available</div>
+             )}
+             {validImages.length > 1 && (
+               <>
+                 <button onClick={() => modalSliderRef.current?.slickPrev()} className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full">
+                   <ChevronLeft className="h-6 w-6" />
+                 </button>
+                 <button onClick={() => modalSliderRef.current?.slickNext()} className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full">
+                   <ChevronRight className="h-6 w-6" />
+                 </button>
+                 <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-black/50 text-white px-3 py-1 rounded-full text-sm">{currentIndex + 1} / {validImages.length}</div>
+               </>
+             )}
+             
+             {/* Mobile-only cross button at bottom of fullscreen modal */}
+             <button 
+               aria-label="Close fullscreen" 
+               className="absolute bottom-6 left-1/2 -translate-x-1/2 md:hidden bg-black/60 hover:bg-black/80 text-white p-4 rounded-full transition-all z-[10001]"
+               onClick={(e) => { 
+                 e.stopPropagation(); 
+                 setIsModalOpen(false);
+               }}
+             >
+               <X className="h-6 w-6" />
+             </button>
+           </div>
+         </div>
+       )}
     </>
   );
 };
