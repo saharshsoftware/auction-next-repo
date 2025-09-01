@@ -323,16 +323,16 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
                 </div>
 
                 {/* Property Address */}
-                <BlurredFieldWrapper isBlurred={token === null && showLogin}>
-                  {property.propertyAddress && (
+                {property.propertyAddress && (
+                  <BlurredFieldWrapper isBlurred={token === null && showLogin}>
                     <div className="flex items-start text-sm-xs text-gray-600">
                       <MapPin className="h-4 w-4 mt-0.5 text-gray-400 flex-shrink-0 mr-2" />
                       <div className="flex-1">
                         <span className="break-words">{property.propertyAddress}</span>
                       </div>
                     </div>
-                  )}
-                </BlurredFieldWrapper>
+                  </BlurredFieldWrapper>
+                )}
               </div>
             </div>
 
@@ -435,7 +435,10 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
 
           {/* Image Carousel - Only show if we have real property images */}
           {hasValidImages && (
-            <BlurredFieldWrapper isBlurred={token === null && showLogin} blurText="View" icon={<Eye className="h-4 w-4" />}>
+            <BlurredFieldWrapper
+              isBlurred={token === null && showLogin}
+              hasImageCarousel={true}
+            >
               <div className="mb-6">
                 <ImageCarousel
                   images={images}
