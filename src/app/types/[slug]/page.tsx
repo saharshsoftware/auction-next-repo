@@ -33,6 +33,8 @@ import {
 import { IPaginationData } from "@/zustandStore/auctionStore";
 import { Metadata, ResolvingMetadata } from "next";
 import { Suspense } from "react";
+import { SEO_BRAND } from "@/shared/seo.constant";
+import { buildCanonicalUrl } from "@/shared/Utilies";
 import BreadcrumbJsonLd from "@/components/atoms/BreadcrumbJsonLd";
 import AuctionResults from "@/components/templates/AuctionResults";
 
@@ -65,9 +67,17 @@ export async function generateMetadata(
 
     console.log("Generated Image URL:", { sanitizeImageUrl }); // Debugging
 
+    const baseUrl = process.env.NEXT_PUBLIC_DOMAIN_BASE_URL as string;
+    const canonicalUrl = buildCanonicalUrl({
+      baseUrl,
+      pathname: `/types/${slug}`,
+      page: searchParams?.page,
+    });
+
     return {
       title: `Bank Auction ${name}s in India | Find ${name}s Auctions`,
       description: `Find ${name} in bank auction. Also find flats, houses, plots, residential units, agricultural land, bungalows, cars, vehicles, commercial buildings, offices, shops, factory lands, godowns, industrial buildings, lands, machinery, non-agricultural lands, scrap, and sheds. Secure the best deals today tailored to your investment needs`,
+      alternates: { canonical: canonicalUrl },
 
       keywords: [
         `${name}s for sale`,
@@ -77,13 +87,15 @@ export async function generateMetadata(
 
       openGraph: {
         type: "website",
-        url: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/types/${slug}`,
+        url: canonicalUrl,
         title: `Bank Auction ${name}s in India | Find ${name}s Auctions`,
         description: `Find ${name} in bank auction. Also find flats, houses, plots, residential units, agricultural land, bungalows, cars, vehicles, commercial buildings, offices, shops, factory lands, godowns, industrial buildings, lands, machinery, non-agricultural lands, scrap, and sheds. Secure the best deals today tailored to your investment needs`,
         images: sanitizeImageUrl,
+        siteName: SEO_BRAND.SITE_NAME,
+        locale: SEO_BRAND.LOCALE,
       },
       twitter: {
-        site: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/types/${slug}`,
+        site: SEO_BRAND.TWITTER_HANDLE,
         card: "summary_large_image",
         title: `Bank Auction ${name}s in India | Find ${name}s Auctions`,
         description: `Find ${name} in bank auction. Also find flats, houses, plots, residential units, agricultural land, bungalows, cars, vehicles, commercial buildings, offices, shops, factory lands, godowns, industrial buildings, lands, machinery, non-agricultural lands, scrap, and sheds. Secure the best deals today tailored to your investment needs`,

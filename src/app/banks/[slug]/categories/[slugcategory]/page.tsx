@@ -42,6 +42,8 @@ import {
 import { IPaginationData } from "@/zustandStore/auctionStore";
 import { Metadata, ResolvingMetadata } from "next";
 import { Suspense } from "react";
+import { SEO_BRAND } from "@/shared/seo.constant";
+import { buildCanonicalUrl } from "@/shared/Utilies";
 import BreadcrumbJsonLd from "@/components/atoms/BreadcrumbJsonLd";
 import AuctionResults from "@/components/templates/AuctionResults";
 
@@ -96,11 +98,18 @@ export async function generateMetadata(
       secondarySlug ?? "",
       slug ?? ""
     );
+    const baseUrl = process.env.NEXT_PUBLIC_DOMAIN_BASE_URL as string;
+    const canonicalUrl = buildCanonicalUrl({
+      baseUrl,
+      pathname: `/banks/${primaryBankSlug}/categories/${slugcategory}`,
+      page: searchParams?.page,
+    });
+
     return {
       title: `${primaryName} ${nameCategory} Property Auctions | Find Auctions`,
-      description: `Find ${nameCategory} bank auction properties for ${primaryName} on eAuctionDekho. Find diverse asset types including ${keywordsAll}. Secure the best deals today tailored to your investment needs`,
+      description: `Find ${nameCategory} bank auction properties for ${primaryName} on eauctiondekho. Find diverse asset types including ${keywordsAll}. Secure the best deals today tailored to your investment needs`,
       alternates: {
-        canonical: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/banks/${primaryBankSlug}/categories/${slugcategory}`,
+        canonical: canonicalUrl,
       },
 
       keywords: [
@@ -113,21 +122,23 @@ export async function generateMetadata(
         `machinery auctions in ${nameCategory}`,
         `plot auctions in ${nameCategory}`,
         `residential unit auctions in ${nameCategory}`,
-        `eAuctionDekho ${nameCategory} listings`,
+        `eauctiondekho ${nameCategory} listings`,
       ],
 
       openGraph: {
         type: "website",
-        url: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/banks/${primaryBankSlug}/categories/${slugcategory}`,
+        url: canonicalUrl,
         title: `${primaryName} ${nameCategory} Property Auctions | Find Auctions`,
-        description: `Find ${nameCategory} bank auction properties for ${primaryName} on eAuctionDekho. Find diverse asset types including ${keywordsAll}. Secure the best deals today tailored to your investment needs`,
+        description: `Find ${nameCategory} bank auction properties for ${primaryName} on eauctiondekho. Find diverse asset types including ${keywordsAll}. Secure the best deals today tailored to your investment needs`,
         images: sanitizeImageUrl,
+        siteName: SEO_BRAND.SITE_NAME,
+        locale: SEO_BRAND.LOCALE,
       },
       twitter: {
-        site: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/banks/${primaryBankSlug}/categories/${slugcategory}`,
+        site: SEO_BRAND.TWITTER_HANDLE,
         card: "summary_large_image",
         title: `${primaryName} ${nameCategory} Property Auctions | Find Auctions`,
-        description: `Find ${nameCategory} bank auction properties for ${primaryName} on eAuctionDekho. Find diverse asset types including ${keywordsAll}. Secure the best deals today tailored to your investment needs`,
+        description: `Find ${nameCategory} bank auction properties for ${primaryName} on eauctiondekho. Find diverse asset types including ${keywordsAll}. Secure the best deals today tailored to your investment needs`,
         images: sanitizeImageUrl,
       },
     };
@@ -215,7 +226,7 @@ export default async function Page({
           { name: "Home", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/` },
           { name: "Banks", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/banks` },
           { name: bankNamePrimary || "Bank", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/banks/${slug}` },
-          { name: nameCategory || "Category", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/banks/${slug}/categories/${slugcategory}` },
+          { name: categoryData?.name || "Category", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/banks/${slug}/categories/${slugcategory}` },
         ]}
       />
       <FindAuctionServer

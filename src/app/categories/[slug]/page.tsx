@@ -40,6 +40,8 @@ import {
 import { IPaginationData } from "@/zustandStore/auctionStore";
 import { Metadata, ResolvingMetadata } from "next";
 import { Suspense } from "react";
+import { SEO_BRAND } from "@/shared/seo.constant";
+import { buildCanonicalUrl } from "@/shared/Utilies";
 import BreadcrumbJsonLd from "@/components/atoms/BreadcrumbJsonLd";
 import AuctionResults from "@/components/templates/AuctionResults";
 
@@ -74,9 +76,17 @@ export async function generateMetadata(
       (process.env.NEXT_PUBLIC_IMAGE_CLOUDFRONT || "") + categoryData?.imageURL;
     console.log("Name", { name });
     const sanitizeTitle = sanitizeCategorytitle(name ?? "");
+    const baseUrl = process.env.NEXT_PUBLIC_DOMAIN_BASE_URL as string;
+    const canonicalUrl = buildCanonicalUrl({
+      baseUrl,
+      pathname: `/categories/${slug}`,
+      page: searchParams?.page,
+    });
+
     return {
       title: sanitizeTitle,
-      description: `Find ${name} bank auction properties on eAuctionDekho. Find diverse asset types including ${keywordsAll}. Secure the best deals today tailored to your investment needs`,
+      description: `Find ${name} bank auction properties on eauctiondekho. Find diverse asset types including ${keywordsAll}. Secure the best deals today tailored to your investment needs`,
+      alternates: { canonical: canonicalUrl },
       keywords: [
         `${name} bank auction properties`,
         ...keywordsAll.map((k) => `${k} bank auction`),
@@ -84,16 +94,18 @@ export async function generateMetadata(
 
       openGraph: {
         type: "website",
-        url: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/categories/${slug}`,
+        url: canonicalUrl,
         title: sanitizeTitle,
-        description: `Find ${name} bank auction properties on eAuctionDekho. Find diverse asset types including ${keywordsAll}. Secure the best deals today tailored to your investment needs`,
+        description: `Find ${name} bank auction properties on eauctiondekho. Find diverse asset types including ${keywordsAll}. Secure the best deals today tailored to your investment needs`,
         images: sanitizeImageUrl,
+        siteName: SEO_BRAND.SITE_NAME,
+        locale: SEO_BRAND.LOCALE,
       },
       twitter: {
-        site: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/categories/${slug}`,
+        site: SEO_BRAND.TWITTER_HANDLE,
         card: "summary_large_image",
         title: sanitizeTitle,
-        description: `Find ${name} bank auction properties on eAuctionDekho. Find diverse asset types including ${keywordsAll}. Secure the best deals today tailored to your investment needs`,
+        description: `Find ${name} bank auction properties on eauctiondekho. Find diverse asset types including ${keywordsAll}. Secure the best deals today tailored to your investment needs`,
         images: sanitizeImageUrl,
       },
     };

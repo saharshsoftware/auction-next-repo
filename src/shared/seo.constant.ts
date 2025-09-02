@@ -39,3 +39,9 @@ export const SITELINK_SEARCHBOX = {
     "query-input": "required name=search_term_string",
   },
 };
+
+export const SEO_BRAND = {
+  SITE_NAME: "eauctiondekho" as const,
+  TWITTER_HANDLE: "@eauctiondekho" as const,
+  LOCALE: "en_IN" as const,
+} as const;

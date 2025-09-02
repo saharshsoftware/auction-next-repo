@@ -39,6 +39,8 @@ import { IPaginationData } from "@/zustandStore/auctionStore";
 import { Metadata, ResolvingMetadata } from "next";
 import dynamic from "next/dynamic";
 import React, { lazy, Suspense } from "react";
+import { SEO_BRAND } from "@/shared/seo.constant";
+import { buildCanonicalUrl } from "@/shared/Utilies";
 import BreadcrumbJsonLd from "@/components/atoms/BreadcrumbJsonLd";
 import AuctionResults from "@/components/templates/AuctionResults";
 
@@ -62,6 +64,7 @@ async function getSlugData(
 
 export async function generateMetadata({
   params,
+  searchParams,
 }: {
   params: { slug: string; slugasset: string };
   searchParams: { [key: string]: string | string[] | undefined };
@@ -82,22 +85,31 @@ export async function generateMetadata({
       secondarySlug ?? "",
       slug ?? ""
     );
+    const baseUrl = process.env.NEXT_PUBLIC_DOMAIN_BASE_URL as string;
+    const canonicalUrl = buildCanonicalUrl({
+      baseUrl,
+      pathname: `/banks/${primaryBankSlug}/types/${slugasset}`,
+      page: searchParams?.page,
+    });
+
     return {
       title: `${primaryName} ${nameAssetType}s auctions | Find ${nameAssetType} Auctions`,
       description: `Find ${nameAssetType} auctions for ${primaryName} bank. Also find flats, houses, plots, residential units, agricultural land, bungalows, cars, vehicles, commercial buildings, offices, shops, factory lands, godowns, industrial buildings, lands, machinery, non-agricultural lands, scrap, and sheds. Secure the best deals today tailored to your investment needs`,
       alternates: {
-        canonical: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/banks/${primaryBankSlug}/types/${slugasset}`,
+        canonical: canonicalUrl,
       },
 
       openGraph: {
         type: "website",
-        url: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/banks/${primaryBankSlug}/types/${slugasset}`,
+        url: canonicalUrl,
         title: `${primaryName} ${nameAssetType}s auctions | Find ${nameAssetType} Auctions`,
         description: `Find ${nameAssetType} auctions for ${primaryName} bank. Also find flats, houses, plots, residential units, agricultural land, bungalows, cars, vehicles, commercial buildings, offices, shops, factory lands, godowns, industrial buildings, lands, machinery, non-agricultural lands, scrap, and sheds. Secure the best deals today tailored to your investment needs`,
         images: sanitizeImageUrl,
+        siteName: SEO_BRAND.SITE_NAME,
+        locale: SEO_BRAND.LOCALE,
       },
       twitter: {
-        site: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/banks/${primaryBankSlug}/types/${slugasset}`,
+        site: SEO_BRAND.TWITTER_HANDLE,
         card: "summary_large_image",
         title: `${primaryName} ${nameAssetType}s auctions | Find ${nameAssetType} Auctions`,
         description: `Find ${nameAssetType} auctions for ${primaryName} bank. Also find flats, houses, plots, residential units, agricultural land, bungalows, cars, vehicles, commercial buildings, offices, shops, factory lands, godowns, industrial buildings, lands, machinery, non-agricultural lands, scrap, and sheds. Secure the best deals today tailored to your investment needs`,

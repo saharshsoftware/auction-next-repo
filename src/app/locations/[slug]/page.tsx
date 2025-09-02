@@ -12,6 +12,7 @@ import { RANGE_PRICE } from "@/shared/Constants";
 import {
   handleOgImageUrl,
   sanitizeReactSelectOptionsPage,
+  buildCanonicalUrl,
 } from "@/shared/Utilies";
 import {
   IAssetType,
@@ -29,6 +30,7 @@ import TopBanks from "@/components/atoms/TopBanks";
 import { fetchPopularBanks } from "@/server/actions/banks";
 import AuctionResults from "@/components/templates/AuctionResults";
 import { Suspense } from "react";
+import { SEO_BRAND } from "@/shared/seo.constant";
 import BreadcrumbJsonLd from "@/components/atoms/BreadcrumbJsonLd";
 import { SkeletonAuctionList } from "@/components/skeltons/SkeletonAuctionList";
 
@@ -60,12 +62,17 @@ export async function generateMetadata(
       locationData?.imageURL ?? ""
     );
 
+    const baseUrl = process.env.NEXT_PUBLIC_DOMAIN_BASE_URL as string;
+    const canonicalUrl = buildCanonicalUrl({
+      baseUrl,
+      pathname: `/locations/${slug}`,
+      page: searchParams?.page,
+    });
+
     return {
       title: `Bank Auction Properties in ${name} | Find Residential, Commercial, Vehicle, and Gold Auctions`,
-      description: `Explore bank auction properties in ${name} on eAuctionDekho. Find diverse asset types including flats, houses, plots, residential units, agricultural land, bungalows, cars, vehicles, commercial buildings, offices, shops, factory lands, godowns, industrial buildings, lands, machinery, non-agricultural lands, scrap, and sheds. Secure the best deals today tailored to your investment needs`,
-      alternates: {
-        canonical: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/locations/${slug}`,
-      },
+      description: `Explore bank auction properties in ${name} on eauctiondekho. Find diverse asset types including flats, houses, plots, residential units, agricultural land, bungalows, cars, vehicles, commercial buildings, offices, shops, factory lands, godowns, industrial buildings, lands, machinery, non-agricultural lands, scrap, and sheds. Secure the best deals today tailored to your investment needs`,
+      alternates: { canonical: canonicalUrl },
 
       keywords: [
         `Bank auction property in ${name}`,
@@ -77,18 +84,20 @@ export async function generateMetadata(
         `machinery auctions in ${name}`,
         `plot auctions in ${name}`,
         `residential unit auctions in ${name}`,
-        `eAuctionDekho ${name} listings`,
+        `eauctiondekho ${name} listings`,
       ],
 
       openGraph: {
         type: "website",
-        url: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/locations/${slug}`,
+        url: canonicalUrl,
         title: `Bank Auction Properties in ${name} | Find Residential, Commercial, Vehicle, and Gold Auctions`,
         description: `Looking for auctions in ${name}? eauctiondekho offers a detailed list of auctions for properties, vehicles, and more. Start bidding in ${name} and make successful investments with ease.`,
         images: sanitizeImageUrl,
+        siteName: SEO_BRAND.SITE_NAME,
+        locale: SEO_BRAND.LOCALE,
       },
       twitter: {
-        site: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/locations/${slug}`,
+        site: SEO_BRAND.TWITTER_HANDLE,
         card: "summary_large_image",
         title: `Bank Auction Properties in ${name} | Find Residential, Commercial, Vehicle, and Gold Auctions`,
         description: `Join the dynamic auction market in ${name} with eauctiondekho. Discover and bid on a variety of high-quality assets in ${name}, and secure valuable deals today.`,

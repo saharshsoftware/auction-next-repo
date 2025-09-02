@@ -36,7 +36,7 @@ export const metadata: Metadata = {
   title:
     "Find Bank Auction Properties in India | Search Residential, Commercial, Vehicles, Gold auctions & More",
   description:
-    "Find bank auction properties across India on eAuctionDekho. Find your ideal property from banks like ICICI, SBI, BOB, and more. Residential flats, plots, commercial buildings, vehicles, gold, and many more.",
+    "Find bank auction properties across India on eauctiondekho. Find your ideal property from banks like ICICI, SBI, BOB, and more. Residential flats, plots, commercial buildings, vehicles, gold, and many more.",
   keywords: [
     "bank auction properties",
     "auction properties",

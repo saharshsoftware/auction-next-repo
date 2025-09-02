@@ -43,7 +43,7 @@ export const handleOnSettled = (actionResponse: IActionResponse) => {
       // debugger;
       actionResponse?.fail?.(
         actionResponse?.data?.error ??
-          actionResponse?.data?.response?.data?.error
+        actionResponse?.data?.response?.data?.error
       );
       return;
     }
@@ -613,6 +613,19 @@ export const getPrimaryBankName = (
   return secondarySlug === matchingSlug ? secondarySlug?.toUpperCase() : name;
 };
 
+export function buildCanonicalUrl(params: {
+  baseUrl: string;
+  pathname: string; // absolute pathname starting with '/'
+  page?: string | string[] | undefined;
+}): string {
+  const { baseUrl, pathname, page } = params;
+  const normalizedBase = baseUrl?.replace(/\/$/, "");
+  const path = pathname.startsWith("/") ? pathname : `/${pathname}`;
+  const pageVal = Array.isArray(page) ? page[0] : page;
+  const isDefaultPage = !pageVal || pageVal === "1";
+  return `${normalizedBase}${path}${isDefaultPage ? "" : `?page=${pageVal}`}`;
+}
+
 export const getCategorySpecificAssets = (props: {
   response: IAssetType[];
   params: { slugcategory?: string; slug?: string };
@@ -691,34 +704,29 @@ export const sanitizeCategoryTypeTitle = (
     categoryName === "Gold Auctions" &&
     assetData?.pluralizeName === "Gold Auctions"
   ) {
-    return `${categoryName} in India ${
-      isMetaDataTitle ? `| Find ${assetData?.name} ` : ""
-    }`;
+    return `${categoryName} in India ${isMetaDataTitle ? `| Find ${assetData?.name} ` : ""
+      }`;
   }
 
   if (
     categoryName === "Vehicle Auctions" &&
     assetData?.pluralizeName === "Vehicle Auctions"
   ) {
-    return `${categoryName} in India ${
-      isMetaDataTitle ? `| Find ${assetData?.name} ` : ""
-    }`;
+    return `${categoryName} in India ${isMetaDataTitle ? `| Find ${assetData?.name} ` : ""
+      }`;
   }
 
   if (
     categoryName === "Vehicle Auctions" &&
     assetData?.pluralizeName !== "Vehicle Auctions"
   ) {
-    return `${categoryName} ${assetData?.pluralizeName} in India ${
-      isMetaDataTitle ? `| Find ${assetData?.name} ` : ""
-    }`;
+    return `${categoryName} ${assetData?.pluralizeName} in India ${isMetaDataTitle ? `| Find ${assetData?.name} ` : ""
+      }`;
   }
 
-  const title = `${categoryName} ${
-    assetData?.pluralizeName
-  } Auctions in India ${
-    isMetaDataTitle ? `| Find ${assetData?.name} Auctions` : ""
-  }`;
+  const title = `${categoryName} ${assetData?.pluralizeName
+    } Auctions in India ${isMetaDataTitle ? `| Find ${assetData?.name} Auctions` : ""
+    }`;
 
   return title
     .split(/\s+/)
@@ -795,7 +803,7 @@ export interface IServiceProviders {
   name: string;
 }
 
-export const SERVICE_PROVIDER_OPTIONS: IServiceProviders[]  = [
+export const SERVICE_PROVIDER_OPTIONS: IServiceProviders[] = [
   { value: '', label: 'All', name: 'All' },
   { value: 'baanknet', label: 'BaankNet', name: 'BaankNet' },
   { value: 'ibapi', label: 'IBAPI', name: 'IBAPI' },
