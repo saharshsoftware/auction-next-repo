@@ -91,7 +91,7 @@ export async function generateMetadata(
         type: "website",
         url: canonicalUrl,
         title: `Bank Auction Properties in ${name} | Find Residential, Commercial, Vehicle, and Gold Auctions`,
-        description: `Looking for auctions in ${name}? eauctiondekho offers a detailed list of auctions for properties, vehicles, and more. Start bidding in ${name} and make successful investments with ease.`,
+        description: `Explore bank auction properties in ${name} on eauctiondekho. Find diverse asset types including flats, houses, plots, residential units, agricultural land, bungalows, cars, vehicles, commercial buildings, offices, shops, factory lands, godowns, industrial buildings, lands, machinery, non-agricultural lands, scrap, and sheds. Secure the best deals today tailored to your investment needs`,
         images: sanitizeImageUrl,
         siteName: SEO_BRAND.SITE_NAME,
         locale: SEO_BRAND.LOCALE,
@@ -100,7 +100,7 @@ export async function generateMetadata(
         site: SEO_BRAND.TWITTER_HANDLE,
         card: "summary_large_image",
         title: `Bank Auction Properties in ${name} | Find Residential, Commercial, Vehicle, and Gold Auctions`,
-        description: `Join the dynamic auction market in ${name} with eauctiondekho. Discover and bid on a variety of high-quality assets in ${name}, and secure valuable deals today.`,
+        description: `Explore bank auction properties in ${name} on eauctiondekho. Find diverse asset types including flats, houses, plots, residential units, agricultural land, bungalows, cars, vehicles, commercial buildings, offices, shops, factory lands, godowns, industrial buildings, lands, machinery, non-agricultural lands, scrap, and sheds. Secure the best deals today tailored to your investment needs`,
         images: sanitizeImageUrl,
       },
     };
