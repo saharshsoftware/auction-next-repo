@@ -29,6 +29,7 @@ import {
 import { IPaginationData } from "@/zustandStore/auctionStore";
 import { Metadata, ResolvingMetadata } from "next";
 import { Suspense } from "react";
+import BreadcrumbJsonLd from "@/components/atoms/BreadcrumbJsonLd";
 import { SkeletonAuctionList } from "@/components/skeltons/SkeletonAuctionList";
 import AuctionResults from "@/components/templates/AuctionResults";
 
@@ -180,6 +181,14 @@ export default async function Page({
 
   return (
     <section>
+      <BreadcrumbJsonLd
+        items={[
+          { name: "Home", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/` },
+          { name: "Locations", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/locations` },
+          { name: nameLocation || "Location", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/locations/${slug}` },
+          { name: name || "Type", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/locations/${slug}/types/${slugasset}` },
+        ]}
+      />
       <FindAuctionServer
         categories={categoryOptions}
         assets={assetsTypeOptions}

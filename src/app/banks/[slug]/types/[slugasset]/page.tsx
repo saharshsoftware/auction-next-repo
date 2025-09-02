@@ -39,6 +39,7 @@ import { IPaginationData } from "@/zustandStore/auctionStore";
 import { Metadata, ResolvingMetadata } from "next";
 import dynamic from "next/dynamic";
 import React, { lazy, Suspense } from "react";
+import BreadcrumbJsonLd from "@/components/atoms/BreadcrumbJsonLd";
 import AuctionResults from "@/components/templates/AuctionResults";
 
 async function getSlugData(
@@ -182,6 +183,14 @@ export default async function Page({
 
   return (
     <section>
+      <BreadcrumbJsonLd
+        items={[
+          { name: "Home", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/` },
+          { name: "Banks", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/banks` },
+          { name: bankNamePrimary || "Bank", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/banks/${slug}` },
+          { name: assetTypeData?.name || "Type", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/banks/${slug}/types/${slugasset}` },
+        ]}
+      />
       <FindAuctionServer
         categories={categoryOptions}
         assets={assetsTypeOptions}

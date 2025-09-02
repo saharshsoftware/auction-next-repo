@@ -29,6 +29,7 @@ import TopBanks from "@/components/atoms/TopBanks";
 import { fetchPopularBanks } from "@/server/actions/banks";
 import AuctionResults from "@/components/templates/AuctionResults";
 import { Suspense } from "react";
+import BreadcrumbJsonLd from "@/components/atoms/BreadcrumbJsonLd";
 import { SkeletonAuctionList } from "@/components/skeltons/SkeletonAuctionList";
 
 async function getSlugData(slug: string) {
@@ -170,6 +171,13 @@ export default async function Page({
 
   return (
     <section>
+      <BreadcrumbJsonLd
+        items={[
+          { name: "Home", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/` },
+          { name: "Locations", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/locations` },
+          { name: name ?? "Location", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/locations/${slug}` },
+        ]}
+      />
       <FindAuctionServer
         categories={categoryOptions}
         assets={assetsTypeOptions}
