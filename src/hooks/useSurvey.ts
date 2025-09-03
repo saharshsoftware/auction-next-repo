@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { COOKIES, STORAGE_KEYS } from "@/shared/Constants";
 import { useMutation } from "@tanstack/react-query";
 import { updateUserSurveys, userSurveys } from "@/services/survey";
@@ -32,6 +32,22 @@ export function useSurvey(hideModalFn?: () => void, onSurveyComplete?: () => voi
   const [questionKey, setQuestionKey] = useState("q1");
   const [responses, setResponses] = useState<Record<string, any>>({});
   const [responsePayload, setResponsePayload] = useState<any>({});
+
+  // Helper function to calculate the current index based on questionKey
+  // This tracks the actual position in the survey flow, not just the key position
+  const calculateCurrentIndex = (qKey: string): number => {
+    if (!questions) return 0;
+    
+    // Extract the question number from the key (e.g., "q1" -> 1)
+    const questionNumber = parseInt(qKey.replace('q', ''), 10);
+    return questionNumber > 0 ? questionNumber - 1 : 0;
+  };
+
+  // Effect to sync currentIndex with questionKey changes
+  useEffect(() => {
+    const newIndex = calculateCurrentIndex(questionKey);
+    setCurrentIndex(newIndex);
+  }, [questionKey]);
 
   // Mutations
   const { mutate, isPending: isPendingFinished } = useMutation({
@@ -155,13 +171,6 @@ export function useSurvey(hideModalFn?: () => void, onSurveyComplete?: () => voi
   };
 
   const handlePrevious = (qId: string) => {
-    setCurrentIndex((prev) => {
-      if (prev === 0) {
-        return 0;
-      }
-      return prev - 1;
-    });
-
     const currentQuestionData = questions?.[qId];
     let selectedOption: ISurveyOptions = {
       label: "",
@@ -176,7 +185,10 @@ export function useSurvey(hideModalFn?: () => void, onSurveyComplete?: () => voi
     //   currentQuestion,
     //   handleChange,
     // });
-    setQuestionKey(selectedOption?.prev ?? "");
+    const prevQuestionKey = selectedOption?.prev ?? "";
+    if (prevQuestionKey) {
+      setQuestionKey(prevQuestionKey);
+    }
   };
 
   const handleChange = (value: any) => {
