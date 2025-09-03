@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { Formik, Form, Field } from "formik";
 import ReactSelectDropdown from "../atoms/ReactSelectDropdown";
 import { IAssetType, IBanks, ICategoryCollection, ILocations } from "@/types";
@@ -125,24 +125,33 @@ const FindAuction: React.FC<FindAuctionProps> = ({
     hideModal?.();
   };
 
-  const handleCategoryChange = (
+  const handleCategoryChange = useCallback((
     selectedCategorySlug: string,
     setFieldValue?: any
   ) => {
     setFieldValue?.("propertyType", getEmptyAllObject()); // Reset propertyType
+
+    // If category is "All" or empty, show all assets
+    if (!selectedCategorySlug || selectedCategorySlug === STRING_DATA.EMPTY) {
+      setFilteredAssets(assets);
+      return;
+    }
 
     // Filter asset types based on the selected category
     const filteredOptions = assets.filter(
       (item: IAssetType) => item?.category?.slug === selectedCategorySlug
     );
     setFilteredAssets(filteredOptions?.length > 0 ? filteredOptions : assets);
-  };
+  }, [assets]);
 
   useEffect(() => {
     if ("slug" in selectedCategory && selectedCategory?.slug) {
       handleCategoryChange(selectedCategory?.slug);
+    } else if (selectedCategory?.value === STRING_DATA.EMPTY || selectedCategory?.label === STRING_DATA.ALL) {
+      // Handle case where category is reset to "All"
+      setFilteredAssets(assets);
     }
-  }, [selectedCategory]);
+  }, [selectedCategory, assets, handleCategoryChange]);
 
   const renderForm = () => (
     <Formik
@@ -176,7 +185,12 @@ const FindAuction: React.FC<FindAuctionProps> = ({
                         defaultValue={values.category}
                         onChange={(value) => {
                           setFieldValue("category", value);
-                          handleCategoryChange(value?.slug, setFieldValue);
+                          // Handle "All" selection or specific category selection
+                          if (value?.value === STRING_DATA.EMPTY || value?.label === STRING_DATA.ALL) {
+                            handleCategoryChange(STRING_DATA.EMPTY, setFieldValue);
+                          } else {
+                            handleCategoryChange(value?.slug, setFieldValue);
+                          }
                         }}
                       />
                     )}
