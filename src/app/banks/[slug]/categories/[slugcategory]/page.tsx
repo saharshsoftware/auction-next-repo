@@ -46,6 +46,7 @@ import { SEO_BRAND } from "@/shared/seo.constant";
 import { buildCanonicalUrl } from "@/shared/Utilies";
 import BreadcrumbJsonLd from "@/components/atoms/BreadcrumbJsonLd";
 import AuctionResults from "@/components/templates/AuctionResults";
+import ImageJsonLd from "@/components/atoms/ImageJsonLd";
 
 async function getSlugData(
   slug: string,
@@ -221,6 +222,17 @@ export default async function Page({
 
   return (
     <section>
+      {!!(bankData?.imageURL) && (
+        <ImageJsonLd
+          images={[{
+            url: await handleOgImageUrl(bankData?.imageURL ?? ""),
+            name: `${bankData?.name} ${categoryData?.name} Auctions`,
+            description: `Find ${categoryData?.name} bank auction properties for ${bankData?.name} on eauctiondekho.`,
+          }]}
+          propertyTitle={`${bankData?.name} ${categoryData?.name} Auctions`}
+          propertyDescription={`Find ${categoryData?.name} bank auction properties for ${bankData?.name} on eauctiondekho.`}
+        />
+      )}
       <BreadcrumbJsonLd
         items={[
           { name: "Home", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/` },

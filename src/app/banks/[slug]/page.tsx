@@ -36,6 +36,7 @@ import {
 import { IPaginationData } from "@/zustandStore/auctionStore";
 import { Metadata, ResolvingMetadata } from "next";
 import { Suspense } from "react";
+import ImageJsonLd from "@/components/atoms/ImageJsonLd";
 import { SEO_BRAND } from "@/shared/seo.constant";
 import BreadcrumbJsonLd from "@/components/atoms/BreadcrumbJsonLd";
 
@@ -173,8 +174,21 @@ export default async function Page({
     price: [RANGE_PRICE.MIN, RANGE_PRICE.MAX],
   } as ILocalFilter;
 
+  const bankImageUrl = await handleOgImageUrl(bankData?.imageURL ?? "");
+
   return (
     <section>
+      {!!bankImageUrl && (
+        <ImageJsonLd
+          images={[{
+            url: bankImageUrl,
+            name: `${bankData?.name} Auction Properties`,
+            description: `Discover ${bankData?.name}'s auction properties on eauctiondekho.`,
+          }]}
+          propertyTitle={`${bankData?.name} Auction Properties`}
+          propertyDescription={`Discover ${bankData?.name}'s auction properties on eauctiondekho.`}
+        />
+      )}
       <BreadcrumbJsonLd
         items={[
           { name: "Home", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/` },

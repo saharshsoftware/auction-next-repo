@@ -29,6 +29,7 @@ import {
   sanitizeCategorySEOH1title,
   sanitizeCategorytitle,
   sanitizeReactSelectOptionsPage,
+  handleOgImageUrl,
 } from "@/shared/Utilies";
 import {
   IAssetType,
@@ -44,6 +45,7 @@ import { SEO_BRAND } from "@/shared/seo.constant";
 import { buildCanonicalUrl } from "@/shared/Utilies";
 import BreadcrumbJsonLd from "@/components/atoms/BreadcrumbJsonLd";
 import AuctionResults from "@/components/templates/AuctionResults";
+import ImageJsonLd from "@/components/atoms/ImageJsonLd";
 
 async function getSlugData(slug: string) {
   const selectedCategory = (await getCategoryBoxCollectionBySlug({
@@ -182,8 +184,21 @@ export default async function Page({
     }
   }
 
+  const categoryImageUrl = await handleOgImageUrl(categoryData?.imageURL ?? "");
+
   return (
     <section>
+      {!!categoryImageUrl && (
+        <ImageJsonLd
+          images={[{
+            url: categoryImageUrl,
+            name: `${categoryData?.name} Bank Auction Properties`,
+            description: `Find ${categoryData?.name} bank auction properties on eauctiondekho.`,
+          }]}
+          propertyTitle={`${categoryData?.name} Bank Auction Properties`}
+          propertyDescription={`Find ${categoryData?.name} bank auction properties on eauctiondekho.`}
+        />
+      )}
       <BreadcrumbJsonLd
         items={[
           { name: "Home", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/` },
