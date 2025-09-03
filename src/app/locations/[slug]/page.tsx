@@ -9,11 +9,7 @@ import {
 } from "@/server/actions/auction";
 import { fetchLocation, fetchLocationBySlug } from "@/server/actions/location";
 import { RANGE_PRICE } from "@/shared/Constants";
-import {
-  handleOgImageUrl,
-  sanitizeReactSelectOptionsPage,
-  buildCanonicalUrl,
-} from "@/shared/Utilies";
+import { handleOgImageUrl, sanitizeReactSelectOptionsPage, buildCanonicalUrl } from "@/shared/Utilies";
 import {
   IAssetType,
   IAuction,
@@ -32,6 +28,7 @@ import AuctionResults from "@/components/templates/AuctionResults";
 import { Suspense } from "react";
 import { SEO_BRAND } from "@/shared/seo.constant";
 import BreadcrumbJsonLd from "@/components/atoms/BreadcrumbJsonLd";
+import ImageJsonLd from "@/components/atoms/ImageJsonLd";
 import { SkeletonAuctionList } from "@/components/skeltons/SkeletonAuctionList";
 
 async function getSlugData(slug: string) {
@@ -178,8 +175,13 @@ export default async function Page({
     price: filterQueryData?.price,
   } as ILocalFilter;
 
+
+  // Prepare Image JSON-LD for location hero/cover
+  const locationImageUrl = await handleOgImageUrl(locationData?.imageURL ?? "");
+
   return (
     <section>
+      {/* Breadcrumbs */}
       <BreadcrumbJsonLd
         items={[
           { name: "Home", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/` },
@@ -187,6 +189,18 @@ export default async function Page({
           { name: name ?? "Location", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/locations/${slug}` },
         ]}
       />
+      {/* Image JSON-LD for the city image */}
+      {!!locationImageUrl && (
+        <ImageJsonLd
+          images={[{
+            url: locationImageUrl,
+            name: `Auction Properties in ${name}`,
+            description: `Explore bank auction properties in ${name} on eauctiondekho.`,
+          }]}
+          propertyTitle={`Auction Properties in ${name}`}
+          propertyDescription={`Explore bank auction properties in ${name} on eauctiondekho.`}
+        />
+      )}
       <FindAuctionServer
         categories={categoryOptions}
         assets={assetsTypeOptions}

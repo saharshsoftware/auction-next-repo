@@ -26,6 +26,17 @@ const ImageJsonLd = ({
   
   if (!images || images.length === 0) return null;
 
+  const guessMimeFromUrl = (url: string): string | undefined => {
+    try {
+      const lower = url.split('?')[0].toLowerCase();
+      if (lower.endsWith('.jpg') || lower.endsWith('.jpeg')) return 'image/jpeg';
+      if (lower.endsWith('.png')) return 'image/png';
+      if (lower.endsWith('.webp')) return 'image/webp';
+      if (lower.endsWith('.gif')) return 'image/gif';
+    } catch {}
+    return undefined;
+  };
+
   const imageObjects = images.map((image, index) => ({
     "@type": "ImageObject",
     "@id": `${image.url}#image`,
@@ -36,7 +47,7 @@ const ImageJsonLd = ({
     caption: image.caption || image.description,
     ...(image.width && { width: image.width }),
     ...(image.height && { height: image.height }),
-    encodingFormat: "image/jpeg",
+    ...(guessMimeFromUrl(image.url) ? { encodingFormat: guessMimeFromUrl(image.url) } : {}),
     thumbnailUrl: image.url,
   }));
 

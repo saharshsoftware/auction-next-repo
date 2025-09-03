@@ -37,6 +37,7 @@ import { SEO_BRAND } from "@/shared/seo.constant";
 import { buildCanonicalUrl } from "@/shared/Utilies";
 import BreadcrumbJsonLd from "@/components/atoms/BreadcrumbJsonLd";
 import AuctionResults from "@/components/templates/AuctionResults";
+import ImageJsonLd from "@/components/atoms/ImageJsonLd";
 
 async function getSlugData(slug: string) {
   const selectedAsset = (await fetchAssetTypeBySlug({
@@ -165,6 +166,17 @@ export default async function Page({
   }
     return (
     <section>
+      {!!((process.env.NEXT_PUBLIC_IMAGE_CLOUDFRONT || "") + (assetTypeData?.imageURL || "")) && (
+        <ImageJsonLd
+          images={[{
+            url: (process.env.NEXT_PUBLIC_IMAGE_CLOUDFRONT || "") + (assetTypeData?.imageURL || ""),
+            name: `Bank Auction ${assetTypeData?.name} in India`,
+            description: `Find ${assetTypeData?.name} in bank auction on eauctiondekho.`,
+          }]}
+          propertyTitle={`Bank Auction ${assetTypeData?.name} in India`}
+          propertyDescription={`Find ${assetTypeData?.name} in bank auction on eauctiondekho.`}
+        />
+      )}
       <BreadcrumbJsonLd
         items={[
           { name: "Home", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/` },
