@@ -39,6 +39,7 @@ import { useScrollToTop } from '@/hooks/useScrollToTop';
 import { loginLogic } from '@/utilies/LoginHelper';
 import BlurredFieldWrapper from '../atoms/BlurredFieldWrapper';
 import { Eye } from 'lucide-react';
+import ImageJsonLd from '../atoms/ImageJsonLd';
 
 
 // add props type
@@ -248,6 +249,20 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
   };
   return (
     <>
+      {/* Structured data for property images */}
+      {hasValidImages && (
+        <ImageJsonLd
+          images={images.map((url, index) => ({
+            url,
+            name: `${property.title} - Property Image ${index + 1}`,
+            description: `${property.asset_type || 'Property'} in ${property.city || 'location'} - Image ${index + 1} of ${images.length}`,
+            caption: `${property.bankName || 'Bank'} auction property image`
+          }))}
+          propertyTitle={property.title}
+          propertyDescription={property.description}
+        />
+      )}
+      
       {openModal ? (
         <InterestModal
           openModal={openModal}
@@ -443,6 +458,12 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
                 <ImageCarousel
                   images={images}
                   title={property.title || 'Property Images'}
+                  propertyData={{
+                    type: property.asset_type,
+                    city: property.city,
+                    area: property.location || property.area,
+                    bankName: property.bankName
+                  }}
                 />
               </div>
             </BlurredFieldWrapper>
