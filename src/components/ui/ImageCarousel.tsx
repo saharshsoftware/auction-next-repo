@@ -10,9 +10,15 @@ interface ImageCarouselProps {
   title?: string;
   className?: string;
   onImageError?: () => void;
+  propertyData?: {
+    type?: string;
+    city?: string;
+    area?: string;
+    bankName?: string;
+  };
 }
 
-export const ImageCarousel: React.FC<ImageCarouselProps> = ({ images, title = 'Property Images', className = '', onImageError }) => {
+export const ImageCarousel: React.FC<ImageCarouselProps> = ({ images, title = 'Property Images', className = '', onImageError, propertyData }) => {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [failedImages, setFailedImages] = useState<Set<number>>(new Set());
@@ -20,6 +26,23 @@ export const ImageCarousel: React.FC<ImageCarouselProps> = ({ images, title = 'P
 
   const modalSliderRef = useRef<Slider | null>(null);
   const validImages = useMemo(() => (images || []).filter((_, index) => !failedImages.has(index)), [images, failedImages]);
+  
+  const generateAltText = (index: number, isFullscreen = false) => {
+    const { type, city, area, bankName } = propertyData || {};
+    const baseAlt = title || 'Property';
+    const imageNumber = index + 1;
+    const totalImages = validImages.length;
+    
+    let altText = `${baseAlt} image ${imageNumber} of ${totalImages}`;
+    
+    if (type) altText += ` - ${type}`;
+    if (area) altText += ` in ${area}`;
+    if (city) altText += `, ${city}`;
+    if (bankName) altText += ` | ${bankName} auction property`;
+    if (isFullscreen) altText += ' - Full size view';
+    
+    return altText;
+  };
   if (!images || images.length === 0) {
     return <div className={`bg-gray-200 rounded-lg flex items-center justify-center h-96 ${className}`}><span className="text-gray-500">No images available</span></div>;
   }
@@ -69,7 +92,14 @@ export const ImageCarousel: React.FC<ImageCarouselProps> = ({ images, title = 'P
           <Slider ref={instance => (mainSliderRef.current = instance)} {...mainSettings}>
             {validImages.map((src, index) => (
               <div key={index} className="w-full h-[500px] bg-gray-100 flex items-center justify-center" onClick={() => setIsModalOpen(true)}>
-                <img src={src} alt={`${title} - Image ${index + 1}`} className="w-full h-full object-contain select-none" onError={() => handleImageError(index)} />
+                <img 
+                  src={src} 
+                  alt={generateAltText(index)} 
+                  title={generateAltText(index)}
+                  className="w-full h-full object-contain select-none" 
+                  onError={() => handleImageError(index)}
+                  loading={index === 0 ? "eager" : "lazy"}
+                />
               </div>
             ))}
           </Slider>
@@ -102,7 +132,14 @@ export const ImageCarousel: React.FC<ImageCarouselProps> = ({ images, title = 'P
                <Slider ref={instance => (modalSliderRef.current = instance)} {...modalSettings}>
                  {validImages.map((src, index) => (
                    <div key={index} className="w-screen h-screen flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
-                     <img src={src} alt={`${title} - Full ${index + 1}`} className="w-full h-full object-contain select-none" onError={() => handleImageError(index)} onClick={(e) => e.stopPropagation()} />
+                     <img 
+                       src={src} 
+                       alt={generateAltText(index, true)} 
+                       title={generateAltText(index, true)}
+                       className="w-full h-full object-contain select-none" 
+                       onError={() => handleImageError(index)} 
+                       onClick={(e) => e.stopPropagation()} 
+                     />
                    </div>
                  ))}
                </Slider>
