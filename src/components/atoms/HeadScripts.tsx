@@ -1,5 +1,5 @@
 "use client";
-import { BREADCRUMB_LIST, SITELINK_SEARCHBOX } from "@/shared/seo.constant";
+import { SITELINK_SEARCHBOX } from "@/shared/seo.constant";
 import logo from "@/assets/images/logo.png";
 
 const HeadScripts = () => {
@@ -11,10 +11,7 @@ const HeadScripts = () => {
       <link rel="preload" as="image" href={logo.src} type="image/svg+xml" />
 
       {/* Structured Data Scripts */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(BREADCRUMB_LIST) }}
-      />
+      {/* Breadcrumb is now injected per-page as JSON-LD */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(SITELINK_SEARCHBOX) }}

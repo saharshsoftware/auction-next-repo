@@ -21,6 +21,13 @@ const inter = Inter({
 
 export const revalidate = PAGE_REVALIDATE_TIME_FOR_AUCTION_LIST;
 
+export const metadata: Metadata = {
+  // Ensures all relative URLs in metadata resolve to the primary domain
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_DOMAIN_BASE_URL || "https://www.eauctiondekho.com"
+  ),
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{

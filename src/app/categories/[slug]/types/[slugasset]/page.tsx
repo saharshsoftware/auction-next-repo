@@ -37,6 +37,7 @@ import { IAssetType, ICategoryCollection, ILocations, IAuction } from "@/types";
 import { IPaginationData } from "@/zustandStore/auctionStore";
 import { ResolvingMetadata, Metadata } from "next";
 import { Suspense } from "react";
+import { buildCanonicalUrl } from "@/shared/Utilies";
 import AuctionResults from "@/components/templates/AuctionResults";
 
 async function getSlugData(
@@ -87,9 +88,17 @@ export async function generateMetadata(
       assetTypeData,
       true
     );
+    const baseUrl = process.env.NEXT_PUBLIC_DOMAIN_BASE_URL as string;
+    const canonicalUrl = buildCanonicalUrl({
+      baseUrl,
+      pathname: `/categories/${slug}/types/${slugasset}`,
+      page: searchParams?.page,
+    });
+
     return {
       title: sanitizeTitle,
-      description: `Find ${name} ${assetTypeData?.name}  bank auction properties for on eAuctionDekho. Find diverse asset types including ${keywordsAll}. Secure the best deals today tailored to your investment needs`,
+      description: `Find ${name} ${assetTypeData?.name} bank auction properties on eauctiondekho. Explore diverse assets including ${keywordsAll}.`,
+      alternates: { canonical: canonicalUrl },
       keywords: [
         `${name} bank auction properties`,
         ...keywordsAll.map((k) => `${k} bank auction`),
@@ -97,16 +106,18 @@ export async function generateMetadata(
 
       openGraph: {
         type: "website",
-        url: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/categories/${slug}/types/${slugasset}`,
+        url: canonicalUrl,
         title: sanitizeTitle,
-        description: `Find ${name} ${assetTypeData?.name}  bank auction properties for on eAuctionDekho. Find diverse asset types including ${keywordsAll}. Secure the best deals today tailored to your investment needs`,
+        description: `Find ${name} ${assetTypeData?.name} bank auction properties on eauctiondekho. Explore diverse assets including ${keywordsAll}.`,
         images: sanitizeImageUrl,
+        siteName: "eauctiondekho",
+        locale: "en_IN",
       },
       twitter: {
-        site: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/categories/${slug}/types/${slugasset}`,
+        site: "@eauctiondekho",
         card: "summary_large_image",
         title: sanitizeTitle,
-        description: `Find ${name} ${assetTypeData?.name}  bank auction properties for on eAuctionDekho. Find diverse asset types including ${keywordsAll}. Secure the best deals today tailored to your investment needs`,
+        description: `Find ${name} ${assetTypeData?.name} bank auction properties on eauctiondekho. Explore diverse assets including ${keywordsAll}.`,
         images: sanitizeImageUrl,
       },
     };

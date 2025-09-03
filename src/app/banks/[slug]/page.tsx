@@ -24,6 +24,7 @@ import {
   getPrimaryBankName,
   handleOgImageUrl,
   sanitizeReactSelectOptionsPage,
+  buildCanonicalUrl,
 } from "@/shared/Utilies";
 import {
   IAssetType,
@@ -35,6 +36,8 @@ import {
 import { IPaginationData } from "@/zustandStore/auctionStore";
 import { Metadata, ResolvingMetadata } from "next";
 import { Suspense } from "react";
+import { SEO_BRAND } from "@/shared/seo.constant";
+import BreadcrumbJsonLd from "@/components/atoms/BreadcrumbJsonLd";
 
 async function getSlugData(slug: string) {
   const selectedBank = (await fetchBanksBySlug({
@@ -65,11 +68,18 @@ export async function generateMetadata(
       secondarySlug ?? "",
       slug ?? ""
     );
+    const baseUrl = process.env.NEXT_PUBLIC_DOMAIN_BASE_URL as string;
+    const canonicalUrl = buildCanonicalUrl({
+      baseUrl,
+      pathname: `/banks/${primaryBankSlug}`,
+      page: searchParams?.page,
+    });
+
     return {
       title: `${primaryName} Auction Properties | Find - Residential, Commercial, Vehicle, and Gold Auctions`,
-      description: `Discover ${primaryName}'s auction properties on eAuctionDekho, featuring a diverse selection of asset types including flats, houses, plots, residential units, agricultural land, bungalows, cars, vehicles, commercial buildings, offices, shops, factory and building lands, godowns, industrial buildings, lands, machinery, non-agricultural lands, scrap, and sheds. Secure the best deals today on assets tailored to meet diverse investment needs.`,
+      description: `Discover ${primaryName}'s auction properties on eauctiondekho, featuring a diverse selection of asset types including flats, houses, plots, residential units, agricultural land, bungalows, cars, vehicles, commercial buildings, offices, shops, factory and building lands, godowns, industrial buildings, lands, machinery, non-agricultural lands, scrap, and sheds. Secure the best deals today on assets tailored to meet diverse investment needs.`,
       alternates: {
-        canonical: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/banks/${primaryBankSlug}`,
+        canonical: canonicalUrl,
       },
 
       keywords: [
@@ -82,21 +92,23 @@ export async function generateMetadata(
         `${primaryName} machinery auctions`,
         `${primaryName} plots for sale`,
         `${primaryName} residential units`,
-        `eAuctionDekho ${primaryName} listings`,
+        `eauctiondekho ${primaryName} listings`,
       ],
 
       openGraph: {
         type: "website",
-        url: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/banks/${primaryBankSlug}`,
+        url: canonicalUrl,
         title: `${primaryName} Auction Properties | Find - Residential, Commercial, Vehicle, and Gold Auctions`,
-        description: `Discover ${primaryName}'s auction properties on eAuctionDekho, featuring a diverse selection of asset types including flats, houses, plots, residential units, agricultural land, bungalows, cars, vehicles, commercial buildings, offices, shops, factory and building lands, godowns, industrial buildings, lands, machinery, non-agricultural lands, scrap, and sheds. Secure the best deals today on assets tailored to meet diverse investment needs.`,
+        description: `Discover ${primaryName}'s auction properties on eauctiondekho, featuring a diverse selection of asset types including flats, houses, plots, residential units, agricultural land, bungalows, cars, vehicles, commercial buildings, offices, shops, factory and building lands, godowns, industrial buildings, lands, machinery, non-agricultural lands, scrap, and sheds. Secure the best deals today on assets tailored to meet diverse investment needs.`,
         images: sanitizeImageUrl,
+        siteName: SEO_BRAND.SITE_NAME,
+        locale: SEO_BRAND.LOCALE,
       },
       twitter: {
-        site: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/banks/${primaryBankSlug}`,
+        site: SEO_BRAND.TWITTER_HANDLE,
         card: "summary_large_image",
         title: `${primaryName} Auction Properties | Find - Residential, Commercial, Vehicle, and Gold Auctions`,
-        description: `Discover ${primaryName}'s auction properties on eAuctionDekho, featuring a diverse selection of asset types including flats, houses, plots, residential units, agricultural land, bungalows, cars, vehicles, commercial buildings, offices, shops, factory and building lands, godowns, industrial buildings, lands, machinery, non-agricultural lands, scrap, and sheds. Secure the best deals today on assets tailored to meet diverse investment needs.`,
+        description: `Discover ${primaryName}'s auction properties on eauctiondekho, featuring a diverse selection of asset types including flats, houses, plots, residential units, agricultural land, bungalows, cars, vehicles, commercial buildings, offices, shops, factory and building lands, godowns, industrial buildings, lands, machinery, non-agricultural lands, scrap, and sheds. Secure the best deals today on assets tailored to meet diverse investment needs.`,
         images: sanitizeImageUrl,
       },
     };
@@ -163,6 +175,13 @@ export default async function Page({
 
   return (
     <section>
+      <BreadcrumbJsonLd
+        items={[
+          { name: "Home", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/` },
+          { name: "Banks", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/banks` },
+          { name: bankData?.name ?? "Bank", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/banks/${slug}` },
+        ]}
+      />
       <FindAuctionServer
         categories={categoryOptions}
         assets={assetsTypeOptions}

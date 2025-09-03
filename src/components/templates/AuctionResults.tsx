@@ -76,9 +76,37 @@ export default async function AuctionResults({
     return null;
   };
 
+  const renderItemListJsonLd = () => {
+    const baseUrl = process.env.NEXT_PUBLIC_DOMAIN_BASE_URL || "";
+    const auctions = Array.isArray(response?.sendResponse) ? response.sendResponse : [];
+    const itemList = {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      itemListElement: auctions.slice(0, 10).map((auction: { slug?: string; title?: string; noticeImageUrl?: string; noticeImageURLs?: string[] }, index: number) => {
+        const url = auction?.slug ? `${baseUrl}/auctions/${auction.slug}` : baseUrl;
+        return {
+          "@type": "ListItem",
+          position: index + 1,
+          url,
+          name: auction?.title || undefined,
+          image: Array.isArray(auction?.noticeImageURLs) && auction.noticeImageURLs.length > 0
+            ? auction.noticeImageURLs[0]
+            : (auction?.noticeImageUrl || undefined),
+        };
+      }),
+    } as const;
+    return (
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(itemList) }}
+      />
+    );
+  };
+
   return (
     <>
       {renderAuctionHeaderComponent()}
+      {renderItemListJsonLd()}
       <ShowAuctionListServer
         auctions={response?.sendResponse ?? []}
         totalPages={response?.meta?.pageCount || 1}
