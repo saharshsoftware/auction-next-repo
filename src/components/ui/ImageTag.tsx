@@ -7,8 +7,33 @@ const ImageTag = (props: {
   imageUrl?: string;
   alt?: string;
   customClass?: string;
+  title?: string;
+  entityName?: string;
+  entityType?: string;
 }) => {
-  const { imageUrl = "", alt, customClass } = props;
+  const { imageUrl = "", alt, customClass, title, entityName, entityType } = props;
+  
+  // Generate SEO-friendly alt text if not provided
+  const generateAltText = () => {
+    if (alt && alt !== "i") return alt;
+    
+    if (entityName && entityType) {
+      return `${entityName} ${entityType} image`;
+    }
+    
+    if (entityName) {
+      return `${entityName} image`;
+    }
+    
+    if (entityType) {
+      return `${entityType} image`;
+    }
+    
+    return "Property image";
+  };
+  
+  const optimizedAlt = generateAltText();
+  const imageTitle = title || optimizedAlt;
 
   const renderImage = () => {
     if (imageUrl) {
@@ -19,7 +44,8 @@ const ImageTag = (props: {
           // objectFit="contain"
           style={{ objectFit: "cover" }}
           src={imageUrl}
-          alt={alt ?? "i"}
+          alt={optimizedAlt}
+          title={imageTitle}
           className={customClass}
         />
       );
@@ -29,7 +55,8 @@ const ImageTag = (props: {
     <>
       <img
         src={imageUrl}
-        alt={alt ?? "i"}
+        alt={optimizedAlt}
+        title={imageTitle}
         fetchPriority="high"
         loading="eager"
         width="800"
