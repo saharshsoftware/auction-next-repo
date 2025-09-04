@@ -4,44 +4,6 @@ import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronRight, faHome } from "@fortawesome/free-solid-svg-icons";
 
-/**
- * Responsive Breadcrumb Component with UX-friendly features
- * 
- * Features:
- * - Responsive design (mobile/desktop views)
- * - Text truncation on mobile
- * - Hover effects and tooltips
- * - Collapsible navigation for long paths
- * - Accessible markup
- * 
- * @example
- * // Basic usage
- * <Breadcrumb 
- *   items={[
- *     { label: "Products", href: "/products" },
- *     { label: "Electronics", href: "/products/electronics" },
- *     { label: "Smartphones", isActive: true }
- *   ]}
- * />
- * 
- * @example
- * // Mobile-optimized with custom truncation
- * <Breadcrumb 
- *   items={breadcrumbItems}
- *   maxMobileItems={2}
- *   truncateLength={20}
- * />
- * 
- * @example
- * // Custom styling
- * <Breadcrumb 
- *   items={breadcrumbItems}
- *   className="bg-white border rounded-md"
- *   linkClassName="text-blue-600 hover:text-blue-800"
- *   activeItemClassName="text-gray-900 font-semibold"
- * />
- */
-
 export interface IBreadcrumbItem {
   label: string;
   href?: string;
