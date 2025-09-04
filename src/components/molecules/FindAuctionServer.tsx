@@ -12,6 +12,7 @@ import { formatPrice, IServiceProviders, SERVICE_PROVIDER_OPTIONS } from "@/shar
 import useResize from "@/hooks/useResize";
 import {
   getEmptyAllObject,
+  getEmptyAssetTypeObject,
   RANGE_PRICE,
   STRING_DATA,
 } from "@/shared/Constants";
@@ -38,6 +39,7 @@ const gridElementClass = () => "lg:col-span-2  col-span-full";
 
 const mobileViewFilterClass = () =>
   "border bg-white text-sm text-gray-800 shadow px-2 py-1 min-w-fit rounded-lg border-brand-color text-center line-clamp-1";
+
 const FindAuction: React.FC<FindAuctionProps> = ({
   categories,
   assets,
@@ -54,7 +56,7 @@ const FindAuction: React.FC<FindAuctionProps> = ({
   const { setDataInQueryParamsMethod } = useCustomParamsData();
   const { showModal: showFilterModal, openModal, hideModal } = useModal();
   const [filteredAssets, setFilteredAssets] = useState<IAssetType[]>(
-    assets ?? []
+    [getEmptyAssetTypeObject(), ...(assets ?? [])]
   );
 
   const [staticLoading, setStaticLoading] = useState(false);
@@ -131,17 +133,18 @@ const FindAuction: React.FC<FindAuctionProps> = ({
   ) => {
     setFieldValue?.("propertyType", getEmptyAllObject()); // Reset propertyType
 
-    // If category is "All" or empty, show all assets
+    // If category is "All" or empty, show all assets with "All" option
     if (!selectedCategorySlug || selectedCategorySlug === STRING_DATA.EMPTY) {
-      setFilteredAssets(assets);
+      setFilteredAssets([getEmptyAssetTypeObject(), ...assets]);
       return;
     }
 
-    // Filter asset types based on the selected category
+    // Filter asset types based on the selected category and add "All" option
     const filteredOptions = assets.filter(
       (item: IAssetType) => item?.category?.slug === selectedCategorySlug
     );
-    setFilteredAssets(filteredOptions?.length > 0 ? filteredOptions : assets);
+    const assetsWithAllOption = [getEmptyAssetTypeObject(), ...(filteredOptions?.length > 0 ? filteredOptions : assets)];
+    setFilteredAssets(assetsWithAllOption);
   }, [assets]);
 
   useEffect(() => {
@@ -149,7 +152,7 @@ const FindAuction: React.FC<FindAuctionProps> = ({
       handleCategoryChange(selectedCategory?.slug);
     } else if (selectedCategory?.value === STRING_DATA.EMPTY || selectedCategory?.label === STRING_DATA.ALL) {
       // Handle case where category is reset to "All"
-      setFilteredAssets(assets);
+      setFilteredAssets([getEmptyAssetTypeObject(), ...assets]);
     }
   }, [selectedCategory, assets, handleCategoryChange]);
 
