@@ -171,7 +171,7 @@ export default async function Home() {
                     title={item?.title ?? ""}
                     subTitle={item?.subTitle ?? ""}
                   >
-                    {item?.collectionData?.map(
+                    {item?.collectionData?.slice(0, 10)?.map(
                       (subItem: any, index: number) => (
                         <ItemComponent
                           key={index}
