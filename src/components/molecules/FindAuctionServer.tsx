@@ -56,7 +56,7 @@ const FindAuction: React.FC<FindAuctionProps> = ({
   const { setDataInQueryParamsMethod } = useCustomParamsData();
   const { showModal: showFilterModal, openModal, hideModal } = useModal();
   const [filteredAssets, setFilteredAssets] = useState<IAssetType[]>(
-    [getEmptyAssetTypeObject(), ...(assets ?? [])]
+    assets ?? []
   );
 
   const [staticLoading, setStaticLoading] = useState(false);
@@ -133,9 +133,9 @@ const FindAuction: React.FC<FindAuctionProps> = ({
   ) => {
     setFieldValue?.("propertyType", getEmptyAllObject()); // Reset propertyType
 
-    // If category is "All" or empty, show all assets with "All" option
+    // If category is "All" or empty, show all assets (assets already contain "All" option)
     if (!selectedCategorySlug || selectedCategorySlug === STRING_DATA.EMPTY) {
-      setFilteredAssets([getEmptyAssetTypeObject(), ...assets]);
+      setFilteredAssets(assets);
       return;
     }
 
@@ -143,7 +143,12 @@ const FindAuction: React.FC<FindAuctionProps> = ({
     const filteredOptions = assets.filter(
       (item: IAssetType) => item?.category?.slug === selectedCategorySlug
     );
-    const assetsWithAllOption = [getEmptyAssetTypeObject(), ...(filteredOptions?.length > 0 ? filteredOptions : assets)];
+    
+    // Find the existing "All" option from the original assets
+    const allOption = assets.find(item => item?.label === STRING_DATA.ALL || (item as any)?.value === STRING_DATA.EMPTY);
+    const assetsWithAllOption = allOption 
+      ? [allOption, ...(filteredOptions?.length > 0 ? filteredOptions : assets.filter(item => item !== allOption))]
+      : [getEmptyAssetTypeObject(), ...(filteredOptions?.length > 0 ? filteredOptions : assets)];
     setFilteredAssets(assetsWithAllOption);
   }, [assets]);
 
@@ -151,8 +156,8 @@ const FindAuction: React.FC<FindAuctionProps> = ({
     if ("slug" in selectedCategory && selectedCategory?.slug) {
       handleCategoryChange(selectedCategory?.slug);
     } else if (selectedCategory?.value === STRING_DATA.EMPTY || selectedCategory?.label === STRING_DATA.ALL) {
-      // Handle case where category is reset to "All"
-      setFilteredAssets([getEmptyAssetTypeObject(), ...assets]);
+      // Handle case where category is reset to "All" (assets already contain "All" option)
+      setFilteredAssets(assets);
     }
   }, [selectedCategory, assets, handleCategoryChange]);
 
