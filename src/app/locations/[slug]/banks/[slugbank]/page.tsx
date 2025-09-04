@@ -41,6 +41,8 @@ import { Suspense } from "react";
 import { SEO_BRAND } from "@/shared/seo.constant";
 import { buildCanonicalUrl } from "@/shared/Utilies";
 import BreadcrumbJsonLd from "@/components/atoms/BreadcrumbJsonLd";
+import Breadcrumb from "@/components/atoms/Breadcrumb";
+import { ROUTE_CONSTANTS } from "@/shared/Routes";
 
 async function getSlugData(
   slug: string,
@@ -206,6 +208,27 @@ export default async function Page({
       reservePrice: [RANGE_PRICE.MIN, RANGE_PRICE.MAX],
     }
   }
+
+  const getBreadcrumbItems = () => {
+    return [
+      {
+        label: "City",
+        href: ROUTE_CONSTANTS.CITIES,
+      },
+      {
+        label: name || "Location",
+        href: `${ROUTE_CONSTANTS.LOCATION}/${slug}`,
+      },
+      {
+        label: "Banks",
+        href: ROUTE_CONSTANTS.BANKS,
+      },
+      {
+        label: bankData?.name || "Bank",
+        href: `${ROUTE_CONSTANTS.LOCATION}/${slug}/banks/${slugbank}`,
+      },
+    ];
+  };
   return (
     <section>
       <BreadcrumbJsonLd
@@ -225,6 +248,12 @@ export default async function Page({
         selectedBank={selectedBank}
       />
       <div className="common-section">
+        {/* Breadcrumb Navigation */}
+        <div className="pt-4">
+          <Breadcrumb
+            items={getBreadcrumbItems()}
+          />
+        </div>
         <div className="grid grid-cols-12 gap-4 py-4">
           <div className="lg:col-span-9 col-span-full">
             <Suspense key={page?.toString()} fallback={<SkeletonAuctionList />}>

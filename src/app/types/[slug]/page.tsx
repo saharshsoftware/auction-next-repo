@@ -38,6 +38,8 @@ import { buildCanonicalUrl } from "@/shared/Utilies";
 import BreadcrumbJsonLd from "@/components/atoms/BreadcrumbJsonLd";
 import AuctionResults from "@/components/templates/AuctionResults";
 import ImageJsonLd from "@/components/atoms/ImageJsonLd";
+import { ROUTE_CONSTANTS } from "@/shared/Routes";
+import Breadcrumb from "@/components/atoms/Breadcrumb";
 
 async function getSlugData(slug: string) {
   const selectedAsset = (await fetchAssetTypeBySlug({
@@ -163,6 +165,20 @@ export default async function Page({
       reservePrice: [RANGE_PRICE.MIN, RANGE_PRICE.MAX],
     }
   }
+
+  const getBreadcrumbItems = () => {
+    return [
+      {
+        label: "Type",
+        href: ROUTE_CONSTANTS.ASSETS,
+      },
+      {
+        label: assetTypeData?.name || "Type",
+        href: `${ROUTE_CONSTANTS.TYPES}/${slug}`,
+      }
+    ];
+  };
+
     return (
     <section>
       {!!logoUrl && (
@@ -191,6 +207,12 @@ export default async function Page({
         selectedAsset={selectedAsset}
       />
       <div className="common-section">
+        {/* Breadcrumb Navigation */}
+        <div className="pt-4">
+          <Breadcrumb
+            items={getBreadcrumbItems()}
+          />
+        </div>
         <div className="grid grid-cols-12 gap-4 py-4">
           <div className="grid-col-span-9 ">
             <Suspense key={page?.toString()} fallback={<SkeletonAuctionList />}>

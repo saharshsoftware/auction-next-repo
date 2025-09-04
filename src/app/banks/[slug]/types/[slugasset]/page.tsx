@@ -43,6 +43,8 @@ import { SEO_BRAND } from "@/shared/seo.constant";
 import { buildCanonicalUrl } from "@/shared/Utilies";
 import BreadcrumbJsonLd from "@/components/atoms/BreadcrumbJsonLd";
 import AuctionResults from "@/components/templates/AuctionResults";
+import Breadcrumb from "@/components/atoms/Breadcrumb";
+import { ROUTE_CONSTANTS } from "@/shared/Routes";
 
 async function getSlugData(
   slug: string,
@@ -193,6 +195,27 @@ export default async function Page({
 
   const key = page?.toString();
 
+  const getBreadcrumbItems = () => {
+    return [
+      {
+        label: "Bank",
+        href: ROUTE_CONSTANTS.BANKS,
+      },
+      {
+        label: bankData?.name || "Bank",
+        href: `${ROUTE_CONSTANTS.BANKS}/${slug}`,
+      },
+      {
+        label: "Asset",
+        href: `${ROUTE_CONSTANTS.ASSETS}`,
+      },
+      {
+        label: assetTypeData?.name || "Type",
+        href: `${ROUTE_CONSTANTS.BANKS}/${slug}/types/${slugasset}`,
+      },
+    ];
+  };
+
   return (
     <section>
       <BreadcrumbJsonLd
@@ -212,6 +235,12 @@ export default async function Page({
         selectedBank={selectedBank}
       />
       <div className="common-section">
+        {/* Breadcrumb Navigation */}
+        <div className="pt-4">
+          <Breadcrumb
+            items={getBreadcrumbItems()}
+          />
+        </div>
         <div className="grid grid-cols-12 gap-4 py-4">
           <div className="grid-col-span-9 ">
             <Suspense key={key} fallback={<SkeletonAuctionList />}>

@@ -39,6 +39,8 @@ import { Suspense } from "react";
 import ImageJsonLd from "@/components/atoms/ImageJsonLd";
 import { SEO_BRAND } from "@/shared/seo.constant";
 import BreadcrumbJsonLd from "@/components/atoms/BreadcrumbJsonLd";
+import Breadcrumb from "@/components/atoms/Breadcrumb";
+import { ROUTE_CONSTANTS } from "@/shared/Routes";
 
 async function getSlugData(slug: string) {
   const selectedBank = (await fetchBanksBySlug({
@@ -176,6 +178,19 @@ export default async function Page({
 
   const bankImageUrl = await handleOgImageUrl(bankData?.imageURL ?? "");
 
+  const getBreadcrumbItems = () => {
+    return [
+      {
+        label: "Banks",
+        href: ROUTE_CONSTANTS.BANKS,
+      },
+      {
+        label: bankData?.name ?? "Bank",
+        href: `${ROUTE_CONSTANTS.BANKS}/${slug}`,
+      },
+    ];
+  };
+
   return (
     <section>
       {!!bankImageUrl && (
@@ -204,6 +219,12 @@ export default async function Page({
         selectedBank={selectedBank}
       />
       <div className="common-section">
+        {/* Breadcrumb Navigation */}
+        <div className="pt-4">
+          <Breadcrumb
+            items={getBreadcrumbItems()}
+          />
+        </div>
         <div className="grid grid-cols-12 gap-4 py-4">
           <div className="grid-col-span-9 ">
             <Suspense key={page?.toString()} fallback={<SkeletonAuctionList />}>

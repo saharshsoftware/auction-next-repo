@@ -18,6 +18,8 @@ import { cookies } from "next/headers";
 import { COOKIES } from "@/shared/Constants";
 import { fetchFavoriteList } from "@/server/actions/favouriteList";
 import { AuctionDetailPage } from "@/components/templates/AuctionDetail2";
+import Breadcrumb from "@/components/atoms/Breadcrumb";
+import { ROUTE_CONSTANTS } from "@/shared/Routes";
 
 async function getAuctionDetailData(slug: string) {
   const res = await getAuctionDetail({ slug });
@@ -146,6 +148,20 @@ export default async function Page({
     (data: any) => data.name === auctionDetail?.city
   ) as ILocations;
 
+  const getBreadcrumbItems = () => {
+    return [
+      {
+        label: "Auctions",
+        href: ROUTE_CONSTANTS.AUCTION,
+      },
+      {
+        label: auctionDetail?.title || "Auction Details",
+        href: `${ROUTE_CONSTANTS.AUCTION_SLASH}/${slug}`, // Current page URL
+        isActive: true,
+      },
+    ];
+  };
+
   const renderWishlistComponent = () => {
     if (token) {
       return (
@@ -167,6 +183,12 @@ export default async function Page({
           locations={locationOptions}
         />
         <div className="lg:px-32 px-2">
+          {/* Breadcrumb Navigation */}
+          <div className="pt-4">
+            <Breadcrumb 
+              items={getBreadcrumbItems()}
+            />
+          </div>
           <div className="grid grid-cols-12 gap-4 py-4">
             <div className="grid-col-span-9">
               <AuctionDetailPage auctionDetail={auctionDetail} slug={slug} isInterested={isInterested} />

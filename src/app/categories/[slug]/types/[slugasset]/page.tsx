@@ -39,6 +39,8 @@ import { ResolvingMetadata, Metadata } from "next";
 import { Suspense } from "react";
 import { buildCanonicalUrl } from "@/shared/Utilies";
 import AuctionResults from "@/components/templates/AuctionResults";
+import Breadcrumb from "@/components/atoms/Breadcrumb";
+import { ROUTE_CONSTANTS } from "@/shared/Routes";
 
 async function getSlugData(
   slug: string,
@@ -205,6 +207,27 @@ export default async function Page({
     }
   }
 
+  const getBreadcrumbItems = () => {
+    return [
+      {
+        label: "Category",
+        href: ROUTE_CONSTANTS.CATEGORY,
+      },
+      {
+        label: categoryData?.name ?? "Category",
+        href: `${ROUTE_CONSTANTS.CATEGORY}/${slug}`,
+      },
+      {
+        label: "Asset",
+        href: `${ROUTE_CONSTANTS.ASSETS}`,
+      },
+      {
+        label: assetTypeData?.name ?? "Type",
+        href: `${ROUTE_CONSTANTS.CATEGORY}/${slug}/types/${slugasset}`,
+      },
+    ];
+  };
+
   return (
     <section>
       <FindAuctionServer
@@ -216,6 +239,12 @@ export default async function Page({
         selectedAsset={selectedAsset}
       />
       <div className="common-section">
+        {/* Breadcrumb Navigation */}
+        <div className="pt-4">
+          <Breadcrumb
+            items={getBreadcrumbItems()}
+          />
+        </div>
         <div className="grid grid-cols-12 gap-4 py-4">
           <div className="grid-col-span-9 ">
 

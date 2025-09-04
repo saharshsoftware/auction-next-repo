@@ -30,6 +30,8 @@ import TopCities from "@/components/atoms/TopCities";
 import { fetchPopularLocations } from "@/server/actions/location";
 import AuctionResults from "../../../components/templates/AuctionResults";
 import { SkeletonAuctionList } from "@/components/skeltons/SkeletonAuctionList";
+import { fetchPopularBanks } from "@/server/actions/banks";
+import TopBanks from "@/components/atoms/TopBanks";
 
 export const metadata: Metadata = {
   title: "Search Results | eauctiondekho",
@@ -90,14 +92,15 @@ export default async function Page({
     rawBanks,
     rawCategories,
     rawLocations,
-
     popularLocations,
+    popularBanks,
   ]: any = await Promise.all([
     fetchAssetType(),
     fetchBanks(),
     fetchCategories(),
     fetchLocation(),
     fetchPopularLocations(),
+    fetchPopularBanks(),
   ]);
 
   // Type assertions are no longer necessary if functions return correctly typed data
@@ -162,7 +165,12 @@ export default async function Page({
             </Suspense>
           </div>
           <div className="grid-col-span-3">
-            <TopCities locationOptions={popularLocations} />
+            <div className="mb-4">
+              <TopCities locationOptions={popularLocations} />
+            </div>
+            <div>
+              <TopBanks bankOptions={popularBanks} />
+            </div>
           </div>
         </div>
       </div>
