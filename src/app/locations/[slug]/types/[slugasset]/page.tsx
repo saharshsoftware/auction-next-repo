@@ -227,7 +227,7 @@ export default async function Page({
             items={getBreadcrumbItems()}
           />
         </div>
-        <div className="grid grid-cols-12 gap-4 py-4">
+        <div className="grid grid-cols-12 gap-4 pb-4">
           <div className="grid-col-span-9 ">
             <Suspense key={page?.toString()} fallback={<SkeletonAuctionList />}>
               <AuctionResults
