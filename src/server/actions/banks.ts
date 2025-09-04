@@ -47,7 +47,7 @@ export const fetchBanksBySlug = async (props: { slug: string }) => {
 
 export const fetchPopularBanks = async () => {
   try {
-    const filter = `?filters[$and][0][isPopular]=true&pagination[page]=1&pagination[pageSize]=5`;
+    const filter = `?sort[0]=sortOrder:asc&filters[$and][0][isPopular]=true&pagination[page]=1&pagination[pageSize]=5`;
     const URL = API_BASE_URL + API_ENPOINTS.POPULAR_BANKS + filter;
 
     const response = await fetch(URL, {
