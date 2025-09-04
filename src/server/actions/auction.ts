@@ -205,7 +205,7 @@ export const getCollectionData = async (props: { endpoints: string }) => {
     const { endpoints } = props;
     const requiredkeys = generateQueryParamString(["name", "slug", "imageURL"]);
     let filter =
-      `?populate=*&filters[isPopular]=true&${requiredkeys}`;
+      `?populate=*&${requiredkeys}`;
 
     if (endpoints !== "popular-categories") {
       filter += `&sort[0]=sortOrder:asc`;
