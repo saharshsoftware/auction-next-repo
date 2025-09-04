@@ -74,8 +74,7 @@ export async function generateMetadata(
       const allSssetTypeData = await fetchAssetTypes();
       keywordsAll = extractOnlyKeywords(allSssetTypeData, name);
     }
-    const sanitizeImageUrl =
-      (process.env.NEXT_PUBLIC_IMAGE_CLOUDFRONT || "") + categoryData?.imageURL;
+    const logoUrl = `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/images/logo.png`;
     console.log("Name", { name });
     const sanitizeTitle = sanitizeCategorytitle(name ?? "");
     const baseUrl = process.env.NEXT_PUBLIC_DOMAIN_BASE_URL as string;
@@ -99,7 +98,7 @@ export async function generateMetadata(
         url: canonicalUrl,
         title: sanitizeTitle,
         description: `Find ${name} bank auction properties on eauctiondekho. Find diverse asset types including ${keywordsAll}. Secure the best deals today tailored to your investment needs`,
-        images: sanitizeImageUrl,
+        images: logoUrl,
         siteName: SEO_BRAND.SITE_NAME,
         locale: SEO_BRAND.LOCALE,
       },
@@ -108,7 +107,7 @@ export async function generateMetadata(
         card: "summary_large_image",
         title: sanitizeTitle,
         description: `Find ${name} bank auction properties on eauctiondekho. Find diverse asset types including ${keywordsAll}. Secure the best deals today tailored to your investment needs`,
-        images: sanitizeImageUrl,
+        images: logoUrl,
       },
     };
   } catch (error) {
@@ -184,7 +183,9 @@ export default async function Page({
     }
   }
 
-  const categoryImageUrl = await handleOgImageUrl(categoryData?.imageURL ?? "");
+  // We do not upload images for categories; intentionally use the site logo
+  const logoUrl = `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/images/logo.png`;
+  const categoryImageUrl = logoUrl;
 
   return (
     <section>
