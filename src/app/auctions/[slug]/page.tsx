@@ -44,6 +44,19 @@ export async function generateMetadata(
 
     const { title, description } = blogData;
 
+    // Get property images for meta tags
+    let metaImages: string[] = [];
+    if (blogData?.noticeImageURLs && Array.isArray(blogData.noticeImageURLs)) {
+      const cloudfrontBase = process.env.NEXT_PUBLIC_IMAGE_CLOUDFRONT || "";
+      metaImages = blogData.noticeImageURLs
+        .slice(0, 4) // Limit to first 4 images for social media
+        .map(path => `${cloudfrontBase}/${path.startsWith('/') ? path.slice(1) : path}`);
+    }
+
+    // Fallback to default image if no property images
+    const fallbackImage = `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/images/logo.png`;
+    const socialImages = metaImages.length > 0 ? metaImages : [fallbackImage];
+
     return {
       title,
       description,
@@ -52,22 +65,14 @@ export async function generateMetadata(
         url: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/auctions/${slug}`,
         title,
         description,
-        images: [
-          {
-            url: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/auctions/${slug}/meta-image.jpg`,
-          },
-        ],
+        images: socialImages.map(url => ({ url })),
       },
       twitter: {
         site: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/auctions/${slug}`,
         card: "summary_large_image",
         title,
         description,
-        images: [
-          {
-            url: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/auctions/${slug}/twitter-meta-image.jpg`,
-          },
-        ],
+        images: socialImages.map(url => ({ url })),
       },
     };
   } catch (error) {

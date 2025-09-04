@@ -37,6 +37,7 @@ import { SEO_BRAND } from "@/shared/seo.constant";
 import { buildCanonicalUrl } from "@/shared/Utilies";
 import BreadcrumbJsonLd from "@/components/atoms/BreadcrumbJsonLd";
 import AuctionResults from "@/components/templates/AuctionResults";
+import ImageJsonLd from "@/components/atoms/ImageJsonLd";
 
 async function getSlugData(slug: string) {
   const selectedAsset = (await fetchAssetTypeBySlug({
@@ -61,11 +62,9 @@ export async function generateMetadata(
     console.log(assetTypeData, "asset-type-slug");
     const { name } = assetTypeData;
     // Ensure the image URL is absolute and has a fallback
-    const sanitizeImageUrl =
-      (process.env.NEXT_PUBLIC_IMAGE_CLOUDFRONT || "") +
-      (assetTypeData?.imageURL || "default-image.jpg");
+    const logoUrl = `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/images/logo.png`;
 
-    console.log("Generated Image URL:", { sanitizeImageUrl }); // Debugging
+    console.log("Generated Image URL:", { logoUrl }); // Debugging
 
     const baseUrl = process.env.NEXT_PUBLIC_DOMAIN_BASE_URL as string;
     const canonicalUrl = buildCanonicalUrl({
@@ -90,7 +89,7 @@ export async function generateMetadata(
         url: canonicalUrl,
         title: `Bank Auction ${name}s in India | Find ${name}s Auctions`,
         description: `Find ${name} in bank auction. Also find flats, houses, plots, residential units, agricultural land, bungalows, cars, vehicles, commercial buildings, offices, shops, factory lands, godowns, industrial buildings, lands, machinery, non-agricultural lands, scrap, and sheds. Secure the best deals today tailored to your investment needs`,
-        images: sanitizeImageUrl,
+        images: logoUrl,
         siteName: SEO_BRAND.SITE_NAME,
         locale: SEO_BRAND.LOCALE,
       },
@@ -99,7 +98,7 @@ export async function generateMetadata(
         card: "summary_large_image",
         title: `Bank Auction ${name}s in India | Find ${name}s Auctions`,
         description: `Find ${name} in bank auction. Also find flats, houses, plots, residential units, agricultural land, bungalows, cars, vehicles, commercial buildings, offices, shops, factory lands, godowns, industrial buildings, lands, machinery, non-agricultural lands, scrap, and sheds. Secure the best deals today tailored to your investment needs`,
-        images: sanitizeImageUrl,
+        images: logoUrl,
       },
     };
   } catch (error) {
@@ -118,6 +117,7 @@ export default async function Page({
   const { slug } = params;
   const { page = 1 } = searchParams;
   const assetTypeData = await getSlugData(slug);
+  const logoUrl = `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/images/logo.png`;
   console.log("filterQueryDataTypes");
 
   // Fetch data in parallel
@@ -165,6 +165,17 @@ export default async function Page({
   }
     return (
     <section>
+      {!!logoUrl && (
+        <ImageJsonLd
+          images={[{
+            url: logoUrl,
+            name: `Bank Auction ${assetTypeData?.name} in India`,
+            description: `Find ${assetTypeData?.name} in bank auction on eauctiondekho.`,
+          }]}
+          propertyTitle={`Bank Auction ${assetTypeData?.name} in India`}
+          propertyDescription={`Find ${assetTypeData?.name} in bank auction on eauctiondekho.`}
+        />
+      )}
       <BreadcrumbJsonLd
         items={[
           { name: "Home", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/` },

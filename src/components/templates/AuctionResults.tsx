@@ -27,9 +27,9 @@ interface IAuctionResultsProps {
   urlFilterdata?: any;
 }
 
-export default async function AuctionResults({ 
-  searchParams, 
-  heading, 
+export default async function AuctionResults({
+  searchParams,
+  heading,
   isFindAuction,
   customFilters,
   useCustomFilters = false,
@@ -82,18 +82,25 @@ export default async function AuctionResults({
     const itemList = {
       "@context": "https://schema.org",
       "@type": "ItemList",
-      itemListElement: auctions.slice(0, 10).map((auction: { slug?: string; title?: string; noticeImageUrl?: string; noticeImageURLs?: string[] }, index: number) => {
-        const url = auction?.slug ? `${baseUrl}/auctions/${auction.slug}` : baseUrl;
-        return {
-          "@type": "ListItem",
-          position: index + 1,
-          url,
-          name: auction?.title || undefined,
-          image: Array.isArray(auction?.noticeImageURLs) && auction.noticeImageURLs.length > 0
+      itemListElement: auctions
+        .filter((auction: { slug?: string }) => !!auction?.slug)
+        .slice(0, 10)
+        .map((auction: { slug?: string; title?: string; noticeImageUrl?: string; noticeImageURLs?: string[] }, index: number) => {
+          const url = `${baseUrl}/auctions/${auction.slug}`;
+          const image = Array.isArray(auction?.noticeImageURLs) && auction.noticeImageURLs.length > 0
             ? auction.noticeImageURLs[0]
-            : (auction?.noticeImageUrl || undefined),
-        };
-      }),
+            : (auction?.noticeImageUrl || undefined);
+          return {
+            "@type": "ListItem",
+            position: index + 1,
+            item: {
+              "@type": "WebPage",
+              url,
+              ...(auction?.title ? { name: auction.title } : {}),
+              ...(image ? { image } : {}),
+            },
+          };
+        }),
     } as const;
     return (
       <script

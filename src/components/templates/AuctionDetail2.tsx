@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import {
   Calendar,
   MapPin,
-  DollarSign,
   Building,
   Phone,
   ArrowLeft,
@@ -12,7 +11,8 @@ import {
   CreditCard,
   Info,
   Banknote,
-  FileText
+  FileText,
+  IndianRupee
 } from 'lucide-react';
 import { IAuction } from '@/types';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
@@ -39,6 +39,7 @@ import { useScrollToTop } from '@/hooks/useScrollToTop';
 import { loginLogic } from '@/utilies/LoginHelper';
 import BlurredFieldWrapper from '../atoms/BlurredFieldWrapper';
 import { Eye } from 'lucide-react';
+import ImageJsonLd from '../atoms/ImageJsonLd';
 
 
 // add props type
@@ -248,6 +249,20 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
   };
   return (
     <>
+      {/* Structured data for property images */}
+      {hasValidImages && (
+        <ImageJsonLd
+          images={images.map((url, index) => ({
+            url,
+            name: `${property.title} - Property Image ${index + 1}`,
+            description: `${property.asset_type || 'Property'} in ${property.city || 'location'} - Image ${index + 1} of ${images.length}`,
+            caption: `${property.bankName || 'Bank'} auction property image`
+          }))}
+          propertyTitle={property.title}
+          propertyDescription={property.description}
+        />
+      )}
+      
       {openModal ? (
         <InterestModal
           openModal={openModal}
@@ -343,7 +358,7 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
                 <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-sm-xs font-medium text-gray-600 uppercase tracking-wide">Reserved Price</span>
-                    <Info className="h-3 w-3 text-gray-500" />
+                    <IndianRupee className="h-3 w-3 text-gray-500" />
                   </div>
                   <div className="text-xl font-bold text-gray-900">
                     {property.reservePrice ? formatPrice(property.reservePrice?.toString()) : 'Not specified'}
@@ -443,6 +458,12 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
                 <ImageCarousel
                   images={images}
                   title={property.title || 'Property Images'}
+                  propertyData={{
+                    type: property.asset_type,
+                    city: property.city,
+                    area: property.location || property.area,
+                    bankName: property.bankName
+                  }}
                 />
               </div>
             </BlurredFieldWrapper>
@@ -511,7 +532,7 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
                   {/* Reserve Price */}
                   <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
                     <div className="text-sm-xs font-medium text-gray-600 uppercase tracking-wide mb-2 flex items-center">
-                      <DollarSign className="h-3 w-3 mr-1" />
+                      <IndianRupee className="h-3 w-3 mr-1" />
                       Reserve Price
                     </div>
                     <div className="text-lg font-bold text-gray-900">

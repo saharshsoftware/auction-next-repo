@@ -8,6 +8,7 @@ import {
 import { ROUTE_CONSTANTS } from "./Routes";
 import { CONFIG } from "@/utilies/Config";
 import { FAQItem } from "@/components/templates/FaqPage";
+import { IAssetType } from "@/types";
 
 export const COOKIES = {
   TOKEN_KEY: "auction-token",
@@ -367,6 +368,21 @@ export const getEmptyAllObject = () => ({
   value: "",
   label: STRING_DATA.ALL,
 });
+
+export const getEmptyAssetTypeObject = (): IAssetType => ({
+  id: 0,
+  createdAt: new Date(),
+  updatedAt: new Date(),
+  name: null,
+  totalNotices: 0,
+  imageURL: "",
+  isPopular: false,
+  slug: "",
+  category: null,
+  label: STRING_DATA.ALL,
+  pluralizeName: STRING_DATA.ALL,
+  value: STRING_DATA.EMPTY,
+} as any);
 
 export const STORAGE_KEYS = {
   AUCTION_VIEW_KEY: "auctionViews",

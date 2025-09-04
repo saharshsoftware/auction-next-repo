@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { Formik, Form, Field } from "formik";
 import ReactSelectDropdown from "../atoms/ReactSelectDropdown";
 import { IAssetType, IBanks, ICategoryCollection, ILocations } from "@/types";
@@ -12,6 +12,7 @@ import { formatPrice, IServiceProviders, SERVICE_PROVIDER_OPTIONS } from "@/shar
 import useResize from "@/hooks/useResize";
 import {
   getEmptyAllObject,
+  getEmptyAssetTypeObject,
   RANGE_PRICE,
   STRING_DATA,
 } from "@/shared/Constants";
@@ -38,6 +39,7 @@ const gridElementClass = () => "lg:col-span-2  col-span-full";
 
 const mobileViewFilterClass = () =>
   "border bg-white text-sm text-gray-800 shadow px-2 py-1 min-w-fit rounded-lg border-brand-color text-center line-clamp-1";
+
 const FindAuction: React.FC<FindAuctionProps> = ({
   categories,
   assets,
@@ -125,24 +127,39 @@ const FindAuction: React.FC<FindAuctionProps> = ({
     hideModal?.();
   };
 
-  const handleCategoryChange = (
+  const handleCategoryChange = useCallback((
     selectedCategorySlug: string,
     setFieldValue?: any
   ) => {
     setFieldValue?.("propertyType", getEmptyAllObject()); // Reset propertyType
 
-    // Filter asset types based on the selected category
+    // If category is "All" or empty, show all assets (assets already contain "All" option)
+    if (!selectedCategorySlug || selectedCategorySlug === STRING_DATA.EMPTY) {
+      setFilteredAssets(assets);
+      return;
+    }
+
+    // Filter asset types based on the selected category and add "All" option
     const filteredOptions = assets.filter(
       (item: IAssetType) => item?.category?.slug === selectedCategorySlug
     );
-    setFilteredAssets(filteredOptions?.length > 0 ? filteredOptions : assets);
-  };
+    
+    // Find the existing "All" option from the original assets
+    const allOption = assets.find(item => item?.label === STRING_DATA.ALL || (item as any)?.value === STRING_DATA.EMPTY);
+    const assetsWithAllOption = allOption 
+      ? [allOption, ...(filteredOptions?.length > 0 ? filteredOptions : assets.filter(item => item !== allOption))]
+      : [getEmptyAssetTypeObject(), ...(filteredOptions?.length > 0 ? filteredOptions : assets)];
+    setFilteredAssets(assetsWithAllOption);
+  }, [assets]);
 
   useEffect(() => {
     if ("slug" in selectedCategory && selectedCategory?.slug) {
       handleCategoryChange(selectedCategory?.slug);
+    } else if (selectedCategory?.value === STRING_DATA.EMPTY || selectedCategory?.label === STRING_DATA.ALL) {
+      // Handle case where category is reset to "All" (assets already contain "All" option)
+      setFilteredAssets(assets);
     }
-  }, [selectedCategory]);
+  }, [selectedCategory, assets, handleCategoryChange]);
 
   const renderForm = () => (
     <Formik
@@ -176,7 +193,12 @@ const FindAuction: React.FC<FindAuctionProps> = ({
                         defaultValue={values.category}
                         onChange={(value) => {
                           setFieldValue("category", value);
-                          handleCategoryChange(value?.slug, setFieldValue);
+                          // Handle "All" selection or specific category selection
+                          if (value?.value === STRING_DATA.EMPTY || value?.label === STRING_DATA.ALL) {
+                            handleCategoryChange(STRING_DATA.EMPTY, setFieldValue);
+                          } else {
+                            handleCategoryChange(value?.slug, setFieldValue);
+                          }
                         }}
                       />
                     )}
