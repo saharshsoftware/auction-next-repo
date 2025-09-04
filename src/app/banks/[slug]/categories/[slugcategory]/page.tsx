@@ -211,7 +211,7 @@ export default async function Page({
       ? bankData?.secondarySlug?.toUpperCase() ?? (bankData?.name || "")
       : bankData?.name || "";
 
-    const key = page?.toString();
+  const key = page?.toString();
 
   const getRequiredParameters = () => {
     return {
@@ -273,8 +273,8 @@ export default async function Page({
         selectedBank={selectedBank}
       />
       <div className="common-section">
-                {/* Breadcrumb Navigation */}
-                <div className="pt-4">
+        {/* Breadcrumb Navigation */}
+        <div className="pt-4">
           <Breadcrumb
             items={getBreadcrumbItems()}
           />

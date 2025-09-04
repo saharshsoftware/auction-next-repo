@@ -220,7 +220,7 @@ export default async function Page({
         href: `${ROUTE_CONSTANTS.LOCATION}/${slug}`,
       },
       {
-        label: "Banks",
+        label: "Bank",
         href: ROUTE_CONSTANTS.BANKS,
       },
       {

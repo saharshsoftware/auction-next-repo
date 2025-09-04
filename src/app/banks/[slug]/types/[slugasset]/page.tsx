@@ -206,7 +206,7 @@ export default async function Page({
         href: `${ROUTE_CONSTANTS.BANKS}/${slug}`,
       },
       {
-        label: "Asset",
+        label: "Type",
         href: `${ROUTE_CONSTANTS.ASSETS}`,
       },
       {

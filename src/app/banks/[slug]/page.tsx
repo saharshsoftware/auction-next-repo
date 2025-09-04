@@ -181,7 +181,7 @@ export default async function Page({
   const getBreadcrumbItems = () => {
     return [
       {
-        label: "Banks",
+        label: "Bank",
         href: ROUTE_CONSTANTS.BANKS,
       },
       {
