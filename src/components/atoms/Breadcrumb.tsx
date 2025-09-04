@@ -121,7 +121,7 @@ const Breadcrumb: React.FC<IBreadcrumbProps> = ({
 
   return (
     <nav
-      className={`flex items-center bg-gray-50 rounded-lg shadow-sm overflow-x-auto ${className}`}
+      className={`flex items-center rounded-lg overflow-x-auto ${className}`}
       aria-label="Breadcrumb"
     >
       {/* Desktop View */}
