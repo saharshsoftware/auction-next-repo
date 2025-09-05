@@ -94,7 +94,7 @@ export async function generateMetadata(
     const baseUrl = process.env.NEXT_PUBLIC_DOMAIN_BASE_URL as string;
     const canonicalUrl = buildCanonicalUrl({
       baseUrl,
-      pathname: `/categories/${slug}/types/${slugasset}`,
+      pathname: `/categories/${slug}/property-types/${slugasset}`,
       page: searchParams?.page,
     });
 
@@ -208,33 +208,12 @@ export default async function Page({
     }
   }
 
-  const getBreadcrumbItems = () => {
-    return [
-      {
-        label: "Category",
-        href: ROUTE_CONSTANTS.CATEGORY,
-      },
-      {
-        label: categoryData?.name ?? "Category",
-        href: `${ROUTE_CONSTANTS.CATEGORY}/${slug}`,
-      },
-      {
-        label: "Type",
-        href: `${ROUTE_CONSTANTS.ASSETS}`,
-      },
-      {
-        label: assetTypeData?.name ?? "Type",
-        href: `${ROUTE_CONSTANTS.CATEGORY}/${slug}/types/${slugasset}`,
-      },
-    ];
-  };
-
   const getBreadcrumbJsonLdItems = () => {
     return [
       { name: "Home", item: `/` },
       { name: "Category", item: `${ROUTE_CONSTANTS.CATEGORY}` },
-      { name: "Type", item: `${ROUTE_CONSTANTS.TYPES}` },
-      { name: assetTypeData?.name ?? "Type", item: `${ROUTE_CONSTANTS.CATEGORY}/${slug}/types/${slugasset}` },
+      { name: "Property Type", item: `${ROUTE_CONSTANTS.PROPERTY_TYPES}` },
+      { name: assetTypeData?.name ?? "Type", item: `${ROUTE_CONSTANTS.CATEGORY}/${slug}/property-types/${slugasset}` },
     ];
   };
 

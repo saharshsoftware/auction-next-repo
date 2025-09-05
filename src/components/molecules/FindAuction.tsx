@@ -115,7 +115,7 @@ const FindAuction = (props: IFindAuction) => {
           getEmptyAllObject(),
           ...sanitizeReactSelectOptions(res),
         ];
-        if (currentRoute.startsWith(ROUTE_CONSTANTS.TYPES))
+        if (currentRoute.startsWith(ROUTE_CONSTANTS.PROPERTY_TYPES))
           fillFilter(updatedData);
         return updatedData ?? [];
       },

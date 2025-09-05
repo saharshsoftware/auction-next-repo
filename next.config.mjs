@@ -60,7 +60,12 @@ const nextConfig = {
       },
       {
         source: "/types",
-        destination: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/assets`,
+        destination: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/property-types`,
+        permanent: false,
+      },
+      {
+        source: "/assets",
+        destination: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/property-types`,
         permanent: false,
       }
     ];
