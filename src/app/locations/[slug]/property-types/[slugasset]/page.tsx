@@ -32,6 +32,8 @@ import { Suspense } from "react";
 import BreadcrumbJsonLd from "@/components/atoms/BreadcrumbJsonLd";
 import { SkeletonAuctionList } from "@/components/skeltons/SkeletonAuctionList";
 import AuctionResults from "@/components/templates/AuctionResults";
+import { ROUTE_CONSTANTS } from "@/shared/Routes";
+import Breadcrumb from "@/components/atoms/Breadcrumb";
 
 async function getSlugData(
   slug: string,
@@ -77,18 +79,18 @@ export async function generateMetadata(
       title: `Bank Auction ${nameAssetType} in ${nameLocation} | Find ${nameAssetType} Auctions`,
       description: `Find ${nameAssetType} in ${nameLocation} for auction. Also find flats, houses, plots, residential units, agricultural land, bungalows, cars, vehicles, commercial buildings, offices, shops, factory lands, godowns, industrial buildings, lands, machinery, non-agricultural lands, scrap, and sheds. Secure the best deals today tailored to your investment needs`,
       alternates: {
-        canonical: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/locations/${slug}/types/${slugasset}`,
+        canonical: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/locations/${slug}/property-types/${slugasset}`,
       },
 
       openGraph: {
         type: "website",
-        url: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/locations/${slug}/types/${slugasset}`,
+        url: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/locations/${slug}/property-types/${slugasset}`,
         title: `${nameAssetType} Bank Auctions in ${nameLocation} | Find ${nameAssetType} Auctions`,
         description: `Find ${nameAssetType} in ${nameLocation} for auction. Also find flats, houses, plots, residential units, agricultural land, bungalows, cars, vehicles, commercial buildings, offices, shops, factory lands, godowns, industrial buildings, lands, machinery, non-agricultural lands, scrap, and sheds. Secure the best deals today tailored to your investment needs`,
         images: sanitizeImageUrl,
       },
       twitter: {
-        site: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/locations/${slug}/types/${slugasset}`,
+        site: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/locations/${slug}/property-types/${slugasset}`,
         card: "summary_large_image",
         title: `${nameAssetType} Bank Auctions in ${nameLocation} | Find ${nameAssetType} Auctions`,
         description: `Find ${nameAssetType} in ${nameLocation} for auction. Also find flats, houses, plots, residential units, agricultural land, bungalows, cars, vehicles, commercial buildings, offices, shops, factory lands, godowns, industrial buildings, lands, machinery, non-agricultural lands, scrap, and sheds. Secure the best deals today tailored to your investment needs`,
@@ -179,15 +181,20 @@ export default async function Page({
     }
   }
 
+  const getBreadcrumbJsonLdItems = () => {
+    return [
+      { name: "Home", item: `/` },
+      { name: "City", item: `${ROUTE_CONSTANTS.CITIES}` },
+      { name: nameLocation || "Location", item: `${ROUTE_CONSTANTS.LOCATION}/${slug}` },
+      { name: "Property Type", item: `${ROUTE_CONSTANTS.PROPERTY_TYPES}` },
+      { name: assetTypeData?.name || "Type", item: `${ROUTE_CONSTANTS.LOCATION}/${slug}/property-types/${slugasset}` },
+    ];
+  }
+
   return (
     <section>
       <BreadcrumbJsonLd
-        items={[
-          { name: "Home", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/` },
-          { name: "Locations", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/locations` },
-          { name: nameLocation || "Location", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/locations/${slug}` },
-          { name: name || "Type", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/locations/${slug}/types/${slugasset}` },
-        ]}
+        items={getBreadcrumbJsonLdItems()}
       />
       <FindAuctionServer
         categories={categoryOptions}
@@ -198,7 +205,13 @@ export default async function Page({
         selectedAsset={selectedAsset}
       />
       <div className="common-section">
-        <div className="grid grid-cols-12 gap-4 py-4">
+        {/* Breadcrumb Navigation */}
+        <div className="pt-4">
+          <Breadcrumb
+            items={getBreadcrumbJsonLdItems().slice(1)}
+          />
+        </div>
+        <div className="grid grid-cols-12 gap-4 pb-4">
           <div className="grid-col-span-9 ">
             <Suspense key={page?.toString()} fallback={<SkeletonAuctionList />}>
               <AuctionResults

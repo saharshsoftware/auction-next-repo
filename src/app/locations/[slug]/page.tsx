@@ -30,6 +30,8 @@ import { SEO_BRAND } from "@/shared/seo.constant";
 import BreadcrumbJsonLd from "@/components/atoms/BreadcrumbJsonLd";
 import ImageJsonLd from "@/components/atoms/ImageJsonLd";
 import { SkeletonAuctionList } from "@/components/skeltons/SkeletonAuctionList";
+import Breadcrumb from "@/components/atoms/Breadcrumb";
+import { ROUTE_CONSTANTS } from "@/shared/Routes";
 
 async function getSlugData(slug: string) {
   const selectedLocation = (await fetchLocationBySlug({
@@ -179,15 +181,32 @@ export default async function Page({
   // Prepare Image JSON-LD for location hero/cover
   const locationImageUrl = await handleOgImageUrl(locationData?.imageURL ?? "");
 
+  const getBreadcrumbItems = () => {
+    return [
+      {
+        label: "City",
+        href: ROUTE_CONSTANTS.CITIES,
+      },
+      {
+        label: name || "Location",
+        href: `${ROUTE_CONSTANTS.LOCATION}/${slug}`,
+      },
+    ];
+  };
+
+  const getBreadcrumbJsonLdItems = () => {
+    return [
+      { name: "Home", item: `/` },
+      { name: "City", item: `${ROUTE_CONSTANTS.CITIES}` },
+      { name: name ?? "Location", item: `${ROUTE_CONSTANTS.LOCATION}/${slug}` },
+    ];
+  };
+
   return (
     <section>
       {/* Breadcrumbs */}
       <BreadcrumbJsonLd
-        items={[
-          { name: "Home", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/` },
-          { name: "Locations", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/locations` },
-          { name: name ?? "Location", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/locations/${slug}` },
-        ]}
+        items={getBreadcrumbJsonLdItems()}
       />
       {/* Image JSON-LD for the city image */}
       {!!locationImageUrl && (
@@ -209,7 +228,13 @@ export default async function Page({
         selectedLocation={selectionLocation}
       />
       <div className="common-section">
-        <div className="grid grid-cols-12 gap-4 py-4">
+         {/* Breadcrumb Navigation */}
+         <div className="pt-4">
+            <Breadcrumb
+              items={getBreadcrumbJsonLdItems().slice(1)}
+            />
+          </div>
+        <div className="grid grid-cols-12 gap-4 pb-4">
           <div className="grid-col-span-9 ">
             <Suspense key={page?.toString()} fallback={<SkeletonAuctionList />}>
 

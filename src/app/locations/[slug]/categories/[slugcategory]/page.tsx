@@ -37,6 +37,8 @@ import { Suspense } from "react";
 import { buildCanonicalUrl } from "@/shared/Utilies";
 import BreadcrumbJsonLd from "@/components/atoms/BreadcrumbJsonLd";
 import AuctionResults from "@/components/templates/AuctionResults";
+import { ROUTE_CONSTANTS } from "@/shared/Routes";
+import Breadcrumb from "@/components/atoms/Breadcrumb";
 
 async function getSlugData(
   slug: string,
@@ -198,15 +200,20 @@ export default async function Page({
     }
   }
 
+  const getBreadcrumbJsonLdItems = () => {
+    return [
+      { name: "Home", item: `/` },
+      { name: "City", item: `${ROUTE_CONSTANTS.CITIES}` },
+      { name: nameLocation || "Location", item: `${ROUTE_CONSTANTS.LOCATION}/${slug}` },
+      { name: "Category", item: `${ROUTE_CONSTANTS.CATEGORY}` },
+      { name: categoryData?.name || "Category", item: `${ROUTE_CONSTANTS.LOCATION}/${slug}/categories/${slugcategory}` },
+    ];
+  }
+
   return (
     <section>
       <BreadcrumbJsonLd
-        items={[
-          { name: "Home", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/` },
-          { name: "Locations", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/locations` },
-          { name: nameLocation || "Location", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/locations/${slug}` },
-          { name: nameCategory || "Category", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/locations/${slug}/categories/${slugcategory}` },
-        ]}
+        items={getBreadcrumbJsonLdItems()}
       />
       <FindAuctionServer
         categories={categoryOptions}
@@ -217,7 +224,13 @@ export default async function Page({
         selectedCategory={selectedCategory}
       />
       <div className="common-section">
-        <div className="grid grid-cols-12 gap-4 py-4">
+        {/* Breadcrumb Navigation */}
+        <div className="pt-4">
+          <Breadcrumb
+            items={getBreadcrumbJsonLdItems().slice(1)}
+          />
+        </div>
+        <div className="grid grid-cols-12 gap-4 pb-4">
           <div className="grid-col-span-9 ">
             <Suspense key={page?.toString()} fallback={<SkeletonAuctionList />}>
               <AuctionResults

@@ -41,6 +41,8 @@ import { Suspense } from "react";
 import { SEO_BRAND } from "@/shared/seo.constant";
 import { buildCanonicalUrl } from "@/shared/Utilies";
 import BreadcrumbJsonLd from "@/components/atoms/BreadcrumbJsonLd";
+import Breadcrumb from "@/components/atoms/Breadcrumb";
+import { ROUTE_CONSTANTS } from "@/shared/Routes";
 
 async function getSlugData(
   slug: string,
@@ -206,15 +208,21 @@ export default async function Page({
       reservePrice: [RANGE_PRICE.MIN, RANGE_PRICE.MAX],
     }
   }
+
+  const getBreadcrumbJsonLdItems = () => {
+    return [
+      { name: "Home", item: `/` },
+      { name: "City", item: `${ROUTE_CONSTANTS.CITIES}` },
+      { name: name ?? "Location", item: `${ROUTE_CONSTANTS.LOCATION}/${slug}` },
+      { name: "Bank", item: `${ROUTE_CONSTANTS.BANKS}` },
+      { name: bankData?.name || "Bank", item: `${ROUTE_CONSTANTS.LOCATION}/${slug}/banks/${slugbank}` },
+    ];
+  };
+
   return (
     <section>
       <BreadcrumbJsonLd
-        items={[
-          { name: "Home", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/` },
-          { name: "Locations", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/locations` },
-          { name: name || "Location", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/locations/${slug}` },
-          { name: bankData?.name || "Bank", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/locations/${slug}/banks/${slugbank}` },
-        ]}
+        items={getBreadcrumbJsonLdItems()}
       />
       <FindAuctionServer
         categories={categoryOptions}
@@ -225,7 +233,13 @@ export default async function Page({
         selectedBank={selectedBank}
       />
       <div className="common-section">
-        <div className="grid grid-cols-12 gap-4 py-4">
+        {/* Breadcrumb Navigation */}
+        <div className="pt-4">
+          <Breadcrumb
+            items={getBreadcrumbJsonLdItems().slice(1)}
+          />
+        </div>
+        <div className="grid grid-cols-12 gap-4 pb-4">
           <div className="lg:col-span-9 col-span-full">
             <Suspense key={page?.toString()} fallback={<SkeletonAuctionList />}>
               <AuctionResults

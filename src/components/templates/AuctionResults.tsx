@@ -71,7 +71,7 @@ export default async function AuctionResults({
       />
     }
     if (isFindAuction) {
-      return <AuctionHeaderSaveSearch />
+      return <AuctionHeaderSaveSearch searchParams={searchParams} />
     }
     return null;
   };

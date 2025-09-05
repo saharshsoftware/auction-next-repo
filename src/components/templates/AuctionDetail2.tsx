@@ -327,7 +327,7 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
                   </div>
                   <div className="flex items-center">
                     <Building className="h-4 w-4 mr-2 text-gray-400" />
-                    <span>{property.assetType || 'Asset type not specified'}</span>
+                    <span>{property.assetType || 'Property type not specified'}</span>
                   </div>
                   {property.area && (
                     <div className="flex items-center">

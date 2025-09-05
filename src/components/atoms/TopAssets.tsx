@@ -18,7 +18,7 @@ const TopAssets = (props: {
       return <Link href={URL} className="text-sm-xs">{item?.name}</Link>;
     }
     return (
-      <Link href={`${ROUTE_CONSTANTS.TYPES}/${item?.slug}`} className="text-sm-xs">{item?.name}</Link>
+      <Link href={`${ROUTE_CONSTANTS.PROPERTY_TYPES}/${item?.slug}`} className="text-sm-xs">{item?.name}</Link>
     );
   };
 

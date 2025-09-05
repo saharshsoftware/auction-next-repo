@@ -156,7 +156,7 @@ const HeroSearchBox = (props: {
                 </div>
                 <div className={gridElementClass()}>
                   <TextField
-                    label={"Asset type"}
+                    label={"Property type"}
                     name={"propertyType"}
                     hasChildren={true}
                   >
@@ -165,7 +165,7 @@ const HeroSearchBox = (props: {
                         <ReactSelectDropdown
                           defaultValue={values?.propertyType ?? null}
                           options={filteredAssets ?? []}
-                          placeholder={"Asset type"}
+                          placeholder={"Property type"}
                           name="asset-type-search-box"
                           // loading={isLoadingAssetsTypeCategory}
                           customClass="w-full "

@@ -54,7 +54,7 @@ const Footer: React.FC = () => {
                 {STRING_DATA.CATEGORIES}
               </Link>
               <Link
-                href={ROUTE_CONSTANTS.ASSETS}
+                href={ROUTE_CONSTANTS.PROPERTY_TYPES}
                 className="link link-hover min-w-fit"
               >
                 {STRING_DATA.ASSETS}

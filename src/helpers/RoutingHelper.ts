@@ -337,7 +337,7 @@ export const fillFilterHelper = (
     [ROUTE_CONSTANTS.CATEGORY]: ["categories"],
     [ROUTE_CONSTANTS.LOCATION]: ["locations"],
     [ROUTE_CONSTANTS.BANKS]: ["banks"],
-    [ROUTE_CONSTANTS.TYPES]: ["types"],
+    [ROUTE_CONSTANTS.PROPERTY_TYPES]: ["types"],
   };
 
   const stateKeys = filterKeyMap[baseRoute];
