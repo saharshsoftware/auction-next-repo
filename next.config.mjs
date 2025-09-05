@@ -67,6 +67,26 @@ const nextConfig = {
         source: "/assets",
         destination: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/property-types`,
         permanent: false,
+      },
+      {
+        source: "/locations/:slug/types/:path*",
+        destination: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/locations/:slug/property-types/:path*`,
+        permanent: false,
+      },
+      {
+        source: "/categories/:slug/types/:path*",
+        destination: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/categories/:slug/property-types/:path*`,
+        permanent: false,
+      },
+      {
+        source: "/banks/:slug/types/:path*",
+        destination: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/banks/:slug/property-types/:path*`,
+        permanent: false,
+      },
+      {
+        source: "/types/:slug",
+        destination: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/property-types/:slug`,
+        permanent: false,
       }
     ];
   },
