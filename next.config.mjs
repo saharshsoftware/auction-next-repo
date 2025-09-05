@@ -58,6 +58,11 @@ const nextConfig = {
         destination: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/auctions/find-auctions`,
         permanent: true,
       },
+      {
+        source: "/types",
+        destination: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/property-types`,
+        permanent: true,
+      }
     ];
   },
   async rewrites() {
