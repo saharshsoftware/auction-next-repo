@@ -202,11 +202,11 @@ export default async function Page({
 
   const getBreadcrumbJsonLdItems = () => {
     return [
-      { name: "Home", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/` },
-      { name: "City", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}${ROUTE_CONSTANTS.CITIES}` },
-      { name: nameLocation || "Location", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}${ROUTE_CONSTANTS.LOCATION}/${slug}` },
-      { name: "Category", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}${ROUTE_CONSTANTS.CATEGORY}` },
-      { name: categoryData?.name || "Category", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}${ROUTE_CONSTANTS.LOCATION}/${slug}/categories/${slugcategory}` },
+      { name: "Home", item: `/` },
+      { name: "City", item: `${ROUTE_CONSTANTS.CITIES}` },
+      { name: nameLocation || "Location", item: `${ROUTE_CONSTANTS.LOCATION}/${slug}` },
+      { name: "Category", item: `${ROUTE_CONSTANTS.CATEGORY}` },
+      { name: categoryData?.name || "Category", item: `${ROUTE_CONSTANTS.LOCATION}/${slug}/categories/${slugcategory}` },
     ];
   }
 

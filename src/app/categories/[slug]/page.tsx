@@ -191,9 +191,9 @@ export default async function Page({
 
   const getBreadcrumbJsonLdItems = () => {
     return [
-      { name: "Home", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/` },
-      { name: "Category", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}${ROUTE_CONSTANTS.CATEGORY}` },
-      { name: categoryData?.name ?? "Category", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}${ROUTE_CONSTANTS.CATEGORY}/${slug}` },
+      { name: "Home", item: `/` },
+      { name: "Category", item: `${ROUTE_CONSTANTS.CATEGORY}` },
+      { name: categoryData?.name ?? "Category", item: `${ROUTE_CONSTANTS.CATEGORY}/${slug}` },
     ];
   };
 

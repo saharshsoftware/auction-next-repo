@@ -205,11 +205,11 @@ export default async function Page({
 
   const getBreadcrumbJsonLdItems = () => {
     return [
-      { name: "Home", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/` },
-      { name: "City", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}${ROUTE_CONSTANTS.CITIES}` },
-      { name: nameLocation || "Location", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}${ROUTE_CONSTANTS.LOCATION}/${slug}` },
-      { name: "Type", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}${ROUTE_CONSTANTS.TYPES}` },
-      { name: assetTypeData?.name || "Type", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}${ROUTE_CONSTANTS.LOCATION}/${slug}/types/${slugasset}` },
+      { name: "Home", item: `/` },
+      { name: "City", item: `${ROUTE_CONSTANTS.CITIES}` },
+      { name: nameLocation || "Location", item: `${ROUTE_CONSTANTS.LOCATION}/${slug}` },
+      { name: "Type", item: `${ROUTE_CONSTANTS.TYPES}` },
+      { name: assetTypeData?.name || "Type", item: `${ROUTE_CONSTANTS.LOCATION}/${slug}/types/${slugasset}` },
     ];
   }
 

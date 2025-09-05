@@ -197,11 +197,11 @@ export default async function Page({
 
   const getBreadcrumbJsonLdItems = () => {
     return [
-      { name: "Home", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/` },
-      { name: "Bank", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}${ROUTE_CONSTANTS.BANKS}` },
-      { name: bankNamePrimary || "Bank", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}${ROUTE_CONSTANTS.BANKS}/${slug}` },
-      { name: "Type", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}${ROUTE_CONSTANTS.TYPES}` },
-      { name: assetTypeData?.name || "Type", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}${ROUTE_CONSTANTS.BANKS}/${slug}/types/${slugasset}` },
+      { name: "Home", item: `/` },
+      { name: "Bank", item: `${ROUTE_CONSTANTS.BANKS}` },
+      { name: bankNamePrimary || "Bank", item: `${ROUTE_CONSTANTS.BANKS}/${slug}` },
+      { name: "Type", item: `${ROUTE_CONSTANTS.TYPES}` },
+      { name: assetTypeData?.name || "Type", item: `${ROUTE_CONSTANTS.BANKS}/${slug}/types/${slugasset}` },
     ];
   };
 
