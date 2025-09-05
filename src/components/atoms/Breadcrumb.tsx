@@ -29,7 +29,7 @@ const Breadcrumb: React.FC<IBreadcrumbProps> = ({
   items,
   showHome = true,
   homeHref = "/",
-  separator = <FontAwesomeIcon icon={faChevronRight} className={`${textColor} text-xs mx-1 sm:mx-2`} />,
+  separator = <FontAwesomeIcon icon={faChevronRight} className={`${textColor} text-[0.50rem] mx-1 sm:mx-2`} />,
   className = "",
   itemClassName = "",
   activeItemClassName = `${textColor} font-medium`,
@@ -46,7 +46,7 @@ const Breadcrumb: React.FC<IBreadcrumbProps> = ({
     return items;
   };
   const renderBreadcrumbItem = (item: IBreadcrumbItem, index: number, isLast: boolean, isMobile: boolean = false) => {
-    const baseItemClass = `items-center text-sm flex-shrink-0 ${itemClassName}`;
+    const baseItemClass = `items-center flex-shrink-0 ${itemClassName}`;
     const displayLabel = isMobile ? truncateText(item.name, truncateLength) : item.name;
     
     // If it's the last item and active, but still has href, make it a link with different styling
@@ -116,7 +116,7 @@ const Breadcrumb: React.FC<IBreadcrumbProps> = ({
       aria-label="Breadcrumb"
     >
       {/* Desktop View */}
-      <p className="hidden sm:flex items-center gap-1 flex-wrap text-sm w-full">
+      <p className="hidden sm:flex items-center gap-1 flex-wrap w-full">
         {showHome && (
           <>
             <Link
@@ -124,7 +124,7 @@ const Breadcrumb: React.FC<IBreadcrumbProps> = ({
               className={`inline-flex items-center ${linkClassName} py-1 rounded`}
               title="Home"
             >
-              <span className={`text-sm ${textColor}`}>Home</span>
+              <span className={`${textColor}`}>Home</span>
             </Link>
             {items.length > 0 && renderSeparator(-1)}
           </>
