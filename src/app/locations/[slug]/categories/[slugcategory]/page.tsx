@@ -200,36 +200,20 @@ export default async function Page({
     }
   }
 
-  const getBreadcrumbItems = () => {
+  const getBreadcrumbJsonLdItems = () => {
     return [
-      {
-        label: "City",
-        href: ROUTE_CONSTANTS.CITIES,
-      },
-      {
-        label: locationData?.name || "Location",
-        href: `${ROUTE_CONSTANTS.LOCATION}/${slug}`,
-      },
-      {
-        label: "Category",
-        href: ROUTE_CONSTANTS.CATEGORY,
-      },
-      {
-        label: categoryData?.name || "Category",
-        href: `${ROUTE_CONSTANTS.LOCATION}/${slug}/categories/${slugcategory}`,
-      },
+      { name: "Home", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/` },
+      { name: "City", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}${ROUTE_CONSTANTS.CITIES}` },
+      { name: nameLocation || "Location", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}${ROUTE_CONSTANTS.LOCATION}/${slug}` },
+      { name: "Category", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}${ROUTE_CONSTANTS.CATEGORY}` },
+      { name: categoryData?.name || "Category", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}${ROUTE_CONSTANTS.LOCATION}/${slug}/categories/${slugcategory}` },
     ];
-  };
+  }
 
   return (
     <section>
       <BreadcrumbJsonLd
-        items={[
-          { name: "Home", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/` },
-          { name: "Locations", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/locations` },
-          { name: nameLocation || "Location", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/locations/${slug}` },
-          { name: nameCategory || "Category", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/locations/${slug}/categories/${slugcategory}` },
-        ]}
+        items={getBreadcrumbJsonLdItems()}
       />
       <FindAuctionServer
         categories={categoryOptions}
@@ -243,7 +227,7 @@ export default async function Page({
         {/* Breadcrumb Navigation */}
         <div className="pt-4">
           <Breadcrumb
-            items={getBreadcrumbItems()}
+            items={getBreadcrumbJsonLdItems().slice(1)}
           />
         </div>
         <div className="grid grid-cols-12 gap-4 pb-4">

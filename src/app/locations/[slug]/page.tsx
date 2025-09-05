@@ -194,15 +194,19 @@ export default async function Page({
     ];
   };
 
+  const getBreadcrumbJsonLdItems = () => {
+    return [
+      { name: "Home", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/` },
+      { name: "City", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}${ROUTE_CONSTANTS.CITIES}` },
+      { name: name ?? "Location", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}${ROUTE_CONSTANTS.LOCATION}/${slug}` },
+    ];
+  };
+
   return (
     <section>
       {/* Breadcrumbs */}
       <BreadcrumbJsonLd
-        items={[
-          { name: "Home", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/` },
-          { name: "Locations", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/locations` },
-          { name: name ?? "Location", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/locations/${slug}` },
-        ]}
+        items={getBreadcrumbJsonLdItems()}
       />
       {/* Image JSON-LD for the city image */}
       {!!locationImageUrl && (
@@ -227,7 +231,7 @@ export default async function Page({
          {/* Breadcrumb Navigation */}
          <div className="pt-4">
             <Breadcrumb
-              items={getBreadcrumbItems()}
+              items={getBreadcrumbJsonLdItems().slice(1)}
             />
           </div>
         <div className="grid grid-cols-12 gap-4 pb-4">

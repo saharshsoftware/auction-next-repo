@@ -202,15 +202,21 @@ export default async function Page({
     ];
   };
 
+
+  const getBreadcrumbJsonLdItems = () => {
+    return [
+      { name: "Home", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/` },
+      { name: "City", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}${ROUTE_CONSTANTS.CITIES}` },
+      { name: nameLocation || "Location", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}${ROUTE_CONSTANTS.LOCATION}/${slug}` },
+      { name: "Type", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}${ROUTE_CONSTANTS.TYPES}` },
+      { name: assetTypeData?.name || "Type", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}${ROUTE_CONSTANTS.LOCATION}/${slug}/types/${slugasset}` },
+    ];
+  }
+
   return (
     <section>
       <BreadcrumbJsonLd
-        items={[
-          { name: "Home", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/` },
-          { name: "Locations", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/locations` },
-          { name: nameLocation || "Location", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/locations/${slug}` },
-          { name: name || "Type", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/locations/${slug}/types/${slugasset}` },
-        ]}
+        items={getBreadcrumbJsonLdItems()}
       />
       <FindAuctionServer
         categories={categoryOptions}
@@ -224,7 +230,7 @@ export default async function Page({
         {/* Breadcrumb Navigation */}
         <div className="pt-4">
           <Breadcrumb
-            items={getBreadcrumbItems()}
+            items={getBreadcrumbJsonLdItems().slice(1)}
           />
         </div>
         <div className="grid grid-cols-12 gap-4 pb-4">

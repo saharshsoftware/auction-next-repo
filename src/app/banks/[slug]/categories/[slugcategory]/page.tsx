@@ -222,24 +222,13 @@ export default async function Page({
     }
   }
 
-  const getBreadcrumbItems = () => {
+  const getBreadcrumbJsonLdItems = () => {
     return [
-      {
-        label: "Bank",
-        href: ROUTE_CONSTANTS.BANKS,
-      },
-      {
-        label: bankData?.name || "Bank",
-        href: `${ROUTE_CONSTANTS.BANKS}/${slug}`,
-      },
-      {
-        label: "Category",
-        href: ROUTE_CONSTANTS.CATEGORY,
-      },
-      {
-        label: categoryData?.name || "Category",
-        href: `${ROUTE_CONSTANTS.BANKS}/${slug}/categories/${slugcategory}`,
-      },
+      { name: "Home", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/` },
+      { name: "Bank", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}${ROUTE_CONSTANTS.BANKS}` },
+      { name: bankNamePrimary || "Bank", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}${ROUTE_CONSTANTS.BANKS}/${slug}` },
+      { name: "Category", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}${ROUTE_CONSTANTS.CATEGORY}` },
+      { name: categoryData?.name || "Category", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}${ROUTE_CONSTANTS.BANKS}/${slug}/categories/${slugcategory}` },
     ];
   };
 
@@ -257,12 +246,7 @@ export default async function Page({
         />
       )}
       <BreadcrumbJsonLd
-        items={[
-          { name: "Home", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/` },
-          { name: "Banks", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/banks` },
-          { name: bankNamePrimary || "Bank", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/banks/${slug}` },
-          { name: categoryData?.name || "Category", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/banks/${slug}/categories/${slugcategory}` },
-        ]}
+        items={getBreadcrumbJsonLdItems()}
       />
       <FindAuctionServer
         categories={categoryOptions}
@@ -276,7 +260,7 @@ export default async function Page({
         {/* Breadcrumb Navigation */}
         <div className="pt-4">
           <Breadcrumb
-            items={getBreadcrumbItems()}
+            items={getBreadcrumbJsonLdItems().slice(1)}
           />
         </div>
         <div className="grid grid-cols-12 gap-4 pb-4">

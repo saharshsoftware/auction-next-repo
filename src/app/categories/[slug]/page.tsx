@@ -189,16 +189,11 @@ export default async function Page({
   const logoUrl = `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/images/logo.png`;
   const categoryImageUrl = logoUrl;
 
-  const getBreadcrumbItems = () => {
+  const getBreadcrumbJsonLdItems = () => {
     return [
-      {
-        label: "Category",
-        href: ROUTE_CONSTANTS.CATEGORY,
-      },
-      {
-        label: categoryData?.name ?? "Category",
-        href: `${ROUTE_CONSTANTS.CATEGORY}/${slug}`,
-      },
+      { name: "Home", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/` },
+      { name: "Category", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}${ROUTE_CONSTANTS.CATEGORY}` },
+      { name: categoryData?.name ?? "Category", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}${ROUTE_CONSTANTS.CATEGORY}/${slug}` },
     ];
   };
 
@@ -216,11 +211,7 @@ export default async function Page({
         />
       )}
       <BreadcrumbJsonLd
-        items={[
-          { name: "Home", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/` },
-          { name: "Categories", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/categories` },
-          { name: categoryData?.name ?? "Category", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/categories/${slug}` },
-        ]}
+        items={getBreadcrumbJsonLdItems()}
       />
       <FindAuctionServer
         categories={categoryOptions}
@@ -233,7 +224,7 @@ export default async function Page({
         {/* Breadcrumb Navigation */}
         <div className="pt-4">
           <Breadcrumb
-            items={getBreadcrumbItems()}
+            items={getBreadcrumbJsonLdItems().slice(1)}
           />
         </div>
         <div className="grid grid-cols-12 gap-4 pb-4">

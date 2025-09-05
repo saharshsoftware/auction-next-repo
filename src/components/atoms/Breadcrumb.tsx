@@ -5,8 +5,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronRight, faHome } from "@fortawesome/free-solid-svg-icons";
 
 export interface IBreadcrumbItem {
-  label: string;
-  href?: string;
+  name: string;
+  item?: string;
   isActive?: boolean; // If true, item is styled as current page but can still be clickable if href is provided
 }
 
@@ -23,49 +23,40 @@ interface IBreadcrumbProps {
   truncateLength?: number;
 }
 
+const textColor = "text-[#90a5bb]";
+
 const Breadcrumb: React.FC<IBreadcrumbProps> = ({
   items,
   showHome = true,
   homeHref = "/",
-  separator = <FontAwesomeIcon icon={faChevronRight} className="text-gray-400 text-xs mx-1 sm:mx-2" />,
+  separator = <FontAwesomeIcon icon={faChevronRight} className={`${textColor} text-xs mx-1 sm:mx-2`} />,
   className = "",
   itemClassName = "",
-  activeItemClassName = "text-gray-700 font-medium",
-  linkClassName = "text-blue-600 hover:text-blue-800 transition-colors duration-200 hover:underline",
+  activeItemClassName = `${textColor} font-medium`,
+  linkClassName = `${textColor} transition-colors duration-200 hover:underline text-xs`,
   maxMobileItems = 2,
   truncateLength = 25,
 }) => {
   
   const truncateText = (text: string, maxLength: number): string => {
-    if (text.length <= maxLength) return text;
-    return text.substring(0, maxLength) + "...";
+    return text
   };
 
   const getResponsiveItems = () => {
-    if (items.length <= maxMobileItems) return items;
-    
-    // On mobile, show first item + "..." + last item if there are too many items
-    const firstItem = items[0];
-    const lastItem = items[items.length - 1];
-    
-    return [
-      firstItem,
-      { label: "...", isActive: false },
-      lastItem,
-    ];
+    return items;
   };
   const renderBreadcrumbItem = (item: IBreadcrumbItem, index: number, isLast: boolean, isMobile: boolean = false) => {
-    const baseItemClass = `inline-flex items-center text-sm sm:text-base ${itemClassName}`;
-    const displayLabel = isMobile ? truncateText(item.label, truncateLength) : item.label;
+    const baseItemClass = `items-center text-sm flex-shrink-0 ${itemClassName}`;
+    const displayLabel = isMobile ? truncateText(item.name, truncateLength) : item.name;
     
     // If it's the last item and active, but still has href, make it a link with different styling
-    if ((isLast || item.isActive) && item.href) {
+    if ((isLast || item.isActive) && item.item) {
       return (
         <Link
           key={index}
-          href={item.href}
+          href={item.item}
           className={`${baseItemClass} ${activeItemClassName} ${linkClassName}`}
-          title={item.label} // Full text on hover
+          title={item.name} // Full text on hover
         >
           {displayLabel}
         </Link>
@@ -77,8 +68,8 @@ const Breadcrumb: React.FC<IBreadcrumbProps> = ({
       return (
         <span 
           key={index} 
-          className={`${baseItemClass} ${activeItemClassName}`}
-          title={item.label} // Full text on hover
+          className={`${baseItemClass} ${activeItemClassName} ${textColor}`}
+          title={item.name} // Full text on hover
         >
           {displayLabel}
         </span>
@@ -86,13 +77,13 @@ const Breadcrumb: React.FC<IBreadcrumbProps> = ({
     }
 
     // Regular link item
-    if (item.href) {
+    if (item.item) {
       return (
         <Link
           key={index}
-          href={item.href}
+          href={item.item}
           className={`${baseItemClass} ${linkClassName}`}
-          title={item.label} // Full text on hover
+          title={item.name} // Full text on hover
         >
           {displayLabel}
         </Link>
@@ -104,7 +95,7 @@ const Breadcrumb: React.FC<IBreadcrumbProps> = ({
       <span 
         key={index} 
         className={`${baseItemClass} text-gray-500`}
-        title={item.label}
+        title={item.name}
       >
         {displayLabel}
       </span>
@@ -121,23 +112,20 @@ const Breadcrumb: React.FC<IBreadcrumbProps> = ({
 
   return (
     <nav
-      className={`flex items-center rounded-lg overflow-x-auto ${className}`}
+      className={`flex items-start rounded-lg ${className}`}
       aria-label="Breadcrumb"
     >
       {/* Desktop View */}
-      <ol className="hidden sm:inline-flex items-center space-x-1 md:space-x-2 flex-wrap">
+      <p className="hidden sm:flex items-center gap-1 flex-wrap text-sm w-full">
         {showHome && (
           <>
-            <li className="inline-flex items-center">
-              <Link
-                href={homeHref}
-                className={`inline-flex items-center ${linkClassName} px-2 py-1 rounded`}
-                title="Home"
-              >
-                <FontAwesomeIcon icon={faHome} className="text-sm mr-1" />
-                <span className="hidden sm:inline">Home</span>
-              </Link>
-            </li>
+            <Link
+              href={homeHref}
+              className={`inline-flex items-center ${linkClassName} py-1 rounded`}
+              title="Home"
+            >
+              <span className={`text-sm ${textColor}`}>Home</span>
+            </Link>
             {items.length > 0 && renderSeparator(-1)}
           </>
         )}
@@ -146,28 +134,26 @@ const Breadcrumb: React.FC<IBreadcrumbProps> = ({
           const isLast = index === items.length - 1;
           
           return (
-            <li key={index} className="inline-flex items-center">
+            <span key={index} className="inline-flex items-center">
               {renderBreadcrumbItem(item, index, isLast, false)}
               {!isLast && renderSeparator(index)}
-            </li>
+            </span>
           );
         })}
-      </ol>
+      </p>
 
       {/* Mobile View */}
-      <ol className="inline-flex sm:hidden items-center space-x-1 flex-nowrap min-w-0">
+      <p className="block sm:hidden text-sm leading-relaxed">
         {showHome && (
           <>
-            <li className="inline-flex items-center flex-shrink-0">
-              <Link
-                href={homeHref}
-                className={`inline-flex items-center ${linkClassName} p-1 rounded hover:bg-blue-50`}
-                title="Home"
-              >
-                <FontAwesomeIcon icon={faHome} className="text-sm" />
-              </Link>
-            </li>
-            {displayItems.length > 0 && renderSeparator(-1)}
+            <Link
+              href={homeHref}
+              className={`${linkClassName} ${textColor}`}
+              title="Home"
+            >
+              Home
+            </Link>
+            {displayItems.length > 0 && <span className={`${textColor} mx-1`}>&gt;</span>}
           </>
         )}
         
@@ -175,15 +161,13 @@ const Breadcrumb: React.FC<IBreadcrumbProps> = ({
           const isLast = index === displayItems.length - 1;
           
           return (
-            <li key={index} className="inline-flex items-center min-w-0">
-              <div className="min-w-0">
-                {renderBreadcrumbItem(item, index, isLast, true)}
-              </div>
-              {!isLast && renderSeparator(index)}
-            </li>
+            <span key={index}>
+              {renderBreadcrumbItem(item as IBreadcrumbItem, index, isLast, true)}
+              {!isLast && <span className={`${textColor} mx-1`}>&gt;</span>}
+            </span>
           );
         })}
-      </ol>
+      </p>
     </nav>
   );
 };

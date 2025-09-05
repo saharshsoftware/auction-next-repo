@@ -151,12 +151,12 @@ export default async function Page({
   const getBreadcrumbItems = () => {
     return [
       {
-        label: "Auctions",
-        href: ROUTE_CONSTANTS.AUCTION,
+        name: "Auctions",
+        item: ROUTE_CONSTANTS.AUCTION,
       },
       {
-        label: auctionDetail?.title || "Auction Details",
-        href: `${ROUTE_CONSTANTS.AUCTION_SLASH}/${slug}`, // Current page URL
+        name: auctionDetail?.title || "Auction Details",
+        item: `${ROUTE_CONSTANTS.AUCTION_SLASH}/${slug}`, // Current page URL
         isActive: true,
       },
     ];

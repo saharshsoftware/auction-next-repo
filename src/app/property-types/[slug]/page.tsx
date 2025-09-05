@@ -166,16 +166,11 @@ export default async function Page({
     }
   }
 
-  const getBreadcrumbItems = () => {
+  const getBreadcrumbJsonLdItems = () => {
     return [
-      {
-        label: "Type",
-        href: ROUTE_CONSTANTS.ASSETS,
-      },
-      {
-        label: assetTypeData?.name || "Type",
-        href: `${ROUTE_CONSTANTS.TYPES}/${slug}`,
-      }
+      { name: "Home", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/` },
+      { name: "Type", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}${ROUTE_CONSTANTS.TYPES}` },
+      { name: assetTypeData?.name ?? "Type", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}${ROUTE_CONSTANTS.PROPERTY_TYPES}/${slug}` },
     ];
   };
 
@@ -193,11 +188,7 @@ export default async function Page({
         />
       )}
       <BreadcrumbJsonLd
-        items={[
-          { name: "Home", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/` },
-          { name: "Types", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/types` },
-          { name: assetTypeData?.name ?? "Type", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/types/${slug}` },
-        ]}
+        items={getBreadcrumbJsonLdItems()}
       />
       <FindAuctionServer
         categories={categoryOptions}
@@ -210,7 +201,7 @@ export default async function Page({
         {/* Breadcrumb Navigation */}
         <div className="pt-4">
           <Breadcrumb
-            items={getBreadcrumbItems()}
+            items={getBreadcrumbJsonLdItems().slice(1)}
           />
         </div>
         <div className="grid grid-cols-12 gap-4 pb-4">

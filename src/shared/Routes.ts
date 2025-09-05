@@ -26,6 +26,7 @@ export const ROUTE_CONSTANTS = {
   CITIES: "/cities",
   ASSETS: "/assets",
   TYPES: "/types",
+  PROPERTY_TYPES: "/property-types",
   LOGIN_OTP: "/otp-login",
   PARTNER: "/partner",
   BLOGS: "/blogs",
