@@ -61,12 +61,7 @@ const nextConfig = {
       {
         source: "/types",
         destination: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/assets`,
-        permanent: true,
-      },
-      {
-        source: "/types/:path*",
-        destination: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/assets`,
-        permanent: true,
+        permanent: false,
       }
     ];
   },

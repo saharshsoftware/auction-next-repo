@@ -5,7 +5,7 @@ import ReactSelectDropdown from "./ReactSelectDropdown";
 import CustomFormikForm from "./CustomFormikForm";
 import TextField from "./TextField";
 import { Field, Form } from "formik";
-import { COOKIES, RANGE_PRICE, STRING_DATA } from "../../shared/Constants";
+import { COOKIES, RANGE_PRICE, STRING_DATA, getEmptyAllObject } from "../../shared/Constants";
 import { ROUTE_CONSTANTS } from "../../shared/Routes";
 import { formatPrice, setDataInQueryParams } from "../../shared/Utilies";
 import Link from "next/link";
@@ -25,13 +25,13 @@ interface IFilter {
 }
 
 const initialValues = {
-  propertyType: STRING_DATA.EMPTY,
-  category: STRING_DATA.EMPTY,
-  location: STRING_DATA.EMPTY,
-  bank: STRING_DATA.EMPTY,
+  propertyType: getEmptyAllObject(),
+  category: getEmptyAllObject(),
+  location: getEmptyAllObject(),
+  bank: getEmptyAllObject(),
   keyword: STRING_DATA.EMPTY,
   price: [0, RANGE_PRICE.MAX],
-  serviceProvider: STRING_DATA.EMPTY,
+  serviceProvider: getEmptyAllObject(),
 };
 
 const gridElementClass = () => "lg:col-span-6 col-span-full";
@@ -44,13 +44,19 @@ const HeroSearchBox = (props: {
 }) => {
   const { assetsTypeOptions, bankOptions, categoryOptions, locationOptions } =
     props;
+
+  // Add "All" option to each dropdown options array
+  const categoryOptionsWithAll = [getEmptyAllObject(), ...(categoryOptions ?? [])];
+  const bankOptionsWithAll = [getEmptyAllObject(), ...(bankOptions ?? [])];
+  const locationOptionsWithAll = [getEmptyAllObject(), ...(locationOptions ?? [])];
+  const assetsTypeOptionsWithAll = [getEmptyAllObject(), ...(assetsTypeOptions ?? [])];
   const { setFilter } = useFilterStore();
 
   const token = getCookie(COOKIES.TOKEN_KEY) ?? "";
   const [loadingSearch, setLoadingSearch] = useState(false);
 
   const [filteredAssets, setFilteredAssets] = useState<IAssetType[]>(
-    assetsTypeOptions ?? []
+    assetsTypeOptionsWithAll ?? []
   );
   const getFilterQuery = (values: {
     category: any;
@@ -59,21 +65,21 @@ const HeroSearchBox = (props: {
     location: any;
     propertyType: any;
     keyword?: string;
-    serviceProvider?: string;
+    serviceProvider?: any;
   }) => {
     // console.log(values, "Vakyes");
     const { category, price, bank, location, propertyType, keyword, serviceProvider } = values;
     const { type, name } = location ?? {};
     const filter = {
       page: 1,
-      category,
+      category: category?.label === STRING_DATA.ALL ? STRING_DATA.EMPTY : category,
       price,
-      bank,
+      bank: bank?.label === STRING_DATA.ALL ? STRING_DATA.EMPTY : bank,
       locationType: type,
-      location,
-      propertyType,
+      location: location?.label === STRING_DATA.ALL ? STRING_DATA.EMPTY : location,
+      propertyType: propertyType?.label === STRING_DATA.ALL ? STRING_DATA.EMPTY : propertyType,
       keyword,
-      serviceProvider,
+      serviceProvider: serviceProvider?.label === STRING_DATA.ALL ? STRING_DATA.EMPTY : serviceProvider,
     };
     // console.log(filter, "hero-filter");
     // debugger
@@ -92,14 +98,23 @@ const HeroSearchBox = (props: {
     selectedCategorySlug: string,
     setFieldValue: any
   ) => {
-    setFieldValue("propertyType", ""); // Reset propertyType
+    setFieldValue("propertyType", getEmptyAllObject()); // Reset propertyType to "All"
+
+    // If "All" is selected or no specific category, show all assets with "All" option
+    if (!selectedCategorySlug || selectedCategorySlug === "") {
+      setFilteredAssets(assetsTypeOptionsWithAll);
+      return;
+    }
 
     // Filter asset types based on the selected category
     const filteredOptions = assetsTypeOptions.filter(
       (item: IAssetType) => item?.category?.slug === selectedCategorySlug
     );
+    
+    // Always include "All" option at the beginning
+    const filteredOptionsWithAll = [getEmptyAllObject(), ...filteredOptions];
     setFilteredAssets(
-      filteredOptions?.length > 0 ? filteredOptions : assetsTypeOptions
+      filteredOptions?.length > 0 ? filteredOptionsWithAll : assetsTypeOptionsWithAll
     );
   };
 
@@ -125,7 +140,7 @@ const HeroSearchBox = (props: {
                       {() => (
                         <ReactSelectDropdown
                           defaultValue={values?.category ?? null}
-                          options={categoryOptions ?? []}
+                          options={categoryOptionsWithAll ?? []}
                           placeholder={"Category"}
                           name="category-search-box"
                           // loading={isLoadingCategory}
@@ -175,7 +190,7 @@ const HeroSearchBox = (props: {
                           defaultValue={values?.location ?? null}
                           // loading={isLoadingLocation}
                           name="location-search-box"
-                          options={locationOptions}
+                          options={locationOptionsWithAll}
                           placeholder={"Neighborhood, City or State"}
                           customClass="w-full "
                           onChange={(e: any) => {
@@ -192,7 +207,7 @@ const HeroSearchBox = (props: {
                       {() => (
                         <ReactSelectDropdown
                           defaultValue={values?.bank ?? null}
-                          options={bankOptions}
+                          options={bankOptionsWithAll}
                           // loading={isLoadingBank}
                           name="bank-search-box"
                           placeholder={"Banks"}

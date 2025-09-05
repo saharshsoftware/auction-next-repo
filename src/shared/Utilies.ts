@@ -565,35 +565,36 @@ const OG_IMAGE_HEAD_TIMEOUT_MS = 600; // short timeout for perf
 const ogImageValidationCache: Map<string, { ok: boolean; expiresAt: number }> = new Map();
 
 export async function isImageAccessible(url: string): Promise<boolean> {
-  try {
-    const cached = ogImageValidationCache.get(url);
-    const now = Date.now();
-    if (cached && cached.expiresAt > now) {
-      return cached.ok;
-    }
+  return true;
+  // try {
+  //   const cached = ogImageValidationCache.get(url);
+  //   const now = Date.now();
+  //   if (cached && cached.expiresAt > now) {
+  //     return cached.ok;
+  //   }
 
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), OG_IMAGE_HEAD_TIMEOUT_MS);
-    const response = await fetch(url, {
-      method: "HEAD",
-      cache: "no-store",
-      redirect: "follow",
-      signal: controller.signal,
-    });
-    clearTimeout(timeout);
-    const contentLengthHeader = response.headers.get("content-length");
-    const contentTypeHeader = response.headers.get("content-type") || "";
-    const parsedLength = contentLengthHeader ? parseInt(contentLengthHeader, 10) : NaN;
-    const hasNonZeroLength = Number.isNaN(parsedLength) ? true : parsedLength > 0;
-    const isLikelyImage = contentTypeHeader.toLowerCase().startsWith("image/") || contentTypeHeader === "";
-    const ok = response.ok && hasNonZeroLength && isLikelyImage;
-    ogImageValidationCache.set(url, { ok, expiresAt: now + OG_IMAGE_VALIDATION_TTL_MS });
-    return ok;
-  } catch (error) {
-    // Do not log network timeouts aggressively; cache negative to avoid repeat
-    ogImageValidationCache.set(url, { ok: false, expiresAt: Date.now() + OG_IMAGE_VALIDATION_TTL_MS });
-    return false;
-  }
+  //   const controller = new AbortController();
+  //   const timeout = setTimeout(() => controller.abort(), OG_IMAGE_HEAD_TIMEOUT_MS);
+  //   const response = await fetch(url, {
+  //     method: "HEAD",
+  //     cache: "no-store",
+  //     redirect: "follow",
+  //     signal: controller.signal,
+  //   });
+  //   clearTimeout(timeout);
+  //   const contentLengthHeader = response.headers.get("content-length");
+  //   const contentTypeHeader = response.headers.get("content-type") || "";
+  //   const parsedLength = contentLengthHeader ? parseInt(contentLengthHeader, 10) : NaN;
+  //   const hasNonZeroLength = Number.isNaN(parsedLength) ? true : parsedLength > 0;
+  //   const isLikelyImage = contentTypeHeader.toLowerCase().startsWith("image/") || contentTypeHeader === "";
+  //   const ok = response.ok && hasNonZeroLength && isLikelyImage;
+  //   ogImageValidationCache.set(url, { ok, expiresAt: now + OG_IMAGE_VALIDATION_TTL_MS });
+  //   return ok;
+  // } catch (error) {
+  //   // Do not log network timeouts aggressively; cache negative to avoid repeat
+  //   ogImageValidationCache.set(url, { ok: false, expiresAt: Date.now() + OG_IMAGE_VALIDATION_TTL_MS });
+  //   return false;
+  // }
 }
 
 export const handleOgImageUrl = async (imageUrl: string) => {
