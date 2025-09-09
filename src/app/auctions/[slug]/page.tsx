@@ -151,6 +151,10 @@ export default async function Page({
   const getBreadcrumbItems = () => {
     return [
       {
+        name: "Home",
+        item: "/",
+      },
+      {
         name: "Auctions",
         item: ROUTE_CONSTANTS.AUCTION,
       },

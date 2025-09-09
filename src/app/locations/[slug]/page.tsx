@@ -180,19 +180,6 @@ export default async function Page({
   // Prepare Image JSON-LD for location hero/cover
   const locationImageUrl = await handleOgImageUrl(locationData?.imageURL ?? "");
 
-  const getBreadcrumbItems = () => {
-    return [
-      {
-        label: "City",
-        href: ROUTE_CONSTANTS.CITIES,
-      },
-      {
-        label: name || "Location",
-        href: `${ROUTE_CONSTANTS.LOCATION}/${slug}`,
-      },
-    ];
-  };
-
   const getBreadcrumbJsonLdItems = () => {
     return [
       { name: "Home", item: `/` },

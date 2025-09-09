@@ -228,7 +228,7 @@ export default async function Page({
       { name: "Bank", item: `${ROUTE_CONSTANTS.BANKS}` },
       { name: bankNamePrimary || "Bank", item: `${ROUTE_CONSTANTS.BANKS}/${slug}` },
       { name: "Category", item: `${ROUTE_CONSTANTS.CATEGORY}` },
-      { name: categoryData?.name || "Category", item: `${ROUTE_CONSTANTS.BANKS}/${slug}/categories/${slugcategory}` },
+      { name: categoryData?.name || "Category", item: `${ROUTE_CONSTANTS.BANKS}/${slug}${ROUTE_CONSTANTS.CATEGORY}/${slugcategory}` },
     ];
   };
 
