@@ -9,7 +9,7 @@ import {
 } from "@/server/actions/auction";
 import { fetchLocation, fetchLocationBySlug } from "@/server/actions/location";
 import { RANGE_PRICE } from "@/shared/Constants";
-import { handleOgImageUrl, sanitizeReactSelectOptionsPage, buildCanonicalUrl } from "@/shared/Utilies";
+import { handleOgImageUrl, sanitizeReactSelectOptionsPage, buildCanonicalUrl, getPopularDataBySortOrder } from "@/shared/Utilies";
 import {
   IAssetType,
   IAuction,
@@ -23,7 +23,6 @@ import AuctionHeaderServer from "@/components/atoms/AuctionHeaderServer";
 import ShowAuctionListServer from "@/components/molecules/ShowAuctionListServer";
 import { ILocalFilter } from "@/components/atoms/PaginationCompServer";
 import TopBanks from "@/components/atoms/TopBanks";
-import { fetchPopularBanks } from "@/server/actions/banks";
 import AuctionResults from "@/components/templates/AuctionResults";
 import { Suspense } from "react";
 import { SEO_BRAND } from "@/shared/seo.constant";
@@ -136,14 +135,12 @@ export default async function Page({
     rawAssetTypes,
     rawBanks,
     rawCategories,
-    rawLocations,
-    popularBanks,
+    rawLocations
   ]: any = await Promise.all([
     fetchAssetType(),
     fetchBanks(),
     fetchCategories(),
-    fetchLocation(),
-    fetchPopularBanks(),
+    fetchLocation()
   ]);
 
   const getRequiredParameters = () => {
@@ -166,6 +163,8 @@ export default async function Page({
   const locationOptions = sanitizeReactSelectOptionsPage(
     rawLocations
   ) as ILocations[];
+
+  const popularBanks = getPopularDataBySortOrder(rawBanks);
 
   const selectionLocation = locationOptions.find(
     (item) => item.name === locationData?.name

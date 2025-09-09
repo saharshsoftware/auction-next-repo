@@ -958,3 +958,7 @@ export function extractPhoneNumbers(contactString: string): string[] {
   // Remove duplicates and return
   return Array.from(new Set(normalized));
 }
+
+export const getPopularDataBySortOrder = (data: any[], limit: number = 5) => {
+  return data.sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0)).slice(0, limit);
+}

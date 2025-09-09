@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import FindAuctionServer from "@/components/molecules/FindAuctionServer";
 import {
   getDataFromQueryParamsMethod,
+  getPopularDataBySortOrder,
   sanitizeReactSelectOptionsPage,
   SERVICE_PROVIDER_OPTIONS,
 } from "@/shared/Utilies";
@@ -27,10 +28,8 @@ import { IPaginationData } from "@/zustandStore/auctionStore";
 import ShowAuctionListServer from "@/components/molecules/ShowAuctionListServer";
 import AuctionHeaderSaveSearch from "@/components/atoms/AuctionHeaderSaveSearch";
 import TopCities from "@/components/atoms/TopCities";
-import { fetchPopularLocations } from "@/server/actions/location";
 import AuctionResults from "../../../components/templates/AuctionResults";
 import { SkeletonAuctionList } from "@/components/skeltons/SkeletonAuctionList";
-import { fetchPopularBanks } from "@/server/actions/banks";
 import TopBanks from "@/components/atoms/TopBanks";
 
 export const metadata: Metadata = {
@@ -91,16 +90,12 @@ export default async function Page({
     rawAssetTypes,
     rawBanks,
     rawCategories,
-    rawLocations,
-    popularLocations,
-    popularBanks,
+    rawLocations
   ]: any = await Promise.all([
     fetchAssetType(),
     fetchBanks(),
     fetchCategories(),
-    fetchLocation(),
-    fetchPopularLocations(),
-    fetchPopularBanks(),
+    fetchLocation()
   ]);
 
   // Type assertions are no longer necessary if functions return correctly typed data
@@ -115,6 +110,8 @@ export default async function Page({
     rawLocations
   ) as ILocations[];
 
+  const popularLocations = getPopularDataBySortOrder(rawLocations);
+  const popularBanks = getPopularDataBySortOrder(rawBanks);
 
   const selectedBank = bankOptions.find(
     (item) => item.name === filterQueryData?.bank?.name

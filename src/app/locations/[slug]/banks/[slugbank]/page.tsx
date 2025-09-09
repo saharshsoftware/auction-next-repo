@@ -19,7 +19,6 @@ import {
 import {
   fetchBanks,
   fetchBanksBySlug,
-  fetchPopularBanks,
 } from "@/server/actions/banks";
 import { fetchLocation, fetchLocationBySlug } from "@/server/actions/location";
 import { RANGE_PRICE } from "@/shared/Constants";
@@ -39,7 +38,7 @@ import { IPaginationData } from "@/zustandStore/auctionStore";
 import { Metadata, ResolvingMetadata } from "next";
 import { Suspense } from "react";
 import { SEO_BRAND } from "@/shared/seo.constant";
-import { buildCanonicalUrl } from "@/shared/Utilies";
+import { buildCanonicalUrl, getPopularDataBySortOrder } from "@/shared/Utilies";
 import BreadcrumbJsonLd from "@/components/atoms/BreadcrumbJsonLd";
 import Breadcrumb from "@/components/atoms/Breadcrumb";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
@@ -163,14 +162,12 @@ export default async function Page({
     rawAssetTypes,
     rawBanks,
     rawCategories,
-    rawLocations,
-    popularBanks,
+    rawLocations
   ]: any = await Promise.all([
     fetchAssetType(),
     fetchBanks(),
     fetchCategories(),
-    fetchLocation(),
-    fetchPopularBanks(),
+    fetchLocation()
   ]);
 
 
@@ -185,6 +182,8 @@ export default async function Page({
   const locationOptions = sanitizeReactSelectOptionsPage(
     rawLocations
   ) as ILocations[];
+
+  const popularBanks = getPopularDataBySortOrder(rawBanks);
 
   const selectionLocation = locationOptions.find(
     (item) => item.name === locationData?.name

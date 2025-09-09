@@ -18,13 +18,13 @@ import {
   getAuctionsServer,
 } from "@/server/actions/auction";
 import { fetchBanks, fetchBanksBySlug } from "@/server/actions/banks";
-import { fetchPopularLocations } from "@/server/actions/location";
 import { RANGE_PRICE } from "@/shared/Constants";
 import {
   getPrimaryBankName,
   handleOgImageUrl,
   sanitizeReactSelectOptionsPage,
   buildCanonicalUrl,
+  getPopularDataBySortOrder,
 } from "@/shared/Utilies";
 import {
   IAssetType,
@@ -139,14 +139,12 @@ export default async function Page({
     rawAssetTypes,
     rawBanks,
     rawCategories,
-    rawLocations,
-    popularLocations,
+    rawLocations
   ]: any = await Promise.all([
     fetchAssetType(),
     fetchBanks(),
     fetchCategories(),
-    fetchLocation(),
-    fetchPopularLocations(),
+    fetchLocation()
   ]);
 
   // Type assertions are no longer necessary if functions return correctly typed data
@@ -160,6 +158,8 @@ export default async function Page({
   const locationOptions = sanitizeReactSelectOptionsPage(
     rawLocations
   ) as ILocations[];
+
+  const popularLocations = getPopularDataBySortOrder(rawLocations);
 
   const getRequiredParameters = () => {
     return {
