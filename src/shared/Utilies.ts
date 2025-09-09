@@ -959,6 +959,18 @@ export function extractPhoneNumbers(contactString: string): string[] {
   return Array.from(new Set(normalized));
 }
 
-export const getPopularDataBySortOrder = (data: any[], limit: number = 5) => {
-  return data.sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0)).slice(0, limit);
-}
+export const getPopularDataBySortOrder = (data?: any[], limit: number = 5) => {
+  // Fallbacks: ensure data is an array, limit is a positive integer
+  if (!Array.isArray(data) || data.length === 0) return [];
+  const safeLimit = Number.isInteger(limit) && limit > 0 ? limit : 5;
+
+  // Defensive: sortOrder fallback to Infinity so undefined/null go to end
+  return data
+    .slice() // avoid mutating original
+    .sort((a, b) => {
+      const aOrder = typeof a?.sortOrder === "number" ? a.sortOrder : Infinity;
+      const bOrder = typeof b?.sortOrder === "number" ? b.sortOrder : Infinity;
+      return aOrder - bOrder;
+    })
+    .slice(0, safeLimit);
+};
