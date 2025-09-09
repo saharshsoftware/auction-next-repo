@@ -26,6 +26,7 @@ interface Alert {
 interface AlertsSectionProps {
   alerts: Alert[];
   isAuthenticated?: boolean;
+  hideSignupButton?: boolean;
 }
 
 const instructionsData = [
@@ -46,6 +47,7 @@ const instructionsData = [
 export function AlertsSection({
   alerts,
   isAuthenticated = false,
+  hideSignupButton = false,
 }: AlertsSectionProps) {
   const device = useDeviceType();
 
@@ -72,9 +74,9 @@ export function AlertsSection({
           <div className="flex flex-col-reverse lg:flex-row  lg:gap-8 sm:max-w-6xl mx-auto items-center lg:items-start">
             <div className="flex-1 w-full lg:self-center">
               <StepsList steps={instructionsData} />
-              <div className="text-center mt-8">
+              {!hideSignupButton&& <div className="text-center mt-8">
                 <LoginToCreateAlert isAuthenticated={isAuthenticated} />
-              </div>
+              </div>}
             </div>
             <div className="flex-1 lg:self-center">
               <div className="text-center lg:text-left mb-6">

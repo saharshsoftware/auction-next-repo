@@ -26,10 +26,12 @@ import { WishlistSection } from "@/components/atoms/WishlistSection";
 import { COOKIES } from "@/shared/Constants";
 import { cookies } from "next/headers";
 import { AuctionSmarterSection } from "@/components/atoms/AuctionSmarterSection";
-import PartnerAndHelpSection from "@/components/atoms/PartnerAndHelpSection";
 import ForceRefreshOnMount from "@/components/atoms/ForceRefreshOnMount";
 import LandingPageSection from "@/components/molecules/LandingPageSections";
 import DownloadBanner from "@/components/molecules/DownloadSection";
+import FaqSection from "@/components/atoms/FaqSection";
+import { getFaqData } from "@/server/actions/footer";
+import { IMAGES } from "@/shared/Images";
 
 export const revalidate = 0;
 export const metadata: Metadata = {
@@ -127,17 +129,20 @@ export default async function Home() {
     bankOptions,
     locationOptions,
     carouselResponse,
+    faqData,
   ] = (await Promise.all([
     getAssetType(),
     getCategoryBoxCollection(),
     fetchBanks(),
     fetchLocation(),
     getCarouselData(),
+    getFaqData(),
   ])) as unknown as [
       IAssetType[],
       ICategoryCollection[],
       IBanks[],
       ILocations[],
+      any[],
       any[]
     ];
 
@@ -213,8 +218,19 @@ export default async function Home() {
           assetsTypeOptions={assetsTypeOptions}
           bankOptions={bankOptions}
         />
+
         {/* Home Collection Sections - Already has alternating colors */}
         {renderHomeCollection()}
+        
+        {/* FAQ Section */}
+        <FaqSection 
+          faqData={faqData || []}
+          maxItems={5}
+          showImage={true}
+          imageUrl={IMAGES.faq.src}
+          imageAlt="FAQ and Help Support"
+        />
+        
       </main>
     </>
   );

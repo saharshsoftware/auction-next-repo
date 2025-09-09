@@ -19,6 +19,7 @@ interface SavedSearch {
 
 interface SavedSearchesSectionProps {
   savedSearches: SavedSearch[];
+  hideSignupButton?: boolean;
 }
 
 const instructionsData = [
@@ -42,6 +43,7 @@ const instructionsData = [
 
 export function SavedSearchesSection({
   savedSearches,
+  hideSignupButton = false,
 }: SavedSearchesSectionProps) {
   const device = useDeviceType();
   const instImage =

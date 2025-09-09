@@ -31,4 +31,5 @@ export const ROUTE_CONSTANTS = {
   BLOGS: "/blogs",
   GLOSSARY: "/glossary",
   FAQ: "/faq",
+  HELP: "/help",
 };
