@@ -117,19 +117,7 @@ const Breadcrumb: React.FC<IBreadcrumbProps> = ({
     >
       {/* Desktop View */}
       <p className="hidden sm:flex items-center gap-1 flex-wrap w-full">
-        {showHome && (
-          <>
-            <Link
-              href={homeHref}
-              className={`inline-flex items-center ${linkClassName} py-1 rounded`}
-              title="Home"
-            >
-              <span className={`${textColor}`}>Home</span>
-            </Link>
-            {items.length > 0 && renderSeparator(-1)}
-          </>
-        )}
-        
+       
         {items.map((item, index) => {
           const isLast = index === items.length - 1;
           
@@ -144,18 +132,6 @@ const Breadcrumb: React.FC<IBreadcrumbProps> = ({
 
       {/* Mobile View */}
       <p className="block sm:hidden text-sm leading-relaxed">
-        {showHome && (
-          <>
-            <Link
-              href={homeHref}
-              className={`${linkClassName} ${textColor}`}
-              title="Home"
-            >
-              Home
-            </Link>
-            {displayItems.length > 0 && <span className={`${textColor} mx-1`}>&gt;</span>}
-          </>
-        )}
         
         {displayItems.map((item, index) => {
           const isLast = index === displayItems.length - 1;

@@ -230,7 +230,7 @@ export default async function Page({
          {/* Breadcrumb Navigation */}
          <div className="pt-4">
             <Breadcrumb
-              items={getBreadcrumbJsonLdItems().slice(1)}
+              items={getBreadcrumbJsonLdItems()}
             />
           </div>
         <div className="grid grid-cols-12 gap-4 pb-4">

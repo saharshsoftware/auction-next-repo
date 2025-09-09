@@ -206,7 +206,7 @@ export default async function Page({
       { name: "City", item: `${ROUTE_CONSTANTS.CITIES}` },
       { name: nameLocation || "Location", item: `${ROUTE_CONSTANTS.LOCATION}/${slug}` },
       { name: "Category", item: `${ROUTE_CONSTANTS.CATEGORY}` },
-      { name: categoryData?.name || "Category", item: `${ROUTE_CONSTANTS.LOCATION}/${slug}/categories/${slugcategory}` },
+      { name: categoryData?.name || "Category", item: `${ROUTE_CONSTANTS.LOCATION}/${slug}${ROUTE_CONSTANTS.CATEGORY}/${slugcategory}` },
     ];
   }
 
@@ -227,7 +227,7 @@ export default async function Page({
         {/* Breadcrumb Navigation */}
         <div className="pt-4">
           <Breadcrumb
-            items={getBreadcrumbJsonLdItems().slice(1)}
+            items={getBreadcrumbJsonLdItems()}
           />
         </div>
         <div className="grid grid-cols-12 gap-4 pb-4">
