@@ -27,6 +27,7 @@ import {
   getPrimaryBankName,
   handleOgImageUrl,
   sanitizeReactSelectOptionsPage,
+  getPopularDataBySortOrder,
 } from "@/shared/Utilies";
 import {
   IAssetType,
@@ -145,14 +146,12 @@ export default async function Page({
     rawBanks,
     rawCategories,
     rawLocations,
-    popularLocations,
     popularAssets,
   ]: any = await Promise.all([
     fetchAssetType(),
     fetchBanks(),
     fetchCategories(),
     fetchLocation(),
-    fetchPopularLocations(),
     fetchPopularAssetTypes(),
   ]);
 
@@ -167,6 +166,8 @@ export default async function Page({
   const locationOptions = sanitizeReactSelectOptionsPage(
     rawLocations
   ) as ILocations[];
+
+  const popularLocations = getPopularDataBySortOrder(rawLocations);
 
   const selectedAsset = assetsTypeOptions.find(
     (item) => item.name === assetTypeData?.name

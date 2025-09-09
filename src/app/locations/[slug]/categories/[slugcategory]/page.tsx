@@ -21,6 +21,7 @@ import { fetchLocation, fetchLocationBySlug } from "@/server/actions/location";
 import { RANGE_PRICE } from "@/shared/Constants";
 import {
   extractOnlyKeywords,
+  getPopularDataBySortOrder,
   handleOgImageUrl,
   sanitizeReactSelectOptionsPage,
 } from "@/shared/Utilies";
@@ -154,13 +155,11 @@ export default async function Page({
     rawBanks,
     rawCategories,
     rawLocations,
-    popularBanks,
   ]: any = await Promise.all([
     fetchAssetType(),
     fetchBanks(),
     fetchCategories(),
     fetchLocation(),
-    fetchPopularBanks(),
   ]);
 
   // Type assertions are no longer necessary if functions return correctly typed data
@@ -174,6 +173,8 @@ export default async function Page({
   const locationOptions = sanitizeReactSelectOptionsPage(
     rawLocations
   ) as ILocations[];
+
+  const popularBanks = getPopularDataBySortOrder(rawBanks);
 
   const selectionLocation = locationOptions.find(
     (item) => item.name === locationData?.name

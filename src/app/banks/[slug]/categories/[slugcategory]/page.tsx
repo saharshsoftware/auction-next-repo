@@ -23,7 +23,6 @@ import {
   getCategoryBoxCollectionBySlug,
 } from "@/server/actions/auction";
 import { fetchBanks, fetchBanksBySlug } from "@/server/actions/banks";
-import { fetchPopularLocations } from "@/server/actions/location";
 import { RANGE_PRICE } from "@/shared/Constants";
 import {
   extractOnlyKeywords,
@@ -31,6 +30,7 @@ import {
   handleOgImageUrl,
   sanitizeCategorySEOH1title,
   sanitizeReactSelectOptionsPage,
+  getPopularDataBySortOrder,
 } from "@/shared/Utilies";
 import {
   IAssetType,
@@ -172,14 +172,12 @@ export default async function Page({
     rawBanks,
     rawCategories,
     rawLocations,
-    popularLocations,
     popularAssets,
   ]: any = await Promise.all([
     fetchAssetType(),
     fetchBanks(),
     fetchCategories(),
     fetchLocation(),
-    fetchPopularLocations(),
     fetchPopularAssetTypes(),
   ]);
 
@@ -194,6 +192,8 @@ export default async function Page({
   const locationOptions = sanitizeReactSelectOptionsPage(
     rawLocations
   ) as ILocations[];
+
+  const popularLocations = getPopularDataBySortOrder(rawLocations);
 
   const selectedCategory = categoryOptions.find(
     (item) => item.name === categoryData?.name
