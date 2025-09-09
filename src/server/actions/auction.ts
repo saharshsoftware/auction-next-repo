@@ -203,14 +203,7 @@ export const getCollectionData = async (props: { endpoints: string }) => {
   "use server";
   try {
     const { endpoints } = props;
-    const requiredkeys = generateQueryParamString(["name", "slug", "imageURL"]);
-    let filter =
-      endpoints + `?populate=*&filters[isPopular]=true&${requiredkeys}`;
-    if (endpoints === "locations") {
-      filter += `&filters[type]=city`;
-    }
-    const URL = API_BASE_URL + `/api/` + filter;
-    // console.log(URL, "URL-auctionDetail");
+    const URL = API_BASE_URL + `/api/` + endpoints;
     const { data } = await getRequest({ API: URL });
     const sendResponse = sanitizeStrapiData(data.data) as any;
     return sendResponse;
