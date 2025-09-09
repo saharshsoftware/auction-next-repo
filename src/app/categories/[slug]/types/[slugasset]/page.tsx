@@ -94,7 +94,7 @@ export async function generateMetadata(
     const baseUrl = process.env.NEXT_PUBLIC_DOMAIN_BASE_URL as string;
     const canonicalUrl = buildCanonicalUrl({
       baseUrl,
-      pathname: `/categories/${slug}/property-types/${slugasset}`,
+      pathname: `${ROUTE_CONSTANTS.CATEGORY}/${slug}${ROUTE_CONSTANTS.TYPES}/${slugasset}`,
       page: searchParams?.page,
     });
 
@@ -212,8 +212,9 @@ export default async function Page({
     return [
       { name: "Home", item: `/` },
       { name: "Category", item: `${ROUTE_CONSTANTS.CATEGORY}` },
-      { name: "Property Type", item: `${ROUTE_CONSTANTS.PROPERTY_TYPES}` },
-      { name: assetTypeData?.name ?? "Type", item: `${ROUTE_CONSTANTS.CATEGORY}/${slug}/property-types/${slugasset}` },
+      { name: categoryData?.name ?? "Category", item: `${ROUTE_CONSTANTS.CATEGORY}/${slug}` },
+      { name: "Property Type", item: `${ROUTE_CONSTANTS.TYPES}` },
+      { name: assetTypeData?.name ?? "Property Type", item: `${ROUTE_CONSTANTS.CATEGORY}/${slug}${ROUTE_CONSTANTS.TYPES}/${slugasset}` },
     ];
   };
 

@@ -153,7 +153,7 @@ const CustomDrawer = (props: ICustomDrawer) => {
             <FontAwesomeIcon color={NAVICON_COLOR} icon={faBagShopping} />
           </NextLink>
           <NextLink
-            href={ROUTE_CONSTANTS.PROPERTY_TYPES}
+            href={ROUTE_CONSTANTS.TYPES}
             onClick={toggleTopBar}
             hasChildren={true}
             customClass="flex justify-between gap-2"

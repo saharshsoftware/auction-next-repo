@@ -202,7 +202,7 @@ const Navbar: React.FC = () => {
                 {STRING_DATA.CATEGORIES}{" "}
               </Link>
               <Link
-                href={ROUTE_CONSTANTS.PROPERTY_TYPES}
+                href={ROUTE_CONSTANTS.TYPES}
                 className="cursor-pointer text-xs lg:text-sm"
               >
                 {STRING_DATA.PROPERTY_TYPE}{" "}
