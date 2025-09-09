@@ -116,7 +116,7 @@ const Breadcrumb: React.FC<IBreadcrumbProps> = ({
       aria-label="Breadcrumb"
     >
       {/* Desktop View */}
-      <p className="hidden sm:flex items-center gap-1 flex-wrap w-full">
+      <p className="hidden sm:flex items-center gap-1 flex-wrap w-full mb-2">
        
         {items.map((item, index) => {
           const isLast = index === items.length - 1;
@@ -131,7 +131,7 @@ const Breadcrumb: React.FC<IBreadcrumbProps> = ({
       </p>
 
       {/* Mobile View */}
-      <p className="block sm:hidden text-sm leading-relaxed">
+      <p className="block sm:hidden text-sm leading-relaxed mb-2">
         
         {displayItems.map((item, index) => {
           const isLast = index === displayItems.length - 1;
@@ -139,7 +139,7 @@ const Breadcrumb: React.FC<IBreadcrumbProps> = ({
           return (
             <span key={index}>
               {renderBreadcrumbItem(item as IBreadcrumbItem, index, isLast, true)}
-              {!isLast && <span className={`${textColor} mx-1`}>&gt;</span>}
+              {!isLast && renderSeparator(index)}
             </span>
           );
         })}
