@@ -9,7 +9,7 @@ import { useDeviceType } from "@/hooks/useDeviceType";
 import { IMAGES_NAME } from "@/shared/Constants";
 import { useInstructionImages } from "@/hooks/useInstructionImages";
 
-interface SavedSearch {
+export interface SavedSearchSectionData {
   id: number;
   name: string;
   filters: string;
@@ -18,7 +18,7 @@ interface SavedSearch {
 }
 
 interface SavedSearchesSectionProps {
-  savedSearches: SavedSearch[];
+  savedSearches: SavedSearchSectionData[];
 }
 
 const instructionsData = [

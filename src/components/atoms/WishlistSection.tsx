@@ -22,7 +22,7 @@ interface Property {
   auctionStartTime: string;
 }
 
-interface FavoriteList {
+export interface FavoriteListSectionData {
   id: string;
   name: string;
   description: string;
@@ -31,7 +31,7 @@ interface FavoriteList {
 }
 
 interface WishlistSectionProps {
-  favoriteLists: FavoriteList[];
+  favoriteLists: FavoriteListSectionData[];
   isAuthenticated?: boolean;
 }
 
