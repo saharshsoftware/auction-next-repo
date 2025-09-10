@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 // src/components/molecules/LandingPageSectionClient.tsx
 "use client";
 
@@ -5,8 +6,8 @@ import { useEffect, useState } from "react";
 import { getCookie } from "cookies-next";
 import { AlertSectionData, AlertsSection } from "@/components/atoms/AlertsSection";
 import PartnerAndHelpSection from "@/components/atoms/PartnerAndHelpSection";
-import { SavedSearchesSection } from "@/components/atoms/SavedSearchesSection";
-import { WishlistSection } from "@/components/atoms/WishlistSection";
+import { SavedSearchSectionData, SavedSearchesSection } from "@/components/atoms/SavedSearchesSection";
+import { FavoriteListSectionData, WishlistSection } from "@/components/atoms/WishlistSection";
 import { IAlert, IAssetType, IBanks, ICategoryCollection, ILocations } from "@/types";
 import { COOKIES } from "@/shared/Constants";
 import { fetchAlerts, fetchSavedSearch } from "@/services/auction";
@@ -24,57 +25,64 @@ export default function LandingPageSectionClient(props: Props) {
 
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [alerts, setAlerts] = useState<AlertSectionData[]>([]);
-  const [savedSearches, setSavedSearches] = useState<any[]>([]);
-  const [favoriteLists, setFavoriteLists] = useState<any[]>([]);
+
+  const [savedSearches, setSavedSearches] = useState<SavedSearchSectionData[]>([]);
+  const [favoriteLists, setFavoriteLists] = useState<FavoriteListSectionData[]>([]);
+
+  const hydrateAlerts = (alertsRaw: IAlert[]): AlertSectionData[] => {
+    return alertsRaw.map((item: IAlert) => ({
+      ...item,
+      locationType: locationOptions.find((l) => l?.name === item?.location)?.type,
+      location: locationOptions.find((l) => l?.name === item?.location),
+      category: categoryOptions.find((c) => c?.name === item?.assetCategory),
+      propertyType: assetsTypeOptions.find((a) => a?.name === item?.assetType),
+      bank: bankOptions.find((b) => b?.name === item?.bankName),
+    })) as unknown as AlertSectionData[];
+  };
+
+  const resetUserData = () => {
+    setIsAuthenticated(false);
+    setAlerts([]);
+    setSavedSearches([]);
+    setFavoriteLists([]);
+  };
+
+  const fetchUserData = async (abortSignal: AbortSignal): Promise<void> => {
+    try {
+      const [alertsRes, savedRes, favsRes] = await Promise.all([
+        fetchAlerts().catch(() => ({ data: [], status: 400 })),
+        fetchSavedSearch().catch(() => ({ data: [], status: 400 })),
+        fetchFavoriteListClient().catch(() => ({ data: [], status: 400 })),
+      ]);
+
+      if (abortSignal.aborted) return;
+
+      const alertsRaw: IAlert[] = (alertsRes)?.data || [];
+      const savedRaw: SavedSearchSectionData[] = (savedRes)?.data || [];
+      const favsRaw: FavoriteListSectionData[] = (favsRes)?.data || [];
+
+      setAlerts(hydrateAlerts(alertsRaw));
+      setSavedSearches(savedRaw);
+      setFavoriteLists(favsRaw);
+    } catch (err) {
+      if (abortSignal.aborted) return;
+      resetUserData();
+    }
+  };
 
   useEffect(() => {
     const token = getCookie(COOKIES.TOKEN_KEY);
     if (!token) {
-      setIsAuthenticated(false);
-      setAlerts([]);
-      setSavedSearches([]);
-      setFavoriteLists([]);
+      resetUserData();
       return;
     }
 
-    let isCancelled = false;
     setIsAuthenticated(true);
-
-    (async () => {
-      try {
-        const [alertsRes, savedRes, favsRes] = await Promise.all([
-          fetchAlerts().catch(() => []),
-          fetchSavedSearch().catch(() => []),
-          fetchFavoriteListClient().catch(() => []),
-        ]);
-
-        const alertsRaw: IAlert[] = (alertsRes as any)?.data || alertsRes || [];
-        const savedRaw: any[] = (savedRes as any)?.data || savedRes || [];
-        const favsRaw: any[] = (favsRes as any)?.data || favsRes || [];
-
-        const hydratedAlerts = (alertsRaw as IAlert[]).map((item: IAlert) => ({
-          ...item,
-          locationType: locationOptions.find((l) => l?.name === item?.location)?.type,
-          location: locationOptions.find((l) => l?.name === item?.location),
-          category: categoryOptions.find((c) => c?.name === item?.assetCategory),
-          propertyType: assetsTypeOptions.find((a) => a?.name === item?.assetType),
-          bank: bankOptions.find((b) => b?.name === item?.bankName),
-        }));
-
-        if (isCancelled) return;
-        setAlerts(hydratedAlerts as unknown as AlertSectionData[]);
-        setSavedSearches(savedRaw);
-        setFavoriteLists(favsRaw);
-      } catch (err) {
-        if (isCancelled) return;
-        setAlerts([]);
-        setSavedSearches([]);
-        setFavoriteLists([]);
-      }
-    })();
+    const abortController = new AbortController();
+    fetchUserData(abortController.signal);
 
     return () => {
-      isCancelled = true;
+      abortController.abort();
     };
   }, [locationOptions, categoryOptions, assetsTypeOptions, bankOptions]);
 
