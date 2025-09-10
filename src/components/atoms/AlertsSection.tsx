@@ -10,7 +10,7 @@ import { useDeviceType } from "@/hooks/useDeviceType";
 import { IMAGES_NAME } from "@/shared/Constants";
 import { useInstructionImages } from "@/hooks/useInstructionImages";
 
-interface Alert {
+export interface AlertSectionData {
   id: string;
   name: string;
   assetCategory: string;
@@ -24,7 +24,7 @@ interface Alert {
 }
 
 interface AlertsSectionProps {
-  alerts: Alert[];
+  alerts: AlertSectionData[];
   isAuthenticated?: boolean;
 }
 
