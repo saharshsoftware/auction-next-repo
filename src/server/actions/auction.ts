@@ -205,7 +205,10 @@ export const getCollectionData = async (props: { endpoints: string }) => {
     const { endpoints } = props;
     const URL = API_BASE_URL + `/api/` + endpoints;
     const { data } = await getRequest({ API: URL });
-    const sendResponse = sanitizeStrapiData(data.data) as any;
+    
+    // Check if endpoints contains format=strapiDefault parameter
+    const isStrapiDefaultFormat = endpoints.includes('format=strapiDefault');
+    const sendResponse = sanitizeStrapiData(data.data, isStrapiDefaultFormat) as any;
     return sendResponse;
   } catch (e) {
     console.log(e, "auctionDetail error collection");
