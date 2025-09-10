@@ -46,6 +46,8 @@ import { buildCanonicalUrl } from "@/shared/Utilies";
 import BreadcrumbJsonLd from "@/components/atoms/BreadcrumbJsonLd";
 import AuctionResults from "@/components/templates/AuctionResults";
 import ImageJsonLd from "@/components/atoms/ImageJsonLd";
+import Breadcrumb from "@/components/atoms/Breadcrumb";
+import { ROUTE_CONSTANTS } from "@/shared/Routes";
 
 async function getSlugData(slug: string) {
   const selectedCategory = (await getCategoryBoxCollectionBySlug({
@@ -187,7 +189,15 @@ export default async function Page({
   const logoUrl = `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/images/logo.png`;
   const categoryImageUrl = logoUrl;
 
-  return (
+  const getBreadcrumbJsonLdItems = () => {
+    return [
+      { name: "Home", item: `/` },
+      { name: "Category", item: `${ROUTE_CONSTANTS.CATEGORY}` },
+      { name: categoryData?.name ?? "Category", item: `${ROUTE_CONSTANTS.CATEGORY}/${slug}` },
+    ];
+  };
+
+    return (
     <section>
       {!!categoryImageUrl && (
         <ImageJsonLd
@@ -201,11 +211,7 @@ export default async function Page({
         />
       )}
       <BreadcrumbJsonLd
-        items={[
-          { name: "Home", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/` },
-          { name: "Categories", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/categories` },
-          { name: categoryData?.name ?? "Category", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/categories/${slug}` },
-        ]}
+        items={getBreadcrumbJsonLdItems()}
       />
       <FindAuctionServer
         categories={categoryOptions}
@@ -215,7 +221,13 @@ export default async function Page({
         selectedCategory={selectedCategory}
       />
       <div className="common-section">
-        <div className="grid grid-cols-12 gap-4 py-4">
+        {/* Breadcrumb Navigation */}
+        <div className="pt-4">
+          <Breadcrumb
+            items={getBreadcrumbJsonLdItems()}
+          />
+        </div>
+        <div className="grid grid-cols-12 gap-4 pb-4">
           <div className="grid-col-span-9 ">
             <Suspense key={page?.toString()} fallback={<SkeletonAuctionList />}>
               <AuctionResults

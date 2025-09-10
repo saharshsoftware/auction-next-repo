@@ -9,7 +9,7 @@ import {
 } from "@/server/actions/auction";
 import { fetchLocation, fetchLocationBySlug } from "@/server/actions/location";
 import { RANGE_PRICE } from "@/shared/Constants";
-import { handleOgImageUrl, sanitizeReactSelectOptionsPage, buildCanonicalUrl } from "@/shared/Utilies";
+import { handleOgImageUrl, sanitizeReactSelectOptionsPage, buildCanonicalUrl, getPopularDataBySortOrder } from "@/shared/Utilies";
 import {
   IAssetType,
   IAuction,
@@ -23,13 +23,14 @@ import AuctionHeaderServer from "@/components/atoms/AuctionHeaderServer";
 import ShowAuctionListServer from "@/components/molecules/ShowAuctionListServer";
 import { ILocalFilter } from "@/components/atoms/PaginationCompServer";
 import TopBanks from "@/components/atoms/TopBanks";
-import { fetchPopularBanks } from "@/server/actions/banks";
 import AuctionResults from "@/components/templates/AuctionResults";
 import { Suspense } from "react";
 import { SEO_BRAND } from "@/shared/seo.constant";
 import BreadcrumbJsonLd from "@/components/atoms/BreadcrumbJsonLd";
 import ImageJsonLd from "@/components/atoms/ImageJsonLd";
 import { SkeletonAuctionList } from "@/components/skeltons/SkeletonAuctionList";
+import Breadcrumb from "@/components/atoms/Breadcrumb";
+import { ROUTE_CONSTANTS } from "@/shared/Routes";
 
 async function getSlugData(slug: string) {
   const selectedLocation = (await fetchLocationBySlug({
@@ -134,14 +135,12 @@ export default async function Page({
     rawAssetTypes,
     rawBanks,
     rawCategories,
-    rawLocations,
-    popularBanks,
+    rawLocations
   ]: any = await Promise.all([
     fetchAssetType(),
     fetchBanks(),
     fetchCategories(),
-    fetchLocation(),
-    fetchPopularBanks(),
+    fetchLocation()
   ]);
 
   const getRequiredParameters = () => {
@@ -165,6 +164,8 @@ export default async function Page({
     rawLocations
   ) as ILocations[];
 
+  const popularBanks = getPopularDataBySortOrder(rawBanks);
+
   const selectionLocation = locationOptions.find(
     (item) => item.name === locationData?.name
   );
@@ -179,15 +180,19 @@ export default async function Page({
   // Prepare Image JSON-LD for location hero/cover
   const locationImageUrl = await handleOgImageUrl(locationData?.imageURL ?? "");
 
+  const getBreadcrumbJsonLdItems = () => {
+    return [
+      { name: "Home", item: `/` },
+      { name: "City", item: `${ROUTE_CONSTANTS.CITIES}` },
+      { name: name ?? "Location", item: `${ROUTE_CONSTANTS.LOCATION}/${slug}` },
+    ];
+  };
+
   return (
     <section>
       {/* Breadcrumbs */}
       <BreadcrumbJsonLd
-        items={[
-          { name: "Home", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/` },
-          { name: "Locations", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/locations` },
-          { name: name ?? "Location", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/locations/${slug}` },
-        ]}
+        items={getBreadcrumbJsonLdItems()}
       />
       {/* Image JSON-LD for the city image */}
       {!!locationImageUrl && (
@@ -209,7 +214,13 @@ export default async function Page({
         selectedLocation={selectionLocation}
       />
       <div className="common-section">
-        <div className="grid grid-cols-12 gap-4 py-4">
+         {/* Breadcrumb Navigation */}
+         <div className="pt-4">
+            <Breadcrumb
+              items={getBreadcrumbJsonLdItems()}
+            />
+          </div>
+        <div className="grid grid-cols-12 gap-4 pb-4">
           <div className="grid-col-span-9 ">
             <Suspense key={page?.toString()} fallback={<SkeletonAuctionList />}>
 

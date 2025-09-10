@@ -4,6 +4,8 @@ import HeroSection from "@/components/atoms/HeroSection";
 import { fetchBanks, fetchLocation } from "@/server/actions";
 import {
   fetchAlertsServer,
+  fetchAssetType,
+  fetchCategories,
   fetchFavoriteListServer,
   fetchSavedSearchServer,
   getAssetType,
@@ -128,8 +130,8 @@ export default async function Home() {
     locationOptions,
     carouselResponse,
   ] = (await Promise.all([
-    getAssetType(),
-    getCategoryBoxCollection(),
+    fetchAssetType(),
+    fetchCategories(),
     fetchBanks(),
     fetchLocation(),
     getCarouselData(),

@@ -59,9 +59,9 @@ const nextConfig = {
         permanent: true,
       },
       {
-        source: "/types",
-        destination: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/assets`,
-        permanent: false,
+        source: "/assets",
+        destination: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/types`,
+        permanent: true,
       }
     ];
   },

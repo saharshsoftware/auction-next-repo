@@ -111,6 +111,7 @@ export interface IBanks {
   slug?: string;
   imageURL?: string;
   secondarySlug?: string;
+  sortOrder?: number;
 }
 
 export interface ILocations {
@@ -124,6 +125,7 @@ export interface ILocations {
   route?: string;
   slug?: string;
   imageURL?: string;
+  sortOrder?: number;
 }
 
 export interface ICategoryCollection {

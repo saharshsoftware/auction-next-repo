@@ -6,8 +6,11 @@ import CustomModal from "./CustomModal";
 import { useState } from "react";
 import SavedSearchModal from "../ modals/SavedSearchModal";
 import LoginModal from "../ modals/LoginModal";
+interface IAuctionHeaderSaveSearchProps {
+  searchParams?: { [key: string]: string | string[] | undefined };
+}
 
-const AuctionHeaderSaveSearch = () => {
+const AuctionHeaderSaveSearch = ({ searchParams }: IAuctionHeaderSaveSearchProps) => {
   const [showSavedSearchModal, setShowSavedSearchModal] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const token = getCookie(COOKIES.TOKEN_KEY) ?? "";

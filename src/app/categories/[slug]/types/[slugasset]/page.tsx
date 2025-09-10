@@ -39,7 +39,10 @@ import { ResolvingMetadata, Metadata } from "next";
 import { Suspense } from "react";
 import { buildCanonicalUrl } from "@/shared/Utilies";
 import AuctionResults from "@/components/templates/AuctionResults";
-
+import Breadcrumb from "@/components/atoms/Breadcrumb";
+import { ROUTE_CONSTANTS } from "@/shared/Routes";
+import BreadcrumbJsonLd from "@/components/atoms/BreadcrumbJsonLd";
+  
 async function getSlugData(
   slug: string,
   slugasset: string
@@ -91,7 +94,7 @@ export async function generateMetadata(
     const baseUrl = process.env.NEXT_PUBLIC_DOMAIN_BASE_URL as string;
     const canonicalUrl = buildCanonicalUrl({
       baseUrl,
-      pathname: `/categories/${slug}/types/${slugasset}`,
+      pathname: `${ROUTE_CONSTANTS.CATEGORY}/${slug}${ROUTE_CONSTANTS.TYPES}/${slugasset}`,
       page: searchParams?.page,
     });
 
@@ -205,6 +208,16 @@ export default async function Page({
     }
   }
 
+  const getBreadcrumbJsonLdItems = () => {
+    return [
+      { name: "Home", item: `/` },
+      { name: "Category", item: `${ROUTE_CONSTANTS.CATEGORY}` },
+      { name: categoryData?.name ?? "Category", item: `${ROUTE_CONSTANTS.CATEGORY}/${slug}` },
+      { name: "Property Type", item: `${ROUTE_CONSTANTS.TYPES}` },
+      { name: assetTypeData?.name ?? "Property Type", item: `${ROUTE_CONSTANTS.CATEGORY}/${slug}${ROUTE_CONSTANTS.TYPES}/${slugasset}` },
+    ];
+  };
+
   return (
     <section>
       <FindAuctionServer
@@ -216,7 +229,18 @@ export default async function Page({
         selectedAsset={selectedAsset}
       />
       <div className="common-section">
-        <div className="grid grid-cols-12 gap-4 py-4">
+        
+        <BreadcrumbJsonLd
+          items={getBreadcrumbJsonLdItems()}
+        />
+
+        {/* Breadcrumb Navigation */}
+        <div className="pt-4">
+          <Breadcrumb
+            items={getBreadcrumbJsonLdItems()}
+          />
+        </div>
+        <div className="grid grid-cols-12 gap-4 pb-4">
           <div className="grid-col-span-9 ">
 
             <Suspense key={page?.toString()} fallback={<SkeletonAuctionList />}>

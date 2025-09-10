@@ -38,6 +38,8 @@ import { buildCanonicalUrl } from "@/shared/Utilies";
 import BreadcrumbJsonLd from "@/components/atoms/BreadcrumbJsonLd";
 import AuctionResults from "@/components/templates/AuctionResults";
 import ImageJsonLd from "@/components/atoms/ImageJsonLd";
+import { ROUTE_CONSTANTS } from "@/shared/Routes";
+import Breadcrumb from "@/components/atoms/Breadcrumb";
 
 async function getSlugData(slug: string) {
   const selectedAsset = (await fetchAssetTypeBySlug({
@@ -69,7 +71,7 @@ export async function generateMetadata(
     const baseUrl = process.env.NEXT_PUBLIC_DOMAIN_BASE_URL as string;
     const canonicalUrl = buildCanonicalUrl({
       baseUrl,
-      pathname: `/types/${slug}`,
+      pathname: `${ROUTE_CONSTANTS.TYPES}/${slug}`,
       page: searchParams?.page,
     });
 
@@ -163,6 +165,15 @@ export default async function Page({
       reservePrice: [RANGE_PRICE.MIN, RANGE_PRICE.MAX],
     }
   }
+
+  const getBreadcrumbJsonLdItems = () => {
+    return [
+      { name: "Home", item: `/` },
+      { name: "Property Type", item: `${ROUTE_CONSTANTS.TYPES}` },
+      { name: assetTypeData?.name ?? "Property Type", item: `${ROUTE_CONSTANTS.TYPES}/${slug}` },
+    ];
+  };
+
     return (
     <section>
       {!!logoUrl && (
@@ -177,11 +188,7 @@ export default async function Page({
         />
       )}
       <BreadcrumbJsonLd
-        items={[
-          { name: "Home", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/` },
-          { name: "Types", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/types` },
-          { name: assetTypeData?.name ?? "Type", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/types/${slug}` },
-        ]}
+        items={getBreadcrumbJsonLdItems()}
       />
       <FindAuctionServer
         categories={categoryOptions}
@@ -191,7 +198,13 @@ export default async function Page({
         selectedAsset={selectedAsset}
       />
       <div className="common-section">
-        <div className="grid grid-cols-12 gap-4 py-4">
+        {/* Breadcrumb Navigation */}
+        <div className="pt-4">
+          <Breadcrumb
+            items={getBreadcrumbJsonLdItems()}
+          />
+        </div>
+        <div className="grid grid-cols-12 gap-4 pb-4">
           <div className="grid-col-span-9 ">
             <Suspense key={page?.toString()} fallback={<SkeletonAuctionList />}>
               <AuctionResults
