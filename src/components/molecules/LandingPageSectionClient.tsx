@@ -56,12 +56,30 @@ export default function LandingPageSectionClient(props: Props) {
       ]);
 
       if (abortSignal.aborted) return;
+      
+      const alertsRaw: IAlert[] = alertsRes || [];
+      const savedRawRaw: SavedSearchSectionData[] = savedRes || [];
+      const favsRawRaw: FavoriteListSectionData[] = favsRes || [];
 
-      const alertsRaw: IAlert[] = (alertsRes)?.data || [];
-      const savedRaw: SavedSearchSectionData[] = (savedRes)?.data || [];
-      const favsRaw: FavoriteListSectionData[] = (favsRes)?.data || [];
+      const savedRaw: SavedSearchSectionData[] = savedRawRaw.map((s: any) => ({
+        id: Number(s?.id ?? 0),
+        name: String(s?.name ?? ""),
+        filter: s?.filter ?? s?.filters ?? "",
+        filters: s?.filters ?? s?.filter ?? "",
+        lastUpdated: String(s?.updatedAt ?? s?.lastUpdated ?? ""),
+        matchCount: Number(s?.matchCount ?? 0),
+      }));
 
-      setAlerts(hydrateAlerts(alertsRaw));
+      const favsRaw: FavoriteListSectionData[] = favsRawRaw.map((f: any) => ({
+        id: String(f?.id ?? ""),
+        name: String(f?.name ?? ""),
+        description: String(f?.description ?? ""),
+        createdAt: String(f?.createdAt ?? ""),
+        properties: Array.isArray(f?.properties) ? f?.properties : [],
+      }));
+
+      const hydratedAlerts = hydrateAlerts(alertsRaw);
+      setAlerts(hydratedAlerts);
       setSavedSearches(savedRaw);
       setFavoriteLists(favsRaw);
     } catch (err) {
