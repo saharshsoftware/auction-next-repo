@@ -178,9 +178,16 @@ export const getCategoryBoxCollectionBySlug = async (props: {
     const { slug } = props;
     const filter = `?filters[slug][$eq]=${slug}`;
     const URL = API_BASE_URL + API_ENPOINTS.CATEGORY_BOX_COLLETIONS + filter;
-    // console.log(URL, "category-url-slug");
-    const { data } = await getRequest({ API: URL });
-    const sendResponse = sanitizeStrapiData(data.data) as unknown;
+    const response = await fetch(URL, {
+      next: { revalidate: FILTER_API_REVALIDATE_TIME },
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
+    if (!response.ok) {
+      throw new Error("Failed to fetch category by slug");
+    }
+    const result = await response.json();
+    const sendResponse = sanitizeStrapiData(result?.data) as unknown;
     return sendResponse;
   } catch (e) {
     console.log(e, "category-slug error category-box");
@@ -414,10 +421,17 @@ export const getAuctionsServer = async (payload: {
 
     URL = API_ENPOINTS.NOTICES + filter.slice(0, -1) + `&sort=effectiveAuctionStartTime:desc`;
     const UPDATE_URL = API_BASE_URL + URL;
-    console.log({ UPDATE_URL }, "auction-detail");
-    const { data } = await getRequest({ API: URL });
-    const sendResponse = sanitizedAuctionData(data.data) as IAuction[];
-    return { sendResponse, meta: data?.meta?.pagination, UPDATE_URL };
+    const response = await fetch(UPDATE_URL, {
+      next: { revalidate: FILTER_API_REVALIDATE_TIME },
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
+    if (!response.ok) {
+      throw new Error("Failed to fetch auctions");
+    }
+    const json = await response.json();
+    const sendResponse = sanitizedAuctionData(json?.data) as IAuction[];
+    return { sendResponse, meta: json?.meta?.pagination, UPDATE_URL };
   } catch (e) {
     console.log(URL, "auctionDetail error auction notices");
   }
