@@ -179,9 +179,14 @@ export const getCategoryBoxCollectionBySlug = async (props: {
     const filter = `?filters[slug][$eq]=${slug}`;
     const URL = API_BASE_URL + API_ENPOINTS.CATEGORY_BOX_COLLETIONS + filter;
     // console.log(URL, "category-url-slug");
-    const { data } = await getRequest({ API: URL });
-    const sendResponse = sanitizeStrapiData(data.data) as unknown;
-    return sendResponse;
+    const response = await fetch(URL, {
+      next: { revalidate: FILTER_API_REVALIDATE_TIME },
+      headers: { "Content-Type": "application/json" },
+    });
+    if (!response.ok) throw new Error("Failed to fetch category by slug");
+    const json = await response.json();
+    const result = sanitizeStrapiData(json?.data);
+    return result;
   } catch (e) {
     console.log(e, "category-slug error category-box");
   }
@@ -203,16 +208,12 @@ export const getCollectionData = async (props: { endpoints: string }) => {
   "use server";
   try {
     const { endpoints } = props;
-    const requiredkeys = generateQueryParamString(["name", "slug", "imageURL"]);
-    let filter =
-      endpoints + `?populate=*&filters[isPopular]=true&${requiredkeys}`;
-    if (endpoints === "locations") {
-      filter += `&filters[type]=city`;
-    }
-    const URL = API_BASE_URL + `/api/` + filter;
-    // console.log(URL, "URL-auctionDetail");
+    const URL = API_BASE_URL + `/api/` + endpoints;
     const { data } = await getRequest({ API: URL });
-    const sendResponse = sanitizeStrapiData(data.data) as any;
+    
+    // Check if endpoints contains format=strapiDefault parameter
+    const isStrapiDefaultFormat = endpoints.includes('format=strapiDefault');
+    const sendResponse = sanitizeStrapiData(data.data, isStrapiDefaultFormat) as any;
     return sendResponse;
   } catch (e) {
     console.log(e, "auctionDetail error collection");
@@ -273,6 +274,7 @@ export const fetchAssetType = async () => {
       "name",
       "slug",
       "pluralizeName",
+      "sortOrder",
     ]);
     const filter = `?sort[0]=name:asc&${requiredkeys}&populate=category`;
     const URL = API_BASE_URL + API_ENPOINTS.ASSET_TYPES + `${filter}`;
@@ -418,10 +420,17 @@ export const getAuctionsServer = async (payload: {
 
     URL = API_ENPOINTS.NOTICES + filter.slice(0, -1) + `&sort=effectiveAuctionStartTime:desc`;
     const UPDATE_URL = API_BASE_URL + URL;
-    console.log({ UPDATE_URL }, "auction-detail");
-    const { data } = await getRequest({ API: URL });
-    const sendResponse = sanitizedAuctionData(data.data) as IAuction[];
-    return { sendResponse, meta: data?.meta?.pagination, UPDATE_URL };
+    const response = await fetch(UPDATE_URL, {
+      next: { revalidate: FILTER_API_REVALIDATE_TIME },
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
+    if (!response.ok) {
+      throw new Error("Failed to fetch auctions");
+    }
+    const json = await response.json();
+    const sendResponse = sanitizedAuctionData(json?.data) as IAuction[];
+    return { sendResponse, meta: json?.meta?.pagination, UPDATE_URL };
   } catch (e) {
     console.log(URL, "auctionDetail error auction notices");
   }

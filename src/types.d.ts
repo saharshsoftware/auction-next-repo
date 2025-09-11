@@ -22,6 +22,7 @@ export interface IAssetType {
   category: any;
   label?: string;
   pluralizeName?: string;
+  sortOrder?: number;
 }
 
 export interface IAuction {
@@ -111,6 +112,7 @@ export interface IBanks {
   slug?: string;
   imageURL?: string;
   secondarySlug?: string;
+  sortOrder?: number;
 }
 
 export interface ILocations {
@@ -124,6 +126,7 @@ export interface ILocations {
   route?: string;
   slug?: string;
   imageURL?: string;
+  sortOrder?: number;
 }
 
 export interface ICategoryCollection {
@@ -138,6 +141,7 @@ export interface ICategoryCollection {
   slug?: string;
   categoryName?: string;
   route?: string;
+  sortOrder?: number;
 }
 
 export interface IHomeBoxCollection {

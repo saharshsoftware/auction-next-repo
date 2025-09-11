@@ -18,13 +18,13 @@ import {
   getAuctionsServer,
 } from "@/server/actions/auction";
 import { fetchBanks, fetchBanksBySlug } from "@/server/actions/banks";
-import { fetchPopularLocations } from "@/server/actions/location";
 import { RANGE_PRICE } from "@/shared/Constants";
 import {
   getPrimaryBankName,
   handleOgImageUrl,
   sanitizeReactSelectOptionsPage,
   buildCanonicalUrl,
+  getPopularDataBySortOrder,
 } from "@/shared/Utilies";
 import {
   IAssetType,
@@ -39,6 +39,8 @@ import { Suspense } from "react";
 import ImageJsonLd from "@/components/atoms/ImageJsonLd";
 import { SEO_BRAND } from "@/shared/seo.constant";
 import BreadcrumbJsonLd from "@/components/atoms/BreadcrumbJsonLd";
+import Breadcrumb from "@/components/atoms/Breadcrumb";
+import { ROUTE_CONSTANTS } from "@/shared/Routes";
 
 async function getSlugData(slug: string) {
   const selectedBank = (await fetchBanksBySlug({
@@ -137,14 +139,12 @@ export default async function Page({
     rawAssetTypes,
     rawBanks,
     rawCategories,
-    rawLocations,
-    popularLocations,
+    rawLocations
   ]: any = await Promise.all([
     fetchAssetType(),
     fetchBanks(),
     fetchCategories(),
-    fetchLocation(),
-    fetchPopularLocations(),
+    fetchLocation()
   ]);
 
   // Type assertions are no longer necessary if functions return correctly typed data
@@ -158,6 +158,8 @@ export default async function Page({
   const locationOptions = sanitizeReactSelectOptionsPage(
     rawLocations
   ) as ILocations[];
+
+  const popularLocations = getPopularDataBySortOrder(rawLocations);
 
   const getRequiredParameters = () => {
     return {
@@ -176,6 +178,14 @@ export default async function Page({
 
   const bankImageUrl = await handleOgImageUrl(bankData?.imageURL ?? "");
 
+  const getBreadcrumbJsonLdItems = () => {
+    return [
+      { name: "Home", item: `/` },
+      { name: "Bank", item: `${ROUTE_CONSTANTS.BANKS}` },
+      { name: bankData?.name ?? "Bank", item: `${ROUTE_CONSTANTS.BANKS}/${slug}` },
+    ];
+  };
+
   return (
     <section>
       {!!bankImageUrl && (
@@ -190,11 +200,7 @@ export default async function Page({
         />
       )}
       <BreadcrumbJsonLd
-        items={[
-          { name: "Home", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/` },
-          { name: "Banks", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/banks` },
-          { name: bankData?.name ?? "Bank", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/banks/${slug}` },
-        ]}
+        items={getBreadcrumbJsonLdItems()}
       />
       <FindAuctionServer
         categories={categoryOptions}
@@ -204,7 +210,13 @@ export default async function Page({
         selectedBank={selectedBank}
       />
       <div className="common-section">
-        <div className="grid grid-cols-12 gap-4 py-4">
+        {/* Breadcrumb Navigation */}
+        <div className="pt-4">
+          <Breadcrumb
+            items={getBreadcrumbJsonLdItems()}
+          />
+        </div>
+        <div className="grid grid-cols-12 gap-4 pb-4">
           <div className="grid-col-span-9 ">
             <Suspense key={page?.toString()} fallback={<SkeletonAuctionList />}>
               <AuctionResults

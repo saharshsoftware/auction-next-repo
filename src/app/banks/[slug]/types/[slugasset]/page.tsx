@@ -27,6 +27,7 @@ import {
   getPrimaryBankName,
   handleOgImageUrl,
   sanitizeReactSelectOptionsPage,
+  getPopularDataBySortOrder,
 } from "@/shared/Utilies";
 import {
   IAssetType,
@@ -43,6 +44,8 @@ import { SEO_BRAND } from "@/shared/seo.constant";
 import { buildCanonicalUrl } from "@/shared/Utilies";
 import BreadcrumbJsonLd from "@/components/atoms/BreadcrumbJsonLd";
 import AuctionResults from "@/components/templates/AuctionResults";
+import Breadcrumb from "@/components/atoms/Breadcrumb";
+import { ROUTE_CONSTANTS } from "@/shared/Routes";
 
 async function getSlugData(
   slug: string,
@@ -88,7 +91,7 @@ export async function generateMetadata({
     const baseUrl = process.env.NEXT_PUBLIC_DOMAIN_BASE_URL as string;
     const canonicalUrl = buildCanonicalUrl({
       baseUrl,
-      pathname: `/banks/${primaryBankSlug}/types/${slugasset}`,
+      pathname: `${ROUTE_CONSTANTS.BANKS}/${primaryBankSlug}${ROUTE_CONSTANTS.TYPES}/${slugasset}`,
       page: searchParams?.page,
     });
 
@@ -143,14 +146,12 @@ export default async function Page({
     rawBanks,
     rawCategories,
     rawLocations,
-    popularLocations,
     popularAssets,
   ]: any = await Promise.all([
     fetchAssetType(),
     fetchBanks(),
     fetchCategories(),
     fetchLocation(),
-    fetchPopularLocations(),
     fetchPopularAssetTypes(),
   ]);
 
@@ -165,6 +166,8 @@ export default async function Page({
   const locationOptions = sanitizeReactSelectOptionsPage(
     rawLocations
   ) as ILocations[];
+
+  const popularLocations = getPopularDataBySortOrder(rawLocations);
 
   const selectedAsset = assetsTypeOptions.find(
     (item) => item.name === assetTypeData?.name
@@ -193,15 +196,20 @@ export default async function Page({
 
   const key = page?.toString();
 
+  const getBreadcrumbJsonLdItems = () => {
+    return [
+      { name: "Home", item: `/` },
+      { name: "Bank", item: `${ROUTE_CONSTANTS.BANKS}` },
+      { name: bankNamePrimary || "Bank", item: `${ROUTE_CONSTANTS.BANKS}/${slug}` },
+      { name: "Property Type", item: `${ROUTE_CONSTANTS.TYPES}` },
+      { name: assetTypeData?.name || "Property Type", item: `${ROUTE_CONSTANTS.BANKS}/${slug}${ROUTE_CONSTANTS.TYPES}/${slugasset}` },
+    ];
+  };
+
   return (
     <section>
       <BreadcrumbJsonLd
-        items={[
-          { name: "Home", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/` },
-          { name: "Banks", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/banks` },
-          { name: bankNamePrimary || "Bank", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/banks/${slug}` },
-          { name: assetTypeData?.name || "Type", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/banks/${slug}/types/${slugasset}` },
-        ]}
+        items={getBreadcrumbJsonLdItems()}
       />
       <FindAuctionServer
         categories={categoryOptions}
@@ -212,7 +220,13 @@ export default async function Page({
         selectedBank={selectedBank}
       />
       <div className="common-section">
-        <div className="grid grid-cols-12 gap-4 py-4">
+        {/* Breadcrumb Navigation */}
+        <div className="pt-4">
+          <Breadcrumb
+            items={getBreadcrumbJsonLdItems()}
+          />
+        </div>
+        <div className="grid grid-cols-12 gap-4 pb-4">
           <div className="grid-col-span-9 ">
             <Suspense key={key} fallback={<SkeletonAuctionList />}>
               <AuctionResults
