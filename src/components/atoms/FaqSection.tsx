@@ -128,7 +128,7 @@ const FaqSection: React.FC<IFaqSectionProps> = ({
                   src={imageUrl}
                   alt={imageAlt}
                   fill
-                  className="object-cover"
+                  className="object-contain"
                   sizes="(max-width: 1024px) 0px, 40vw"
                   priority={false}
                   onError={(e) => {
