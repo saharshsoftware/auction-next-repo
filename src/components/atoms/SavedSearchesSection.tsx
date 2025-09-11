@@ -42,7 +42,6 @@ const instructionsData = [
 
 export function SavedSearchesSection({
   savedSearches,
-  hideSignupButton = false,
 }: SavedSearchesSectionProps) {
   const device = useDeviceType();
   const instImage =
