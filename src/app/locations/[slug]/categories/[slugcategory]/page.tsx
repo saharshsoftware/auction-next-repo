@@ -21,6 +21,7 @@ import { fetchLocation, fetchLocationBySlug } from "@/server/actions/location";
 import { RANGE_PRICE } from "@/shared/Constants";
 import {
   extractOnlyKeywords,
+  getLocationBySlug,
   getPopularDataBySortOrder,
   handleOgImageUrl,
   sanitizeReactSelectOptionsPage,
@@ -40,6 +41,7 @@ import BreadcrumbJsonLd from "@/components/atoms/BreadcrumbJsonLd";
 import AuctionResults from "@/components/templates/AuctionResults";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
 import Breadcrumb from "@/components/atoms/Breadcrumb";
+import { getCategoryBySlug } from "@/shared/Utilies";
 
 // Add caching functions
 const getLocationsCached = cache(async () => {
@@ -69,11 +71,11 @@ export async function generateMetadata(
       getLocationsCached(),
     ]);
     
-    const locationData = locations?.find((l) => l.slug === slug);
-    const categoryData = categories?.find((c) => c.slug === slugcategory);
+    const locationData = getLocationBySlug(locations, slug);
+    const categoryData = getCategoryBySlug(categories, slugcategory);
 
-    const { name: nameLocation } = locationData as ILocations;
-    const { name: nameCategory } = categoryData as ICategoryCollection;
+    const { name: nameLocation } = locationData || {} as ILocations;
+    const { name: nameCategory } = categoryData || {} as ICategoryCollection;
 
     let keywordsAll: string[] = [];
     if (nameCategory) {
@@ -164,15 +166,11 @@ export default async function Page({
     rawLocations
   ) as ILocations[];
 
-  const locationData = (rawLocations as ILocations[])?.find(
-    (l) => l.slug === slug
-  ) as ILocations;
-  const categoryData = (rawCategories as ICategoryCollection[])?.find(
-    (c) => c.slug === slugcategory
-  ) as ICategoryCollection;
+  const locationData = getLocationBySlug(rawLocations, slug);
+  const categoryData = getCategoryBySlug(rawCategories, slugcategory);
 
-  const { name: nameLocation, type } = locationData;
-  const { name: nameCategory } = categoryData;
+  const { name: nameLocation, type } = locationData || {} as ILocations;
+  const { name: nameCategory } = categoryData || {} as ICategoryCollection;
   const popularBanks = getPopularDataBySortOrder(rawBanks);
 
   const selectionLocation = locationOptions.find(
@@ -235,7 +233,7 @@ export default async function Page({
             <Suspense key={page?.toString()} fallback={<SkeletonAuctionList />}>
               <AuctionResults
                 searchParams={searchParams}
-                heading={`${categoryData.name} Bank Properties in  ${locationData.name}`}
+                heading={`${categoryData?.name} Bank Properties in  ${locationData?.name}`}
                 useCustomFilters={true}
                 customFilters={getRequiredParameters()}
                 urlFilterdata={urlFilterdata}

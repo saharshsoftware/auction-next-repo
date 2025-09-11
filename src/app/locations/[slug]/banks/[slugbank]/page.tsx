@@ -38,7 +38,7 @@ import { IPaginationData } from "@/zustandStore/auctionStore";
 import { Metadata, ResolvingMetadata } from "next";
 import { cache, Suspense } from "react";
 import { SEO_BRAND } from "@/shared/seo.constant";
-import { buildCanonicalUrl, getPopularDataBySortOrder } from "@/shared/Utilies";
+import { buildCanonicalUrl, getBankBySlug, getLocationBySlug, getPopularDataBySortOrder } from "@/shared/Utilies";
 import BreadcrumbJsonLd from "@/components/atoms/BreadcrumbJsonLd";
 import Breadcrumb from "@/components/atoms/Breadcrumb";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
@@ -71,10 +71,10 @@ export async function generateMetadata(
       getLocationsCached(),  
     ]);
     
-    const locationData = locations?.find((l) => l.slug === slug);
-    const bankData = banks?.find((b) => b.slug === slugbank || b.secondarySlug === slugbank);
+    const locationData = getLocationBySlug(locations, slug);
+    const bankData = getBankBySlug(banks, slugbank);
 
-    const { name: nameLocation } = locationData || {};
+    const { name: nameLocation } = locationData || {} as ILocations;
     const { name, slug: primaryBankSlug, secondarySlug } = bankData || {} as IBanks;
     const sanitizeImageUrl = await handleOgImageUrl(
       locationData?.imageURL ?? ""
@@ -172,12 +172,8 @@ export default async function Page({
     rawLocations
   ) as ILocations[];
 
-  const locationData = (rawLocations as ILocations[])?.find(
-    (l) => l.slug === slug
-  ) as ILocations;
-  const bankData = (rawBanks as IBanks[])?.find(
-    (b) => b.slug === slugbank || b.secondarySlug === slugbank
-  ) as IBanks;
+  const locationData = getLocationBySlug(rawLocations, slug);
+  const bankData = getBankBySlug(rawBanks, slugbank);
 
   const { name, type } = locationData || {};
 
@@ -241,7 +237,7 @@ export default async function Page({
             <Suspense key={page?.toString()} fallback={<SkeletonAuctionList />}>
               <AuctionResults
                 searchParams={searchParams}
-                heading={`${bankData.name} Auction Properties in ${name}`}
+                heading={`${bankData?.name} Auction Properties in ${name}`}
                 useCustomFilters={true}
                 customFilters={getRequiredParameters()}
                 urlFilterdata={urlFilterdata}

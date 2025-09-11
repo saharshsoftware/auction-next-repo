@@ -32,6 +32,8 @@ import {
   sanitizeReactSelectOptionsPage,
   getPopularDataBySortOrder,
   getCategorySpecificAssets,
+  getBankBySlug,
+  getCategoryBySlug,
 } from "@/shared/Utilies";
 import {
   IAssetType,
@@ -80,12 +82,8 @@ export async function generateMetadata(
       getBanksCached(),
     ]);
 
-    const categoryData = (categories as ICategoryCollection[])?.find(
-      (c) => c.slug === slugcategory
-    );
-    const bankData = (banks as IBanks[])?.find(
-      (a) => a.slug === slug || a.secondarySlug === slug
-    ) as IBanks;
+    const categoryData = getCategoryBySlug(categories, slugcategory);
+    const bankData = getBankBySlug(banks, slug);
 
     const { name: nameCategory } = categoryData as ICategoryCollection;
 
@@ -188,12 +186,8 @@ export default async function Page({
     rawLocations
   ) as ILocations[];
 
-  const categoryData = (rawCategories as ICategoryCollection[])?.find(
-    (c) => c.slug === slugcategory
-  );
-  const bankData = (rawBanks as IBanks[])?.find(
-    (a) => a.slug === slug || a.secondarySlug === slug
-  ) as IBanks;
+  const categoryData = getCategoryBySlug(rawCategories, slugcategory);
+  const bankData = getBankBySlug(rawBanks, slug);
 
   const filteredAssetsType = getCategorySpecificAssets({
     response: rawAssetTypes,

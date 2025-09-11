@@ -1,37 +1,65 @@
+import AuctionHeaderServer from "@/components/atoms/AuctionHeaderServer";
 import CategorySpecificAssets from "@/components/atoms/CategorySpecificAssets";
 import { ILocalFilter } from "@/components/atoms/PaginationCompServer";
 import TopCategory from "@/components/atoms/TopCategory";
 import FindAuctionServer from "@/components/molecules/FindAuctionServer";
+import RecentData from "@/components/molecules/RecentData";
+import ShowAuctionListServer from "@/components/molecules/ShowAuctionListServer";
 import { SkeletonAuctionList } from "@/components/skeltons/SkeletonAuctionList";
 import {
   fetchBanks,
+  getCategoryBoxCollection,
   fetchLocation,
 } from "@/server/actions";
-import { fetchAssetType, fetchCategories } from "@/server/actions/auction";
+import {
+  fetchAssetTypeBySlug,
+  fetchAssetTypes,
+} from "@/server/actions/assetTypes";
+import {
+  fetchAssetType,
+  fetchCategories,
+  fetchPopularAssets,
+  fetchPopularCategories,
+  getAssetType,
+  getAuctionsServer,
+  getCategoryBoxCollectionBySlug,
+} from "@/server/actions/auction";
 import { RANGE_PRICE } from "@/shared/Constants";
 import {
   extractOnlyKeywords,
   getCategorySpecificAssets,
-  getPopularDataBySortOrder,
+  sanitizeCategorySEOH1title,
+  sanitizeCategorytitle,
   sanitizeCategoryTypeTitle,
   sanitizeReactSelectOptionsPage,
 } from "@/shared/Utilies";
-import { IAssetType, ICategoryCollection, ILocations } from "@/types";
+import { IAssetType, ICategoryCollection, ILocations, IAuction } from "@/types";
+import { IPaginationData } from "@/zustandStore/auctionStore";
 import { ResolvingMetadata, Metadata } from "next";
-import { Suspense, cache } from "react";
+import { Suspense } from "react";
 import { buildCanonicalUrl } from "@/shared/Utilies";
 import AuctionResults from "@/components/templates/AuctionResults";
 import Breadcrumb from "@/components/atoms/Breadcrumb";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
 import BreadcrumbJsonLd from "@/components/atoms/BreadcrumbJsonLd";
   
-const getCategoriesCached = cache(async () => {
-  return (await fetchCategories()) as ICategoryCollection[] | null;
-});
-
-const getAssetTypesCached = cache(async () => {
-  return (await fetchAssetType()) as IAssetType[] | null;
-});
+async function getSlugData(
+  slug: string,
+  slugasset: string
+): Promise<{ assetType: IAssetType; category: ICategoryCollection }> {
+  const [selectedCategory, selectedLocation] = await Promise.all([
+    getCategoryBoxCollectionBySlug({
+      slug,
+    }) as Promise<[ICategoryCollection]>,
+    fetchAssetTypeBySlug({
+      slug: slugasset,
+    }) as Promise<IAssetType[]>,
+  ]);
+  return {
+    assetType: selectedLocation?.[0] as IAssetType,
+    category: selectedCategory?.[0] as ICategoryCollection,
+  };
+}
 
 export async function generateMetadata(
   {
@@ -46,33 +74,30 @@ export async function generateMetadata(
   const { slug, slugasset } = params;
 
   try {
-    const [categories, assets] = await Promise.all([
-      getCategoriesCached(),
-      getAssetTypesCached(),
-    ]);
-    const categoryData = categories?.find((c) => c.slug === slug);
-    const assetTypeData = assets?.find((a) => a.slug === slugasset);
+    const { assetType: assetTypeData, category: categoryData } =
+      await getSlugData(slug, slugasset);
 
-    const name = categoryData?.name ?? "";
+    const { name, subCategories } = categoryData;
     let keywordsAll: string[] = [];
     if (name) {
-      keywordsAll = extractOnlyKeywords(assets || [], name);
+      const allSssetTypeData = await fetchAssetTypes();
+      keywordsAll = extractOnlyKeywords(allSssetTypeData, name);
     }
     const sanitizeImageUrl =
       (process.env.NEXT_PUBLIC_IMAGE_CLOUDFRONT || "") + categoryData?.imageURL;
     console.log("Name", { name });
-    const sanitizeTitle = assetTypeData ? sanitizeCategoryTypeTitle(
+    const sanitizeTitle = sanitizeCategoryTypeTitle(
       name ?? "",
       assetTypeData,
       true
-    ) : '';
+    );
     const baseUrl = process.env.NEXT_PUBLIC_DOMAIN_BASE_URL as string;
     const canonicalUrl = buildCanonicalUrl({
       baseUrl,
       pathname: `${ROUTE_CONSTANTS.CATEGORY}/${slug}${ROUTE_CONSTANTS.TYPES}/${slugasset}`,
       page: searchParams?.page,
     });
-    const logoUrl = `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/images/logo.png`;
+
     return {
       title: sanitizeTitle,
       description: `Find ${name} ${assetTypeData?.name} bank auction properties on eauctiondekho. Explore diverse assets including ${keywordsAll}.`,
@@ -87,7 +112,7 @@ export async function generateMetadata(
         url: canonicalUrl,
         title: sanitizeTitle,
         description: `Find ${name} ${assetTypeData?.name} bank auction properties on eauctiondekho. Explore diverse assets including ${keywordsAll}.`,
-        images: logoUrl,
+        images: sanitizeImageUrl,
         siteName: "eauctiondekho",
         locale: "en_IN",
       },
@@ -96,7 +121,7 @@ export async function generateMetadata(
         card: "summary_large_image",
         title: sanitizeTitle,
         description: `Find ${name} ${assetTypeData?.name} bank auction properties on eauctiondekho. Explore diverse assets including ${keywordsAll}.`,
-        images: logoUrl,
+        images: sanitizeImageUrl,
       },
     };
   } catch (error) {
@@ -115,6 +140,8 @@ export default async function Page({
   const { slug, slugasset } = params;
   const { page = 1 } = searchParams;
 
+  const { assetType: assetTypeData, category: categoryData } =
+    await getSlugData(slug, slugasset);
   console.log("filterQueryDataBank");
 
   // Fetch data in parallel
@@ -123,15 +150,16 @@ export default async function Page({
     rawBanks,
     rawCategories,
     rawLocations,
+    popularCategories,
+    popularAssets,
   ]: any = await Promise.all([
-    getAssetTypesCached(),
+    fetchAssetType(),
     fetchBanks(),
-    getCategoriesCached(),
+    fetchCategories(),
     fetchLocation(),
+    fetchPopularCategories(),
+    fetchPopularAssets(),
   ]);
-
-  const popularCategories = getPopularDataBySortOrder(rawCategories);
-  const popularAssets = rawAssetTypes;
 
   // Type assertions are no longer necessary if functions return correctly typed data
   const assetsTypeOptions = sanitizeReactSelectOptionsPage(
@@ -144,13 +172,6 @@ export default async function Page({
   const locationOptions = sanitizeReactSelectOptionsPage(
     rawLocations
   ) as ILocations[];
-
-  const categoryData = (rawCategories as ICategoryCollection[])?.find(
-    (c) => c.slug === slug
-  );
-  const assetTypeData = (rawAssetTypes as IAssetType[])?.find(
-    (a) => a.slug === slugasset
-  );
 
   const selectedCategory = categoryOptions.find(
     (item) => item.name === categoryData?.name
@@ -172,13 +193,11 @@ export default async function Page({
       isBankCategoriesRoute: false,
       isCategoryRoute: true,
     }) as IAssetType[]) || [];
-  
-    const filterAssets = getPopularDataBySortOrder(filteredAssetsType);
 
-    const sanitizeTitle = assetTypeData ? sanitizeCategoryTypeTitle(
-      categoryData?.name ?? "",
-      assetTypeData
-    ) : '';  
+  const sanitizeTitle = sanitizeCategoryTypeTitle(
+    categoryData?.name ?? "",
+    assetTypeData
+  );
 
   const getRequiredParameters = () => {
     return {
@@ -240,7 +259,7 @@ export default async function Page({
             </div>
             <div>
               <CategorySpecificAssets
-                assetsTypeData={filterAssets}
+                assetsTypeData={filteredAssetsType}
                 isCategoryRoute={true}
                 categorySlug={slug}
               />

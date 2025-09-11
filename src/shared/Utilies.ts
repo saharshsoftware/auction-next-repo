@@ -974,3 +974,19 @@ export const getPopularDataBySortOrder = (data?: any[], limit: number = 5) => {
     })
     .slice(0, safeLimit);
 };
+
+export const getBankBySlug = (banks: IBanks[] | null, slug: string): IBanks | undefined => {
+  return banks?.find((bank) => bank.slug === slug || bank.secondarySlug === slug);
+};
+
+export const getLocationBySlug = (locations: ILocations[] | null, slug: string): ILocations | undefined => {
+  return locations?.find((location) => location.slug === slug);
+};
+
+export const getCategoryBySlug = (categories: ICategoryCollection[] | null, slug: string): ICategoryCollection | undefined => {
+  return categories?.find((category) => category.slug === slug);
+};
+
+export const getAssetTypeBySlug = (assetTypes: IAssetType[] | null, slug: string): IAssetType | undefined => {
+  return assetTypes?.find((assetType) => assetType.slug === slug);
+};

@@ -18,6 +18,8 @@ import {
   handleOgImageUrl,
   sanitizeReactSelectOptionsPage,
   getPopularDataBySortOrder,
+  getLocationBySlug,
+  getAssetTypeBySlug,
 } from "@/shared/Utilies";
 import {
   IAssetType,
@@ -62,8 +64,8 @@ export async function generateMetadata(
       getLocationsCached(),
     ]);
     
-    const locationData = locations?.find((l) => l.slug === slug);
-    const assetTypeData = assetTypes?.find((a) => a.slug === slugasset);
+    const locationData = getLocationBySlug(locations, slug);
+    const assetTypeData = getAssetTypeBySlug(assetTypes, slugasset);
 
     const { name: nameLocation } = locationData as ILocations;
     const { name: nameAssetType } = assetTypeData as IAssetType;
@@ -136,15 +138,11 @@ export default async function Page({
     rawLocations
   ) as ILocations[];
 
-  const locationData = (rawLocations as ILocations[])?.find(
-    (l) => l.slug === slug
-  ) as ILocations;
-  const assetTypeData = (rawAssetTypes as IAssetType[])?.find(
-    (a) => a.slug === slugasset
-  ) as IAssetType;
+  const locationData = getLocationBySlug(rawLocations, slug);
+  const assetTypeData = getAssetTypeBySlug(rawAssetTypes, slugasset);
 
-  const { name: nameLocation, type } = locationData;
-  const { name } = assetTypeData;
+  const { name: nameLocation, type } = locationData || {} as ILocations;
+  const { name } = assetTypeData || {} as IAssetType;
   const filterQueryData = {
     location: {
       name: nameLocation,
@@ -215,7 +213,7 @@ export default async function Page({
             <Suspense key={page?.toString()} fallback={<SkeletonAuctionList />}>
               <AuctionResults
                 searchParams={searchParams}
-                heading={`Bank Auction ${assetTypeData?.pluralizeName} in ${locationData.name}`}
+                heading={`Bank Auction ${assetTypeData?.pluralizeName} in ${locationData?.name}`}
                 useCustomFilters={true}
                 customFilters={getRequiredParameters()}
                 urlFilterdata={urlFilterdata}

@@ -29,6 +29,8 @@ import {
   sanitizeReactSelectOptionsPage,
   getPopularDataBySortOrder,
   buildCanonicalUrl,
+  getBankBySlug,
+  getAssetTypeBySlug,
 } from "@/shared/Utilies";
 import {
   IAssetType,
@@ -71,8 +73,8 @@ export async function generateMetadata({
       getAssetTypesCached(),
     ]);
     
-    const bankData = banks?.find((b) => b.slug === slug || b.secondarySlug === slug);
-    const assetTypeData = assetTypes?.find((a) => a.slug === slugasset);
+    const bankData = getBankBySlug(banks, slug);
+    const assetTypeData = getAssetTypeBySlug(assetTypes, slugasset);
 
     const { name: nameAssetType } = assetTypeData as IAssetType;
     const { name, slug: primaryBankSlug, secondarySlug } = bankData || {} as IBanks;
@@ -155,12 +157,8 @@ export default async function Page({
     rawLocations
   ) as ILocations[];
 
-  const bankData = (rawBanks as IBanks[])?.find(
-    (c) => c.slug === slug || c.secondarySlug === slug
-  ) as IBanks;
-  const assetTypeData = (rawAssetTypes as IAssetType[])?.find(
-    (a) => a.slug === slugasset
-  ) as IAssetType;
+  const bankData = getBankBySlug(rawBanks, slug);
+  const assetTypeData = getAssetTypeBySlug(rawAssetTypes, slugasset);
   const popularAssets = getPopularDataBySortOrder(rawAssetTypes) as IAssetType[];
 
   const popularLocations = getPopularDataBySortOrder(rawLocations);

@@ -1,5 +1,5 @@
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
-import { getPathType } from "@/shared/Utilies";
+import { getAssetTypeBySlug, getBankBySlug, getCategoryBySlug, getLocationBySlug, getPathType } from "@/shared/Utilies";
 
 export const applyFilters = (
   params:
@@ -155,13 +155,8 @@ export const fillFilterWithBanksAndAssets = (
   console.log("(fillFilterWithBanksAndAssets)");
   if (!banksList || !assetTypeList || !params) return;
 
-  const selectedBank = banksList.find(
-    (item: any) =>
-      item?.slug === params?.slug || item?.secondarySlug === params?.slug
-  );
-  const selectedAssetType = assetTypeList.find(
-    (item: any) => item?.slug === params?.slugasset
-  );
+  const selectedBank = getBankBySlug(banksList, params?.slugbank);
+  const selectedAssetType = getAssetTypeBySlug(assetTypeList, params?.slugasset);
 
   // console.log("(fillFilterWithBanksAndAssets)1");
   setInitialValueData({
@@ -188,12 +183,8 @@ export const fillFilterWithCategoriesAndAssets = (
   console.log("(fillFilterWithCategoriesAndAssets)");
   if (!categoriesList || !assetTypeList || !params) return;
 
-  const selectedCategory = categoriesList.find(
-    (item: any) => item?.slug === params?.slug
-  );
-  const selectedAssetType = assetTypeList.find(
-    (item: any) => item?.slug === params?.slugasset
-  );
+  const selectedCategory = getCategoryBySlug(categoriesList, params?.slugcategory);
+  const selectedAssetType = getAssetTypeBySlug(assetTypeList, params?.slugasset);
 
   // console.log("(fillFilterWithCategoriesAndAssets)1");
   setInitialValueData({
@@ -220,14 +211,8 @@ export const fillFilterWithLocationsAndBanks = (
   console.log("(fillFilterWithLocationsAndBanks)");
   if (!locations || !bankslist || !params) return;
 
-  const selectedLocation = locations.find(
-    (item: any) => item?.slug === params?.slug
-  );
-  const selectedBank = bankslist.find(
-    (item: any) =>
-      item?.slug === params?.slugbank ||
-      item?.secondarySlug === params?.slugbank
-  );
+  const selectedLocation = getLocationBySlug(locations, params?.slug);
+  const selectedBank = getBankBySlug(bankslist, params?.slugbank);
 
   setInitialValueData({
     location: selectedLocation ?? filterData?.location ?? "",
@@ -253,12 +238,9 @@ export const fillFilterWithLocationsAndCategories = (
   console.log("(fillFilterWithLocationsAndCategories)");
   if (!locationList || !categoriesList || !params) return;
 
-  const selectedLocation = locationList.find(
-    (item: any) => item?.slug === params?.slug
-  );
-  const selectedCategory = categoriesList.find(
-    (item: any) => item?.slug === params?.slugcategory
-  );
+  const selectedLocation = getLocationBySlug(locationList, params?.slug);
+
+  const selectedCategory = getCategoryBySlug(categoriesList, params?.slugcategory);
 
   // console.log("(fillFilterWithLocationsAndCategories)1", {
   //   selectedLocation,
@@ -282,7 +264,7 @@ export const fillFilterWithLocationsAndCategories = (
 export const fillFilterWithBanksAndCategories = (
   banksList: any,
   categoriesList: any,
-  params: { slug: string; slugcategory: string },
+  params: { slug: string; slugbank: string; slugcategory: string },
   filterData: any,
   setInitialValueData: (data: any) => void,
   setFilter: (filter: any) => void,
@@ -291,13 +273,8 @@ export const fillFilterWithBanksAndCategories = (
   console.log("(fillFilterWithBanksAndCategories)");
   if (!banksList || !categoriesList || !params) return;
 
-  const selectedBank = banksList.find(
-    (item: any) =>
-      item?.slug === params?.slug || item?.secondarySlug === params?.slug
-  );
-  const selectedCategory = categoriesList.find(
-    (item: any) => item?.slug === params?.slugcategory
-  );
+  const selectedBank = getBankBySlug(banksList, params?.slugbank);
+  const selectedCategory = getCategoryBySlug(categoriesList, params?.slugcategory);
 
   // console.log("(fillFilterWithBanksAndCategories)1");
   setInitialValueData({

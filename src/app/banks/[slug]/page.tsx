@@ -25,6 +25,7 @@ import {
   sanitizeReactSelectOptionsPage,
   buildCanonicalUrl,
   getPopularDataBySortOrder,
+  getBankBySlug,
 } from "@/shared/Utilies";
 import {
   IAssetType,
@@ -60,7 +61,7 @@ export async function generateMetadata(
   const { slug } = params;
   try {
     const banks = await getBanksCached();
-    const bankData = banks?.find((c) => c.slug === slug || c.secondarySlug === slug);
+    const bankData = getBankBySlug(banks, slug);
     // console.log(bankData, "bank-slug");
     const { name, slug: primaryBankSlug, secondarySlug } = bankData || {} as IBanks;
     const sanitizeImageUrl = await handleOgImageUrl(bankData?.imageURL ?? "");
@@ -145,9 +146,7 @@ export default async function Page({
     fetchLocation()
   ]);
 
-  const bankData = (rawBanks as IBanks[])?.find(
-    (c) => c.slug === slug || c.secondarySlug === slug
-  );
+  const bankData = getBankBySlug(rawBanks, slug);
 
   // Type assertions are no longer necessary if functions return correctly typed data
   const assetsTypeOptions = sanitizeReactSelectOptionsPage(
