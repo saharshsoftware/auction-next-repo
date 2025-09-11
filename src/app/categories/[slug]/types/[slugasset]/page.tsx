@@ -72,7 +72,7 @@ export async function generateMetadata(
       pathname: `${ROUTE_CONSTANTS.CATEGORY}/${slug}${ROUTE_CONSTANTS.TYPES}/${slugasset}`,
       page: searchParams?.page,
     });
-
+    const logoUrl = `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/images/logo.png`;
     return {
       title: sanitizeTitle,
       description: `Find ${name} ${assetTypeData?.name} bank auction properties on eauctiondekho. Explore diverse assets including ${keywordsAll}.`,
@@ -87,7 +87,7 @@ export async function generateMetadata(
         url: canonicalUrl,
         title: sanitizeTitle,
         description: `Find ${name} ${assetTypeData?.name} bank auction properties on eauctiondekho. Explore diverse assets including ${keywordsAll}.`,
-        images: sanitizeImageUrl,
+        images: logoUrl,
         siteName: "eauctiondekho",
         locale: "en_IN",
       },
@@ -96,7 +96,7 @@ export async function generateMetadata(
         card: "summary_large_image",
         title: sanitizeTitle,
         description: `Find ${name} ${assetTypeData?.name} bank auction properties on eauctiondekho. Explore diverse assets including ${keywordsAll}.`,
-        images: sanitizeImageUrl,
+        images: logoUrl,
       },
     };
   } catch (error) {
