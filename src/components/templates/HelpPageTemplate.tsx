@@ -21,7 +21,7 @@ export default function HelpPageTemplate(props: IHelpPageTemplateProps) {
         <section className="relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-r from-blue-50 to-indigo-50 opacity-50"></div>
           <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-16">
-            <SavedSearchesSection savedSearches={[]} hideSignupButton={!isAuthenticated} />
+            <SavedSearchesSection savedSearches={[]} />
           </div>
         </section>
 
