@@ -420,10 +420,17 @@ export const getAuctionsServer = async (payload: {
 
     URL = API_ENPOINTS.NOTICES + filter.slice(0, -1) + `&sort=effectiveAuctionStartTime:desc`;
     const UPDATE_URL = API_BASE_URL + URL;
-    console.log({ UPDATE_URL }, "auction-detail");
-    const { data } = await getRequest({ API: URL });
-    const sendResponse = sanitizedAuctionData(data.data) as IAuction[];
-    return { sendResponse, meta: data?.meta?.pagination, UPDATE_URL };
+    const response = await fetch(UPDATE_URL, {
+      next: { revalidate: FILTER_API_REVALIDATE_TIME },
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
+    if (!response.ok) {
+      throw new Error("Failed to fetch auctions");
+    }
+    const json = await response.json();
+    const sendResponse = sanitizedAuctionData(json?.data) as IAuction[];
+    return { sendResponse, meta: json?.meta?.pagination, UPDATE_URL };
   } catch (e) {
     console.log(URL, "auctionDetail error auction notices");
   }

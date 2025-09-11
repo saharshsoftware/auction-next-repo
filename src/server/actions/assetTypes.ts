@@ -1,7 +1,7 @@
 "use server";
 
 import { API_BASE_URL, API_ENPOINTS } from "@/services/api";
-import { getRequest } from "@/shared/Axios";
+import { FILTER_API_REVALIDATE_TIME } from "@/shared/Constants";
 import { sanitizeStrapiData } from "@/shared/Utilies";
 
 export const fetchAssetTypeBySlug = async (props: { slug: string }) => {
@@ -9,9 +9,16 @@ export const fetchAssetTypeBySlug = async (props: { slug: string }) => {
     const { slug } = props;
     const filter = `?sort[0]=name:asc&pagination[page]=1&pagination[pageSize]=1000&filters[slug][$eq]=${slug}`;
     const URL = API_BASE_URL + API_ENPOINTS.ASSET_TYPES + filter;
-    const { data } = await getRequest({ API: URL });
-    const sendResponse = sanitizeStrapiData(data?.data);
-    return sendResponse;
+    const response = await fetch(URL, {
+      next: { revalidate: FILTER_API_REVALIDATE_TIME },
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
+    if (!response.ok) {
+      throw new Error("Failed to fetch asset type by slug");
+    }
+    const json = await response.json();
+    return sanitizeStrapiData(json?.data);
   } catch (e) {
     console.log(e, "fetchAssetTypeBySlug error");
   }
@@ -23,10 +30,16 @@ export const fetchAssetTypes = async () => {
       API_BASE_URL +
       API_ENPOINTS.ASSET_TYPES +
       `?pagination[page]=1&pagination[pageSize]=50&fields[0]=name&fields[1]=slug&populate=category`;
-    console.log("URL", URL);
-    const { data } = await getRequest({ API: URL });
-    const sendResponse = sanitizeStrapiData(data?.data);
-    return sendResponse;
+    const response = await fetch(URL, {
+      next: { revalidate: FILTER_API_REVALIDATE_TIME },
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
+    if (!response.ok) {
+      throw new Error("Failed to fetch asset types");
+    }
+    const json = await response.json();
+    return sanitizeStrapiData(json?.data);
   } catch (e) {
     console.log(e, "fetchAssetTypes error");
   }
@@ -38,10 +51,16 @@ export const fetchPopularAssetTypes = async () => {
       API_BASE_URL +
       API_ENPOINTS.POPULER_ASSET_TYPES +
       `?pagination[page]=1&pagination[pageSize]=50&fields[0]=name&fields[1]=slug&populate=category`;
-    console.log("URL", URL);
-    const { data } = await getRequest({ API: URL });
-    const sendResponse = sanitizeStrapiData(data?.data);
-    return sendResponse;
+    const response = await fetch(URL, {
+      next: { revalidate: FILTER_API_REVALIDATE_TIME },
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
+    if (!response.ok) {
+      throw new Error("Failed to fetch popular asset types");
+    }
+    const json = await response.json();
+    return sanitizeStrapiData(json?.data);
   } catch (e) {
     console.log(e, "fetchAssetTypes error");
   }
