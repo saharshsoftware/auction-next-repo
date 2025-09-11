@@ -26,18 +26,20 @@ export interface FavoriteListSectionData {
 interface WishlistSectionProps {
   favoriteLists: FavoriteListSectionData[];
   isAuthenticated?: boolean;
+  hideSignupButton?: boolean;
 }
 
 export function WishlistSection({
   favoriteLists,
   isAuthenticated = false,
+  hideSignupButton = false,
 }: WishlistSectionProps) {
 
 
   if (favoriteLists.length === 0) {
     return (
       <>
-        <InstructionWishlistSection isAuthenticated={isAuthenticated}  />
+        <InstructionWishlistSection isAuthenticated={isAuthenticated} hideSignupButton={hideSignupButton} />
       </>
     );
   }
