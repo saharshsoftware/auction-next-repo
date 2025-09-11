@@ -178,17 +178,15 @@ export const getCategoryBoxCollectionBySlug = async (props: {
     const { slug } = props;
     const filter = `?filters[slug][$eq]=${slug}`;
     const URL = API_BASE_URL + API_ENPOINTS.CATEGORY_BOX_COLLETIONS + filter;
+    // console.log(URL, "category-url-slug");
     const response = await fetch(URL, {
       next: { revalidate: FILTER_API_REVALIDATE_TIME },
-      method: "GET",
       headers: { "Content-Type": "application/json" },
     });
-    if (!response.ok) {
-      throw new Error("Failed to fetch category by slug");
-    }
-    const result = await response.json();
-    const sendResponse = sanitizeStrapiData(result?.data) as unknown;
-    return sendResponse;
+    if (!response.ok) throw new Error("Failed to fetch category by slug");
+    const json = await response.json();
+    const result = sanitizeStrapiData(json?.data);
+    return result;
   } catch (e) {
     console.log(e, "category-slug error category-box");
   }
@@ -276,6 +274,7 @@ export const fetchAssetType = async () => {
       "name",
       "slug",
       "pluralizeName",
+      "sortOrder",
     ]);
     const filter = `?sort[0]=name:asc&${requiredkeys}&populate=category`;
     const URL = API_BASE_URL + API_ENPOINTS.ASSET_TYPES + `${filter}`;
