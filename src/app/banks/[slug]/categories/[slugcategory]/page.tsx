@@ -224,11 +224,11 @@ export default async function Page({
 
   const getBreadcrumbJsonLdItems = () => {
     return [
-      { name: "Home", item: `/`, breadcrumbRelativeRoute: '/' },
-      { name: "Bank", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}${ROUTE_CONSTANTS.BANKS}`, breadcrumbRelativeRoute: ROUTE_CONSTANTS.BANKS },
-      { name: bankNamePrimary || "Bank", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}${ROUTE_CONSTANTS.BANKS}/${slug}`, breadcrumbRelativeRoute: `${ROUTE_CONSTANTS.BANKS}/${slug}` },
-      { name: "Category", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}${ROUTE_CONSTANTS.CATEGORY}`, breadcrumbRelativeRoute: `${ROUTE_CONSTANTS.CATEGORY}` },
-      { name: categoryData?.name || "Category", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}${ROUTE_CONSTANTS.BANKS}/${slug}${ROUTE_CONSTANTS.CATEGORY}/${slugcategory}`, breadcrumbRelativeRoute: `${ROUTE_CONSTANTS.BANKS}/${slug}${ROUTE_CONSTANTS.CATEGORY}/${slugcategory}` },
+      { name: "Home", item: `/` },
+      { name: "Bank", item: `${ROUTE_CONSTANTS.BANKS}` },
+      { name: bankNamePrimary || "Bank", item: `${ROUTE_CONSTANTS.BANKS}/${slug}` },
+      { name: "Category", item: `${ROUTE_CONSTANTS.CATEGORY}` },
+      { name: categoryData?.name || "Category", item: `${ROUTE_CONSTANTS.BANKS}/${slug}${ROUTE_CONSTANTS.CATEGORY}/${slugcategory}` },
     ];
   };
 

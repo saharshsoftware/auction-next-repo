@@ -64,11 +64,6 @@ const nextConfig = {
         permanent: true,
       },
       {
-        source: "/locations",
-        destination: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/cities`,
-        permanent: true,
-      },
-      {
         source: "/lcoations/:slug",
         destination: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/locations/:slug`,
         permanent: true,

@@ -8,7 +8,6 @@ export interface IBreadcrumbItem {
   name: string;
   item?: string;
   isActive?: boolean; // If true, item is styled as current page but can still be clickable if href is provided
-  breadcrumbRelativeRoute: string;
 }
 
 interface IBreadcrumbProps {
@@ -51,11 +50,11 @@ const Breadcrumb: React.FC<IBreadcrumbProps> = ({
     const displayLabel = isMobile ? truncateText(item.name, truncateLength) : item.name;
     
     // If it's the last item and active, but still has href, make it a link with different styling
-    if ((isLast || item.isActive) && item.breadcrumbRelativeRoute) {
+    if ((isLast || item.isActive) && item.item) {
       return (
         <Link
           key={index}
-          href={item.breadcrumbRelativeRoute}
+          href={item.item}
           className={`${baseItemClass} ${activeItemClassName} ${linkClassName}`}
           title={item.name} // Full text on hover
         >
@@ -78,11 +77,11 @@ const Breadcrumb: React.FC<IBreadcrumbProps> = ({
     }
 
     // Regular link item
-    if (item.breadcrumbRelativeRoute) {
+    if (item.item) {
       return (
         <Link
           key={index}
-          href={item.breadcrumbRelativeRoute}
+          href={item.item}
           className={`${baseItemClass} ${linkClassName}`}
           title={item.name} // Full text on hover
         >

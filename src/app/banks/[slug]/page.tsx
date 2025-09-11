@@ -180,9 +180,9 @@ export default async function Page({
 
   const getBreadcrumbJsonLdItems = () => {
     return [
-      { name: "Home", item: `/`, breadcrumbRelativeRoute: '/' },
-      { name: "Bank", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}${ROUTE_CONSTANTS.BANKS}`, breadcrumbRelativeRoute: ROUTE_CONSTANTS.BANKS },
-      { name: bankData?.name ?? "Bank", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}${ROUTE_CONSTANTS.BANKS}/${slug}`, breadcrumbRelativeRoute: `${ROUTE_CONSTANTS.BANKS}/${slug}` },
+      { name: "Home", item: `/` },
+      { name: "Bank", item: `${ROUTE_CONSTANTS.BANKS}` },
+      { name: bankData?.name ?? "Bank", item: `${ROUTE_CONSTANTS.BANKS}/${slug}` },
     ];
   };
 

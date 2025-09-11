@@ -191,11 +191,11 @@ export default async function Page({
 
   const getBreadcrumbJsonLdItems = () => {
     return [
-      { name: "Home", item: `/`, breadcrumbRelativeRoute: '/' },
-      { name: "Category", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}${ROUTE_CONSTANTS.CATEGORY}`, breadcrumbRelativeRoute: ROUTE_CONSTANTS.CATEGORY },
-      { name: categoryData?.name ?? "Category", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}${ROUTE_CONSTANTS.CATEGORY}/${slug}`, breadcrumbRelativeRoute: `${ROUTE_CONSTANTS.CATEGORY}/${slug}` },
-      { name: "Property Type", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}${ROUTE_CONSTANTS.TYPES}`, breadcrumbRelativeRoute: ROUTE_CONSTANTS.TYPES },
-      { name: assetTypeData?.name ?? "Property Type", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}${ROUTE_CONSTANTS.CATEGORY}/${slug}${ROUTE_CONSTANTS.TYPES}/${slugasset}`, breadcrumbRelativeRoute: `${ROUTE_CONSTANTS.CATEGORY}/${slug}${ROUTE_CONSTANTS.TYPES}/${slugasset}` },
+      { name: "Home", item: `/` },
+      { name: "Category", item: `${ROUTE_CONSTANTS.CATEGORY}` },
+      { name: categoryData?.name ?? "Category", item: `${ROUTE_CONSTANTS.CATEGORY}/${slug}` },
+      { name: "Property Type", item: `${ROUTE_CONSTANTS.TYPES}` },
+      { name: assetTypeData?.name ?? "Property Type", item: `${ROUTE_CONSTANTS.CATEGORY}/${slug}${ROUTE_CONSTANTS.TYPES}/${slugasset}` },
     ];
   };
 

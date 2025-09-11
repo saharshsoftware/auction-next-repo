@@ -153,18 +153,15 @@ export default async function Page({
       {
         name: "Home",
         item: "/",
-        breadcrumbRelativeRoute: '/',
       },
       {
         name: "Auctions",
         item: ROUTE_CONSTANTS.AUCTION,
-        breadcrumbRelativeRoute: ROUTE_CONSTANTS.AUCTION,
       },
       {
         name: auctionDetail?.title || "Auction Details",
         item: `${ROUTE_CONSTANTS.AUCTION_SLASH}/${slug}`, // Current page URL
         isActive: true,
-        breadcrumbRelativeRoute: `${ROUTE_CONSTANTS.AUCTION_SLASH}/${slug}`,
       },
     ];
   };
