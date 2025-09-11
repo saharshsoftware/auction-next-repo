@@ -28,30 +28,21 @@ import {
 } from "@/types";
 import { IPaginationData } from "@/zustandStore/auctionStore";
 import { Metadata, ResolvingMetadata } from "next";
-import { Suspense } from "react";
+import { cache, Suspense } from "react";
 import BreadcrumbJsonLd from "@/components/atoms/BreadcrumbJsonLd";
 import { SkeletonAuctionList } from "@/components/skeltons/SkeletonAuctionList";
 import AuctionResults from "@/components/templates/AuctionResults";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
 import Breadcrumb from "@/components/atoms/Breadcrumb";
 
-async function getSlugData(
-  slug: string,
-  slugasset: string
-): Promise<{ location: ILocations; assetType: IAssetType }> {
-  const [selectedCategory, selectedLocation] = await Promise.all([
-    fetchAssetTypeBySlug({
-      slug: slugasset,
-    }) as Promise<IAssetType[]>,
-    fetchLocationBySlug({
-      slug,
-    }) as Promise<ILocations[]>,
-  ]);
-  return {
-    location: selectedLocation?.[0] as ILocations,
-    assetType: selectedCategory?.[0] as IAssetType,
-  };
-}
+// Add caching functions
+const getLocationsCached = cache(async () => {
+  return (await fetchLocation()) as ILocations[] | null;
+});
+
+const getAssetTypesCached = cache(async () => {
+  return (await fetchAssetType()) as IAssetType[] | null;
+});
 
 export async function generateMetadata(
   {
@@ -66,11 +57,16 @@ export async function generateMetadata(
   const { slug, slugasset } = params;
 
   try {
-    const { location: locationData, assetType: assetTypeData } =
-      await getSlugData(slug, slugasset);
+    const [assetTypes, locations] = await Promise.all([
+      getAssetTypesCached(),
+      getLocationsCached(),
+    ]);
+    
+    const locationData = locations?.find((l) => l.slug === slug);
+    const assetTypeData = assetTypes?.find((a) => a.slug === slugasset);
 
-    const { name: nameLocation } = locationData;
-    const { name: nameAssetType } = assetTypeData;
+    const { name: nameLocation } = locationData as ILocations;
+    const { name: nameAssetType } = assetTypeData as IAssetType;
 
     const sanitizeImageUrl = await handleOgImageUrl(
       locationData?.imageURL ?? ""
@@ -113,21 +109,7 @@ export default async function Page({
   const { slug, slugasset } = params;
   const { page = 1 } = searchParams;
 
-  const { location: locationData, assetType: assetTypeData } =
-    await getSlugData(slug, slugasset);
-
-  const { name: nameLocation, type } = locationData;
-  const { name } = assetTypeData;
-  const filterQueryData = {
-    location: {
-      name: nameLocation,
-      type,
-    },
-    nameAsset: name,
-    price: [RANGE_PRICE.MIN, RANGE_PRICE.MAX],
-  };
-
-  console.log("filterQueryDataLOcationAndAssetTypes", filterQueryData, slug);
+  console.log("filterQueryDataLOcationAndAssetTypes", slug);
 
   // Fetch data in parallel
   const [
@@ -136,10 +118,10 @@ export default async function Page({
     rawCategories,
     rawLocations
   ]: any = await Promise.all([
-    fetchAssetType(),
+    getAssetTypesCached(),
     fetchBanks(),
     fetchCategories(),
-    fetchLocation()
+    getLocationsCached()
   ]);
 
   // Type assertions are no longer necessary if functions return correctly typed data
@@ -154,6 +136,23 @@ export default async function Page({
     rawLocations
   ) as ILocations[];
 
+  const locationData = (rawLocations as ILocations[])?.find(
+    (l) => l.slug === slug
+  ) as ILocations;
+  const assetTypeData = (rawAssetTypes as IAssetType[])?.find(
+    (a) => a.slug === slugasset
+  ) as IAssetType;
+
+  const { name: nameLocation, type } = locationData;
+  const { name } = assetTypeData;
+  const filterQueryData = {
+    location: {
+      name: nameLocation,
+      type,
+    },
+    nameAsset: name,
+    price: [RANGE_PRICE.MIN, RANGE_PRICE.MAX],
+  };
   const popularBanks = getPopularDataBySortOrder(rawBanks);
 
   const selectionLocation = locationOptions.find(

@@ -34,30 +34,22 @@ import {
 } from "@/types";
 import { IPaginationData } from "@/zustandStore/auctionStore";
 import { Metadata, ResolvingMetadata } from "next";
-import { Suspense } from "react";
+import { cache, Suspense } from "react";
 import { buildCanonicalUrl } from "@/shared/Utilies";
 import BreadcrumbJsonLd from "@/components/atoms/BreadcrumbJsonLd";
 import AuctionResults from "@/components/templates/AuctionResults";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
 import Breadcrumb from "@/components/atoms/Breadcrumb";
 
-async function getSlugData(
-  slug: string,
-  slugcategory: string
-): Promise<{ location: ILocations; category: ICategoryCollection }> {
-  const [selectedCategory, selectedLocation] = await Promise.all([
-    getCategoryBoxCollectionBySlug({
-      slug: slugcategory,
-    }) as Promise<ICategoryCollection[]>,
-    fetchLocationBySlug({
-      slug,
-    }) as Promise<ILocations[]>,
-  ]);
-  return {
-    location: selectedLocation?.[0] as ILocations,
-    category: selectedCategory?.[0] as ICategoryCollection,
-  };
-}
+// Add caching functions
+const getLocationsCached = cache(async () => {
+  return (await fetchLocation()) as ILocations[] | null;
+});
+
+const getCategoriesCached = cache(async () => {
+  return (await fetchCategories()) as ICategoryCollection[] | null;
+});
+
 
 export async function generateMetadata(
   {
@@ -72,11 +64,16 @@ export async function generateMetadata(
   const { slug, slugcategory } = params;
 
   try {
-    const { location: locationData, category: categoryData } =
-      await getSlugData(slug, slugcategory);
+    const [categories, locations] = await Promise.all([
+      getCategoriesCached(),
+      getLocationsCached(),
+    ]);
+    
+    const locationData = locations?.find((l) => l.slug === slug);
+    const categoryData = categories?.find((c) => c.slug === slugcategory);
 
-    const { name: nameLocation } = locationData;
-    const { name: nameCategory } = categoryData;
+    const { name: nameLocation } = locationData as ILocations;
+    const { name: nameCategory } = categoryData as ICategoryCollection;
 
     let keywordsAll: string[] = [];
     if (nameCategory) {
@@ -139,13 +136,6 @@ export default async function Page({
 }) {
   const { slug, slugcategory } = params;
   const { page = 1 } = searchParams;
-  const { location: locationData, category: categoryData } = await getSlugData(
-    slug,
-    slugcategory
-  );
-
-  const { name: nameLocation, type } = locationData;
-  const { name: nameCategory } = categoryData;
 
   console.log("filterQueryDataLOcationAndCategories", slug);
 
@@ -158,8 +148,8 @@ export default async function Page({
   ]: any = await Promise.all([
     fetchAssetType(),
     fetchBanks(),
-    fetchCategories(),
-    fetchLocation(),
+    getCategoriesCached(),
+    getLocationsCached(),
   ]);
 
   // Type assertions are no longer necessary if functions return correctly typed data
@@ -174,6 +164,15 @@ export default async function Page({
     rawLocations
   ) as ILocations[];
 
+  const locationData = (rawLocations as ILocations[])?.find(
+    (l) => l.slug === slug
+  ) as ILocations;
+  const categoryData = (rawCategories as ICategoryCollection[])?.find(
+    (c) => c.slug === slugcategory
+  ) as ICategoryCollection;
+
+  const { name: nameLocation, type } = locationData;
+  const { name: nameCategory } = categoryData;
   const popularBanks = getPopularDataBySortOrder(rawBanks);
 
   const selectionLocation = locationOptions.find(

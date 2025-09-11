@@ -35,19 +35,17 @@ import {
 } from "@/types";
 import { IPaginationData } from "@/zustandStore/auctionStore";
 import { Metadata, ResolvingMetadata } from "next";
-import { Suspense } from "react";
+import { cache, Suspense } from "react";
 import ImageJsonLd from "@/components/atoms/ImageJsonLd";
 import { SEO_BRAND } from "@/shared/seo.constant";
 import BreadcrumbJsonLd from "@/components/atoms/BreadcrumbJsonLd";
 import Breadcrumb from "@/components/atoms/Breadcrumb";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
 
-async function getSlugData(slug: string) {
-  const selectedBank = (await fetchBanksBySlug({
-    slug,
-  })) as unknown as IBanks[];
-  return selectedBank?.[0];
-}
+// Add caching functions
+const getBanksCached = cache(async () => {
+  return (await fetchBanks()) as IBanks[] | null;
+});
 
 export async function generateMetadata(
   {
@@ -61,9 +59,10 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   const { slug } = params;
   try {
-    const bankData = await getSlugData(slug);
+    const banks = await getBanksCached();
+    const bankData = banks?.find((c) => c.slug === slug || c.secondarySlug === slug);
     // console.log(bankData, "bank-slug");
-    const { name, slug: primaryBankSlug, secondarySlug } = bankData;
+    const { name, slug: primaryBankSlug, secondarySlug } = bankData || {} as IBanks;
     const sanitizeImageUrl = await handleOgImageUrl(bankData?.imageURL ?? "");
     console.log("Generated Image URL:", { sanitizeImageUrl }); // Debugging
     const primaryName = getPrimaryBankName(
@@ -129,7 +128,6 @@ export default async function Page({
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
   const { slug } = params;
-  const bankData = await getSlugData(slug);
   const { page = 1 } = searchParams;
 
   console.log("filterQueryDataBank", slug);
@@ -142,10 +140,14 @@ export default async function Page({
     rawLocations
   ]: any = await Promise.all([
     fetchAssetType(),
-    fetchBanks(),
+    getBanksCached(),
     fetchCategories(),
     fetchLocation()
   ]);
+
+  const bankData = (rawBanks as IBanks[])?.find(
+    (c) => c.slug === slug || c.secondarySlug === slug
+  );
 
   // Type assertions are no longer necessary if functions return correctly typed data
   const assetsTypeOptions = sanitizeReactSelectOptionsPage(
@@ -221,7 +223,7 @@ export default async function Page({
             <Suspense key={page?.toString()} fallback={<SkeletonAuctionList />}>
               <AuctionResults
                 searchParams={searchParams}
-                heading={`${bankData.name} Auction Properties`}
+                heading={`${bankData?.name} Auction Properties`}
                 useCustomFilters={true}
                 customFilters={getRequiredParameters()}
                 urlFilterdata={urlFilterdata}

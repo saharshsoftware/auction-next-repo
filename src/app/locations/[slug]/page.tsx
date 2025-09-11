@@ -24,7 +24,7 @@ import ShowAuctionListServer from "@/components/molecules/ShowAuctionListServer"
 import { ILocalFilter } from "@/components/atoms/PaginationCompServer";
 import TopBanks from "@/components/atoms/TopBanks";
 import AuctionResults from "@/components/templates/AuctionResults";
-import { Suspense } from "react";
+import { cache, Suspense } from "react";
 import { SEO_BRAND } from "@/shared/seo.constant";
 import BreadcrumbJsonLd from "@/components/atoms/BreadcrumbJsonLd";
 import ImageJsonLd from "@/components/atoms/ImageJsonLd";
@@ -32,12 +32,10 @@ import { SkeletonAuctionList } from "@/components/skeltons/SkeletonAuctionList";
 import Breadcrumb from "@/components/atoms/Breadcrumb";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
 
-async function getSlugData(slug: string) {
-  const selectedLocation = (await fetchLocationBySlug({
-    slug,
-  })) as unknown as ILocations[];
-  return selectedLocation?.[0];
-}
+// Add caching functions
+const getLocationsCached = cache(async () => {
+  return (await fetchLocation()) as ILocations[] | null;
+});
 
 export async function generateMetadata(
   {
@@ -52,9 +50,10 @@ export async function generateMetadata(
   const { slug } = params;
 
   try {
-    const locationData = await getSlugData(slug);
+    const locations = await getLocationsCached() as ILocations[];
+    const locationData = locations?.find((l) => l.slug === slug) as ILocations;
     // console.log(locationData, "location-slug");
-    const { name } = locationData;
+    const { name } = locationData || {};
 
     const sanitizeImageUrl = await handleOgImageUrl(
       locationData?.imageURL ?? ""
@@ -117,19 +116,7 @@ export default async function Page({
 }) {
   const { slug } = params;
   const { page = 1 } = searchParams;
-  // Extract and sanitize search query
-  const locationData = await getSlugData(slug);
-  // console.log(locationData, "location-slug");
-  const { name, type } = locationData;
-
-  const filterQueryData = {
-    location: {
-      name,
-      type,
-    },
-    price: [RANGE_PRICE.MIN, RANGE_PRICE.MAX],
-  };
-
+ 
   // Fetch data in parallel
   const [
     rawAssetTypes,
@@ -140,8 +127,22 @@ export default async function Page({
     fetchAssetType(),
     fetchBanks(),
     fetchCategories(),
-    fetchLocation()
+    getLocationsCached()
   ]);
+
+  const locationData = (rawLocations as ILocations[])?.find(
+    (l) => l.slug === slug
+  ) as ILocations;
+
+  const { name, type } = locationData || {};
+
+  const filterQueryData = {
+    location: {
+      name,
+      type,
+    },
+    price: [RANGE_PRICE.MIN, RANGE_PRICE.MAX],
+  };
 
   const getRequiredParameters = () => {
     return {
