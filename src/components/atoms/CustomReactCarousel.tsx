@@ -106,6 +106,11 @@ const CustomReactCarousel = (props: ICustomReactCarousel) => {
   //     window.removeEventListener("resize", handleResize);
   //   };
   // }, []);
+  // Calculate the number of items
+  const itemCount = React.Children.count(children);
+
+  // Determine if arrows should be shown on desktop (when slidesToShow is 6)
+  const shouldShowArrowsOnDesktop = itemCount > 6;  
 
   const settings = {
     dots: true,
@@ -123,7 +128,7 @@ const CustomReactCarousel = (props: ICustomReactCarousel) => {
           slidesToScroll: 2,
           infinite: false,
           dots: true,
-          arrows: true,
+          arrows: shouldShowArrowsOnDesktop,
         },
       },
       {
