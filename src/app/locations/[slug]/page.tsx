@@ -9,7 +9,7 @@ import {
 } from "@/server/actions/auction";
 import { fetchLocation, fetchLocationBySlug } from "@/server/actions/location";
 import { RANGE_PRICE } from "@/shared/Constants";
-import { handleOgImageUrl, sanitizeReactSelectOptionsPage, buildCanonicalUrl, getPopularDataBySortOrder } from "@/shared/Utilies";
+import { handleOgImageUrl, sanitizeReactSelectOptionsPage, buildCanonicalUrl, getPopularDataBySortOrder, getLocationBySlug } from "@/shared/Utilies";
 import {
   IAssetType,
   IAuction,
@@ -51,7 +51,7 @@ export async function generateMetadata(
 
   try {
     const locations = await getLocationsCached() as ILocations[];
-    const locationData = locations?.find((l) => l.slug === slug) as ILocations;
+    const locationData = getLocationBySlug(locations, slug);
     // console.log(locationData, "location-slug");
     const { name } = locationData || {};
 
@@ -130,11 +130,9 @@ export default async function Page({
     getLocationsCached()
   ]);
 
-  const locationData = (rawLocations as ILocations[])?.find(
-    (l) => l.slug === slug
-  ) as ILocations;
+  const locationData = getLocationBySlug(rawLocations, slug);
 
-  const { name, type } = locationData || {};
+  const { name, type } = locationData || {} as ILocations;
 
   const filterQueryData = {
     location: {

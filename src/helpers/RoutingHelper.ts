@@ -264,7 +264,7 @@ export const fillFilterWithLocationsAndCategories = (
 export const fillFilterWithBanksAndCategories = (
   banksList: any,
   categoriesList: any,
-  params: { slug: string; slugbank: string; slugcategory: string },
+  params: { slug: string; slugcategory: string },
   filterData: any,
   setInitialValueData: (data: any) => void,
   setFilter: (filter: any) => void,
@@ -273,7 +273,7 @@ export const fillFilterWithBanksAndCategories = (
   console.log("(fillFilterWithBanksAndCategories)");
   if (!banksList || !categoriesList || !params) return;
 
-  const selectedBank = getBankBySlug(banksList, params?.slugbank);
+  const selectedBank = getBankBySlug(banksList, params?.slug);
   const selectedCategory = getCategoryBySlug(categoriesList, params?.slugcategory);
 
   // console.log("(fillFilterWithBanksAndCategories)1");
