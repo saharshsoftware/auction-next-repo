@@ -183,7 +183,7 @@ export const fillFilterWithCategoriesAndAssets = (
   console.log("(fillFilterWithCategoriesAndAssets)");
   if (!categoriesList || !assetTypeList || !params) return;
 
-  const selectedCategory = getCategoryBySlug(categoriesList, params?.slugcategory);
+  const selectedCategory = getCategoryBySlug(categoriesList, params?.slug);
   const selectedAssetType = getAssetTypeBySlug(assetTypeList, params?.slugasset);
 
   // console.log("(fillFilterWithCategoriesAndAssets)1");
