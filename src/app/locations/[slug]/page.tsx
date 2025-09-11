@@ -182,9 +182,9 @@ export default async function Page({
 
   const getBreadcrumbJsonLdItems = () => {
     return [
-      { name: "Home", item: `/` },
-      { name: "City", item: `${ROUTE_CONSTANTS.CITIES}` },
-      { name: name ?? "Location", item: `${ROUTE_CONSTANTS.LOCATION}/${slug}` },
+      { name: "Home", item: `/`, breadcrumbRelativeRoute: '/' },
+      { name: "City", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}${ROUTE_CONSTANTS.CITIES}`, breadcrumbRelativeRoute: ROUTE_CONSTANTS.CITIES },
+      { name: name ?? "Location", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}${ROUTE_CONSTANTS.LOCATION}/${slug}`, breadcrumbRelativeRoute: `${ROUTE_CONSTANTS.LOCATION}/${slug}` },
     ];
   };
 

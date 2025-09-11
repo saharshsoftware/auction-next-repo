@@ -168,9 +168,9 @@ export default async function Page({
 
   const getBreadcrumbJsonLdItems = () => {
     return [
-      { name: "Home", item: `/` },
-      { name: "Property Type", item: `${ROUTE_CONSTANTS.TYPES}` },
-      { name: assetTypeData?.name ?? "Property Type", item: `${ROUTE_CONSTANTS.TYPES}/${slug}` },
+      { name: "Home", item: `/`, breadcrumbRelativeRoute: '/' },
+      { name: "Property Type", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}${ROUTE_CONSTANTS.TYPES}`, breadcrumbRelativeRoute: ROUTE_CONSTANTS.TYPES },
+      { name: assetTypeData?.name ?? "Property Type", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}${ROUTE_CONSTANTS.TYPES}/${slug}`, breadcrumbRelativeRoute: `${ROUTE_CONSTANTS.TYPES}/${slug}` },
     ];
   };
 

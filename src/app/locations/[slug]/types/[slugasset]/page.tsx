@@ -183,11 +183,11 @@ export default async function Page({
 
   const getBreadcrumbJsonLdItems = () => {
     return [
-      { name: "Home", item: `/` },
-      { name: "City", item: `${ROUTE_CONSTANTS.CITIES}` },
-      { name: nameLocation || "Location", item: `${ROUTE_CONSTANTS.LOCATION}/${slug}` },
-      { name: "Property Type", item: `${ROUTE_CONSTANTS.TYPES}` },
-      { name: assetTypeData?.name || "Property Type", item: `${ROUTE_CONSTANTS.LOCATION}/${slug}${ROUTE_CONSTANTS.TYPES}/${slugasset}` },
+      { name: "Home", item: `/`, breadcrumbRelativeRoute: '/' },
+      { name: "City", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}${ROUTE_CONSTANTS.CITIES}`, breadcrumbRelativeRoute: ROUTE_CONSTANTS.CITIES },
+      { name: nameLocation || "Location", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}${ROUTE_CONSTANTS.LOCATION}/${slug}`, breadcrumbRelativeRoute: `${ROUTE_CONSTANTS.LOCATION}/${slug}` },
+      { name: "Property Type", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}${ROUTE_CONSTANTS.TYPES}`, breadcrumbRelativeRoute: ROUTE_CONSTANTS.TYPES },
+      { name: assetTypeData?.name || "Property Type", item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}${ROUTE_CONSTANTS.LOCATION}/${slug}${ROUTE_CONSTANTS.TYPES}/${slugasset}`, breadcrumbRelativeRoute: `${ROUTE_CONSTANTS.LOCATION}/${slug}${ROUTE_CONSTANTS.TYPES}/${slugasset}` },
     ];
   }
 
