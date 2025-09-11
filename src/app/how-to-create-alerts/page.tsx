@@ -5,9 +5,9 @@ import InstructionAlertSection from "@/components/molecules/InstructionAlertSect
 
 export default function Page() {
 
-	return (
-		<section className="section-class py-12 bg-even-color">
-			<InstructionAlertSection hideSignupButton={true} isAuthenticated={false} />
-		</section>
-	);
+  return (
+    <section className="section-class py-12 bg-even-color">
+      <InstructionAlertSection hideSignupButton={true} isAuthenticated={false} />
+    </section>
+  );
 }
