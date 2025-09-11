@@ -22,6 +22,7 @@ export interface IAssetType {
   category: any;
   label?: string;
   pluralizeName?: string;
+  sortOrder?: number;
 }
 
 export interface IAuction {
@@ -140,6 +141,7 @@ export interface ICategoryCollection {
   slug?: string;
   categoryName?: string;
   route?: string;
+  sortOrder?: number;
 }
 
 export interface IHomeBoxCollection {

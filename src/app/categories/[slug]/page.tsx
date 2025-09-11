@@ -1,46 +1,30 @@
-import AuctionCard from "@/components/atoms/AuctionCard";
-import AuctionHeaderServer from "@/components/atoms/AuctionHeaderServer";
 import CategorySpecificAssets from "@/components/atoms/CategorySpecificAssets";
-import PaginationCompServer, {
+import {
   ILocalFilter,
 } from "@/components/atoms/PaginationCompServer";
 import TopCategory from "@/components/atoms/TopCategory";
 import FindAuctionServer from "@/components/molecules/FindAuctionServer";
-import RecentData from "@/components/molecules/RecentData";
-import ShowAuctionListServer from "@/components/molecules/ShowAuctionListServer";
 import { SkeletonAuctionList } from "@/components/skeltons/SkeletonAuctionList";
 import { fetchBanks, fetchLocation } from "@/server/actions";
 import { fetchAssetTypes } from "@/server/actions/assetTypes";
-import {
-  fetchAssetType,
-  fetchCategories,
-  fetchPopularAssets,
-  fetchPopularCategories,
-  getAssetType,
-  getAuctionsServer,
-  getCategoryBoxCollection,
-  getCategoryBoxCollectionBySlug,
-} from "@/server/actions/auction";
-import { getAssetTypeClient } from "@/services/auction";
+import { fetchAssetType, fetchCategories } from "@/server/actions/auction";
 import { RANGE_PRICE } from "@/shared/Constants";
 import {
   extractOnlyKeywords,
   getCategorySpecificAssets,
+  getPopularDataBySortOrder,
   sanitizeCategorySEOH1title,
   sanitizeCategorytitle,
   sanitizeReactSelectOptionsPage,
-  handleOgImageUrl,
 } from "@/shared/Utilies";
 import {
   IAssetType,
-  IAuction,
   IBanks,
   ICategoryCollection,
   ILocations,
 } from "@/types";
-import { IPaginationData } from "@/zustandStore/auctionStore";
 import { Metadata, ResolvingMetadata } from "next";
-import { Suspense } from "react";
+import { Suspense, cache } from "react";
 import { SEO_BRAND } from "@/shared/seo.constant";
 import { buildCanonicalUrl } from "@/shared/Utilies";
 import BreadcrumbJsonLd from "@/components/atoms/BreadcrumbJsonLd";
@@ -49,12 +33,9 @@ import ImageJsonLd from "@/components/atoms/ImageJsonLd";
 import Breadcrumb from "@/components/atoms/Breadcrumb";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
 
-async function getSlugData(slug: string) {
-  const selectedCategory = (await getCategoryBoxCollectionBySlug({
-    slug,
-  })) as unknown as ICategoryCollection[];
-  return selectedCategory?.[0];
-}
+const getCategoriesCached = cache(async () => {
+  return (await fetchCategories()) as ICategoryCollection[] | null;
+});
 
 export async function generateMetadata(
   {
@@ -69,8 +50,9 @@ export async function generateMetadata(
   const { slug } = params;
 
   try {
-    const categoryData = await getSlugData(slug);
-    const { name, subCategories } = categoryData;
+    const categories = await getCategoriesCached();
+    const categoryData = categories?.find((c) => c.slug === slug);
+    const name = categoryData?.name ?? "";
     let keywordsAll: string[] = [];
     if (name) {
       const allSssetTypeData = await fetchAssetTypes();
@@ -127,8 +109,6 @@ export default async function Page({
 }) {
   const { slug } = params;
   const { page = 1 } = searchParams;
-  const categoryData = await getSlugData(slug);
-
   console.log("filterQueryDataBank");
 
   // Fetch data in parallel
@@ -137,16 +117,18 @@ export default async function Page({
     rawBanks,
     rawCategories,
     rawLocations,
-    popularCategories,
-    popularAssets,
   ]: any = await Promise.all([
     fetchAssetType(),
     fetchBanks(),
-    fetchCategories(),
+    getCategoriesCached(),
     fetchLocation(),
-    fetchPopularCategories(),
-    fetchPopularAssets(),
   ]);
+  const categoryData = (rawCategories as ICategoryCollection[])?.find(
+    (c) => c.slug === slug
+  );
+
+  const popularCategories = rawCategories;
+  const popularAssets = rawAssetTypes;
 
   // Type assertions are no longer necessary if functions return correctly typed data
   const assetsTypeOptions = sanitizeReactSelectOptionsPage(
@@ -176,6 +158,8 @@ export default async function Page({
       isBankCategoriesRoute: false,
       isCategoryRoute: true,
     }) as IAssetType[]) || [];
+
+  const filterAssets = getPopularDataBySortOrder(filteredAssetsType);
 
   const getRequiredParameters = () => {
     return {
@@ -222,6 +206,7 @@ export default async function Page({
       />
       <div className="common-section">
         {/* Breadcrumb Navigation */}
+        
         <div className="pt-4">
           <Breadcrumb
             items={getBreadcrumbJsonLdItems()}
@@ -247,7 +232,7 @@ export default async function Page({
             </div>
             <div>
               <CategorySpecificAssets
-                assetsTypeData={filteredAssetsType}
+                assetsTypeData={filterAssets}
                 isCategoryRoute={true}
                 categorySlug={slug}
               />
