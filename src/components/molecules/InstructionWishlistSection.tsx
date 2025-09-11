@@ -11,9 +11,10 @@ import LoginToCreateCollection from '../ modals/LoginToCreateCollection'
 interface InstructionWishlistSectionProps {
   isAuthenticated: boolean;
   hideSignupButton?: boolean;
+  isHowToCreateRoute?: boolean;
 }
 
-const InstructionWishlistSection = ({ isAuthenticated, hideSignupButton }: InstructionWishlistSectionProps) => {
+const InstructionWishlistSection = ({ isAuthenticated, hideSignupButton, isHowToCreateRoute = false }: InstructionWishlistSectionProps) => {
   const device = useDeviceType();
   const instImage =
     device === "mobile" || device === "tablet"
@@ -53,7 +54,7 @@ const InstructionWishlistSection = ({ isAuthenticated, hideSignupButton }: Instr
           <div className="flex-1 w-full lg:self-center">
             <StepsList steps={WISHLIST_INSTRUCTIONS_DATA} />
             {!hideSignupButton && <div className="text-center mt-8">
-              <LoginToCreateCollection isAuthenticated={isAuthenticated} />
+              <LoginToCreateCollection isAuthenticated={isAuthenticated} isHowToCreateRoute={isHowToCreateRoute} />
             </div>}
           </div>
         </div>

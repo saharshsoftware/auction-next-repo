@@ -37,10 +37,13 @@ import {
 } from "@/types";
 import { fetchBanksClient } from "@/services/bank";
 import { fetchLocationClient } from "@/services/location";
+import { useRouter } from "next/navigation";
+import { ROUTE_CONSTANTS } from "@/shared/Routes";
 
 interface ICreateFavList {
   openModal: boolean;
   hideModal?: () => void;
+  isHowToCreateRoute?: boolean;
 }
 
 const gridElementClass = () => "col-span-full";
@@ -66,11 +69,11 @@ const initialValues = {
 };
 
 const CreateAlert = (props: ICreateFavList) => {
-  const { openModal, hideModal = () => {} } = props;
+  const { openModal, hideModal = () => {}, isHowToCreateRoute = false } = props;
   const queryClient = useQueryClient();
   const [respError, setRespError] = useState<string>("");
   const [filteredAssetsType, setFilterAssetsType] = useState<IAssetType[]>([]);
-
+  const router = useRouter();
   const { data: categoryOptions, isLoading: isLoadingCategory } = useQuery({
     queryKey: [REACT_QUERY.CATEGORY_BOX_COLLECITON_OPTIONS],
     queryFn: async () => {
@@ -133,6 +136,9 @@ const CreateAlert = (props: ICreateFavList) => {
             queryKey: [REACT_QUERY.ALERTS],
           });
           hideModal?.();
+          if (isHowToCreateRoute) {
+            router.push(ROUTE_CONSTANTS.MANAGE_ALERT);
+          }
         },
         fail: (error: any) => {
           const { message } = error;

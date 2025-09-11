@@ -9,12 +9,13 @@ import { useInstructionImages } from '@/hooks/useInstructionImages'
 import { useDeviceType } from '@/hooks/useDeviceType'
 
 interface InstructionAlertSectionProps {
-  hideSignupButton: boolean;
+  hideSignupButton?: boolean;
   isAuthenticated: boolean;
+  isHowToCreateRoute?: boolean;
 }
 
 const InstructionAlertSection = (
-  { hideSignupButton, isAuthenticated }
+  { hideSignupButton, isAuthenticated, isHowToCreateRoute = false }
     : InstructionAlertSectionProps
 ) => {
   const device = useDeviceType();
@@ -41,7 +42,7 @@ const InstructionAlertSection = (
           <div className="flex-1 w-full lg:self-center">
             <StepsList steps={ALERTS_INSTRUCTIONS_DATA} />
             {!hideSignupButton && <div className="text-center mt-8">
-              <LoginToCreateAlert isAuthenticated={isAuthenticated} />
+              <LoginToCreateAlert isAuthenticated={isAuthenticated} isHowToCreateRoute={isHowToCreateRoute} />
             </div>}
           </div>
           <div className="flex-1 lg:self-center">
