@@ -21,7 +21,7 @@ const BreadcrumbJsonLd = ({ items }: IBreadcrumbJsonLdProps): ReactElement => {
       "@type": "ListItem",
       position: index + 1,
       name: breadcrumbItem.name,
-      item: breadcrumbItem.item,
+      item: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}${breadcrumbItem.item}`,
     })),
   } as const;
 
