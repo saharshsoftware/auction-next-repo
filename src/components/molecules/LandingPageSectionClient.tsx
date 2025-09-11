@@ -104,19 +104,49 @@ export default function LandingPageSectionClient(props: Props) {
     };
   }, [locationOptions, categoryOptions, assetsTypeOptions, bankOptions]);
 
-  return (
-    <>
+  const renderSavedSearches = () => {
+    if (savedSearches?.length === 0) return null;
+    return (
       <section className="section-class py-12 bg-odd-color">
         <SavedSearchesSection savedSearches={savedSearches?.slice(0, 3)} />
       </section>
 
+    );
+  };
+
+  const renderAlerts = () => {
+    if (alerts?.length === 0) return null;
+    return (
       <section className="section-class py-12 bg-even-color">
         <AlertsSection alerts={alerts?.slice(0, 3)} isAuthenticated={isAuthenticated} />
       </section>
+    );
+  };
 
+  const renderWishlist = () => {
+    if (favoriteLists?.length === 0) return null;
+    return (
       <section className="section-class py-12 bg-odd-color">
         <WishlistSection favoriteLists={favoriteLists?.slice(0, 3)} isAuthenticated={isAuthenticated} />
       </section>
+    );
+  };
+
+  const renderAuthenticatedUserSections = () => {
+    if (isAuthenticated) {
+      return (
+        <>
+          {renderSavedSearches()}
+          {renderAlerts()}
+          {renderWishlist()}
+        </>
+      );
+    }
+  }
+
+  return (
+    <>
+      {renderAuthenticatedUserSections()}
 
       <section className="common-section py-12 bg-even-color">
         <PartnerAndHelpSection />

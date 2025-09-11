@@ -17,7 +17,7 @@ export const getPrivacyData = async () => {
 
 export const getFaqData = async () => {
   try {
-    const URL = API_BASE_URL + API_ENPOINTS.FAQ + '?pagination[page]=1&pagination[pageSize]=10&sort[0]=sortOrder:asc';
+    const URL = API_BASE_URL + API_ENPOINTS.FAQ + '?sort[0]=sortOrder:asc';
     const { data } = await getRequest({ API: URL });
     return sanitizeStrapiData(data?.data, true);
   } catch (e) {
