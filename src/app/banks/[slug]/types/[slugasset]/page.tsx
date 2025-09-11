@@ -28,6 +28,9 @@ import {
   handleOgImageUrl,
   sanitizeReactSelectOptionsPage,
   getPopularDataBySortOrder,
+  buildCanonicalUrl,
+  getBankBySlug,
+  getAssetTypeBySlug,
 } from "@/shared/Utilies";
 import {
   IAssetType,
@@ -38,32 +41,22 @@ import {
 } from "@/types";
 import { IPaginationData } from "@/zustandStore/auctionStore";
 import { Metadata, ResolvingMetadata } from "next";
-import dynamic from "next/dynamic";
-import React, { lazy, Suspense } from "react";
+import { cache, Suspense } from "react";
 import { SEO_BRAND } from "@/shared/seo.constant";
-import { buildCanonicalUrl } from "@/shared/Utilies";
 import BreadcrumbJsonLd from "@/components/atoms/BreadcrumbJsonLd";
 import AuctionResults from "@/components/templates/AuctionResults";
 import Breadcrumb from "@/components/atoms/Breadcrumb";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
 
-async function getSlugData(
-  slug: string,
-  slugasset: string
-): Promise<{ assetType: IAssetType; bank: IBanks }> {
-  const [selectedCategory, selectedLocation] = await Promise.all([
-    fetchBanksBySlug({
-      slug,
-    }) as Promise<IBanks[]>,
-    fetchAssetTypeBySlug({
-      slug: slugasset,
-    }) as Promise<IAssetType[]>,
-  ]);
-  return {
-    assetType: selectedLocation?.[0] as IAssetType,
-    bank: selectedCategory?.[0] as IBanks,
-  };
-}
+// Add caching functions
+const getBanksCached = cache(async () => {
+  return (await fetchBanks()) as IBanks[] | null;
+});
+
+const getAssetTypesCached = cache(async () => {
+  return (await fetchAssetType()) as IAssetType[] | null;
+});
+
 
 export async function generateMetadata({
   params,
@@ -75,13 +68,16 @@ export async function generateMetadata({
   const { slug, slugasset } = params;
 
   try {
-    const { assetType: assetTypeData, bank: bankData } = await getSlugData(
-      slug,
-      slugasset
-    );
+    const [banks, assetTypes] = await Promise.all([
+      getBanksCached(),
+      getAssetTypesCached(),
+    ]);
+    
+    const bankData = getBankBySlug(banks, slug);
+    const assetTypeData = getAssetTypeBySlug(assetTypes, slugasset);
 
-    const { name: nameAssetType } = assetTypeData;
-    const { name, slug: primaryBankSlug, secondarySlug } = bankData;
+    const { name: nameAssetType } = assetTypeData as IAssetType;
+    const { name, slug: primaryBankSlug, secondarySlug } = bankData || {} as IBanks;
     const sanitizeImageUrl = await handleOgImageUrl(bankData?.imageURL ?? "");
     const primaryName = getPrimaryBankName(
       name ?? "",
@@ -134,10 +130,6 @@ export default async function Page({
 }) {
   const { slug, slugasset } = params;
   const { page = 1 } = searchParams;
-  const { assetType: assetTypeData, bank: bankData } = await getSlugData(
-    slug,
-    slugasset
-  );
   console.log("filterQueryDataBank&Types");
 
   // Fetch data in parallel
@@ -146,13 +138,11 @@ export default async function Page({
     rawBanks,
     rawCategories,
     rawLocations,
-    popularAssets,
   ]: any = await Promise.all([
     fetchAssetType(),
-    fetchBanks(),
+    getBanksCached(),
     fetchCategories(),
-    fetchLocation(),
-    fetchPopularAssetTypes(),
+    fetchLocation()
   ]);
 
   // Type assertions are no longer necessary if functions return correctly typed data
@@ -166,6 +156,10 @@ export default async function Page({
   const locationOptions = sanitizeReactSelectOptionsPage(
     rawLocations
   ) as ILocations[];
+
+  const bankData = getBankBySlug(rawBanks, slug);
+  const assetTypeData = getAssetTypeBySlug(rawAssetTypes, slugasset);
+  const popularAssets = getPopularDataBySortOrder(rawAssetTypes) as IAssetType[];
 
   const popularLocations = getPopularDataBySortOrder(rawLocations);
 

@@ -31,6 +31,9 @@ import {
   sanitizeCategorySEOH1title,
   sanitizeReactSelectOptionsPage,
   getPopularDataBySortOrder,
+  getCategorySpecificAssets,
+  getBankBySlug,
+  getCategoryBySlug,
 } from "@/shared/Utilies";
 import {
   IAssetType,
@@ -41,7 +44,7 @@ import {
 } from "@/types";
 import { IPaginationData } from "@/zustandStore/auctionStore";
 import { Metadata, ResolvingMetadata } from "next";
-import { Suspense } from "react";
+import { cache, Suspense } from "react";
 import { SEO_BRAND } from "@/shared/seo.constant";
 import { buildCanonicalUrl } from "@/shared/Utilies";
 import BreadcrumbJsonLd from "@/components/atoms/BreadcrumbJsonLd";
@@ -50,23 +53,15 @@ import ImageJsonLd from "@/components/atoms/ImageJsonLd";
 import Breadcrumb from "@/components/atoms/Breadcrumb";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
 
-async function getSlugData(
-  slug: string,
-  slugcategory: string
-): Promise<{ bank: IBanks; category: ICategoryCollection }> {
-  const [selectedCategory, selectedLocation] = await Promise.all([
-    getCategoryBoxCollectionBySlug({
-      slug: slugcategory,
-    }) as Promise<ICategoryCollection[]>,
-    fetchBanksBySlug({
-      slug,
-    }) as Promise<IBanks[]>,
-  ]);
-  return {
-    bank: selectedLocation?.[0] as IBanks,
-    category: selectedCategory?.[0] as ICategoryCollection,
-  };
-}
+// Add caching functions
+const getCategoriesCached = cache(async () => {
+  return (await fetchCategories()) as ICategoryCollection[] | null;
+});
+
+const getBanksCached = cache(async () => {
+  return (await fetchBanks()) as IBanks[] | null;
+});
+
 
 export async function generateMetadata(
   {
@@ -81,14 +76,18 @@ export async function generateMetadata(
   const { slug, slugcategory } = params;
 
   try {
-    const { category: categoryData, bank: bankData } = await getSlugData(
-      slug,
-      slugcategory
-    );
 
-    const { name: nameCategory } = categoryData;
+    const [categories, banks] = await Promise.all([
+      getCategoriesCached(),
+      getBanksCached(),
+    ]);
 
-    const { name, slug: primaryBankSlug, secondarySlug } = bankData;
+    const categoryData = getCategoryBySlug(categories, slugcategory);
+    const bankData = getBankBySlug(banks, slug);
+
+    const { name: nameCategory } = categoryData as ICategoryCollection;
+
+    const { name, slug: primaryBankSlug, secondarySlug } = bankData || {};
 
     let keywordsAll: string[] = [];
     if (nameCategory) {
@@ -160,10 +159,6 @@ export default async function Page({
 }) {
   const { slug, slugcategory } = params;
   const { page = 1 } = searchParams;
-  const { category: categoryData, bank: bankData } = await getSlugData(
-    slug,
-    slugcategory
-  );
   console.log("filterQueryDataBank&Category");
 
   // Fetch data in parallel
@@ -172,13 +167,11 @@ export default async function Page({
     rawBanks,
     rawCategories,
     rawLocations,
-    popularAssets,
   ]: any = await Promise.all([
     fetchAssetType(),
-    fetchBanks(),
-    fetchCategories(),
+    getBanksCached(),
+    getCategoriesCached(),
     fetchLocation(),
-    fetchPopularAssetTypes(),
   ]);
 
   // Type assertions are no longer necessary if functions return correctly typed data
@@ -193,6 +186,18 @@ export default async function Page({
     rawLocations
   ) as ILocations[];
 
+  const categoryData = getCategoryBySlug(rawCategories, slugcategory);
+  const bankData = getBankBySlug(rawBanks, slug);
+
+  const filteredAssetsType = getCategorySpecificAssets({
+    response: rawAssetTypes,
+    params: { slugcategory },
+    isBankCategoriesRoute: true,
+    isCategoryRoute: false,
+  }) as IAssetType[];
+
+  const filterAssets = getPopularDataBySortOrder(filteredAssetsType);
+
   const popularLocations = getPopularDataBySortOrder(rawLocations);
 
   const selectedCategory = categoryOptions.find(
@@ -200,7 +205,7 @@ export default async function Page({
   );
   const selectedBank = bankOptions.find((item) => item.name === bankData?.name);
   const urlFilterdata = {
-    bank: bankData,
+    bank: bankData || "",
     category: categoryData,
     page: String(page) || 1,
     price: [RANGE_PRICE.MIN, RANGE_PRICE.MAX],
@@ -285,7 +290,7 @@ export default async function Page({
             </div>
             <div>
               <TopAssets
-                assetsTypeData={popularAssets}
+                assetsTypeData={filterAssets}
                 isBankTypesRoute={true}
                 bankSlug={slug}
               />

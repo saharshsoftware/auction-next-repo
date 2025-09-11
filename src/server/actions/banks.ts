@@ -8,7 +8,7 @@ import { generateQueryParamString, sanitizeStrapiData } from "@/shared/Utilies";
 export const fetchBanks = async () => {
   "use server";
   try {
-    const requiredkeys = generateQueryParamString(["name", "slug", "sortOrder"]);
+    const requiredkeys = generateQueryParamString(["name", "slug", "sortOrder", "secondarySlug"]);
     const filter = `?sort[0]=name:asc&pagination[page]=1&pagination[pageSize]=1000&${requiredkeys}`;
     const URL = API_BASE_URL + API_ENPOINTS.BANKS + filter;
 

@@ -21,6 +21,7 @@ import { fetchLocation, fetchLocationBySlug } from "@/server/actions/location";
 import { RANGE_PRICE } from "@/shared/Constants";
 import {
   extractOnlyKeywords,
+  getLocationBySlug,
   getPopularDataBySortOrder,
   handleOgImageUrl,
   sanitizeReactSelectOptionsPage,
@@ -34,30 +35,23 @@ import {
 } from "@/types";
 import { IPaginationData } from "@/zustandStore/auctionStore";
 import { Metadata, ResolvingMetadata } from "next";
-import { Suspense } from "react";
+import { cache, Suspense } from "react";
 import { buildCanonicalUrl } from "@/shared/Utilies";
 import BreadcrumbJsonLd from "@/components/atoms/BreadcrumbJsonLd";
 import AuctionResults from "@/components/templates/AuctionResults";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
 import Breadcrumb from "@/components/atoms/Breadcrumb";
+import { getCategoryBySlug } from "@/shared/Utilies";
 
-async function getSlugData(
-  slug: string,
-  slugcategory: string
-): Promise<{ location: ILocations; category: ICategoryCollection }> {
-  const [selectedCategory, selectedLocation] = await Promise.all([
-    getCategoryBoxCollectionBySlug({
-      slug: slugcategory,
-    }) as Promise<ICategoryCollection[]>,
-    fetchLocationBySlug({
-      slug,
-    }) as Promise<ILocations[]>,
-  ]);
-  return {
-    location: selectedLocation?.[0] as ILocations,
-    category: selectedCategory?.[0] as ICategoryCollection,
-  };
-}
+// Add caching functions
+const getLocationsCached = cache(async () => {
+  return (await fetchLocation()) as ILocations[] | null;
+});
+
+const getCategoriesCached = cache(async () => {
+  return (await fetchCategories()) as ICategoryCollection[] | null;
+});
+
 
 export async function generateMetadata(
   {
@@ -72,11 +66,16 @@ export async function generateMetadata(
   const { slug, slugcategory } = params;
 
   try {
-    const { location: locationData, category: categoryData } =
-      await getSlugData(slug, slugcategory);
+    const [categories, locations] = await Promise.all([
+      getCategoriesCached(),
+      getLocationsCached(),
+    ]);
+    
+    const locationData = getLocationBySlug(locations, slug);
+    const categoryData = getCategoryBySlug(categories, slugcategory);
 
-    const { name: nameLocation } = locationData;
-    const { name: nameCategory } = categoryData;
+    const { name: nameLocation } = locationData || {} as ILocations;
+    const { name: nameCategory } = categoryData || {} as ICategoryCollection;
 
     let keywordsAll: string[] = [];
     if (nameCategory) {
@@ -139,13 +138,6 @@ export default async function Page({
 }) {
   const { slug, slugcategory } = params;
   const { page = 1 } = searchParams;
-  const { location: locationData, category: categoryData } = await getSlugData(
-    slug,
-    slugcategory
-  );
-
-  const { name: nameLocation, type } = locationData;
-  const { name: nameCategory } = categoryData;
 
   console.log("filterQueryDataLOcationAndCategories", slug);
 
@@ -158,8 +150,8 @@ export default async function Page({
   ]: any = await Promise.all([
     fetchAssetType(),
     fetchBanks(),
-    fetchCategories(),
-    fetchLocation(),
+    getCategoriesCached(),
+    getLocationsCached(),
   ]);
 
   // Type assertions are no longer necessary if functions return correctly typed data
@@ -174,6 +166,11 @@ export default async function Page({
     rawLocations
   ) as ILocations[];
 
+  const locationData = getLocationBySlug(rawLocations, slug);
+  const categoryData = getCategoryBySlug(rawCategories, slugcategory);
+
+  const { name: nameLocation, type } = locationData || {} as ILocations;
+  const { name: nameCategory } = categoryData || {} as ICategoryCollection;
   const popularBanks = getPopularDataBySortOrder(rawBanks);
 
   const selectionLocation = locationOptions.find(
@@ -236,7 +233,7 @@ export default async function Page({
             <Suspense key={page?.toString()} fallback={<SkeletonAuctionList />}>
               <AuctionResults
                 searchParams={searchParams}
-                heading={`${categoryData.name} Bank Properties in  ${locationData.name}`}
+                heading={`${categoryData?.name} Bank Properties in  ${locationData?.name}`}
                 useCustomFilters={true}
                 customFilters={getRequiredParameters()}
                 urlFilterdata={urlFilterdata}

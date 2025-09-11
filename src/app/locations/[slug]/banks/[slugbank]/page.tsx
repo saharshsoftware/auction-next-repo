@@ -36,30 +36,21 @@ import {
 } from "@/types";
 import { IPaginationData } from "@/zustandStore/auctionStore";
 import { Metadata, ResolvingMetadata } from "next";
-import { Suspense } from "react";
+import { cache, Suspense } from "react";
 import { SEO_BRAND } from "@/shared/seo.constant";
-import { buildCanonicalUrl, getPopularDataBySortOrder } from "@/shared/Utilies";
+import { buildCanonicalUrl, getBankBySlug, getLocationBySlug, getPopularDataBySortOrder } from "@/shared/Utilies";
 import BreadcrumbJsonLd from "@/components/atoms/BreadcrumbJsonLd";
 import Breadcrumb from "@/components/atoms/Breadcrumb";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
 
-async function getSlugData(
-  slug: string,
-  slugbank: string
-): Promise<{ location: ILocations; bank: IBanks }> {
-  const [selectedCategory, selectedLocation] = await Promise.all([
-    fetchBanksBySlug({
-      slug: slugbank,
-    }) as Promise<IBanks[]>,
-    fetchLocationBySlug({
-      slug,
-    }) as Promise<ILocations[]>,
-  ]);
-  return {
-    location: selectedLocation?.[0] as ILocations,
-    bank: selectedCategory?.[0] as IBanks,
-  };
-}
+// Add caching functions
+const getLocationsCached = cache(async () => {
+  return (await fetchLocation()) as ILocations[] | null;
+});
+
+const getBanksCached = cache(async () => {
+  return (await fetchBanks()) as IBanks[] | null;
+});
 
 export async function generateMetadata(
   {
@@ -74,13 +65,17 @@ export async function generateMetadata(
   const { slug, slugbank } = params;
 
   try {
-    const { location: locationData, bank: bankData } = await getSlugData(
-      slug,
-      slugbank
-    );
 
-    const { name: nameLocation } = locationData;
-    const { name, slug: primaryBankSlug, secondarySlug } = bankData;
+    const [banks, locations] = await Promise.all([
+      getBanksCached(),      
+      getLocationsCached(),  
+    ]);
+    
+    const locationData = getLocationBySlug(locations, slug);
+    const bankData = getBankBySlug(banks, slugbank);
+
+    const { name: nameLocation } = locationData || {} as ILocations;
+    const { name, slug: primaryBankSlug, secondarySlug } = bankData || {} as IBanks;
     const sanitizeImageUrl = await handleOgImageUrl(
       locationData?.imageURL ?? ""
     );
@@ -148,12 +143,6 @@ export default async function Page({
 }) {
   const { slug, slugbank } = params;
   const { page = 1 } = searchParams;
-  const { location: locationData, bank: bankData } = await getSlugData(
-    slug,
-    slugbank
-  );
-  // console.log(locationData, "location-slug");
-  const { name, type } = locationData || {};
 
   console.log("filterQueryDataLOcationAndBank", slug);
 
@@ -165,9 +154,9 @@ export default async function Page({
     rawLocations
   ]: any = await Promise.all([
     fetchAssetType(),
-    fetchBanks(),
+    getBanksCached(),
     fetchCategories(),
-    fetchLocation()
+    getLocationsCached()
   ]);
 
 
@@ -182,6 +171,11 @@ export default async function Page({
   const locationOptions = sanitizeReactSelectOptionsPage(
     rawLocations
   ) as ILocations[];
+
+  const locationData = getLocationBySlug(rawLocations, slug);
+  const bankData = getBankBySlug(rawBanks, slugbank);
+
+  const { name, type } = locationData || {};
 
   const popularBanks = getPopularDataBySortOrder(rawBanks);
 
@@ -243,7 +237,7 @@ export default async function Page({
             <Suspense key={page?.toString()} fallback={<SkeletonAuctionList />}>
               <AuctionResults
                 searchParams={searchParams}
-                heading={`${bankData.name} Auction Properties in ${name}`}
+                heading={`${bankData?.name} Auction Properties in ${name}`}
                 useCustomFilters={true}
                 customFilters={getRequiredParameters()}
                 urlFilterdata={urlFilterdata}
