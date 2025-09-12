@@ -5,6 +5,8 @@ import { ROUTE_CONSTANTS } from "@/shared/Routes";
 import DownloadStoreButton from "../molecules/DownloadStoreButton";
 import { Mail } from "lucide-react";
 import { getCurrentYear } from "@/shared/Utilies";
+import Image from "next/image";
+import { IMAGES } from "@/shared/Images";
 
 const Footer: React.FC = () => {
 
@@ -16,8 +18,17 @@ const Footer: React.FC = () => {
             {/* Brand and App Links (mobile-first) */}
             <div className="col-span-1 md:col-span-2 text-left">
               <div className="my-4">
-                <span className="text-sm font-medium text-gray-300">Download Mobile Apps</span>
-                <DownloadStoreButton className="flex flex-row items-center gap-4" />
+                <Link href={ROUTE_CONSTANTS.DASHBOARD} className="inline-flex items-center">
+                  <span>
+                    <Image
+                      src={IMAGES.logoTransparent.src}
+                      width={215}
+                      height={100}
+                      style={{ objectFit: "cover" }}
+                      alt="eauctiondekho logo"
+                    />
+                  </span>
+                </Link>
               </div>
               <div className="flex space-x-4">
                 <div className="flex items-center space-x-2">
@@ -108,8 +119,14 @@ const Footer: React.FC = () => {
             </div>
           </div>
 
-          <div className="border-t border-gray-800 mt-8 pt-8 text-center">
-            <p className="text-gray-400">© {getCurrentYear()} Omnistack Innovation Pvt Ltd</p>
+          <div className="border-t border-gray-800 mt-8 pt-8">
+            <div className="flex flex-col-reverse md:flex-row items-center justify-between gap-4">
+              <p className="text-gray-400 text-center md:text-left">© {getCurrentYear()} Omnistack Innovation Pvt Ltd</p>
+              <div className="flex items-center flex-col md:flex-row gap-3">
+                <span className="text-sm font-medium text-gray-300">Download Mobile Apps</span>
+                <DownloadStoreButton className="flex flex-row items-center gap-4" />
+              </div>
+            </div>
           </div>
         </div>
       </footer>
