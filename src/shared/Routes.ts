@@ -32,4 +32,5 @@ export const ROUTE_CONSTANTS = {
   GLOSSARY: "/glossary",
   FAQ: "/faq",
   HELP: "/help",
+  OUR_SERVICES: "/our-services",
 };

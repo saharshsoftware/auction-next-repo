@@ -1,0 +1,32 @@
+import React from 'react';
+import ServiceItem from './ServiceItem';
+import { SERVICES_DATA } from '@/shared/ServicesConstants';
+
+const ServicesSection: React.FC = () => {
+  return (
+    <>
+      {/* Services Section - How eAuctionDekho Can Help */}
+      <section className="py-20 bg-gray-50 section-class">
+        <div className="text-center mb-16">
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            How eAuctionDekho Can Help
+          </h2>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            We provide comprehensive ground-level support to make your auction journey smooth and successful.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {SERVICES_DATA.map((service) => (
+            <ServiceItem
+              key={service.id}
+              service={service}
+            />
+          ))}
+        </div>
+      </section>
+    </>
+  );
+};
+
+export default ServicesSection
