@@ -61,8 +61,8 @@ export const OurServices: React.FC = () => {
       </section>
 
       {/* Detailed Services Section */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="pt-20 bg-white">
+        <div className="">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
               Comprehensive Auction Services
@@ -74,16 +74,16 @@ export const OurServices: React.FC = () => {
 
           <div className="space-y-16">
             {/* Due Diligence Service */}
-            <section id="due-diligence" className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <section id="due-diligence" className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center bg-odd-color section-class py-12">
               <div>
                 <div className="bg-indigo-50 rounded-xl p-4 w-16 h-16 mb-6">
                   <FileText className="h-8 w-8 text-indigo-600" />
                 </div>
                 <h1 className="text-3xl font-bold text-gray-900 mb-4">Due Diligence</h1>
-                <p className="text-lg text-gray-700 mb-6">
+                <p className="text-lg  mb-6">
                   Our comprehensive property verification service ensures you have complete information before making any bidding decisions.
                 </p>
-                <ul className="space-y-3 text-gray-700">
+                <ul className="space-y-3 text-sm-xs">
                   <li className="flex items-start">
                     <div className="w-2 h-2 bg-indigo-600 rounded-full mt-2 mr-3 flex-shrink-0"></div>
                     <span>Complete title verification and legal clearance checks</span>
@@ -104,20 +104,20 @@ export const OurServices: React.FC = () => {
               </div>
               <div className="bg-gray-100 rounded-2xl p-8 text-center">
                 <div className="text-4xl font-bold text-indigo-600 mb-2">100%</div>
-                <div className="text-gray-600 mb-4">Verification Accuracy</div>
-                <p className="text-sm text-gray-500">
+                <div className="mb-4">Verification Accuracy</div>
+                <p className="text-sm-xs">
                   Our expert team ensures complete accuracy in all property verifications
                 </p>
               </div>
             </section>
 
             {/* Loan Approval Service */}
-            <section id="loan-approval" className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <section id="loan-approval" className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center bg-even-color section-class py-12">
               <div className="order-2 lg:order-1">
-                <div className="bg-gray-100 rounded-2xl p-8 text-center">
+                <div className="rounded-2xl p-8 text-center">
                   <div className="text-4xl font-bold text-indigo-600 mb-2">48hrs</div>
-                  <div className="text-gray-600 mb-4">Average Approval Time</div>
-                  <p className="text-sm text-gray-500">
+                  <div className="mb-4">Average Approval Time</div>
+                  <p className="text-sm-xs">
                     Fast-track loan processing with our banking partners
                   </p>
                 </div>
@@ -127,10 +127,10 @@ export const OurServices: React.FC = () => {
                   <Shield className="h-8 w-8 text-indigo-600" />
                 </div>
                 <h1 className="text-3xl font-bold text-gray-900 mb-4">Loan Approval Assistance</h1>
-                <p className="text-lg text-gray-700 mb-6">
+                <p className="text-lg  mb-6">
                   Get expert help with loan applications and connect with trusted financial institutions for quick approvals.
                 </p>
-                <ul className="space-y-3 text-gray-700">
+                <ul className="space-y-3 text-sm-xs">
                   <li className="flex items-start">
                     <div className="w-2 h-2 bg-indigo-600 rounded-full mt-2 mr-3 flex-shrink-0"></div>
                     <span>Complete loan application assistance and documentation</span>
@@ -152,16 +152,16 @@ export const OurServices: React.FC = () => {
             </section>
 
             {/* Property Visit Service */}
-            <section id="property-visit" className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <section id="property-visit" className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center bg-odd-color section-class py-12">
               <div>
                 <div className="bg-indigo-50 rounded-xl p-4 w-16 h-16 mb-6">
                   <Users className="h-8 w-8 text-indigo-600" />
                 </div>
                 <h1 className="text-3xl font-bold text-gray-900 mb-4">Guided Property Visits</h1>
-                <p className="text-lg text-gray-700 mb-6">
+                <p className="text-lg  mb-6">
                   Our local experts accompany you for property inspections, providing valuable insights and professional assessment.
                 </p>
-                <ul className="space-y-3 text-gray-700">
+                <ul className="space-y-3 text-sm-xs">
                   <li className="flex items-start">
                     <div className="w-2 h-2 bg-indigo-600 rounded-full mt-2 mr-3 flex-shrink-0"></div>
                     <span>Professional property condition assessment</span>
@@ -182,20 +182,20 @@ export const OurServices: React.FC = () => {
               </div>
               <div className="bg-gray-100 rounded-2xl p-8 text-center">
                 <div className="text-4xl font-bold text-indigo-600 mb-2">500+</div>
-                <div className="text-gray-600 mb-4">Properties Inspected</div>
-                <p className="text-sm text-gray-500">
+                <div className="mb-4">Properties Inspected</div>
+                <p className="text-sm-xs">
                   Extensive experience in property assessment across all categories
                 </p>
               </div>
             </section>
 
             {/* Auction Process Service */}
-            <section id="auction-process" className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <section id="auction-process" className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center bg-even-color section-class py-12">
               <div className="order-2 lg:order-1">
-                <div className="bg-gray-100 rounded-2xl p-8 text-center">
+                <div className=" rounded-2xl p-8 text-center">
                   <div className="text-4xl font-bold text-indigo-600 mb-2">24/7</div>
-                  <div className="text-gray-600 mb-4">Support Available</div>
-                  <p className="text-sm text-gray-500">
+                  <div className="mb-4">Support Available</div>
+                  <p className="text-sm-xs">
                     Round-the-clock assistance throughout the auction process
                   </p>
                 </div>
@@ -205,10 +205,10 @@ export const OurServices: React.FC = () => {
                   <TrendingUp className="h-8 w-8 text-indigo-600" />
                 </div>
                 <h1 className="text-3xl font-bold text-gray-900 mb-4">Complete Auction Support</h1>
-                <p className="text-lg text-gray-700 mb-6">
+                <p className="text-lg  mb-6">
                   From registration to final documentation, we guide you through every step of the online auction process.
                 </p>
-                <ul className="space-y-3 text-gray-700">
+                <ul className="space-y-3 text-sm-xs">
                   <li className="flex items-start">
                     <div className="w-2 h-2 bg-indigo-600 rounded-full mt-2 mr-3 flex-shrink-0"></div>
                     <span>Complete auction registration and EMD assistance</span>

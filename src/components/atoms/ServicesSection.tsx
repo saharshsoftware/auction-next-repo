@@ -1,6 +1,7 @@
 import React from 'react';
 import ServiceItem from './ServiceItem';
 import { SERVICES_DATA } from '@/shared/ServicesConstants';
+import { STRING_DATA } from '@/shared/Constants';
 
 const ServicesSection: React.FC = () => {
   return (
@@ -8,10 +9,10 @@ const ServicesSection: React.FC = () => {
       {/* Services Section - How eAuctionDekho Can Help */}
       <section className="py-20 bg-gray-50 section-class">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            How eAuctionDekho Can Help
+          <h2 className="text-3xl font-bold text-center mb-4">
+            How {STRING_DATA.EAUCTION_DEKHO} Can Help
           </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          <p className="text-sm-xs max-w-3xl mx-auto">
             We provide comprehensive ground-level support to make your auction journey smooth and successful.
           </p>
         </div>

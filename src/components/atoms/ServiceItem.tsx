@@ -20,10 +20,10 @@ const ServiceItem: React.FC<IServiceItemProps> = ({
       <div className="bg-indigo-50 rounded-xl p-3 w-14 h-14 mb-4 group-hover:bg-indigo-100 transition-colors">
         <IconComponent className="h-8 w-8 text-indigo-600" />
       </div>
-      <h3 className="text-xl font-bold text-gray-900 mb-3">
+      <h1 className="text-2xl font-bold text-gray-900 mb-3">
         {service.title}
-      </h3>
-      <p className="text-gray-700 text-sm leading-relaxed mb-4">
+      </h1>
+      <p className="text-sm-xs mb-4">
         {service.shortDescription}
       </p>
       <Link
