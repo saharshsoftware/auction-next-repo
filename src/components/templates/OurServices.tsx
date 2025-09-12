@@ -26,7 +26,7 @@ export const OurServices: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
+      <section className="relative bg-brand-color text-white">
         <div className="absolute inset-0 bg-black opacity-10"></div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
           <div className="text-center">
@@ -67,7 +67,7 @@ export const OurServices: React.FC = () => {
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
               Comprehensive Auction Services
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-lg max-w-3xl mx-auto">
               We provide professional, ground-level support to ensure your property auction experience is smooth, secure, and successful.
             </p>
           </div>
@@ -123,7 +123,7 @@ export const OurServices: React.FC = () => {
                 </div>
               </div>
               <div className="order-1 lg:order-2">
-                <div className="bg-indigo-50 rounded-xl p-4 w-16 h-16 mb-6">
+                <div className=" rounded-xl p-4 w-16 h-16 mb-6">
                   <Shield className="h-8 w-8 text-indigo-600" />
                 </div>
                 <h1 className="text-3xl font-bold text-gray-900 mb-4">Loan Approval Assistance</h1>
@@ -201,7 +201,7 @@ export const OurServices: React.FC = () => {
                 </div>
               </div>
               <div className="order-1 lg:order-2">
-                <div className="bg-indigo-50 rounded-xl p-4 w-16 h-16 mb-6">
+                <div className="rounded-xl p-4 w-16 h-16 mb-6">
                   <TrendingUp className="h-8 w-8 text-indigo-600" />
                 </div>
                 <h1 className="text-3xl font-bold text-gray-900 mb-4">Complete Auction Support</h1>

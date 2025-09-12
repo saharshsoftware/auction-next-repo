@@ -16,14 +16,14 @@ const ServiceItem: React.FC<IServiceItemProps> = ({
   const IconComponent = service.icon;
 
   return (
-    <div className={`group bg-white rounded-2xl p-6  border border-gray-200 ${className}`}>
+    <div className={`group bg-white rounded-2xl p-6  border border-gray-200 h-full flex flex-col ${className}`}>
       <div className="bg-indigo-50 rounded-xl p-3 w-14 h-14 mb-4 group-hover:bg-indigo-100 transition-colors">
         <IconComponent className="h-8 w-8 text-indigo-600" />
       </div>
       <h1 className="text-2xl font-bold text-gray-900 mb-3">
         {service.title}
       </h1>
-      <p className="text-sm-xs mb-4">
+      <p className="text-sm-xs mb-4 flex-grow">
         {service.shortDescription}
       </p>
       <Link
