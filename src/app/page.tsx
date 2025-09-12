@@ -17,6 +17,9 @@ import { Metadata } from "next";
 import DownloadBanner from "@/components/molecules/DownloadSection";
 import HomeCollectionsServer from "@/components/molecules/HomeCollectionServer";
 import LandingPageSectionClient from "@/components/molecules/LandingPageSectionClient";
+import { getFaqData } from "@/server/actions/footer";
+import FaqSection from "@/components/atoms/FaqSection";
+import { IMAGES } from "@/shared/Images";
 
 export const revalidate = 3600; // 1 hour
 export const dynamic = 'force-static';
@@ -78,16 +81,19 @@ export default async function Home() {
     categoryOptions,
     bankOptions,
     locationOptions,
+    faqData,
   ] = (await Promise.all([
     fetchAssetType(),
     fetchCategories(),
     fetchBanks(),
     fetchLocation(),
+    getFaqData(),
   ])) as unknown as [
       IAssetType[],
       ICategoryCollection[],
       IBanks[],
       ILocations[],
+      any[],
       any[]
     ];
 
@@ -110,10 +116,20 @@ export default async function Home() {
           categoryOptions={categoryOptions}
           assetsTypeOptions={assetsTypeOptions}
           bankOptions={bankOptions}
-        />
-
+        />       
+        
         {/* Home Collection Sections */}
         <HomeCollectionsServer />
+
+        {/* FAQ Section */}
+        <FaqSection 
+          faqData={faqData || []}
+          maxItems={5}
+          showImage={true}
+          imageUrl={IMAGES.faq.src}
+          imageAlt="FAQ and Help Support"
+        />
+        
       </main>
     </>
   );

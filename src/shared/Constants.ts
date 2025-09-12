@@ -511,3 +511,58 @@ export const faqData: FAQItem[] = [
     tags: "Technical Support"
   }
 ];
+
+export const SAVED_SEARCH_INSTRUCTIONS_DATA = [
+  {
+    id: 1,
+    text: "Use filters to search for properties",
+  },
+  {
+    id: 2,
+    text: "Click the “Save this Search” button shown in the top",
+  },
+  {
+    id: 3,
+    text: "Name your search for easy reference",
+  },
+  {
+    id: 4,
+    text: "Access it anytime from “Your Saved Searches”",
+  },
+];
+
+
+export const WISHLIST_INSTRUCTIONS_DATA = [
+  {
+    id: 1,
+    text: "Visit any property detail page",
+  },
+  {
+    id: 2,
+    text: "Scroll down to the “Add to List” section",
+  },
+  {
+    id: 3,
+    text: "Choose an existing list or create a new one",
+  },
+  {
+    id: 4,
+    text: "Click “Add”",
+  },
+];
+
+
+export const ALERTS_INSTRUCTIONS_DATA = [
+  {
+    id: 1,
+    text: "Open the “Your Alerts” page",
+  },
+  {
+    id: 2,
+    text: "Click the “Add Alert” button",
+  },
+  {
+    id: 3,
+    text: "Hit “Create Alert” and stay notified",
+  },
+];

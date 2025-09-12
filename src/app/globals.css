@@ -399,3 +399,19 @@ blockquote {
 .property-id-badge {
   @apply bg-[#fff8eb] text-[#7a5000] px-2 py-1 text-sm-xs font-mono font-bold border border-[#FFBB38] rounded-lg
 }
+
+/* FAQ Section Animation */
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

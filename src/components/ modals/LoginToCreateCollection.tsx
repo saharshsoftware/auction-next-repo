@@ -11,8 +11,10 @@ import CreateFavList from "./CreateFavList";
 
 function LoginToCreateCollection({
   isAuthenticated,
+  isHowToCreateRoute = false,
 }: {
   isAuthenticated?: boolean;
+  isHowToCreateRoute?: boolean;
 }) {
   const { showModal, openModal, hideModal } = useModal();
   const router = useRouter();
@@ -28,6 +30,7 @@ function LoginToCreateCollection({
         <CreateFavList
           openModal={openModal}
           hideModal={handleCloseCreateFavList}
+          isHowToCreateRoute={isHowToCreateRoute}
         />
       );
     }

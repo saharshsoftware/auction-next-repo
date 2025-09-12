@@ -11,8 +11,10 @@ import LoginModal from "./LoginModal";
 
 function LoginToCreateAlert({
   isAuthenticated,
+  isHowToCreateRoute = false,
 }: {
   isAuthenticated?: boolean;
+  isHowToCreateRoute?: boolean;
 }) {
   const { showModal, openModal, hideModal } = useModal();
   const router = useRouter();
@@ -25,7 +27,7 @@ function LoginToCreateAlert({
   const renderModalContainer = () => {
     if (isAuthenticated) {
       return (
-        <CreateAlert openModal={openModal} hideModal={handleCloseCreateAlert} />
+        <CreateAlert openModal={openModal} hideModal={handleCloseCreateAlert} isHowToCreateRoute={isHowToCreateRoute} />
       );
     }
     return (

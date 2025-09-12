@@ -9,10 +9,13 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { handleOnSettled } from "@/shared/Utilies";
 import { createFavouriteList } from "@/server/actions/favouriteList";
 import { createFavouriteListClient } from "@/services/favouriteList";
+import { useRouter } from "next/navigation";
+import { ROUTE_CONSTANTS } from "@/shared/Routes";
 
 interface ICreateFavList {
   openModal: boolean;
   hideModal?: ()=> void;
+  isHowToCreateRoute?: boolean;
 }
 
 const validationSchema = Yup.object({
@@ -24,10 +27,10 @@ const initialValues = {
 };
 
 const CreateFavList = (props: ICreateFavList) => {
-  const { openModal, hideModal=()=>{} } = props;
+  const { openModal, hideModal=()=>{}, isHowToCreateRoute = false } = props;
   const queryClient = useQueryClient();
   const [respError, setRespError] = useState<string>("");
-
+  const router = useRouter();
   // Mutations
   const { mutate, isPending } = useMutation({
     mutationFn: createFavouriteListClient,
@@ -39,7 +42,9 @@ const CreateFavList = (props: ICreateFavList) => {
           queryClient.invalidateQueries({
             queryKey: [REACT_QUERY.FAVOURITE_LIST],
           });
-          // router.push(ROUTE_CONSTANTS.DASHBOARD);
+          if (isHowToCreateRoute) {
+            router.push(ROUTE_CONSTANTS.MANAGE_LIST);
+          }
           hideModal?.();
         },
         fail: (error: any) => {
