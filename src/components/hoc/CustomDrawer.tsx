@@ -158,7 +158,7 @@ const CustomDrawer = (props: ICustomDrawer) => {
             hasChildren={true}
             customClass="flex justify-between gap-2"
           >
-            <span>{STRING_DATA.ASSETS}</span>
+            <span>{STRING_DATA.PROPERTY_TYPES}</span>
             <FontAwesomeIcon color={NAVICON_COLOR} icon={faList} />
           </NextLink>
           <NextLink
