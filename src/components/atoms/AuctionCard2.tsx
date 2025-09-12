@@ -307,6 +307,7 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
             {/* View Auction Button - Full Width on Mobile */}
             <div className="space-y-2">
               <Link
+                prefetch
                 href={`/auctions/${property?.slug}`}
                 className="block w-full text-center px-4 py-3 bg-brand-color text-white hover:bg-blue-700 rounded-lg transition-colors text-sm font-semibold"
               >
@@ -408,9 +409,11 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
             {!hasRealImages && renderPropertyBadges()}
 
             {/* Title */}
-            <div className="mb-4 cursor-pointer" onClick={() => router.push(`/auctions/${property?.slug}`)}>
-              {renderEnhancedTitle(false)}
-            </div>
+            <Link prefetch href={`/auctions/${property?.slug}`}>
+              <div className="mb-4 cursor-pointer">
+                {renderEnhancedTitle(false)}
+              </div>
+            </Link>
 
             {/* Seller Info */}
             <div className="mb-4">
