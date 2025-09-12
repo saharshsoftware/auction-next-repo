@@ -79,9 +79,6 @@ const Footer: React.FC = () => {
               <Link href={ROUTE_CONSTANTS.CONTACT} className="link link-hover">
                 {STRING_DATA.CONTACT_US}
               </Link>
-              <Link href={ROUTE_CONSTANTS.GLOSSARY} className="link link-hover">
-                Glossary
-              </Link>
               <Link href={ROUTE_CONSTANTS.FAQ} className="link link-hover">
                 FAQ
               </Link>

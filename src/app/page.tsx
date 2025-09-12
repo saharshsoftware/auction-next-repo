@@ -20,6 +20,7 @@ import LandingPageSectionClient from "@/components/molecules/LandingPageSectionC
 import { getFaqData } from "@/server/actions/footer";
 import FaqSection from "@/components/atoms/FaqSection";
 import { IMAGES } from "@/shared/Images";
+import ServicesSection from "@/components/atoms/ServicesSection";
 
 export const revalidate = 3600; // 1 hour
 export const dynamic = 'force-static';
@@ -116,7 +117,9 @@ export default async function Home() {
           categoryOptions={categoryOptions}
           assetsTypeOptions={assetsTypeOptions}
           bankOptions={bankOptions}
-        />       
+        />   
+
+        <ServicesSection />    
         
         {/* Home Collection Sections */}
         <HomeCollectionsServer />

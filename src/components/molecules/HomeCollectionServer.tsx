@@ -27,7 +27,7 @@ export default async function HomeCollectionsServer() {
       {carouselResponse.map((item: any, index: number) => {
         const ItemComponent: any = getComponent(item?.componentName);
         return (
-          <div key={index} className={`${index % 2 === 0 ? "bg-odd-color" : "bg-even-color"}`}>
+          <div key={index} className={`${index % 2 !== 0 ? "bg-odd-color" : "bg-even-color"}`}>
             <CustomReactCarousel
               desc={item?.description ?? ""}
               ItemComponent={item?.componentName}
