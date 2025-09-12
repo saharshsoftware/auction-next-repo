@@ -1,111 +1,117 @@
-// "use client";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { STRING_DATA } from "../../shared/Constants";
 import Link from "next/link";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
 import DownloadStoreButton from "../molecules/DownloadStoreButton";
+import { Mail } from "lucide-react";
+import { getCurrentYear } from "@/shared/Utilies";
 
 const Footer: React.FC = () => {
-  // const [isFooterLoaded, setIsFooterLoaded] = useState(false);
 
-  // useEffect(() => {
-  //   setIsFooterLoaded(true);
-  // }, []);
   return (
     <>
-      <footer
-        className={`lg:h-auto  flex flex-col gap-8 lg:p-10 px-4 py-10 bg-gray-900 text-neutral-content rounded-t transition-opacity duration-500 "opacity-100 visible"
-          `}
-      >
-        {/* ${
-       isFooterLoaded ? "opacity-100 visible" : "opacity-0 invisible"
-     } */}
-        <div className="grid grid-cols-12 gap-2">
-          {" "}
-          <div className="lg:col-span-4 col-span-full  space-y-4 flex flex-col h-full lg:items-start mb-2">
-            <DownloadStoreButton />
-          </div>
-          <p
-            className={`text-sm lg:col-span-4 lg:block  hidden lg:h-auto min-h-auto`}
-          >
-            e-auctiondekho is not liable for copyright infringement without a
-            formal complaint. We aim to share public domain information or
-            content under fair use. If you are a copyright holder with concerns,
-            please contact us to resolve any issues.
-          </p>
-          <div className="lg:col-span-4 col-span-full  space-y-4 flex flex-col h-full lg:items-end items-center">
-            <nav className="flex items-center justify-center gap-4 text-sm ">
-              <Link
-                href={ROUTE_CONSTANTS.CITIES}
-                className="link link-hover min-w-fit"
-              >
-                {STRING_DATA.CITIES}
-              </Link>
-              <Link
-                href={ROUTE_CONSTANTS.BANKS}
-                className="link link-hover min-w-fit"
-              >
-                {STRING_DATA.BANKS}
-              </Link>
-              <Link
-                href={ROUTE_CONSTANTS.CATEGORY}
-                className="link link-hover min-w-fit"
-              >
-                {STRING_DATA.CATEGORIES}
-              </Link>
-              <Link
-                href={ROUTE_CONSTANTS.TYPES}
-                className="link link-hover min-w-fit"
-              >
-                {STRING_DATA.ASSETS}
-              </Link>
-            </nav>
+       <footer className="bg-gray-900 text-neutral-content rounded-t">
+        <div className="lg:p-10 px-4 py-10">
+          <div className="grid grid-cols-1 md:grid-cols-5 lg:grid-cols-5 gap-8">
+            {/* Brand and App Links (mobile-first) */}
+            <div className="col-span-1 md:col-span-2 text-left">
+              <div className="my-4">
+                <span className="text-sm font-medium text-gray-300">Download Mobile Apps</span>
+                <DownloadStoreButton className="flex flex-row items-center gap-4" />
+              </div>
+              <div className="flex space-x-4">
+                <div className="flex items-center space-x-2">
+                  <Mail className="h-4 w-4 text-white" />
+                  {/* Add mailto link */}
+                  <a href="mailto:contact@eauctiondekho.com" className="text-sm-xs hover:text-white transition-colors">contact@eauctiondekho.com</a>
+                </div>
+              </div>
+            </div>
 
-            <nav className="flex  items-center justify-center gap-4 text-sm">
-              <Link href={ROUTE_CONSTANTS.TERMS} className="link link-hover">
-                {STRING_DATA.TERMS_CONDITIONS}
-              </Link>
-              <Link href={ROUTE_CONSTANTS.PRIVACY} className="link link-hover">
-                {STRING_DATA.PRIVACY_POLICY}
-              </Link>
-              <Link href={ROUTE_CONSTANTS.ABOUT_US} className="link link-hover">
-                {STRING_DATA.ABOUT_US}
-              </Link>
-            </nav>
-            <nav className="flex items-center justify-center gap-4 text-sm">
-              <Link href={ROUTE_CONSTANTS.BLOGS} className="link link-hover">
-                {STRING_DATA.BLOGS}
-              </Link>
-              <Link href={ROUTE_CONSTANTS.CONTACT} className="link link-hover">
-                {STRING_DATA.CONTACT_US}
-              </Link>
-              <Link href={ROUTE_CONSTANTS.GLOSSARY} className="link link-hover">
-                Glossary
-              </Link>
-              <Link href={ROUTE_CONSTANTS.FAQ} className="link link-hover">
-                FAQ
-              </Link>
-              <Link
-                href={"/sitemap.xml.gz"}
-                className="link link-hover"
-                target="_blank"
-                rel="nofollow"
-              >
-                {STRING_DATA.SITEMAP}
-              </Link>
-            </nav>
+            {/* Quick Links */}
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
+              <ul className="space-y-3">
+                <li>
+                  <Link href={ROUTE_CONSTANTS.CITIES} className="text-sm-xs text-gray-300 hover:text-white transition-colors min-w-fit">
+                    {STRING_DATA.CITIES}
+                  </Link>
+                </li>
+                <li>
+                  <Link href={ROUTE_CONSTANTS.BANKS} className="text-sm-xs text-gray-300 hover:text-white transition-colors min-w-fit">
+                    {STRING_DATA.BANKS}
+                  </Link>
+                </li>
+                <li>
+                  <Link href={ROUTE_CONSTANTS.CATEGORY} className="text-sm-xs text-gray-300 hover:text-white transition-colors min-w-fit">
+                    {STRING_DATA.CATEGORIES}
+                  </Link>
+                </li>
+                <li>
+                  <Link href={ROUTE_CONSTANTS.TYPES} className="text-sm-xs text-gray-300 hover:text-white transition-colors min-w-fit">
+                    {STRING_DATA.ASSETS}
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
+            {/* Resources */}
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Resources</h3>
+              <ul className="space-y-3">
+                <li>
+                  <Link href={ROUTE_CONSTANTS.BLOGS} className="text-sm-xs text-gray-300 hover:text-white transition-colors">
+                    {STRING_DATA.BLOGS}
+                  </Link>
+                </li>
+                <li>
+                  <Link href={ROUTE_CONSTANTS.FAQ} className="text-sm-xs text-gray-300 hover:text-white transition-colors">
+                    FAQ
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/sitemap.xml.gz" className="text-sm-xs text-gray-300 hover:text-white transition-colors" target="_blank" rel="nofollow">
+                    {STRING_DATA.SITEMAP}
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
+            {/* Company + Legal */}
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Company</h3>
+              <ul className="space-y-3 mb-6">
+                <li>
+                  <Link href={ROUTE_CONSTANTS.ABOUT_US} className="text-sm-xs text-gray-300 hover:text-white transition-colors">
+                    {STRING_DATA.ABOUT_US}
+                  </Link>
+                </li>
+                <li>
+                  <Link href={ROUTE_CONSTANTS.CONTACT} className="text-sm-xs text-gray-300 hover:text-white transition-colors">
+                    {STRING_DATA.CONTACT_US}
+                  </Link>
+                </li>
+              </ul>
+              <h3 className="text-lg font-semibold mb-4">Legal</h3>
+              <ul className="space-y-3">
+                <li>
+                  <Link href={ROUTE_CONSTANTS.TERMS} className="text-sm-xs text-gray-300 hover:text-white transition-colors">
+                    {STRING_DATA.TERMS_CONDITIONS}
+                  </Link>
+                </li>
+                <li>
+                  <Link href={ROUTE_CONSTANTS.PRIVACY} className="text-sm-xs text-gray-300 hover:text-white transition-colors">
+                    {STRING_DATA.PRIVACY_POLICY}
+                  </Link>
+                </li>
+              </ul>
+            </div>
           </div>
-          <p className="text-sm lg:hidden col-span-full h-auto">
-            e-auctiondekho is not liable for copyright infringement without a
-            formal complaint. We aim to share public domain information or
-            content under fair use. If you are a copyright holder with concerns,
-            please contact us to resolve any issues.
-          </p>
+
+          <div className="border-t border-gray-800 mt-8 pt-8 text-center">
+            <p className="text-gray-400">© {getCurrentYear()} Omnistack Innovation Pvt Ltd</p>
+          </div>
         </div>
-
-        <aside className="text-center text-sm">
-          <p>© {new Date().getFullYear()} Omnistack Innovation Pvt Ltd</p>
-        </aside>
       </footer>
     </>
   );

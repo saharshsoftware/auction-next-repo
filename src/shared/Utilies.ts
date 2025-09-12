@@ -990,3 +990,7 @@ export const getCategoryBySlug = (categories: ICategoryCollection[] | null, slug
 export const getAssetTypeBySlug = (assetTypes: IAssetType[] | null, slug: string): IAssetType | undefined => {
   return assetTypes?.find((assetType) => assetType.slug === slug);
 };
+
+export const getCurrentYear = () => {
+  return new Date().getFullYear();
+};
