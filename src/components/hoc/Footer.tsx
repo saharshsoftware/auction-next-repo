@@ -60,7 +60,7 @@ const Footer: React.FC = () => {
                 </li>
                 <li>
                   <Link href={ROUTE_CONSTANTS.TYPES} className="text-sm-xs text-gray-300 hover:text-white transition-colors min-w-fit">
-                    {STRING_DATA.ASSETS}
+                    {STRING_DATA.PROPERTY_TYPES}
                   </Link>
                 </li>
               </ul>
