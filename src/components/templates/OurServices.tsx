@@ -24,7 +24,7 @@ export const OurServices: React.FC = () => {
   }, []);
   
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-odd-color">
       {/* Hero Section */}
       <section className="relative bg-brand-color text-white">
         <div className="absolute inset-0 bg-black opacity-10"></div>
@@ -61,7 +61,7 @@ export const OurServices: React.FC = () => {
       </section>
 
       {/* Detailed Services Section */}
-      <section className="pt-20 bg-white">
+      <section className="pt-20 bg-odd-color">
         <div className="">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
