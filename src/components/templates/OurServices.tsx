@@ -103,7 +103,7 @@ export const OurServices: React.FC = () => {
                 </ul>
               </div>
               <div className="bg-gray-100 rounded-2xl p-8 text-center">
-                <div className="text-4xl font-bold text-indigo-600 mb-2">Fast Approvals</div>
+                <div className="text-4xl font-bold text-indigo-600 mb-2">Reliable Assessments</div>
                 <p className="text-sm-xs">
                   Our expert team ensures high accuracy in all property verifications
                 </p>
