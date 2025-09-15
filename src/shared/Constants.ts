@@ -38,6 +38,7 @@ export const PAGE_REVALIDATE_TIME_FOR_AUCTION_LIST = 3600; // 1 hr
 export const FILTER_API_REVALIDATE_TIME = 300; // 5 min
 
 export const STRING_DATA = {
+  BANK_AUCTION_SUPPORT: "Bank Auction Support",
   PROPERTY_TYPES: "Property Types",
   INDIVIDUAL: "Individual",
   BROKER: "Broker",

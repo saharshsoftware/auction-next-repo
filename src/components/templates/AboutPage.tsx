@@ -105,7 +105,7 @@ export const AboutPage: React.FC = () => {
               </div>
             </div>
             <div className="bg-gray-50 rounded-2xl p-8 text-center">
-              <div className="text-4xl font-bold text-indigo-600 mb-2">100%</div>
+              <div className="text-4xl font-bold text-indigo-600 mb-2">Trusted Accuracy</div>
               <p className="text-sm">
                 Our systems automatically process and verify auction data from almost all banks
               </p>
@@ -235,7 +235,7 @@ export const AboutPage: React.FC = () => {
                 </div>
               </div>
               <div className=" rounded-2xl p-8 text-center">
-                <div className="text-4xl font-bold text-indigo-600 mb-2">Almost All</div>
+                <div className="text-4xl font-bold text-indigo-600 mb-2">Wide Coverage</div>
                 <p className="text-sm-xs">
                   Access properties from almost all banks in one unified platform
                 </p>
@@ -305,7 +305,7 @@ export const AboutPage: React.FC = () => {
                 </div>
               </div>
               <div className="rounded-2xl p-8 text-center">
-                <div className="text-4xl font-bold text-indigo-600 mb-2">Almost All</div>
+                <div className="text-4xl font-bold text-indigo-600 mb-2">Comprehensive Listings</div>
                 <p className="text-sm-xs">
                   Comprehensive database covering almost all auction properties across all categories
                 </p>

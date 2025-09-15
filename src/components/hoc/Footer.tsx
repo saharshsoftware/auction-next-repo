@@ -63,6 +63,11 @@ const Footer: React.FC = () => {
                     {STRING_DATA.PROPERTY_TYPES}
                   </Link>
                 </li>
+                <li>
+                  <Link href={ROUTE_CONSTANTS.OUR_SERVICES} className="text-sm-xs text-gray-300 hover:text-white transition-colors min-w-fit">
+                    {STRING_DATA.BANK_AUCTION_SUPPORT}
+                  </Link>
+                </li>
               </ul>
             </div>
 
