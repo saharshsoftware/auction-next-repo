@@ -148,7 +148,7 @@ export default function LandingPageSectionClient(props: Props) {
     <>
       {renderAuthenticatedUserSections()}
 
-      <section className="common-section py-12 bg-even-color">
+      <section className="common-section py-12">
         <PartnerAndHelpSection />
       </section>
     </>

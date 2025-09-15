@@ -293,10 +293,6 @@ const AuctionDetail = (props: { auctionDetail: IAuction, slug: string, isInteres
           <ShowLabelValue
             heading={STRING_DATA.EMD_AMOUNT}
             value={formatPrice(auctionDetail?.emd)}
-            glossaryLink={{
-              term: "EMD",
-              text: "What is EMD?"
-            }}
           />
           <ShowLabelValue
             heading={STRING_DATA.EMD_SUBMISSION}
@@ -305,10 +301,6 @@ const AuctionDetail = (props: { auctionDetail: IAuction, slug: string, isInteres
                 ? formattedDateAndTime(auctionDetail?.auctionEndDate ?? "")
                 : "-"
             }
-            glossaryLink={{
-              term: "EMD Submission",
-              text: "What is EMD Submission?"
-            }}
           />
           <ShowLabelValue
             heading={STRING_DATA.AUCTION_START_D_AND_T}

@@ -29,7 +29,7 @@ export const ROUTE_CONSTANTS = {
   LOGIN_OTP: "/otp-login",
   PARTNER: "/partner",
   BLOGS: "/blogs",
-  GLOSSARY: "/glossary",
   FAQ: "/faq",
   HELP: "/help",
+  OUR_SERVICES: "/bank-auction-support",
 };
