@@ -17,7 +17,7 @@ const PartnerAndHelpSection = () => {
     <>
       <div className="grid md:grid-cols-2 gap-8 1common-section mx-auto">
         {/* Partner With Us */}
-        <div className="bg-white rounded-lg p-8 shadow-sm">
+        <div className="bg-white rounded-lg p-8">
           <div className="text-center mb-6">
             <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full mb-4">
               <FontAwesomeIcon
@@ -45,7 +45,7 @@ const PartnerAndHelpSection = () => {
         </div>
 
         {/* Need Help */}
-        <div className="bg-white rounded-lg p-8 shadow-sm h-full">
+        <div className="bg-white rounded-lg p-8 h-full">
           <div className="text-center mb-6 flex-1">
             <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full mb-4">
               <FontAwesomeIcon
