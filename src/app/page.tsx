@@ -112,6 +112,7 @@ export default async function Home() {
         </section>
 
         <DownloadBanner />
+        <ServicesSection />    
         <LandingPageSectionClient
           locationOptions={locationOptions}
           categoryOptions={categoryOptions}
@@ -119,7 +120,6 @@ export default async function Home() {
           bankOptions={bankOptions}
         />   
 
-        <ServicesSection />    
         
         {/* Home Collection Sections */}
         <HomeCollectionsServer />

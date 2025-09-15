@@ -1,6 +1,6 @@
 'use client'
 import React, { useEffect } from 'react';
-import { Search, TrendingUp, Shield, Users, ArrowRight, FileText } from 'lucide-react';
+import { Search, TrendingUp, Shield, Users, ArrowRight, FileText, IndianRupee } from 'lucide-react';
 import Link from 'next/link';
 import { ROUTE_CONSTANTS } from '@/shared/Routes';
 
@@ -79,7 +79,7 @@ export const OurServices: React.FC = () => {
                 <div className="bg-indigo-50 rounded-xl p-4 w-16 h-16 mb-6">
                   <FileText className="h-8 w-8 text-indigo-600" />
                 </div>
-                <h1 className="text-3xl font-bold text-gray-900 mb-4">Due Diligence</h1>
+                <h1 className="text-3xl font-bold text-gray-900 mb-4">Thorough Due Diligence</h1>
                 <p className="text-lg  mb-6">
                   Our comprehensive property verification service ensures you have complete information before making any bidding decisions.
                 </p>
@@ -103,10 +103,9 @@ export const OurServices: React.FC = () => {
                 </ul>
               </div>
               <div className="bg-gray-100 rounded-2xl p-8 text-center">
-                <div className="text-4xl font-bold text-indigo-600 mb-2">100%</div>
-                <div className="mb-4">Verification Accuracy</div>
+                <div className="text-4xl font-bold text-indigo-600 mb-2">Fast Approvals</div>
                 <p className="text-sm-xs">
-                  Our expert team ensures complete accuracy in all property verifications
+                  Our expert team ensures high accuracy in all property verifications
                 </p>
               </div>
             </section>
@@ -115,8 +114,7 @@ export const OurServices: React.FC = () => {
             <section id="loan-approval" className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center bg-even-color section-class py-12">
               <div className="order-2 lg:order-1">
                 <div className="rounded-2xl p-8 text-center">
-                  <div className="text-4xl font-bold text-indigo-600 mb-2">48hrs</div>
-                  <div className="mb-4">Average Approval Time</div>
+                  <div className="text-4xl font-bold text-indigo-600 mb-2">Fast Approvals</div>
                   <p className="text-sm-xs">
                     Fast-track loan processing with our banking partners
                   </p>
@@ -124,7 +122,7 @@ export const OurServices: React.FC = () => {
               </div>
               <div className="order-1 lg:order-2">
                 <div className=" rounded-xl p-4 w-16 h-16 mb-6">
-                  <Shield className="h-8 w-8 text-indigo-600" />
+                  <IndianRupee className="h-8 w-8 text-indigo-600" />
                 </div>
                 <h1 className="text-3xl font-bold text-gray-900 mb-4">Loan Approval Assistance</h1>
                 <p className="text-lg  mb-6">
@@ -193,10 +191,9 @@ export const OurServices: React.FC = () => {
             <section id="auction-process" className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center bg-even-color section-class py-12">
               <div className="order-2 lg:order-1">
                 <div className=" rounded-2xl p-8 text-center">
-                  <div className="text-4xl font-bold text-indigo-600 mb-2">24/7</div>
-                  <div className="mb-4">Support Available</div>
+                  <div className="text-4xl font-bold text-indigo-600 mb-2">End-to-End Support</div>
                   <p className="text-sm-xs">
-                    Round-the-clock assistance throughout the auction process
+                    Comprehensive assistance throughout the auction process
                   </p>
                 </div>
               </div>

@@ -7,7 +7,7 @@ const ServicesSection: React.FC = () => {
   return (
     <>
       {/* Services Section - How eAuctionDekho Can Help */}
-      <section className="py-20 bg-gray-50 section-class">
+      <section className="py-20 bg-even-color section-class">
         <div className="text-center mb-16">
           <h2 className="text-3xl font-bold text-center mb-4">
             How e-auctiondekho can help
