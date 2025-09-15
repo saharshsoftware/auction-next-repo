@@ -6,10 +6,11 @@ import { CONFIG } from "@/utilies/Config";
 
 const storeClass = () => "w-[151px] h-[45px] relative cursor-pointer";
 
-const DownloadStoreButton = () => {
+const DownloadStoreButton = (props: { className?: string }) => {
+  const { className } = props;
   return (
     <>
-      <div className="flex flex-row items-center justify-center gap-4">
+      <div className={`${className || 'flex flex-row items-center justify-center gap-4 '}`}>
         <a
           href={CONFIG.PLAYSTORE_URL}
           target="_blank"
