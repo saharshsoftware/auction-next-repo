@@ -68,7 +68,7 @@ const FindAuction: React.FC<FindAuctionProps> = ({
     location: selectedLocation || getEmptyAllObject(),
     bank: selectedBank || getEmptyAllObject(),
     propertyType: selectedAsset || getEmptyAllObject(),
-    price: selectedPrice || [Number(RANGE_PRICE.MIN), Number(RANGE_PRICE.MAX)],
+    price: selectedPrice || [RANGE_PRICE.MIN, RANGE_PRICE.MAX],
     serviceProvider: selectedServiceProvider || getEmptyAllObject(),
   };
 
@@ -356,7 +356,7 @@ const FindAuction: React.FC<FindAuctionProps> = ({
                   isSubmit={true}
                   text={STRING_DATA.UPDATE.toUpperCase()}
                   isLoading={staticLoading}
-                //   customClass={"min-w-[150px]"}
+                  //   customClass={"min-w-[150px]"}
                 />
               </div>
             </div>
