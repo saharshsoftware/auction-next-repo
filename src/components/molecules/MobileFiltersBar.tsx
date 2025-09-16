@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilter, faTimes } from "@fortawesome/free-solid-svg-icons";
@@ -5,11 +7,11 @@ import { formatPrice } from "@/shared/Utilies";
 import { STRING_DATA, RANGE_PRICE } from "@/shared/Constants";
 
 interface FilterData {
-  category?: { name?: string; label?: string };
-  location?: { name?: string; label?: string };
-  bank?: { name?: string; label?: string };
-  propertyType?: { name?: string; label?: string };
-  price?: number[];
+  category?: { name?: string | null; label?: string };
+  location?: { name?: string | null; label?: string };
+  bank?: { name?: string | null; label?: string };
+  propertyType?: { name?: string | null; label?: string };
+  price?: number[] | string[];
 }
 
 interface MobileFiltersBarProps {

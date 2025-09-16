@@ -59,18 +59,24 @@ const FindAuction: React.FC<FindAuctionProps> = ({
   );
 
   const [staticLoading, setStaticLoading] = useState(false);
-
   const { isMobileView } = useResize();
 
-  // Dummy data handling to prevent crashes
-  const initialValueData: any = {
+  const [currentFilterValues, setCurrentFilterValues] = useState(() => ({
     category: selectedCategory || getEmptyAllObject(),
     location: selectedLocation || getEmptyAllObject(),
     bank: selectedBank || getEmptyAllObject(),
     propertyType: selectedAsset || getEmptyAllObject(),
     price: selectedPrice || [RANGE_PRICE.MIN, RANGE_PRICE.MAX],
     serviceProvider: selectedServiceProvider || getEmptyAllObject(),
-  };
+  }));
+
+  // // Function to update filter values immediately for responsive UI
+  const updateFilterValue = useCallback((field: string, value: any) => {
+    setCurrentFilterValues(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  }, []);
 
   const handleBack = () => {
     console.log("Back button clicked");
@@ -96,21 +102,28 @@ const FindAuction: React.FC<FindAuctionProps> = ({
     switch (filterType) {
       case 'category':
         updatedFilter = { ...currentFilters, category: getEmptyAllObject() };
+        updateFilterValue('category', getEmptyAllObject());
         break;
       case 'propertyType':
         updatedFilter = { ...currentFilters, propertyType: getEmptyAllObject() };
+        updateFilterValue('propertyType', getEmptyAllObject());
         break;
       case 'bank':
         updatedFilter = { ...currentFilters, bank: getEmptyAllObject() };
+        updateFilterValue('bank', getEmptyAllObject());
         break;
       case 'location':
         updatedFilter = { ...currentFilters, location: getEmptyAllObject() };
+        updateFilterValue('location', getEmptyAllObject());
         break;
       case 'price':
-        updatedFilter = { ...currentFilters, price: [Number(RANGE_PRICE.MIN), Number(RANGE_PRICE.MAX)] };
+        const resetPrice = [Number(RANGE_PRICE.MIN), Number(RANGE_PRICE.MAX)];
+        updatedFilter = { ...currentFilters, price: resetPrice };
+        updateFilterValue('price', resetPrice);
         break;
       case 'serviceProvider':
         updatedFilter = { ...currentFilters, serviceProvider: getEmptyAllObject() };
+        updateFilterValue('serviceProvider', getEmptyAllObject());
         break;
     }
 
@@ -161,7 +174,9 @@ const FindAuction: React.FC<FindAuctionProps> = ({
     //   setAuctionFilter(filter);
     const data: any = setDataInQueryParamsMethod(filter);
     console.log("setDataInQueryParamsMethod-filter", { filter, data });
-
+    if (isMobileView.mobileView) {
+      setCurrentFilterValues(filter);
+    }
     setStaticLoading(true);
     setTimeout(() => {
       setStaticLoading(false);
@@ -374,11 +389,19 @@ const FindAuction: React.FC<FindAuctionProps> = ({
     }
 
     return (
+      <>
       <MobileFiltersBar
-        filterData={initialValueData}
+        filterData={{
+          category: currentFilterValues?.category,
+          location: currentFilterValues?.location,
+          bank: currentFilterValues?.bank,
+          propertyType: currentFilterValues?.propertyType,
+          price: currentFilterValues?.price,
+        }}
         onShowModal={showModal}
         onRemoveFilter={removeFilter}
-      />
+        />
+        </>
     );
   };
 
