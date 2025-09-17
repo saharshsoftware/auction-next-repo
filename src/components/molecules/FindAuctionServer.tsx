@@ -4,6 +4,7 @@ import { Formik, Form, Field } from "formik";
 import ReactSelectDropdown from "../atoms/ReactSelectDropdown";
 import { IAssetType, IBanks, ICategoryCollection, ILocations } from "@/types";
 import ActionButton from "../atoms/ActionButton";
+import MobileFiltersBar from "./MobileFiltersBar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilter, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import TextField from "../atoms/TextField";
@@ -37,8 +38,6 @@ interface FindAuctionProps {
 
 const gridElementClass = () => "lg:col-span-2  col-span-full";
 
-const mobileViewFilterClass = () =>
-  "border bg-white text-sm text-gray-800 shadow px-2 py-1 min-w-fit rounded-lg border-brand-color text-center line-clamp-1";
 
 const FindAuction: React.FC<FindAuctionProps> = ({
   categories,
@@ -60,18 +59,24 @@ const FindAuction: React.FC<FindAuctionProps> = ({
   );
 
   const [staticLoading, setStaticLoading] = useState(false);
-
   const { isMobileView } = useResize();
 
-  // Dummy data handling to prevent crashes
-  const initialValueData: any = {
+  const [currentFilterValues, setCurrentFilterValues] = useState(() => ({
     category: selectedCategory || getEmptyAllObject(),
     location: selectedLocation || getEmptyAllObject(),
     bank: selectedBank || getEmptyAllObject(),
     propertyType: selectedAsset || getEmptyAllObject(),
     price: selectedPrice || [RANGE_PRICE.MIN, RANGE_PRICE.MAX],
     serviceProvider: selectedServiceProvider || getEmptyAllObject(),
-  };
+  }));
+
+  // // Function to update filter values immediately for responsive UI
+  const updateFilterValue = useCallback((field: string, value: any) => {
+    setCurrentFilterValues(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  }, []);
 
   const handleBack = () => {
     console.log("Back button clicked");
@@ -82,11 +87,63 @@ const FindAuction: React.FC<FindAuctionProps> = ({
     showFilterModal();
   };
 
-  const renderFilterTabs = (value: string) => {
-    return value ? (
-      <div className={mobileViewFilterClass()}>{value}</div>
-    ) : null;
+  const removeFilter = (filterType: string) => {
+    const currentFilters = {
+      category: selectedCategory,
+      propertyType: selectedAsset,
+      bank: selectedBank,
+      location: selectedLocation,
+      price: selectedPrice,
+      serviceProvider: selectedServiceProvider,
+    };
+
+    let updatedFilter: any = {};
+
+    switch (filterType) {
+      case 'category':
+        updatedFilter = { ...currentFilters, category: getEmptyAllObject() };
+        updateFilterValue('category', getEmptyAllObject());
+        break;
+      case 'propertyType':
+        updatedFilter = { ...currentFilters, propertyType: getEmptyAllObject() };
+        updateFilterValue('propertyType', getEmptyAllObject());
+        break;
+      case 'bank':
+        updatedFilter = { ...currentFilters, bank: getEmptyAllObject() };
+        updateFilterValue('bank', getEmptyAllObject());
+        break;
+      case 'location':
+        updatedFilter = { ...currentFilters, location: getEmptyAllObject() };
+        updateFilterValue('location', getEmptyAllObject());
+        break;
+      case 'price':
+        const resetPrice = [Number(RANGE_PRICE.MIN), Number(RANGE_PRICE.MAX)];
+        updatedFilter = { ...currentFilters, price: resetPrice };
+        updateFilterValue('price', resetPrice);
+        break;
+      case 'serviceProvider':
+        updatedFilter = { ...currentFilters, serviceProvider: getEmptyAllObject() };
+        updateFilterValue('serviceProvider', getEmptyAllObject());
+        break;
+    }
+
+    const { category, price, bank, location, propertyType, serviceProvider } = updatedFilter;
+    const { type } = location ?? {};
+    const filter = {
+      page: 1,
+      category: category?.label === STRING_DATA.ALL ? STRING_DATA.EMPTY : category,
+      price,
+      bank: bank?.label === STRING_DATA.ALL ? STRING_DATA.EMPTY : bank,
+      locationType: type,
+      location: location?.label === STRING_DATA.ALL ? STRING_DATA.EMPTY : location,
+      propertyType: propertyType?.label === STRING_DATA.ALL ? STRING_DATA.EMPTY : propertyType,
+      serviceProvider: serviceProvider?.label === STRING_DATA.ALL ? STRING_DATA.EMPTY : serviceProvider,
+    };
+
+    const data: any = setDataInQueryParamsMethod(filter);
+    router.push(`${ROUTE_CONSTANTS.AUCTION}?q=${data}`);
   };
+
 
   const handleSubmit = (values: any) => {
     console.log(values, "values123");
@@ -117,7 +174,9 @@ const FindAuction: React.FC<FindAuctionProps> = ({
     //   setAuctionFilter(filter);
     const data: any = setDataInQueryParamsMethod(filter);
     console.log("setDataInQueryParamsMethod-filter", { filter, data });
-
+    if (isMobileView.mobileView) {
+      setCurrentFilterValues(filter);
+    }
     setStaticLoading(true);
     setTimeout(() => {
       setStaticLoading(false);
@@ -143,10 +202,10 @@ const FindAuction: React.FC<FindAuctionProps> = ({
     const filteredOptions = assets.filter(
       (item: IAssetType) => item?.category?.slug === selectedCategorySlug
     );
-    
+
     // Find the existing "All" option from the original assets
     const allOption = assets.find(item => item?.label === STRING_DATA.ALL || (item as any)?.value === STRING_DATA.EMPTY);
-    const assetsWithAllOption = allOption 
+    const assetsWithAllOption = allOption
       ? [allOption, ...(filteredOptions?.length > 0 ? filteredOptions : assets.filter(item => item !== allOption))]
       : [getEmptyAssetTypeObject(), ...(filteredOptions?.length > 0 ? filteredOptions : assets)];
     setFilteredAssets(assetsWithAllOption);
@@ -177,9 +236,8 @@ const FindAuction: React.FC<FindAuctionProps> = ({
       {({ setFieldValue, values }) => (
         <Form>
           <div
-            className={`flex ${
-              isMobileView.mobileView ? "flex-col" : "flex-row"
-            } items-end justify-between gap-4 `}
+            className={`flex ${isMobileView.mobileView ? "flex-col" : "flex-row"
+              } items-end justify-between gap-4 `}
           >
             <div className="grid gap-4 grid-cols-12 w-full ">
               <div className={gridElementClass()}>
@@ -331,28 +389,19 @@ const FindAuction: React.FC<FindAuctionProps> = ({
     }
 
     return (
-      <div className="flex flex-col gap-4 p-4">
-        <div className="flex items-start justify-between">
-          <div className="flex items-start gap-2">
-            <div className="grid grid-cols-2 gap-2">
-              {renderFilterTabs(initialValueData?.category?.name)}
-              {renderFilterTabs(initialValueData?.location?.name)}
-              {renderFilterTabs(initialValueData?.bank?.name)}
-              {renderFilterTabs(initialValueData?.propertyType?.name)}
-              {/* {renderFilterTabs(initialValueData?.serviceProvider?.name)} */}
-              {initialValueData?.price?.length ? (
-                <div className={mobileViewFilterClass()}>
-                  {formatPrice(initialValueData?.price?.[0])} -{" "}
-                  {formatPrice(initialValueData?.price?.[1])}
-                </div>
-              ) : null}
-            </div>
-          </div>
-          <button className="link primary-link" onClick={showModal}>
-            <FontAwesomeIcon icon={faFilter} />
-          </button>
-        </div>
-      </div>
+      <>
+      <MobileFiltersBar
+        filterData={{
+          category: currentFilterValues?.category,
+          location: currentFilterValues?.location,
+          bank: currentFilterValues?.bank,
+          propertyType: currentFilterValues?.propertyType,
+          price: currentFilterValues?.price,
+        }}
+        onShowModal={showModal}
+        onRemoveFilter={removeFilter}
+        />
+        </>
     );
   };
 
