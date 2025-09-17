@@ -7,6 +7,7 @@ import { useState } from "react";
 import SavedSearchModal from "../ modals/SavedSearchModal";
 import LoginModal from "../ modals/LoginModal";
 import SortByDropdown from "./SortByDropdown";
+import MobileSortContainer from "./MobileSortContainer";
 interface IAuctionHeaderSaveSearchProps {
   searchParams?: { [key: string]: string | string[] | undefined };
 }
@@ -34,6 +35,7 @@ const AuctionHeaderSaveSearch = ({ searchParams }: IAuctionHeaderSaveSearchProps
           {"Save this search".toUpperCase()}
 
         </div>
+        <MobileSortContainer />
         <SortByDropdown />
 
       </div>

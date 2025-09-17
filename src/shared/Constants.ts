@@ -571,8 +571,8 @@ export const ALERTS_INSTRUCTIONS_DATA = [
 ];
 
 export const SORT_OPTIONS: SortOption[] = [
-  { label: 'Auction Date (Desc)', value: 'effectiveAuctionStartTime:desc' },
-  { label: 'Auction Date (Asc)', value: 'effectiveAuctionStartTime:asc' },
+  { label: 'Auction Date (Newest)', value: 'effectiveAuctionStartTime:desc' },
+  { label: 'Auction Date (Oldest)', value: 'effectiveAuctionStartTime:asc' },
   { label: 'Price: Low - High', value: 'reservePrice:asc' },
   { label: 'Price: High - Low', value: 'reservePrice:desc' },
 ];

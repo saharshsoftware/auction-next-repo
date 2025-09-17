@@ -97,17 +97,7 @@ const MobileFiltersBar: React.FC<MobileFiltersBarProps> = ({
               () => onRemoveFilter('price')
             )}
           </div>
-        </div>
-        
-        {/* Fixed Sort By button at the right */}
-        <div className="flex-shrink-0">
-          <div className={`${mobileViewFilterClass()} cursor-pointer`} onClick={onShowSortModal}>
-            <div className="flex items-center gap-2 font-semibold">
-              Sort By
-              <FontAwesomeIcon icon={faSort} className="text-brand-color" />
-            </div>
-          </div>
-        </div>
+        </div>        
       </div>
     </div>
   );

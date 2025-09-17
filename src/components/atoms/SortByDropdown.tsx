@@ -34,7 +34,7 @@ const SortByDropdown: React.FC = () => {
   }
 
   return (
-    <div className="hidden lg:flex items-center justify-between gap-2 ">
+    <div className="hidden lg:flex items-center justify-between gap-2 w-96">
       <span className="text-sm text-gray-900 w-16">Sort By</span>
       <ReactSelectDropdown
         name="sort"
