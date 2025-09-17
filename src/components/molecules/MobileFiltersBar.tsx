@@ -35,7 +35,7 @@ const MobileFiltersBar: React.FC<MobileFiltersBarProps> = ({
   const renderFilterTabs = (value: string, onRemove?: () => void) => {
     return value ? (
       <div className={`${mobileViewFilterClass()} flex items-center gap-2 justify-between flex-shrink-0 whitespace-nowrap`}>
-        <span className="">{value}</span>
+        <span className="truncate">{value}</span>
         {onRemove && (
           <button
             type="button"
@@ -65,10 +65,11 @@ const MobileFiltersBar: React.FC<MobileFiltersBarProps> = ({
 
   return (
     <div className="flex flex-col gap-4 p-4">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-2">
+        {/* Scrollable filters container */}
         <div className="flex items-center gap-2 flex-1 min-w-0">
-          <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide flex-1">
-            <div className={`${mobileViewFilterClass()} cursor-pointer`} onClick={onShowModal}>
+          <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide pr-2" style={{ marginRight: '2px' }}>
+            <div className={`${mobileViewFilterClass()} cursor-pointer flex-shrink-0`} onClick={onShowModal}>
               <div className="flex items-center gap-2 font-semibold">
                 Filters {activeFiltersCount > 0 ? `(${activeFiltersCount})` : (
                   <FontAwesomeIcon icon={faFilter} className="text-brand-color" />
@@ -95,11 +96,16 @@ const MobileFiltersBar: React.FC<MobileFiltersBarProps> = ({
               `${formatPrice(filterData?.price?.[0] || 0)} - ${formatPrice(filterData?.price?.[1] || 0)}`,
               () => onRemoveFilter('price')
             )}
-
-
-            <button type="button" onClick={onShowSortModal}>
-              <FontAwesomeIcon icon={faSort} />
-            </button>
+          </div>
+        </div>
+        
+        {/* Fixed Sort By button at the right */}
+        <div className="flex-shrink-0">
+          <div className={`${mobileViewFilterClass()} cursor-pointer`} onClick={onShowSortModal}>
+            <div className="flex items-center gap-2 font-semibold">
+              Sort By
+              <FontAwesomeIcon icon={faSort} className="text-brand-color" />
+            </div>
           </div>
         </div>
       </div>
