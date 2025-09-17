@@ -3,6 +3,8 @@ import { getAuctionsServer } from "@/server/actions/auction";
 import { getDataFromQueryParamsMethod } from "@/shared/Utilies";
 import AuctionHeaderServer from "../atoms/AuctionHeaderServer";
 import AuctionHeaderSaveSearch from "../atoms/AuctionHeaderSaveSearch";
+import { cookies } from "next/headers";
+import { COOKIES } from "@/shared/Constants";
 
 export const dynamic = "force-dynamic";
 
@@ -39,9 +41,16 @@ export default async function AuctionResults({
   let filterQueryData: any;
   let response: any;
 
+  // Get sort from cookie, default to "effectiveAuctionStartTime:desc"
+  const cookieStore = cookies();
+  const sortFromCookie = cookieStore.get(COOKIES.SORT_KEY)?.value || "effectiveAuctionStartTime:desc";
+
   if (useCustomFilters && customFilters) {
     // Use custom filters directly
-    response = await getAuctionsServer(customFilters);
+    response = await getAuctionsServer({
+      ...customFilters,
+      sort: sortFromCookie // Use passed sort or cookie
+    });
     filterQueryData = {
       page: customFilters.page || "1"
     };
@@ -60,6 +69,7 @@ export default async function AuctionResults({
       locationType: filterQueryData?.location?.type ?? "",
       page: filterQueryData?.page?.toString() ?? "1",
       serviceProvider: filterQueryData?.serviceProvider?.value ?? "",
+      sort: sortFromCookie // Use cookie value
     });
   }
 

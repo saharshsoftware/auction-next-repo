@@ -53,12 +53,6 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
     const endDate = new Date(property.auctionEndDate);
     const currentDate = new Date();
     const isEnded = endDate < currentDate;
-    console.log('Auction end date check:', {
-      auctionEndDate: property.auctionEndDate,
-      endDate: endDate.toISOString(),
-      currentDate: currentDate.toISOString(),
-      isEnded: isEnded
-    });
     return isEnded;
   };
 

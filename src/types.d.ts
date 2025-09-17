@@ -316,3 +316,8 @@ export type INSTRUCTIONS_FOLDER_NAME =
   | "alerts-instructions"
   | "saved-search-instructions"
   | "wishlist-instructions";
+
+export interface SortOption {
+  label: string;
+  value: string;
+}

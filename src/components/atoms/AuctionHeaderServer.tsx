@@ -1,7 +1,4 @@
-// "use client";
-import dynamic from 'next/dynamic';
-
-const SortByDropdown = dynamic(() => import('./SortByDropdown'), { ssr: false });
+import SortByDropdown from './SortByDropdown';
 
 const AuctionHeaderServer = ({
   name,

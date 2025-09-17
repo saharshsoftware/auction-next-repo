@@ -6,6 +6,7 @@ import CustomModal from "./CustomModal";
 import { useState } from "react";
 import SavedSearchModal from "../ modals/SavedSearchModal";
 import LoginModal from "../ modals/LoginModal";
+import SortByDropdown from "./SortByDropdown";
 interface IAuctionHeaderSaveSearchProps {
   searchParams?: { [key: string]: string | string[] | undefined };
 }
@@ -25,13 +26,17 @@ const AuctionHeaderSaveSearch = ({ searchParams }: IAuctionHeaderSaveSearchProps
 
   return (
     <>
-      <div
-        className="max-w-fit link link-primary mb-2 cursor-pointer"
-        onClick={handleSaveSearchClick}
-      >
-        {"Save this search".toUpperCase()}
-      </div>
+      <div className="w-full flex items-center justify-between gap-2 mb-2 ">
+        <div
+          className="max-w-fit link link-primary cursor-pointer"
+          onClick={handleSaveSearchClick}
+        >
+          {"Save this search".toUpperCase()}
 
+        </div>
+        <SortByDropdown />
+
+      </div>
       <LoginModal openModal={showLoginModal} hideModal={() => setShowLoginModal(false)} />
 
       <SavedSearchModal

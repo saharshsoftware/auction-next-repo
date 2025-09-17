@@ -5,12 +5,13 @@ import ReactSelectDropdown from "../atoms/ReactSelectDropdown";
 import { IAssetType, IBanks, ICategoryCollection, ILocations } from "@/types";
 import ActionButton from "../atoms/ActionButton";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFilter, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { faFilter, faArrowLeft, faSort } from "@fortawesome/free-solid-svg-icons";
 import TextField from "../atoms/TextField";
 import RangeSliderCustom from "../atoms/RangeSliderCustom";
 import { formatPrice, IServiceProviders, SERVICE_PROVIDER_OPTIONS } from "@/shared/Utilies";
 import useResize from "@/hooks/useResize";
 import {
+  COOKIES,
   getEmptyAllObject,
   getEmptyAssetTypeObject,
   RANGE_PRICE,
@@ -21,6 +22,8 @@ import CustomModal from "../atoms/CustomModal";
 import useCustomParamsData from "@/hooks/useCustomParamsData";
 import { useRouter } from "next/navigation";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
+import SortModal from "./SortModal";
+import { setCookie } from "cookies-next";
 
 interface FindAuctionProps {
   categories: ICategoryCollection[];
@@ -55,6 +58,7 @@ const FindAuction: React.FC<FindAuctionProps> = ({
   const router = useRouter();
   const { setDataInQueryParamsMethod } = useCustomParamsData();
   const { showModal: showFilterModal, openModal, hideModal } = useModal();
+  const { showModal: showSortModal, openModal: openSortModal, hideModal: hideSortModal } = useModal();
   const [filteredAssets, setFilteredAssets] = useState<IAssetType[]>(
     assets ?? []
   );
@@ -80,6 +84,11 @@ const FindAuction: React.FC<FindAuctionProps> = ({
   const showModal = () => {
     console.log("Filter modal opened");
     showFilterModal();
+  };
+
+  const handleSortChange = (sortOption: any) => {
+    setCookie(COOKIES.SORT_KEY, sortOption.value);
+    router.refresh();
   };
 
   const renderFilterTabs = (value: string) => {
@@ -143,7 +152,7 @@ const FindAuction: React.FC<FindAuctionProps> = ({
     const filteredOptions = assets.filter(
       (item: IAssetType) => item?.category?.slug === selectedCategorySlug
     );
-    
+
     // Find the existing "All" option from the original assets
     const allOption = assets.find(item => item?.label === STRING_DATA.ALL || (item as any)?.value === STRING_DATA.EMPTY);
     const assetsWithAllOption = allOption 
@@ -331,33 +340,41 @@ const FindAuction: React.FC<FindAuctionProps> = ({
     }
 
     return (
-      <div className="flex flex-col gap-4 p-4">
-        <div className="flex items-start justify-between">
-          <div className="flex items-start gap-2">
-            <div className="grid grid-cols-2 gap-2">
-              {renderFilterTabs(initialValueData?.category?.name)}
-              {renderFilterTabs(initialValueData?.location?.name)}
-              {renderFilterTabs(initialValueData?.bank?.name)}
-              {renderFilterTabs(initialValueData?.propertyType?.name)}
-              {/* {renderFilterTabs(initialValueData?.serviceProvider?.name)} */}
-              {initialValueData?.price?.length ? (
-                <div className={mobileViewFilterClass()}>
-                  {formatPrice(initialValueData?.price?.[0])} -{" "}
-                  {formatPrice(initialValueData?.price?.[1])}
-                </div>
-              ) : null}
+      <>
+        <div className="flex flex-col gap-4 p-4">
+          <div className="flex items-start justify-between">
+            <div className="flex items-start gap-2">
+              <div className="grid grid-cols-2 gap-2">
+                {renderFilterTabs(initialValueData?.category?.name)}
+                {renderFilterTabs(initialValueData?.location?.name)}
+                {renderFilterTabs(initialValueData?.bank?.name)}
+                {renderFilterTabs(initialValueData?.propertyType?.name)}
+                {/* {renderFilterTabs(initialValueData?.serviceProvider?.name)} */}
+                {initialValueData?.price?.length ? (
+                  <div className={mobileViewFilterClass()}>
+                    {formatPrice(initialValueData?.price?.[0])} -{" "}
+                    {formatPrice(initialValueData?.price?.[1])}
+                  </div>
+                ) : null}
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <button type="button" onClick={showSortModal}>
+                <FontAwesomeIcon icon={faSort} />
+              </button>
+              <button className="link primary-link" onClick={showModal}>
+                <FontAwesomeIcon icon={faFilter} />
+              </button>
             </div>
           </div>
-          <button className="link primary-link" onClick={showModal}>
-            <FontAwesomeIcon icon={faFilter} />
-          </button>
         </div>
-      </div>
+      </>
     );
   };
 
   return (
     <>
+      <SortModal onSortChange={handleSortChange} openModal={openSortModal} hideModal={hideSortModal} />
       <CustomModal openModal={openModal}>
         <div className="w-full flex flex-col gap-4">{renderForm()}</div>
       </CustomModal>
