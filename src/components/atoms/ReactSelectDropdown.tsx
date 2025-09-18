@@ -17,6 +17,7 @@ const ReactSelectDropdown: React.FC<IReactSelectDropdown> = (props) => {
     hidePlaceholder = false,
     maxMultiSelectOptions = 5,
     isSearchable = true,
+    customClass = "",
   } = props;
   const [mounted, setMounted] = useState(false);
 
@@ -68,7 +69,7 @@ const ReactSelectDropdown: React.FC<IReactSelectDropdown> = (props) => {
     <>
       <div
         id={`container-react-select-${name ?? ""}`}
-        className="w-full text-left"
+        className={`w-full text-left ${customClass}`}
       >
         <Select
           className="react-select-container"
