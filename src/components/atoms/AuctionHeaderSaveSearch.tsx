@@ -56,12 +56,11 @@ const AuctionHeaderSaveSearch = ({ searchParams }: IAuctionHeaderSaveSearchProps
           <button type="button" className="link link-primary cursor-pointer max-w-fit" onClick={handleSaveSearchClick}>
             {"Save this search".toUpperCase()}
           </button>
-          {activeFiltersCount >= 2 && (
             <div className="inline-flex items-center gap-2 text-xs py-1 rounded-full w-fit text-gray-600">
               <FontAwesomeIcon icon={faFilter} className="" />
               <span>Resume your journey later with saved filters</span>
             </div>
-          )}
+          
         </div>
         <MobileSortContainer />
         <SortByDropdown />
