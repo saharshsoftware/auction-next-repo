@@ -58,3 +58,19 @@ export const safeString = (value: any): string | null => {
     if (!Array.isArray(value) || value.length === 0) return null;
     return value.filter(item => item !== null && item !== undefined && item !== '');
   };
+
+/**
+ * Build auction detail page URL
+ */
+export const buildAuctionUrl = (slug: string): string => {
+  const baseUrl = process.env.NEXT_PUBLIC_DOMAIN_BASE_URL || "";
+  return `${baseUrl}/auctions/${slug}`;
+};
+
+/**
+ * Build fallback logo image URL
+ */
+export const buildLogoUrl = (): string => {
+  const baseUrl = process.env.NEXT_PUBLIC_DOMAIN_BASE_URL || "";
+  return `${baseUrl}/images/logo.png`;
+};

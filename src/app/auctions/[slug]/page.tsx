@@ -20,6 +20,7 @@ import { fetchFavoriteList } from "@/server/actions/favouriteList";
 import { AuctionDetailPage } from "@/components/templates/AuctionDetail2";
 import Breadcrumb from "@/components/atoms/Breadcrumb";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
+import { constructImageUrls, buildAuctionUrl, buildLogoUrl } from "@/utilies/imageUtils";
 
 async function getAuctionDetailData(slug: string) {
   const res = await getAuctionDetail({ slug });
@@ -48,17 +49,13 @@ export async function generateMetadata(
 
     const { title, description } = blogData;
 
-    // Get property images for meta tags
-    let metaImages: string[] = [];
-    if (blogData?.noticeImageURLs && Array.isArray(blogData.noticeImageURLs)) {
-      const cloudfrontBase = process.env.NEXT_PUBLIC_IMAGE_CLOUDFRONT || "";
-      metaImages = blogData.noticeImageURLs
-        .slice(0, 4) // Limit to first 4 images for social media
-        .map(path => `${cloudfrontBase}/${path.startsWith('/') ? path.slice(1) : path}`);
-    }
+    // Get property images for meta tags using convenience method
+    const metaImages = blogData?.noticeImageURLs && Array.isArray(blogData.noticeImageURLs)
+      ? constructImageUrls(blogData.noticeImageURLs.slice(0, 4)) // Limit to first 4 images for social media
+      : [];
 
     // Fallback to default image if no property images
-    const fallbackImage = `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/images/logo.png`;
+    const fallbackImage = buildLogoUrl();
     const socialImages = metaImages.length > 0 ? metaImages : [fallbackImage];
 
     return {
@@ -66,13 +63,13 @@ export async function generateMetadata(
       description,
       openGraph: {
         type: "website",
-        url: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/auctions/${slug}`,
+        url: buildAuctionUrl(slug),
         title,
         description,
         images: socialImages.map(url => ({ url })),
       },
       twitter: {
-        site: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/auctions/${slug}`,
+        site: buildAuctionUrl(slug),
         card: "summary_large_image",
         title,
         description,
