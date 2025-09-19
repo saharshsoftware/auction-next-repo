@@ -211,7 +211,7 @@ const Navbar: React.FC = () => {
           </div>
           <div className="hidden lg:flex items-center gap-12">
             <div className="w-80">
-              <SearchKeywordComp handleClick={handleLogoClick} />
+              {/* <SearchKeywordComp handleClick={handleLogoClick} /> */}
             </div>
             {renderAuthComponent()}
           </div>

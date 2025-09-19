@@ -122,7 +122,7 @@ const CustomDrawer = (props: ICustomDrawer) => {
     <>
       <div className="flex flex-col gap-4 w-full h-full px-2">
         <div className="flex flex-col gap-4 transform transition duration-300 py-4 flex-1 ">
-          <SearchKeywordComp handleClick={toggleTopBar} />
+          {/* <SearchKeywordComp handleClick={toggleTopBar} /> */}
           {renderLinks()}
 
           <NextLink
