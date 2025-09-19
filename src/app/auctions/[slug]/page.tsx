@@ -41,7 +41,9 @@ export async function generateMetadata(
   try {
     const blogData = (await getAuctionDetailData(slug)) as IAuction;
 
-    if (!blogData || !slug) return {};
+    if (!blogData || !slug) return {
+      robots: "noindex, follow",
+    };
     // Check if the data is available before destructuring
 
     const { title, description } = blogData;
