@@ -2,7 +2,7 @@
 
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFilter, faTimes } from "@fortawesome/free-solid-svg-icons";
+import { faFilter, faSort, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { formatPrice } from "@/shared/Utilies";
 import { STRING_DATA, RANGE_PRICE } from "@/shared/Constants";
 
@@ -18,12 +18,16 @@ interface MobileFiltersBarProps {
   filterData: FilterData;
   onShowModal: () => void;
   onRemoveFilter: (filterType: string) => void;
+  onShowSortModal: () => void;
+  onSortChange: (sortOption: any) => void;
 }
 
 const MobileFiltersBar: React.FC<MobileFiltersBarProps> = ({
   filterData,
   onShowModal,
   onRemoveFilter,
+  onShowSortModal,
+  onSortChange,
 }) => {
   const mobileViewFilterClass = () =>
     "border bg-white text-sm text-gray-800 shadow px-2 py-1 min-w-fit rounded-lg border-brand-color text-center line-clamp-1";
@@ -31,7 +35,7 @@ const MobileFiltersBar: React.FC<MobileFiltersBarProps> = ({
   const renderFilterTabs = (value: string, onRemove?: () => void) => {
     return value ? (
       <div className={`${mobileViewFilterClass()} flex items-center gap-2 justify-between flex-shrink-0 whitespace-nowrap`}>
-        <span className="">{value}</span>
+        <span className="truncate">{value}</span>
         {onRemove && (
           <button
             type="button"
@@ -61,13 +65,14 @@ const MobileFiltersBar: React.FC<MobileFiltersBarProps> = ({
 
   return (
     <div className="flex flex-col gap-4 p-4">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-2">
+        {/* Scrollable filters container */}
         <div className="flex items-center gap-2 flex-1 min-w-0">
-          <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide flex-1">
-            <div className={`${mobileViewFilterClass()} cursor-pointer`} onClick={onShowModal}>
+          <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide pr-2" style={{ marginRight: '2px' }}>
+            <div className={`${mobileViewFilterClass()} cursor-pointer flex-shrink-0`} onClick={onShowModal}>
               <div className="flex items-center gap-2 font-semibold">
                 Filters {activeFiltersCount > 0 ? `(${activeFiltersCount})` : (
-                  <FontAwesomeIcon icon={faFilter} className="text-brand-color"/>
+                  <FontAwesomeIcon icon={faFilter} className="text-brand-color" />
                 )}
               </div>
             </div>
@@ -92,7 +97,7 @@ const MobileFiltersBar: React.FC<MobileFiltersBarProps> = ({
               () => onRemoveFilter('price')
             )}
           </div>
-        </div>
+        </div>        
       </div>
     </div>
   );

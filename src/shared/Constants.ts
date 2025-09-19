@@ -8,12 +8,13 @@ import {
 import { ROUTE_CONSTANTS } from "./Routes";
 import { CONFIG } from "@/utilies/Config";
 import { FAQItem } from "@/components/templates/FaqPage";
-import { IAssetType } from "@/types";
+import { IAssetType, SortOption } from "@/types";
 
 export const COOKIES = {
   TOKEN_KEY: "auction-token",
   AUCTION_USER_KEY: "auction-user-data",
   AUCTION_FILTER: "auction-filter",
+  SORT_KEY: "auction-sort",
 };
 
 export const RANGE_PRICE = {
@@ -567,4 +568,11 @@ export const ALERTS_INSTRUCTIONS_DATA = [
     id: 3,
     text: "Hit “Create Alert” and stay notified",
   },
+];
+
+export const SORT_OPTIONS: SortOption[] = [
+  { label: 'Auction Date (Newest)', value: 'effectiveAuctionStartTime:desc' },
+  { label: 'Auction Date (Oldest)', value: 'effectiveAuctionStartTime:asc' },
+  { label: 'Price: Low - High', value: 'reservePrice:asc' },
+  { label: 'Price: High - Low', value: 'reservePrice:desc' },
 ];

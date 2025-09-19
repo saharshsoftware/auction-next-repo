@@ -6,12 +6,13 @@ import { IAssetType, IBanks, ICategoryCollection, ILocations } from "@/types";
 import ActionButton from "../atoms/ActionButton";
 import MobileFiltersBar from "./MobileFiltersBar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFilter, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { faFilter, faArrowLeft, faSort } from "@fortawesome/free-solid-svg-icons";
 import TextField from "../atoms/TextField";
 import RangeSliderCustom from "../atoms/RangeSliderCustom";
 import { formatPrice, IServiceProviders, SERVICE_PROVIDER_OPTIONS } from "@/shared/Utilies";
 import useResize from "@/hooks/useResize";
 import {
+  COOKIES,
   getEmptyAllObject,
   getEmptyAssetTypeObject,
   RANGE_PRICE,
@@ -22,6 +23,8 @@ import CustomModal from "../atoms/CustomModal";
 import useCustomParamsData from "@/hooks/useCustomParamsData";
 import { useRouter } from "next/navigation";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
+import SortModal from "./SortModal";
+import { setCookie } from "cookies-next";
 
 interface FindAuctionProps {
   categories: ICategoryCollection[];
@@ -54,6 +57,7 @@ const FindAuction: React.FC<FindAuctionProps> = ({
   const router = useRouter();
   const { setDataInQueryParamsMethod } = useCustomParamsData();
   const { showModal: showFilterModal, openModal, hideModal } = useModal();
+  const { showModal: showSortModal, openModal: openSortModal, hideModal: hideSortModal } = useModal();
   const [filteredAssets, setFilteredAssets] = useState<IAssetType[]>(
     assets ?? []
   );
@@ -85,6 +89,11 @@ const FindAuction: React.FC<FindAuctionProps> = ({
   const showModal = () => {
     console.log("Filter modal opened");
     showFilterModal();
+  };
+
+  const handleSortChange = (sortOption: any) => {
+    setCookie(COOKIES.SORT_KEY, sortOption.value);
+    router.refresh();
   };
 
   const removeFilter = (filterType: string) => {
@@ -371,7 +380,7 @@ const FindAuction: React.FC<FindAuctionProps> = ({
                   isSubmit={true}
                   text={STRING_DATA.UPDATE.toUpperCase()}
                   isLoading={staticLoading}
-                  //   customClass={"min-w-[150px]"}
+                //   customClass={"min-w-[150px]"}
                 />
               </div>
             </div>
@@ -390,23 +399,26 @@ const FindAuction: React.FC<FindAuctionProps> = ({
 
     return (
       <>
-      <MobileFiltersBar
-        filterData={{
-          category: currentFilterValues?.category,
-          location: currentFilterValues?.location,
-          bank: currentFilterValues?.bank,
-          propertyType: currentFilterValues?.propertyType,
-          price: currentFilterValues?.price,
-        }}
-        onShowModal={showModal}
-        onRemoveFilter={removeFilter}
+        <MobileFiltersBar
+          filterData={{
+            category: currentFilterValues?.category,
+            location: currentFilterValues?.location,
+            bank: currentFilterValues?.bank,
+            propertyType: currentFilterValues?.propertyType,
+            price: currentFilterValues?.price,
+          }}
+          onShowModal={showModal}
+          onRemoveFilter={removeFilter}
+          onShowSortModal={showSortModal}
+          onSortChange={handleSortChange}
         />
-        </>
+      </>
     );
   };
 
   return (
     <>
+      <SortModal onSortChange={handleSortChange} openModal={openSortModal} hideModal={hideSortModal} />
       <CustomModal openModal={openModal}>
         <div className="w-full flex flex-col gap-4">{renderForm()}</div>
       </CustomModal>

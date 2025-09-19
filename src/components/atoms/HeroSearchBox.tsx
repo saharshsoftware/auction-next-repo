@@ -5,12 +5,12 @@ import ReactSelectDropdown from "./ReactSelectDropdown";
 import CustomFormikForm from "./CustomFormikForm";
 import TextField from "./TextField";
 import { Field, Form } from "formik";
-import { COOKIES, RANGE_PRICE, STRING_DATA, getEmptyAllObject } from "../../shared/Constants";
+import { COOKIES, RANGE_PRICE, SORT_OPTIONS, STRING_DATA, getEmptyAllObject } from "../../shared/Constants";
 import { ROUTE_CONSTANTS } from "../../shared/Routes";
 import { formatPrice, setDataInQueryParams } from "../../shared/Utilies";
 import Link from "next/link";
 import RangeSliderCustom from "./RangeSliderCustom";
-import { getCookie } from "cookies-next";
+import { getCookie, setCookie } from "cookies-next";
 import dynamic from "next/dynamic";
 import { IFilters, useFilterStore } from "@/zustandStore/filters";
 import { trackSearch } from "@/helpers/SurveyHelper";
@@ -273,6 +273,7 @@ const HeroSearchBox = (props: {
                       // pathname: "/",
                       query: { q: getFilterQuery(values) },
                     }}
+                    onClick={() => setCookie(COOKIES.SORT_KEY, SORT_OPTIONS[0].value)}
                     prefetch={false}
                   >
                     <ActionButton

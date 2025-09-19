@@ -11,11 +11,13 @@ const ReactSelectDropdown: React.FC<IReactSelectDropdown> = (props) => {
     onChange = () => {},
     placeholder,
     defaultValue,
+    value,
     clearable = false,
     isMulti = false,
     hidePlaceholder = false,
     maxMultiSelectOptions = 5,
     isSearchable = true,
+    customClass = "",
   } = props;
   const [mounted, setMounted] = useState(false);
 
@@ -67,7 +69,7 @@ const ReactSelectDropdown: React.FC<IReactSelectDropdown> = (props) => {
     <>
       <div
         id={`container-react-select-${name ?? ""}`}
-        className="w-full text-left"
+        className={`w-full text-left ${customClass}`}
       >
         <Select
           className="react-select-container"
@@ -80,7 +82,7 @@ const ReactSelectDropdown: React.FC<IReactSelectDropdown> = (props) => {
           name={name}
           isSearchable={isSearchable}
           isClearable={clearable}
-          value={defaultValue ?? null}
+          value={value ?? defaultValue ?? null}
           onChange={handleChange}
           placeholder={placeholder}
           classNamePrefix="react-select"
