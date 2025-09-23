@@ -609,3 +609,26 @@ export const DEFAULT_FAQ_DATA = [
     tags: "Possession Notice"
   }
 ];
+
+export const BANK_AUCTION_SERVICES = [
+  {
+    serviceType: "Thorough Due Diligence",
+    url: "https://www.eauctiondekho.com/bank-auction-support#due-diligence",
+    description: "Comprehensive legal and technical due diligence on auction properties, including title checks, encumbrance review, society dues, and hidden liabilities."
+  },
+  {
+    serviceType: "Loan Approval Assistance",
+    url: "https://www.eauctiondekho.com/bank-auction-support#loan-approval",
+    description: "Help with getting pre-approved loans for bank auction properties. Guidance on documents, lender policies, and faster approvals to meet strict auction timelines."
+  },
+  {
+    serviceType: "Guided Property Visits",
+    url: "https://www.eauctiondekho.com/bank-auction-support#property-visit",
+    description: "Assistance with scheduling and attending guided property inspections. Our experts help you assess condition, neighborhood, and risks before you bid."
+  },
+  {
+    serviceType: "End-to-End Auction Support",
+    url: "https://www.eauctiondekho.com/bank-auction-support#auction-process",
+    description: "Complete assistance through the auction journey – from registering, bidding, and payments to sale certificate, mutation, and property handover."
+  }
+];
