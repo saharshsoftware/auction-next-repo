@@ -64,9 +64,9 @@ export const OurServices: React.FC = () => {
       <section className="pt-20 bg-odd-color">
         <div className="">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Comprehensive Auction Services
-            </h2>
+            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              Bank Auction Support Services – Expert Help for Buyers
+            </h1>
             <p className="text-lg max-w-3xl mx-auto">
               We provide professional, ground-level support to ensure your property auction experience is smooth, secure, and successful.
             </p>

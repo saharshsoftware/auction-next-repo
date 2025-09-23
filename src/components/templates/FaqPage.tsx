@@ -44,7 +44,7 @@ const FaqPage: React.FC<IFaqPage> = (props: IFaqPage) => {
         <div className="text-center mb-8">
           <div className="flex items-center justify-center mb-4">
             <HelpCircle className="h-8 w-8 text-blue-600 mr-3" />
-            <h1 className="text-3xl font-bold text-gray-900">Frequently Asked Questions</h1>
+            <h1 className="text-3xl font-bold text-gray-900">Property Auction FAQs – Expert Buyer Tips by e-auctiondekho</h1>
           </div>
           <p className="text-sm-xs">
             Find answers to common questions about property auctions, bidding process, and legal requirements.
