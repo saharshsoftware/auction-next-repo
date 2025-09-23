@@ -576,3 +576,36 @@ export const SORT_OPTIONS: SortOption[] = [
   { label: 'Price: Low - High', value: 'reservePrice:asc' },
   { label: 'Price: High - Low', value: 'reservePrice:desc' },
 ];
+
+export const DEFAULT_FAQ_DATA = [
+  {
+    question: "What is EMD amount?",
+    answer: "EMD (Earnest Money Deposit) is the refundable deposit required to participate in an auction. It is usually 5–10% of the reserve price and must be paid before bidding.",
+    tags: "EMD"
+  },
+  {
+    question: "What is Reserve Price?",
+    answer: "Reserve Price is the minimum price set by the bank for bidding. It is not the final price and the winning bid can be higher. Buyers should also check for any pending dues or attachments before bidding.",
+    tags: "Reserve Price"
+  },
+  {
+    question: "What is SARFAESI?",
+    answer: "SARFAESI is an Indian law that allows banks to take possession and sell mortgaged properties if a borrower defaults, without needing a court order. Properties are sold on an 'as-is-where-is' basis.",
+    tags: "SARFAESI"
+  },
+  {
+    question: "Can I get a home loan for an auction property?",
+    answer: "Yes, loans may be available depending on lender policy and property status. Pre-approval is recommended due to tight payment deadlines. Some banks only disburse loans after the Sale Certificate is issued.",
+    tags: "Home Loan"
+  },
+  {
+    question: "Who pays stamp duty, registration, and TDS?",
+    answer: "The buyer pays stamp duty, registration charges, and TDS if applicable. In most cases, pending dues such as society charges, property tax, or utility bills must also be paid by the buyer.",
+    tags: "Stamp Duty"
+  },
+  {
+    question: "What is a Possession Notice?",
+    answer: "A possession notice declares whether the bank has symbolic possession (legal control, but borrower may still occupy) or physical possession (bank has taken full control). Physical possession is generally safer for buyers.",
+    tags: "Possession Notice"
+  }
+];
