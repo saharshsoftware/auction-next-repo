@@ -321,3 +321,37 @@ export interface SortOption {
   label: string;
   value: string;
 }
+
+// Lead Recommendations
+export interface LeadInfo {
+  id: number;
+  contactName: string;
+  contactEmail: string;
+  interestedCities: string[];
+  propertyCategories: string[];
+}
+
+export interface LeadNoticeRecommendation {
+  id: number;
+  bankName: string;
+  branchName: string;
+  assetCategory: string;
+  title: string;
+  noticeLink: string;
+  city: string;
+  state: string;
+  reservePrice: number;
+  emd: number;
+  slug?: string;
+}
+
+export interface LeadRecommendationItem {
+  id: number;
+  createdAt: string;
+  lead: LeadInfo;
+  notice: LeadNoticeRecommendation;
+}
+
+export interface LeadRecommendationsResponse {
+  data: LeadRecommendationItem[];
+}

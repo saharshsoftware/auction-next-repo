@@ -13,6 +13,7 @@ import {
   sanitizedAuctionDetail,
 } from "@/shared/Utilies";
 import { IAlert, IAssetType, IAuction, ICategoryCollection } from "@/types";
+import { LeadRecommendationsResponse } from "@/types";
 
 export const getAssetTypeClient = async () => {
   // "use server";
@@ -115,7 +116,9 @@ export const getAuctionDataClient = async (payload: {
         API_ENPOINTS.NOTICES +
         filter.slice(0, -1) +
         `&${requiredkeys}&sort=effectiveAuctionStartTime:desc`; // Remove the trailing '&' if present
-    }
+
+      }
+      console.log("MAIN_LIST_URL", URL);
 
     const { data } = await getRequest({ API: URL });
     let sendResponse;
@@ -375,5 +378,15 @@ export const noticeSearch = async (payload: {
   } catch (e: any) {
     console.log(e, "Notice search error");
     return e;
+  }
+};
+
+export const fetchUserLeadRecommendations = async () => {
+  try {
+    const URL = API_BASE_URL + API_ENPOINTS.USER_LEAD_RECOMMENDATIONS;
+    const { data } = await getRequest({ API: URL });
+    return data as LeadRecommendationsResponse;
+  } catch (e: any) {
+    return { data: [] } as LeadRecommendationsResponse;
   }
 };

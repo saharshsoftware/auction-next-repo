@@ -151,6 +151,8 @@ export const STRING_DATA = {
   DELETE_ALERT_MESSAGE: "Are you sure you want to delete this alert ?",
   YOUR_WISHLIST: "Your wishlist",
   YOUR_SAVED_SEARCH: "Your saved search",
+  RECOMMENDATIONS: "Recommendations",
+  VIEW_ALL_RECOMMENDATIONS: "View all Recommendations",
   LOCATIONS: "locations",
   ASSETS_TYPE: "asset-types",
   TYPES: "types",
@@ -162,6 +164,11 @@ export const NAVBAR_NAV_LINKS = [
     path: ROUTE_CONSTANTS.PROFILE,
     label: STRING_DATA.PROFILE,
     icon: faUser,
+  },
+  {
+    path: ROUTE_CONSTANTS.USER_RECOMMENDATIONS,
+    label: STRING_DATA.RECOMMENDATIONS,
+    icon: faList,
   },
   {
     path: ROUTE_CONSTANTS.MANAGE_LIST,
