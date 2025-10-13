@@ -58,9 +58,10 @@ const HomeRecommendationsClient: React.FC = () => {
   };
 
   return (
-    <section className="common-section mb-12 ">
+    <section className="py-20 bg-even-color section-class">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
         <h2 className="text-xl font-bold">{STRING_DATA.RECOMMENDATIONS}</h2>
+
         <Link
           href={ROUTE_CONSTANTS.USER_RECOMMENDATIONS}
           className="text-sm text-blue-600 hover:underline mt-2 md:mt-0"

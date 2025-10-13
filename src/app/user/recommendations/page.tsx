@@ -50,6 +50,9 @@ export default function UserRecommendationsPage() {
   return (
     <div className="common-section container mx-auto p-4">
       <h1 className="text-xl font-semibold mb-4">{STRING_DATA.RECOMMENDATIONS}</h1>
+      <p className="text-sm text-gray-600 mb-6">
+        These recommendations are based on your Interested Cities and Interested Categories.
+      </p>
       <div className="grid grid-cols-1 gap-4">
         {paginatedItems.map((it, idx) => {
           const n = it.notice;
