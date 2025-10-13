@@ -1,9 +1,9 @@
 "use client";
 import React, { useEffect, useMemo, useState } from "react";
 import { getCookie } from "cookies-next";
-import { COOKIES, STRING_DATA } from "@/shared/Constants";
+import { COOKIES, FEATURE_FLAGS, STRING_DATA } from "@/shared/Constants";
 import { AuctionCard2 } from "@/components/atoms/AuctionCard2";
-import { LeadRecommendationItem } from "@/types";
+import { LeadNoticeRecommendation } from "@/types";
 import { getStaticTopRecommendations } from "@/data/user-recommendations";
 import Link from "next/link";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
@@ -12,20 +12,48 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "@/components/atoms/slickslider.style.css";
 import { NextArrow, PrevArrow } from "../atoms/CustomReactCarousel";
+import SkeltonAuctionCard from "@/components/skeltons/SkeltonAuctionCard";
+import { fetchUserLeadRecommendations } from "@/services/auction";
 
 const HomeRecommendationsClient: React.FC = () => {
-  const [items, setItems] = useState<LeadRecommendationItem[]>([]);
+  const [items, setItems] = useState<LeadNoticeRecommendation[]>([]);
   const isAuthenticated = Boolean(getCookie(COOKIES.TOKEN_KEY));
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [hasError, setHasError] = useState<boolean>(false);
+
+
+  const fetchLeadRecommendations = async () => {
+    try {
+      setIsLoading(true);
+      setHasError(false);
+      if (FEATURE_FLAGS.USE_STATIC_RECOMMENDATIONS) {
+        const top10 = getStaticTopRecommendations(10);
+        setItems(top10);
+        return;
+      }
+      const top10 = await fetchUserLeadRecommendations({ page: 1, pageSize: 10 });
+      if (top10?.data?.length) {
+        setItems(top10.data.slice(0, 10));
+      } else {
+        setItems([]);
+      }
+    } catch (e) {
+      setHasError(true);
+      setItems([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
     if (!isAuthenticated) return;
-
+    fetchLeadRecommendations();
     // for api data; fetchUserLeadRecommendations call
-    const top10 = getStaticTopRecommendations(10);
-    setItems(top10);
+    // const top10 = getStaticTopRecommendations(10);
+    // setItems(top10);
   }, [isAuthenticated]);
 
-  if (!isAuthenticated || items.length === 0) return null;
+  if (!isAuthenticated) return null;
 
   const settings: Settings = {
     dots: true,
@@ -70,26 +98,20 @@ const HomeRecommendationsClient: React.FC = () => {
         </Link>
       </div>
       <div className="slides-container">
+        {isLoading && (
+          <div className="mb-6">
+            <SkeltonAuctionCard />
+          </div>
+        )}
+        {hasError && !isLoading && (
+          <div className="mb-4 text-sm text-red-600">Failed to load recommendations. Please try again.</div>
+        )}
         <Slider {...settings} lazyLoad="ondemand">
           {items.map((item, idx) => {
-            const n = item.notice;
-            const property = {
-              id: String(n.id),
-              title: n.title,
-              bankName: n.bankName,
-              branchName: n.branchName,
-              assetCategory: n.assetCategory,
-              reservePrice: n.reservePrice,
-              emd: n.emd,
-              city: n.city,
-              state: n.state,
-              slug: n.slug || undefined,
-              noticeLink: n.noticeLink,
-            } as any;
             return (
               <div key={idx} className="">
                 <div className="h-full ">
-                  <AuctionCard2 property={property} forceMobileNoImage={true} />
+                  <AuctionCard2 property={item as any} forceMobileNoImage={true} />
                 </div>
               </div>
             );

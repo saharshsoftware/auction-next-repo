@@ -159,6 +159,10 @@ export const STRING_DATA = {
   BACK_TO_LOGIN: "Back to Login",
 };
 
+export const FEATURE_FLAGS = {
+  USE_STATIC_RECOMMENDATIONS: false,
+} as const;
+
 export const NAVBAR_NAV_LINKS = [
   {
     path: ROUTE_CONSTANTS.PROFILE,

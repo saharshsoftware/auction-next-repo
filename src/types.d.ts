@@ -343,6 +343,13 @@ export interface LeadNoticeRecommendation {
   reservePrice: number;
   emd: number;
   slug?: string;
+  contact?: string;
+  noticeImageURL?: string | null;
+  serviceProvider?: string | null;
+  assetType?: string | null;
+  propertyAddress?: string | null;
+  auctionStartTime?: string;
+  auctionEndDate?: string;
 }
 
 export interface LeadRecommendationItem {
@@ -352,6 +359,19 @@ export interface LeadRecommendationItem {
   notice: LeadNoticeRecommendation;
 }
 
+export interface PaginationMeta {
+  page: number;
+  pageSize: number;
+  pageCount: number;
+  total: number;
+  hasPreviousPage?: boolean;
+  hasNextPage?: boolean;
+}
+
 export interface LeadRecommendationsResponse {
-  data: LeadRecommendationItem[];
+  data: LeadNoticeRecommendation[];
+  meta?: {
+    pagination: PaginationMeta;
+    sort?: { field: string; order: "asc" | "desc" };
+  };
 }

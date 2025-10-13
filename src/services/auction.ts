@@ -381,12 +381,17 @@ export const noticeSearch = async (payload: {
   }
 };
 
-export const fetchUserLeadRecommendations = async () => {
+export const fetchUserLeadRecommendations = async (payload?: { page?: number; pageSize?: number }) => {
   try {
-    const URL = API_BASE_URL + API_ENPOINTS.USER_LEAD_RECOMMENDATIONS;
+    const { page = 1, pageSize = 10 } = payload || {};
+    const URL =
+      API_BASE_URL +
+      API_ENPOINTS.USER_LEAD_RECOMMENDATIONS +
+      `?page=${page}&pageSize=${pageSize}`;
     const { data } = await getRequest({ API: URL });
     return data as LeadRecommendationsResponse;
   } catch (e: any) {
-    return { data: [] } as LeadRecommendationsResponse;
+    throw e;
+    // return { data: [] } as LeadRecommendationsResponse;
   }
 };
