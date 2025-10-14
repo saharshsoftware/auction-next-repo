@@ -1,5 +1,6 @@
 "use client";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 import { getCookie } from "cookies-next";
 import { COOKIES, FEATURE_FLAGS, STRING_DATA } from "@/shared/Constants";
 import { AuctionCard2 } from "@/components/atoms/AuctionCard2";
@@ -7,20 +8,24 @@ import { LeadNoticeRecommendation } from "@/types";
 import { getStaticTopRecommendations } from "@/data/user-recommendations";
 import Link from "next/link";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
-import Slider, { Settings } from "react-slick";
+import type { Settings } from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "@/components/atoms/slickslider.style.css";
 import { NextArrow, PrevArrow } from "../atoms/CustomReactCarousel";
-import SkeltonAuctionCard from "@/components/skeltons/SkeltonAuctionCard";
+import SkeltonRecommendationCard from "@/components/skeltons/SkeltonRecommendationCard";
 import { fetchUserLeadRecommendations } from "@/services/auction";
+
+// Dynamically import react-slick to avoid SSR/hydration issues
+const Slider = dynamic(() => import("react-slick"), { ssr: false }) as unknown as React.ComponentType<any>;
 
 const HomeRecommendationsClient: React.FC = () => {
   const [items, setItems] = useState<LeadNoticeRecommendation[]>([]);
-  const isAuthenticated = Boolean(getCookie(COOKIES.TOKEN_KEY));
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [mounted, setMounted] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [hasError, setHasError] = useState<boolean>(false);
-
+  const [errorMessage, setErrorMessage] = useState<string>('');
 
   const fetchLeadRecommendations = async () => {
     try {
@@ -37,7 +42,8 @@ const HomeRecommendationsClient: React.FC = () => {
       } else {
         setItems([]);
       }
-    } catch (e) {
+    } catch (message: string | any) {
+      setErrorMessage(message);
       setHasError(true);
       setItems([]);
     } finally {
@@ -46,14 +52,16 @@ const HomeRecommendationsClient: React.FC = () => {
   };
 
   useEffect(() => {
+    setMounted(true);
+    setIsAuthenticated(Boolean(getCookie(COOKIES.TOKEN_KEY)));
+  }, []);
+
+  useEffect(() => {
     if (!isAuthenticated) return;
     fetchLeadRecommendations();
-    // for api data; fetchUserLeadRecommendations call
-    // const top10 = getStaticTopRecommendations(10);
-    // setItems(top10);
   }, [isAuthenticated]);
 
-  if (!isAuthenticated) return null;
+  if (!mounted || !isAuthenticated) return null;
 
   const settings: Settings = {
     dots: true,
@@ -85,6 +93,10 @@ const HomeRecommendationsClient: React.FC = () => {
     ],
   };
 
+  if (hasError) {
+    return null;
+  }
+
   return (
     <section className="py-20 bg-even-color section-class">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
@@ -100,23 +112,23 @@ const HomeRecommendationsClient: React.FC = () => {
       <div className="slides-container">
         {isLoading && (
           <div className="mb-6">
-            <SkeltonAuctionCard />
+            <SkeltonRecommendationCard count={3} />
           </div>
         )}
         {hasError && !isLoading && (
-          <div className="mb-4 text-sm text-red-600">Failed to load recommendations. Please try again.</div>
+          <div className="mb-4 text-sm text-red-600">{errorMessage || 'Failed to load recommendations. Please try again'}.</div>
         )}
-        <Slider {...settings} lazyLoad="ondemand">
-          {items.map((item, idx) => {
-            return (
-              <div key={idx} className="">
-                <div className="h-full ">
+        {items.length > 0 && (
+          <Slider {...settings} lazyLoad="ondemand">
+            {items.map((item, idx) => (
+              <div key={idx} className="h-full">
+                <div className="h-full">
                   <AuctionCard2 property={item as any} forceMobileNoImage={true} />
                 </div>
               </div>
-            );
-          })}
-        </Slider>
+            ))}
+          </Slider>
+        )}
       </div>
     </section>
   );

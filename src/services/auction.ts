@@ -391,7 +391,8 @@ export const fetchUserLeadRecommendations = async (payload?: { page?: number; pa
     const { data } = await getRequest({ API: URL });
     return data as LeadRecommendationsResponse;
   } catch (e: any) {
-    throw e;
+    const { message } = e?.response?.data?.error;
+    throw message || 'Failed to load recommendations. Please try again';
     // return { data: [] } as LeadRecommendationsResponse;
   }
 };

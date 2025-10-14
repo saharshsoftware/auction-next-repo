@@ -17,6 +17,7 @@ export default function UserRecommendationsPage() {
   const [totalPages, setTotalPages] = useState<number>(1);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [hasError, setHasError] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string>('');
   const isAuthenticated = Boolean(getCookie(COOKIES.TOKEN_KEY));
 
   const fetchLeadRecommendations = async (page: number) => {
@@ -33,7 +34,8 @@ export default function UserRecommendationsPage() {
       }
       const pageCount = response?.meta?.pagination?.pageCount ?? 1;
       setTotalPages(Math.max(1, pageCount));
-    } catch (e) {
+    } catch (message: string | any) {
+      setErrorMessage(message);
       setHasError(true);
       setItems([]);
       setTotalPages(1);
@@ -71,9 +73,7 @@ export default function UserRecommendationsPage() {
       )
     }
     if (hasError) {
-      return (
-        <div className="mb-4 text-sm text-red-600">Failed to load recommendations. Please try again.</div>
-      )
+      return <div className="mb-4 text-sm  text-center">{'No recommendation found'}.</div>;
     }
     return (
       <>
