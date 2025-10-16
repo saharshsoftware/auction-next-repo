@@ -21,6 +21,7 @@ import { getFaqData } from "@/server/actions/footer";
 import FaqSection from "@/components/atoms/FaqSection";
 import { IMAGES } from "@/shared/Images";
 import ServicesSection from "@/components/atoms/ServicesSection";
+import HomeRecommendationsClient from "@/components/molecules/HomeRecommendationsClient";
 
 export const revalidate = 3600; // 1 hour
 export const dynamic = 'force-static';
@@ -120,6 +121,8 @@ export default async function Home() {
           bankOptions={bankOptions}
         />   
 
+        {/* User Recommendations (Authenticated) */}
+        <HomeRecommendationsClient />
         
         {/* Home Collection Sections */}
         <HomeCollectionsServer />

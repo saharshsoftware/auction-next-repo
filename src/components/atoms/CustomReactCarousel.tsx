@@ -32,7 +32,7 @@ function SamplePrevArrow(props: any) {
   );
 }
 
-const NextArrow = (props: any) => {
+export const NextArrow = (props: any) => {
   const { className, style, onClick } = props;
   return (
     <>
@@ -55,7 +55,7 @@ const NextArrow = (props: any) => {
   );
 };
 
-const PrevArrow = (props: any) => {
+export const PrevArrow = (props: any) => {
   const { className, style, onClick } = props;
   return (
     <>

@@ -278,6 +278,15 @@ blockquote {
   @apply text-green-500
 }
 
+/* Ensure slick slides stretch to equal height inside carousels */
+.slides-container .slick-track {
+  display: flex !important;
+  align-items: stretch !important;
+}
+.slides-container .slick-slide > div {
+  height: 100% !important;
+}
+
 .custom-common-header-class {
   @apply bg-[var(--brand-color)] text-white px-4 py-2 rounded-t-md min-h-8
 }

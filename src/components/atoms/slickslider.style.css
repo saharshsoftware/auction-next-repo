@@ -1,5 +1,5 @@
 .slick-slide {
-  padding: 10px;
+  /* padding: 10px; */
 }
 
 .slick-prev:before,
@@ -27,4 +27,11 @@
 
 .slick-slide img {
   transition: none !important;
+}
+
+.slick-track {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  align-items: stretch;
 }
