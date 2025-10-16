@@ -8,6 +8,8 @@ import { AuctionCard2 } from "@/components/atoms/AuctionCard2";
 import { fetchUserLeadRecommendations } from "@/services/auction";
 import { getStaticRecommendationsByPage } from "@/data/user-recommendations";
 import SkeltonAuctionCard from "@/components/skeltons/SkeltonAuctionCard";
+import Link from "next/link";
+import { ROUTE_CONSTANTS } from "@/shared/Routes";
 
 const PAGE_SIZE = 10;
 
@@ -72,21 +74,70 @@ export default function UserRecommendationsPage() {
         </div>
       )
     }
-    if (hasError) {
-      return <div className="mb-4 text-sm  text-center">{'No recommendation found'}.</div>;
+    if (hasError || items.length === 0) {
+      return (
+        <div className=" p-8 md:p-12 text-center">
+          <div className="max-w-2xl mx-auto space-y-4">
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-50 mb-2">
+              <svg
+                className="w-8 h-8 text-blue-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M13 10V3L4 14h7v7l9-11h-7z"
+                />
+              </svg>
+            </div>
+            <h3 className="text-xl font-semibold text-gray-900">
+              Start Customizing Your Experience
+            </h3>
+            <p className="text-gray-600 leading-relaxed">
+              Update your interests — like cities, categories, alerts, or favorite lists — to start receiving personalized recommendations and notifications.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center mt-6">
+              <Link
+                href={ROUTE_CONSTANTS.PROFILE}
+                className="inline-flex items-center justify-center px-6 py-3 bg-brand-color text-white font-medium rounded-lg  transition-colors"
+              >
+                Update Interests
+              </Link>
+              <Link
+                href={ROUTE_CONSTANTS.MANAGE_ALERT}
+                className="inline-flex items-center justify-center px-6 py-3 bg-brand-color text-white font-medium rounded-lg transition-colors"
+              >
+                Create Alerts
+              </Link>
+              <Link
+                href={ROUTE_CONSTANTS.MANAGE_LIST}
+                className="inline-flex items-center justify-center px-6 py-3 bg-brand-color text-white font-medium rounded-lg transition-colors"
+              >
+                Manage Lists
+              </Link>
+            </div>
+          </div>
+        </div>
+      );
     }
     return (
       <>
-      <div className="grid grid-cols-1 gap-4">
-        {items.map((item: LeadNoticeRecommendation, idx) => {
-          return <AuctionCard2 key={`${item.id}-${idx}`} property={item as any} />;
-        })}
-      </div>
-      <ReactPagination
-        activePage={activePage}
-        totalPage={totalPages}
-        onPageChange={handlePageChange}
-      />
+        <p className="text-sm text-gray-600 mb-6">
+          These recommendations are based on your Interested Cities and Interested Categories.
+        </p>
+        <div className="grid grid-cols-1 gap-4">
+          {items.map((item: LeadNoticeRecommendation, idx) => {
+            return <AuctionCard2 key={`${item.id}-${idx}`} property={item as any} />;
+          })}
+        </div>
+        <ReactPagination
+          activePage={activePage}
+          totalPage={totalPages}
+          onPageChange={handlePageChange}
+        />
       </>
     )
   }
@@ -94,9 +145,7 @@ export default function UserRecommendationsPage() {
   return (
     <div className="common-section container mx-auto p-4">
       <h1 className="text-xl font-semibold mb-4">{STRING_DATA.RECOMMENDATIONS}</h1>
-      <p className="text-sm text-gray-600 mb-6">
-        These recommendations are based on your Interested Cities and Interested Categories.
-      </p>
+
       {renderContainer()}
 
     </div>
