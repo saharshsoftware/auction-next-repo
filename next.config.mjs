@@ -23,7 +23,11 @@ const nextConfig = {
         hostname: "auction-dekho.s3.ap-south-1.amazonaws.com",
         port: "",
       },
-
+      {
+        protocol: "https",
+        hostname: "newscrapperstest.s3.ap-south-1.amazonaws.com",
+        port: "",
+      }
     ],
   },
   async redirects() {

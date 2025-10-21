@@ -1,5 +1,5 @@
-export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
-// export const API_BASE_URL = 'https://api2.eauctiondekho.com';
+// export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+export const API_BASE_URL = 'http://localhost:1009';
 export const API_ENPOINTS = {
   NOTICES: "/api/notices",
   SIGNUP: "/api/auth/local/register",
@@ -23,9 +23,10 @@ export const API_ENPOINTS = {
   HOME_BOX_COLLECTIONS: "/api/home-box-collections",
   FAVOURITE_LIST: "/api/favorite-list",
   FAVOURITE_LIST_PROPERTY: "/api/property-in-favorite-list",
+  FAVOURITE_LISTS: "/api/favorite-lists",
+  FAVOURITE_LISTS_PROPERTIES: "/api/property-in-favorite-lists",
   PRIVACY_POLICY: "/api/privacy-policy",
   TERMS: "/api/term",
-  ABOUT_US: "/api/about-company",
   CONTACT_US: "/api/contact-us",
   CONTACT_USER: "/api/contact-users",
   SAVED_SEARCH: "/api/saved-search",

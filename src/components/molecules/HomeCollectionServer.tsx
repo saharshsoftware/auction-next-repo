@@ -8,6 +8,7 @@ const BankCollection = dynamic(() => import("@/components/molecules/BankCollecti
 const AssetsCollection = dynamic(() => import("@/components/molecules/AssetsCollection"), { ssr: false });
 const LocationCollection = dynamic(() => import("@/components/molecules/LocationCollection"), { ssr: false });
 const CommonCollectionComp = dynamic(() => import("@/components/molecules/CommonCollectionComp"), { ssr: false });
+const FavouriteListCollection = dynamic(() => import("@/components/molecules/FavouriteListCollection"), { ssr: false });
 
 const getComponent = (name: string) => {
   switch (name) {
@@ -15,6 +16,7 @@ const getComponent = (name: string) => {
     case "BankCollection": return BankCollection;
     case "AssetsCollection": return AssetsCollection;
     case "LocationCollection": return LocationCollection;
+    case "FavouriteListCollection": return FavouriteListCollection;
     default: return CommonCollectionComp;
   }
 };
