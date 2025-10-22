@@ -1,5 +1,5 @@
-// export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
-export const API_BASE_URL = 'http://localhost:1009';
+export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+// export const API_BASE_URL = 'https://api2.eauctiondekho.com';
 export const API_ENPOINTS = {
   NOTICES: "/api/notices",
   SIGNUP: "/api/auth/local/register",
