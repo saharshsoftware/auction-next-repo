@@ -88,22 +88,22 @@ const CollectionDetailPage = (props: ICollectionDetailPage) => {
 
         {/* Content Section - Below Image */}
         <div className="container mx-auto px-4 py-12 md:py-16 relative z-10 common-section">
-          <div className="max-w-4xl mx-auto text-center">
-            <div className="flex items-center justify-center gap-2 mb-4">
+          <div className="text-left">
+            <div className="flex items-center  gap-2 mb-4">
               <ListChecks className="h-6 w-6 " />
               <span className="text-sm font-medium uppercase tracking-wider ">
                 Property Collection
               </span>
             </div>
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 leading-tight ">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 leading-tight text-left">
               {displayTitle}
             </h1>
             {description && (
-              <p className="text-lg md:text-xl  mb-6 leading-relaxed max-w-3xl mx-auto">
+              <p className="text-sm-xs   mb-6 leading-relaxed text-left">
                 {description}
               </p>
             )}
-            <div className="flex flex-wrap gap-4 items-center justify-center">
+            <div className="flex flex-wrap gap-4 items-center ">
               <div className="flex items-center gap-2 ">
                 <Building2 className="h-5 w-5 " />
                 <span className="font-semibold ">
@@ -117,7 +117,7 @@ const CollectionDetailPage = (props: ICollectionDetailPage) => {
       </div>
 
       {/* Properties Section */}
-      <div className="container mx-auto px-4 md:py-12  common-section py-8">
+      <div className="container mx-auto px-4 md:pb-12  common-section pb-8">
         {transformedProperties.length === 0 ? (
           <div className="flex items-center justify-center flex-col h-[50vh] bg-white rounded-lg shadow-sm">
             <Building2 className="h-16 w-16 text-gray-400 mb-4" />
