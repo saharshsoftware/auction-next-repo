@@ -54,7 +54,7 @@ export const deleteFavoriteListClient = async (params: { id: string }) => {
 
 export const addPropertyToFavouriteListClient = async (body: {
   listId: string;
-  propertyId: string;
+  propertyId: number;
   resetForm?: any
 }) => {
   try {

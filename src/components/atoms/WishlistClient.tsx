@@ -61,7 +61,7 @@ const WishlistClient = ({
   const addPropertyToFavourite = () => {
     const body = {
       listId: selectedOption?.value ?? "",
-      propertyId: auctionData?.id ?? "",
+      propertyId: Number(auctionData?.id) ?? "",
     };
     mutate(body);
   };
