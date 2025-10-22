@@ -27,6 +27,7 @@ export const API_ENPOINTS = {
   FAVOURITE_LISTS_PROPERTIES: "/api/property-in-favorite-lists",
   PRIVACY_POLICY: "/api/privacy-policy",
   TERMS: "/api/term",
+  ABOUT_US: "/api/about-company",
   CONTACT_US: "/api/contact-us",
   CONTACT_USER: "/api/contact-users",
   SAVED_SEARCH: "/api/saved-search",
