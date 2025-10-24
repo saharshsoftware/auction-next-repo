@@ -26,8 +26,8 @@ const FavouriteListCollection = ({ item }: IFavouriteListComp) => {
     });
   };
 
-  const imageUrl = item?.imageUrl;
-
+  // const imageUrl = item?.imageUrl;
+  const imageUrl = sanitizeStrapiImageUrl({imageURL: item?.imageUrl}) ?? "";
   return (
     <Link
       href={`${ROUTE_CONSTANTS.COLLECTION_PUBLIC}/${item?.slug}`}

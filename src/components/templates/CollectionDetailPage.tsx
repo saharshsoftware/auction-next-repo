@@ -7,6 +7,7 @@ import { Building2, Calendar, ListChecks } from "lucide-react";
 import Link from "next/link";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
 import PaginationCompServer, { ILocalFilter } from "@/components/atoms/PaginationCompServer";
+import { sanitizeStrapiImageUrl } from "@/shared/Utilies";
 
 interface ICollectionDetailPage {
   collectionData: IPublicCollection | null;
@@ -57,8 +58,9 @@ const CollectionDetailPage = (props: ICollectionDetailPage) => {
     );
   }
 
-  const { imageUrl, title, description, name } = collectionData?.attributes;
+  const { imageUrl:imageUrlAttr, title, description, name } = collectionData?.attributes;
   const displayTitle = title || name || "Property Collection";
+  const imageUrl = sanitizeStrapiImageUrl({imageURL: imageUrlAttr}) ?? "";
   const hasImage = imageUrl && imageUrl.trim() !== "";
 
   // Transform properties data to match IAuction interface with defensive checks
