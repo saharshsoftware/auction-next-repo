@@ -31,11 +31,16 @@ const BudgetRangePills: React.FC<BudgetRangePillsProps> = ({
 
   return (
     <div className={containerClassName}>
-      {normalized.map((r, idx) => (
-        <span key={`budget-chip-${idx}`} className={pillClassName}>
-          {`₹${r.min} - ₹${r.max}`}
-        </span>
-      ))}
+      {normalized.map((r, idx) => {
+        const isInfinity = r.max.toLowerCase() === "infinity";
+        const displayText = isInfinity ? `₹${r.min}+` : `₹${r.min} - ₹${r.max}`;
+        
+        return (
+          <span key={`budget-chip-${idx}`} className={pillClassName}>
+            {displayText}
+          </span>
+        );
+      })}
     </div>
   );
 };
