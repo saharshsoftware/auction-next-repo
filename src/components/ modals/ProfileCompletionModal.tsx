@@ -5,16 +5,17 @@ import ActionButton from "../atoms/ActionButton";
 import TextField from "../atoms/TextField";
 import CustomFormikForm from "../atoms/CustomFormikForm";
 import { Form, Field } from "formik";
-import { REACT_QUERY } from "../../shared/Constants";
+import { BUDGET_RANGES, REACT_QUERY } from "../../shared/Constants";
 import * as Yup from "yup";
-import { getCityNamesCommaSeparated, sanitizeReactSelectOptions, userTypeOptions, getCategoryNamesCommaSeparated } from "@/shared/Utilies";
+import { getCityNamesCommaSeparated, sanitizeReactSelectOptions, userTypeOptions, getCategoryNamesCommaSeparated, normalizeBudgetRanges, budgetRangesToStrings, stringsToBudgetRanges } from "@/shared/Utilies";
 import { updateProfileServiceClient } from "@/services/auth";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import ReactSelectDropdown from "../atoms/ReactSelectDropdown";
 import { fetchLocationClient } from "@/services/location";
-import { ICategoryCollection, ILocations } from "@/types";
+import { BudgetRangeObject, ICategoryCollection, ILocations } from "@/types";
 import { getCategoryBoxCollectionClient } from "@/services/auction";
 import { useUserProfile } from "@/hooks/useUserProfile";
+import { useMemo } from "react";
 
 interface IProfileCompletionModal {
   openModal: boolean;
@@ -80,10 +81,14 @@ const ProfileCompletionModal: React.FC<IProfileCompletionModal> = (props) => {
       ? userTypeOptions.find(userType => userType.value === userProfile.userType)
       : userTypeOptions[0];
 
+
+    const normalizedBudgetRanges = normalizeBudgetRanges(userProfile?.budgetRanges);
+    
     return {
       interestedCities: computedInterestedCities,
       interestedCategories: computedInterestedCategories,
       userType: computedUserType,
+      budgetRanges: normalizedBudgetRanges,
     };
   };
 
@@ -100,7 +105,7 @@ const ProfileCompletionModal: React.FC<IProfileCompletionModal> = (props) => {
     },
   });
 
-  const updateProfile = (values: { interestedCities: any[], interestedCategories: any[], userType: any }) => {
+  const updateProfile = (values: { interestedCities: any[], interestedCategories: any[], userType: any, budgetRanges: BudgetRangeObject[] }) => {
     const locations = values?.interestedCities?.length > 0
       ? getCityNamesCommaSeparated(values?.interestedCities)
       : "";
@@ -113,10 +118,21 @@ const ProfileCompletionModal: React.FC<IProfileCompletionModal> = (props) => {
       interestedCities: locations,
       interestedCategories: categories,
       userType: values?.userType?.value,
+      budgetRanges: values?.budgetRanges || [],
     };
     console.log(body);
     mutate(body);
   };
+
+  const budgetOptions: {
+    label: string;
+    value: string;
+  }[] = useMemo(() => 
+    BUDGET_RANGES.map((b) => ({
+      label: b.label,
+      value: `${b.min}-${b.max}`, // Use min-max as unique identifier
+    })), []
+  );
 
   return (
     <CustomModal
@@ -211,6 +227,35 @@ const ProfileCompletionModal: React.FC<IProfileCompletionModal> = (props) => {
                       isSearchable={false}
                       onChange={(e) => {  
                         setFieldValue("userType", e);
+                      }}
+                    />
+                  )}
+                </Field>
+              </TextField>
+
+              <TextField
+                label={"Budget Ranges"}
+                name={"budgetRanges"}
+                hasChildren={true}
+              >
+                <Field name="budgetRanges">
+                  {() => (
+                    <ReactSelectDropdown
+                      value={budgetOptions.filter((opt) =>
+                        budgetRangesToStrings(values?.budgetRanges).includes(opt.value)
+                      )}
+                      options={budgetOptions}
+                      placeholder="Select budget ranges"
+                      name="budget-ranges"
+                      customClass="w-full"
+                      isMulti={true}
+                      hidePlaceholder={true}
+                      isSearchable={false}
+                      onChange={(selected) => {  
+                        const selectedValues = Array.isArray(selected)
+                          ? selected.map((o: { value: string }) => o.value)
+                          : [];
+                        setFieldValue("budgetRanges", stringsToBudgetRanges(selectedValues));
                       }}
                     />
                   )}

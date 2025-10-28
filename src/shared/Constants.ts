@@ -8,7 +8,7 @@ import {
 import { ROUTE_CONSTANTS } from "./Routes";
 import { CONFIG } from "@/utilies/Config";
 import { FAQItem } from "@/components/templates/FaqPage";
-import { IAssetType, SortOption } from "@/types";
+import { BudgetRange, IAssetType, SortOption } from "@/types";
 
 export const COOKIES = {
   TOKEN_KEY: "auction-token",
@@ -642,4 +642,12 @@ export const BANK_AUCTION_SERVICES = [
     url: "https://www.eauctiondekho.com/bank-auction-support#auction-process",
     description: "Complete assistance through the auction journey – from registering, bidding, and payments to sale certificate, mutation, and property handover."
   }
+];
+
+export const BUDGET_RANGES: BudgetRange[] = [
+  { min: '0', max: '5000000', label: '0 - 50L' },
+  { min: '5000000', max: '10000000', label: '50L - 1Cr' },
+  { min: '10000000', max: '50000000', label: '1Cr - 5Cr' },
+  { min: '50000000', max: '100000000', label: '5Cr - 10Cr' },
+  { min: '100000000', max: 'Infinity', label: '10Cr+' },
 ];

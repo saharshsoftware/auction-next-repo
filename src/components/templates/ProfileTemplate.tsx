@@ -1,6 +1,6 @@
 "use client";
 import ShowLabelValue from "@/components/atoms/ShowLabelValue";
-import { STRING_DATA } from "@/shared/Constants";
+import { STRING_DATA, BUDGET_RANGES } from "@/shared/Constants";
 import DeleteUserConfirmationModal from "../ modals/DeleteUserConfirmationModal";
 import useModal from "@/hooks/useModal";
 import UpdatePasswordModal from "../ modals/UpdatePasswordModal";
@@ -10,6 +10,7 @@ import FallbackLoading from "../atoms/FallbackLoading";
 import { faEdit } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { USER_TYPE } from "@/types.d";
+import { normalizeBudgetRanges, formatPrice } from "@/shared/Utilies";
 
 export default function ProfileTemplate() {
   const { showModal, openModal, hideModal } = useModal();
@@ -47,6 +48,25 @@ export default function ProfileTemplate() {
       return <div>Error: {error.message}</div>;
     }
 
+    const renderBudgetRangePills = () => {
+      const normalized = normalizeBudgetRanges(userData?.budgetRanges);
+      if (!normalized || normalized.length === 0) {
+        return <div className="text-gray-600">-</div>;
+      }
+
+      return (
+        <div className="flex flex-wrap gap-2">
+          {normalized.map((r, idx) => {
+            return (
+              <span key={`budget-chip-${idx}`} className="px-2 py-0.5 rounded-full border border-primary text-primary text-sm">
+                {`₹${(r.min)} - ₹${(r.max)}`}
+              </span>
+            );
+          })}
+        </div>
+      );
+    };
+
     return (
       <div className="flex flex-col gap-4">
         <div>
@@ -82,6 +102,9 @@ export default function ProfileTemplate() {
                 heading={"Interested Categories"}
                 value={userData?.interestedCategories || "-"}
               />
+              <ShowLabelValue heading={"Budget Ranges"} hasChildren={true}>
+                {renderBudgetRangePills()}
+              </ShowLabelValue>
               <ShowLabelValue
                 heading={"User Type"}
                 hasChildren={true}
@@ -125,6 +148,7 @@ export default function ProfileTemplate() {
           currentInterestedCities={userData?.interestedCities}
           currentInterestedCategories={userData?.interestedCategories}
           currentUserType={userData?.userType}
+          budgetRanges={userData?.budgetRanges}
           refetchUserProfile={refetchUserProfile}
         />
       )}
