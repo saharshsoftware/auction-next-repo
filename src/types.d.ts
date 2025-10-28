@@ -321,3 +321,57 @@ export interface SortOption {
   label: string;
   value: string;
 }
+
+// Lead Recommendations
+export interface LeadInfo {
+  id: number;
+  contactName: string;
+  contactEmail: string;
+  interestedCities: string[];
+  propertyCategories: string[];
+}
+
+export interface LeadNoticeRecommendation {
+  id: number;
+  bankName: string;
+  branchName: string;
+  assetCategory: string;
+  title: string;
+  noticeLink: string;
+  city: string;
+  state: string;
+  reservePrice: number;
+  emd: number;
+  slug?: string;
+  contact?: string;
+  noticeImageURL?: string | null;
+  serviceProvider?: string | null;
+  assetType?: string | null;
+  propertyAddress?: string | null;
+  auctionStartTime?: string;
+  auctionEndDate?: string;
+}
+
+export interface LeadRecommendationItem {
+  id: number;
+  createdAt: string;
+  lead: LeadInfo;
+  notice: LeadNoticeRecommendation;
+}
+
+export interface PaginationMeta {
+  page: number;
+  pageSize: number;
+  pageCount: number;
+  total: number;
+  hasPreviousPage?: boolean;
+  hasNextPage?: boolean;
+}
+
+export interface LeadRecommendationsResponse {
+  data: LeadNoticeRecommendation[];
+  meta?: {
+    pagination: PaginationMeta;
+    sort?: { field: string; order: "asc" | "desc" };
+  };
+}

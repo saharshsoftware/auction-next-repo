@@ -25,6 +25,7 @@ interface PropertyCardProps {
   showRemoveButton?: boolean;
   propertyId?: string;
   handleRemove?: (data: any) => void;
+  forceMobileNoImage?: boolean;
 }
 
 const auctionLabelClass = () => "text-sm-xs text-gray-400 font-bold";
@@ -37,6 +38,7 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
     showRemoveButton = false,
     propertyId = '',
     handleRemove = () => { },
+    forceMobileNoImage = false,
   } = props;
   const {
     showModal: showImageModal,
@@ -159,7 +161,7 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
     } else {
       // Desktop: Badges in a full-width row with justify-between
       return (
-        <div className={`relative w-full h-12  flex items-center gap-4 p-4 md:p-0 ${isAuctionEnded() ? 'md:justify-start justify-between !w-full' : 'md:w-[17.85rem] justify-between '}`}>
+        <div className={`relative w-full h-12  flex items-center gap-4 p-4 md:p-0 ${isAuctionEnded() ? 'md:justify-start justify-between !w-full' : 'md:w-[17.85rem] justify-between '} ${forceMobileNoImage ? '!w-full !px-4' : ''}`}>
           {/* Property ID Badge - Light yellow with rounded corners */}
           <span className="property-id-badge">
             {PROPERTY_ID}
@@ -194,9 +196,9 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
       ) : null}
       <div className={`bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden border border-gray-200`}>
         {/* Mobile Layout */}
-        <div className="block md:hidden">
+        <div className={forceMobileNoImage ? "block" : "block md:hidden"}>
           {/* Image Section - Mobile (only show if real images exist) */}
-          {hasRealImages && (
+          {hasRealImages && !forceMobileNoImage && (
             <div className="relative h-48 w-full overflow-hidden">
               <img
                 src={imageUrl!}
@@ -240,7 +242,7 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
             </div>
           )}
 
-          {!hasRealImages && renderPropertyBadges()}
+          {(!hasRealImages || forceMobileNoImage) && renderPropertyBadges()}
 
           {/* Content Section - Mobile */}
           <div className="p-4">
@@ -324,6 +326,7 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
         </div>
 
         {/* Desktop Layout */}
+        {!forceMobileNoImage && (
         <div className="hidden md:flex">
           {/* Image Section - Desktop (only show if real images exist) */}
           {hasRealImages && (
@@ -499,6 +502,7 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
             </div>
           </div>
         </div>
+        )}
       </div>
     </>
   );
