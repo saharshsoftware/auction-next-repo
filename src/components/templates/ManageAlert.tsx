@@ -35,7 +35,7 @@ const ManageAlert = () => {
     setSelectedData(data);
   };
 
-  const handleEditModal = (data: IAlert) => {
+  const handleEditModal = (data: any) => {
     console.log(data);
     showModalEdit();
     setSelectedData(data);
@@ -107,7 +107,7 @@ const ManageAlert = () => {
               <div className="flex items-center justify-end gap-4">
                 <ActionButton
                   text="Edit"
-                  onclick={() => handleEditModal(item as IAlert)}
+                  onclick={() => handleEditModal(item)}
                   icon={<FontAwesomeIcon icon={faPencil} />}
                 />
                 <ActionButton

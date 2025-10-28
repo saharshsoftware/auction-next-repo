@@ -123,17 +123,7 @@ const ProfileCompletionModal: React.FC<IProfileCompletionModal> = (props) => {
     };
     console.log(body);
     mutate(body);
-  };
-
-  const budgetOptions: {
-    label: string;
-    value: string;
-  }[] = useMemo(() => 
-    BUDGET_RANGES.map((b) => ({
-      label: b.label,
-      value: `${b.min}-${b.max}`, // Use min-max as unique identifier
-    })), []
-  );
+  };    
 
   return (
     <CustomModal

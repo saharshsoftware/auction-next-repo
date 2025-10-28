@@ -112,16 +112,6 @@ const EditProfileModal: React.FC<IEditProfileModal> = (props) => {
     mutate(body);
   };
 
-  const budgetOptions: {
-    label: string;
-    value: string;
-  }[] = useMemo(() => 
-    BUDGET_RANGES.map((b) => ({
-      label: b.label,
-      value: `${b.min}-${b.max}`, // Use min-max as unique identifier
-    })), []
-  );
-
   return (
     <CustomModal
       openModal={openModal}
