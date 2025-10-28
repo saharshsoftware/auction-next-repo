@@ -239,6 +239,7 @@ export interface IAlert {
   minPrice: string;
   name: string;
   updatedAt: string;
+  budgetRanges?: BudgetRangeObject[];
 }
 
 export interface ISurvey {
