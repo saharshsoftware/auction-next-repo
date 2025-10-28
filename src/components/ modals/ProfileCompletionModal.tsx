@@ -7,7 +7,7 @@ import CustomFormikForm from "../atoms/CustomFormikForm";
 import { Form, Field } from "formik";
 import { BUDGET_RANGES, REACT_QUERY } from "../../shared/Constants";
 import * as Yup from "yup";
-import { getCityNamesCommaSeparated, sanitizeReactSelectOptions, userTypeOptions, getCategoryNamesCommaSeparated, normalizeBudgetRanges, budgetRangesToStrings, stringsToBudgetRanges } from "@/shared/Utilies";
+import { getCityNamesCommaSeparated, sanitizeReactSelectOptions, userTypeOptions, getCategoryNamesCommaSeparated, normalizeBudgetRanges } from "@/shared/Utilies";
 import { updateProfileServiceClient } from "@/services/auth";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import ReactSelectDropdown from "../atoms/ReactSelectDropdown";
@@ -16,6 +16,7 @@ import { BudgetRangeObject, ICategoryCollection, ILocations } from "@/types";
 import { getCategoryBoxCollectionClient } from "@/services/auction";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { useMemo } from "react";
+import BudgetRangesSelect from "../atoms/BudgetRangesSelect";
 
 interface IProfileCompletionModal {
   openModal: boolean;
@@ -240,23 +241,11 @@ const ProfileCompletionModal: React.FC<IProfileCompletionModal> = (props) => {
               >
                 <Field name="budgetRanges">
                   {() => (
-                    <ReactSelectDropdown
-                      value={budgetOptions.filter((opt) =>
-                        budgetRangesToStrings(values?.budgetRanges).includes(opt.value)
-                      )}
-                      options={budgetOptions}
-                      placeholder="Select budget ranges"
+                    <BudgetRangesSelect
                       name="budget-ranges"
+                      value={values?.budgetRanges}
+                      onChange={(v) => setFieldValue("budgetRanges", v)}
                       customClass="w-full"
-                      isMulti={true}
-                      hidePlaceholder={true}
-                      isSearchable={false}
-                      onChange={(selected) => {  
-                        const selectedValues = Array.isArray(selected)
-                          ? selected.map((o: { value: string }) => o.value)
-                          : [];
-                        setFieldValue("budgetRanges", stringsToBudgetRanges(selectedValues));
-                      }}
                     />
                   )}
                 </Field>

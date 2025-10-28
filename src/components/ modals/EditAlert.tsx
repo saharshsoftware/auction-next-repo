@@ -1,11 +1,10 @@
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import CustomModal from "../atoms/CustomModal";
 import ActionButton from "../atoms/ActionButton";
 import {
   ERROR_MESSAGE,
   REACT_QUERY,
   STRING_DATA,
-  BUDGET_RANGES,
 } from "@/shared/Constants";
 import CustomFormikForm from "../atoms/CustomFormikForm";
 import TextField from "../atoms/TextField";
@@ -14,12 +13,11 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   handleOnSettled,
   sanitizeReactSelectOptions,
-  budgetRangesToStrings,
-  stringsToBudgetRanges,
 } from "@/shared/Utilies";
 import { updateAlert } from "@/services/auction";
 import { Field, Form } from "formik";
 import ReactSelectDropdown from "../atoms/ReactSelectDropdown";
+import BudgetRangesSelect from "../atoms/BudgetRangesSelect";
 import {
   createAlertSearch,
   getAssetTypeClient,
@@ -111,12 +109,6 @@ const EditAlert = (props: ICreateFavList) => {
       return updatedData ?? [];
     },
   });
-
-  const budgetOptions: { label: string; value: string }[] = useMemo(
-    () => BUDGET_RANGES.map((b) => ({ label: b.label, value: `${b.min}-${b.max}` })),
-    []
-  );
-
   // Mutations
   const { mutate, isPending } = useMutation({
     mutationFn: updateAlert,
@@ -341,23 +333,11 @@ const EditAlert = (props: ICreateFavList) => {
                         >
                           <Field name="budgetRanges">
                             {() => (
-                              <ReactSelectDropdown
-                                value={budgetOptions.filter((opt) =>
-                                  budgetRangesToStrings(values?.budgetRanges).includes(opt.value)
-                                )}
-                                options={budgetOptions}
-                                placeholder="Select budget ranges"
+                              <BudgetRangesSelect
                                 name="budget-ranges-edit-alert"
+                                value={values?.budgetRanges}
+                                onChange={(v) => setFieldValue("budgetRanges", v)}
                                 customClass="w-full"
-                                isMulti={true}
-                                hidePlaceholder={true}
-                                isSearchable={false}
-                                onChange={(selected) => {
-                                  const selectedValues = Array.isArray(selected)
-                                    ? selected.map((o: { value: string }) => o.value)
-                                    : [];
-                                  setFieldValue("budgetRanges", stringsToBudgetRanges(selectedValues));
-                                }}
                               />
                             )}
                           </Field>

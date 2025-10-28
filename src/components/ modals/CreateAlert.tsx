@@ -1,13 +1,11 @@
 "use client";
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import CustomModal from "../atoms/CustomModal";
 import ActionButton from "../atoms/ActionButton";
 import {
   ERROR_MESSAGE,
-  RANGE_PRICE,
   REACT_QUERY,
   STRING_DATA,
-  BUDGET_RANGES,
 } from "@/shared/Constants";
 import CustomFormikForm from "../atoms/CustomFormikForm";
 import TextField from "../atoms/TextField";
@@ -15,15 +13,12 @@ import * as Yup from "yup";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   doesAssetTypeExistInFilteredAssetType,
-  formatPrice,
   handleFilterAssetTypeChange,
   handleOnSettled,
   resetFormValues,
   sanitizeReactSelectOptions,
-  budgetRangesToStrings,
-  stringsToBudgetRanges,
 } from "@/shared/Utilies";
-import RangeSliderCustom from "../atoms/RangeSliderCustom";
+import BudgetRangesSelect from "../atoms/BudgetRangesSelect";
 import { Field, Form } from "formik";
 import ReactSelectDropdown from "../atoms/ReactSelectDropdown";
 import {
@@ -69,7 +64,6 @@ const initialValues = {
   location: STRING_DATA.EMPTY,
   category: STRING_DATA.EMPTY,
   propertyType: STRING_DATA.EMPTY,
-  price: [0, RANGE_PRICE.MAX],
   budgetRanges: [] as BudgetRangeObject[],
 };
 
@@ -117,11 +111,6 @@ const CreateAlert = (props: ICreateFavList) => {
       return updatedData ?? [];
     },
   });
-
-  const budgetOptions: { label: string; value: string }[] = useMemo(
-    () => BUDGET_RANGES.map((b) => ({ label: b.label, value: `${b.min}-${b.max}` })),
-    []
-  );
 
   function handleFilterAssetTypesDropdownData(
     slugcategory: string
@@ -347,23 +336,11 @@ const CreateAlert = (props: ICreateFavList) => {
                         >
                           <Field name="budgetRanges">
                             {() => (
-                              <ReactSelectDropdown
-                                value={budgetOptions.filter((opt) =>
-                                  budgetRangesToStrings(values?.budgetRanges).includes(opt.value)
-                                )}
-                                options={budgetOptions}
-                                placeholder="Select budget ranges"
+                              <BudgetRangesSelect
                                 name="budget-ranges-create-alert"
+                                value={values?.budgetRanges}
+                                onChange={(v) => setFieldValue("budgetRanges", v)}
                                 customClass="w-full"
-                                isMulti={true}
-                                hidePlaceholder={true}
-                                isSearchable={false}
-                                onChange={(selected) => {
-                                  const selectedValues = Array.isArray(selected)
-                                    ? selected.map((o: { value: string }) => o.value)
-                                    : [];
-                                  setFieldValue("budgetRanges", stringsToBudgetRanges(selectedValues));
-                                }}
                               />
                             )}
                           </Field>
