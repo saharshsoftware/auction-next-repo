@@ -30,9 +30,12 @@ export async function generateMetadata({
 
     const { title, description, imageUrl, name } =
       collectionData.attributes;
-    const metaTitle = title || name || "Property Collection";
+    const metaTitle = title || name || "Curated Property Collection | Bank Auction Properties";
     const metaDescription =
-      description || `Browse properties in ${name || "this collection"}`;
+      description || 
+      (name 
+        ? `Explore ${name} - A handpicked collection of bank auction properties. Find residential, commercial and agricultural properties at competitive prices.`
+        : "Discover our curated collection of bank auction properties. Browse through verified listings of residential, commercial and agricultural properties available for auction.");
     const ogImage = await handleOgImageUrl(imageUrl || "");
 
     return {

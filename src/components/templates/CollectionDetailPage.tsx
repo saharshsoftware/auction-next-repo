@@ -58,9 +58,9 @@ const CollectionDetailPage = (props: ICollectionDetailPage) => {
     );
   }
 
-  const { imageUrl:imageUrlAttr, title, description, name } = collectionData?.attributes;
+  const { imageUrl: imageUrlAttr, title, description, name } = collectionData?.attributes;
   const displayTitle = title || name || "Property Collection";
-  const imageUrl = sanitizeStrapiImageUrl({imageURL: imageUrlAttr}) ?? "";
+  const imageUrl = sanitizeStrapiImageUrl({ imageURL: imageUrlAttr }) ?? "";
   const hasImage = imageUrl && imageUrl.trim() !== "";
 
   // Transform properties data to match IAuction interface with defensive checks
@@ -105,15 +105,15 @@ const CollectionDetailPage = (props: ICollectionDetailPage) => {
                 {description}
               </p>
             )}
-            <div className="flex flex-wrap gap-4 items-center ">
+            {transformedProperties?.length > 0 && <div className="flex flex-wrap gap-4 items-center ">
               <div className="flex items-center gap-2 ">
                 <Building2 className="h-5 w-5 " />
                 <span className="font-semibold ">
-                  {transformedProperties.length} Properties
+                  {transformedProperties?.length} Properties
                 </span>
               </div>
 
-            </div>
+            </div>}
           </div>
         </div>
       </div>
