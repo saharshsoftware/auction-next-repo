@@ -4,7 +4,6 @@ import CustomModal from "../atoms/CustomModal";
 import ActionButton from "../atoms/ActionButton";
 import {
   ERROR_MESSAGE,
-  RANGE_PRICE,
   REACT_QUERY,
   STRING_DATA,
 } from "@/shared/Constants";
@@ -14,13 +13,12 @@ import * as Yup from "yup";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   doesAssetTypeExistInFilteredAssetType,
-  formatPrice,
   handleFilterAssetTypeChange,
   handleOnSettled,
   resetFormValues,
   sanitizeReactSelectOptions,
 } from "@/shared/Utilies";
-import RangeSliderCustom from "../atoms/RangeSliderCustom";
+import BudgetRangesSelect from "../atoms/BudgetRangesSelect";
 import { Field, Form } from "formik";
 import ReactSelectDropdown from "../atoms/ReactSelectDropdown";
 import {
@@ -34,6 +32,7 @@ import {
   IBanks,
   ICategoryCollection,
   ILocations,
+  BudgetRangeObject,
 } from "@/types";
 import { fetchBanksClient } from "@/services/bank";
 import { fetchLocationClient } from "@/services/location";
@@ -65,7 +64,7 @@ const initialValues = {
   location: STRING_DATA.EMPTY,
   category: STRING_DATA.EMPTY,
   propertyType: STRING_DATA.EMPTY,
-  price: [0, RANGE_PRICE.MAX],
+  budgetRanges: [] as BudgetRangeObject[],
 };
 
 const CreateAlert = (props: ICreateFavList) => {
@@ -156,17 +155,17 @@ const CreateAlert = (props: ICreateFavList) => {
     category: ICategoryCollection;
     bank: IBanks;
     price: any;
+    budgetRanges: BudgetRangeObject[];
   }) => {
-    const { location, name, propertyType, category, bank, price } = values;
+    const { location, name, propertyType, category, bank, budgetRanges } = values;
     const body = {
       name,
       location: location?.name ?? "",
       assetType: propertyType?.name ?? "",
       assetCategory: category?.name ?? "",
       bankName: bank?.name ?? "",
-      minPrice: price?.[0],
-      maxPrice: price?.[1],
       locationType: location?.type ?? "",
+      budgetRanges: budgetRanges,
     };
 
     console.log(body);
@@ -329,35 +328,25 @@ const CreateAlert = (props: ICreateFavList) => {
                           </Field>
                         </TextField>
                       </div>
-                      <div className={"col-span-full"}>
+                      <div className={gridElementClass()}>
                         <TextField
-                          label="Price range"
-                          name="price"
+                          label={"Budget Ranges"}
+                          name={"budgetRanges"}
                           hasChildren={true}
                         >
-                          <Field name="price">
+                          <Field name="budgetRanges">
                             {() => (
-                              <div className="relative w-full space-y-2">
-                                <RangeSliderCustom
-                                  value={values.price}
-                                  onInput={(value: any, e: any) => {
-                                    console.log(value);
-                                    setFieldValue("price", value);
-                                  }}
-                                />
-                                <div className="text-black flex items-center justify-between gap-4 ">
-                                  <span className="text-sm text-gray-900">
-                                    {formatPrice(values?.price?.[0])}
-                                  </span>{" "}
-                                  <span className="text-sm text-gray-900">
-                                    {formatPrice(values?.price?.[1])}
-                                  </span>
-                                </div>
-                              </div>
+                              <BudgetRangesSelect
+                                name="budget-ranges-create-alert"
+                                value={values?.budgetRanges}
+                                onChange={(v) => setFieldValue("budgetRanges", v)}
+                                customClass="w-full"
+                              />
                             )}
                           </Field>
                         </TextField>
                       </div>
+                     
                     </div>
                     <div className={gridElementClass()}>
                       <div className="w-full flex items-center justify-end gap-4 flex-wrap">

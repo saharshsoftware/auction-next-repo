@@ -87,6 +87,14 @@ export enum USER_TYPE {
   BROKER = "BROKER",
 }
 
+export interface BudgetRange {
+  min: string;
+  max: string;
+  label: string;
+}
+
+export type BudgetRangeObject = Pick<BudgetRange, "min" | "max">;
+
 export interface User {
   id: string;
   username: string;
@@ -100,6 +108,7 @@ export interface User {
   interestedCities?: string;
   interestedCategories?: string;
   userType?: USER_TYPE;
+  budgetRanges: BudgetRangeObject[];
 }
 
 export interface IBanks {
@@ -256,6 +265,7 @@ export interface IAlert {
   minPrice: string;
   name: string;
   updatedAt: string;
+  budgetRanges?: BudgetRangeObject[];
 }
 
 export interface ISurvey {

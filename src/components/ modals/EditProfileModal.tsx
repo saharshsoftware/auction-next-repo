@@ -1,18 +1,19 @@
 'use client';
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import CustomModal from "../atoms/CustomModal";
 import ActionButton from "../atoms/ActionButton";
 import TextField from "../atoms/TextField";
 import CustomFormikForm from "../atoms/CustomFormikForm";
 import { Form, Field } from "formik";
-import { ERROR_MESSAGE, REACT_QUERY, STRING_DATA } from "../../shared/Constants";
+import { BUDGET_RANGES, ERROR_MESSAGE, REACT_QUERY, STRING_DATA } from "../../shared/Constants";
 import * as Yup from "yup";
-import { handleOnSettled, getCityNamesCommaSeparated, sanitizeReactSelectOptions, userTypeOptions, getCategoryNamesCommaSeparated } from "@/shared/Utilies";
+import { handleOnSettled, getCityNamesCommaSeparated, sanitizeReactSelectOptions, userTypeOptions, getCategoryNamesCommaSeparated, normalizeBudgetRanges } from "@/shared/Utilies";
 import { updateProfileServiceClient } from "@/services/auth";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import ReactSelectDropdown from "../atoms/ReactSelectDropdown";
+import BudgetRangesSelect from "../atoms/BudgetRangesSelect";
 import { fetchLocationClient } from "@/services/location";
-import { ICategoryCollection, ILocations } from "@/types";
+import { BudgetRange, BudgetRangeObject, ICategoryCollection, ILocations } from "@/types";
 import { getCategoryBoxCollectionClient } from "@/services/auction";
 
 interface IEditProfileModal {
@@ -21,6 +22,7 @@ interface IEditProfileModal {
   currentInterestedCities?: string;
   currentInterestedCategories?: string;
   currentUserType?: string;
+  budgetRanges?: BudgetRangeObject[];
   refetchUserProfile: () => void;
 }
 
@@ -33,13 +35,14 @@ const initialValues = {
 };
 
 const EditProfileModal: React.FC<IEditProfileModal> = (props) => {
-  const { openModal, hideModal = () => {}, currentInterestedCities = "", currentInterestedCategories = "", currentUserType = "", refetchUserProfile = () => {} } = props;
+  const { openModal, hideModal = () => {}, currentInterestedCities = "", currentInterestedCategories = "", budgetRanges = [], currentUserType = "", refetchUserProfile = () => {} } = props;
   const [respError, setRespError] = useState<string>("");
   const [citiesList, setCitiesList] = useState<ILocations[]>([]);
   const computedInterestedCities = currentInterestedCities ? currentInterestedCities.split(", ").map(city => ({ label: city, value: city, name: city })) : [];
   const computedInterestedCategories = currentInterestedCategories ? currentInterestedCategories.split(", ").map(category => ({ label: category, value: category, name: category })) : [];
   const computedUserType = currentUserType ? userTypeOptions.find(userType => userType.value === currentUserType) : userTypeOptions[0];
-  
+  const normalizedBudgetRanges = normalizeBudgetRanges(budgetRanges);
+
   // Fetch location options
   const { data: locationOptions, isLoading: isLoadingLocation } = useQuery({
     queryKey: [REACT_QUERY.AUCTION_LOCATION],
@@ -90,7 +93,7 @@ const EditProfileModal: React.FC<IEditProfileModal> = (props) => {
     },
   });
 
-  const updateProfile = (values: { interestedCities: any[], interestedCategories: any[], userType: any }) => {
+  const updateProfile = (values: { interestedCities: any[], interestedCategories: any[], userType: any, budgetRanges: BudgetRangeObject[] }) => {
     const locations = values?.interestedCities?.length > 0
       ? getCityNamesCommaSeparated(values?.interestedCities)
       : "";
@@ -103,6 +106,7 @@ const EditProfileModal: React.FC<IEditProfileModal> = (props) => {
       interestedCities: locations,
       interestedCategories: categories,
       userType: values?.userType?.value,
+      budgetRanges: values?.budgetRanges || [],
     };
     console.log(body);
     mutate(body);
@@ -120,6 +124,7 @@ const EditProfileModal: React.FC<IEditProfileModal> = (props) => {
           interestedCities: computedInterestedCities,
           interestedCategories: computedInterestedCategories,
           userType: computedUserType,
+          budgetRanges: normalizedBudgetRanges,
         }}
         wantToUseFormikEvent={true}
         validationSchema={validationSchema}
@@ -198,6 +203,23 @@ const EditProfileModal: React.FC<IEditProfileModal> = (props) => {
                       onChange={(e) => {  
                         setFieldValue("userType", e);
                       }}
+                    />
+                  )}
+                </Field>
+              </TextField>
+
+              <TextField
+                label={"Budget Ranges"}
+                name={"budgetRanges"}
+                hasChildren={true}
+              >
+                <Field name="budgetRanges">
+                  {() => (
+                    <BudgetRangesSelect
+                      name="budget-ranges"
+                      value={values?.budgetRanges}
+                      onChange={(v) => setFieldValue("budgetRanges", v)}
+                      customClass="w-full"
                     />
                   )}
                 </Field>

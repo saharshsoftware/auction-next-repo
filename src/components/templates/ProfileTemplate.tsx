@@ -1,6 +1,6 @@
 "use client";
 import ShowLabelValue from "@/components/atoms/ShowLabelValue";
-import { STRING_DATA } from "@/shared/Constants";
+import { STRING_DATA, BUDGET_RANGES } from "@/shared/Constants";
 import DeleteUserConfirmationModal from "../ modals/DeleteUserConfirmationModal";
 import useModal from "@/hooks/useModal";
 import UpdatePasswordModal from "../ modals/UpdatePasswordModal";
@@ -10,6 +10,7 @@ import FallbackLoading from "../atoms/FallbackLoading";
 import { faEdit } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { USER_TYPE } from "@/types.d";
+import BudgetRangePills from "../atoms/BudgetRangePills";
 
 export default function ProfileTemplate() {
   const { showModal, openModal, hideModal } = useModal();
@@ -92,6 +93,9 @@ export default function ProfileTemplate() {
                   </div>
                 </div>
               </ShowLabelValue>
+              <ShowLabelValue heading={"Budget Ranges"} hasChildren={true}>
+                <BudgetRangePills budgetRanges={userData?.budgetRanges} />
+              </ShowLabelValue>
             </div>
           </div>
         </div>
@@ -125,6 +129,7 @@ export default function ProfileTemplate() {
           currentInterestedCities={userData?.interestedCities}
           currentInterestedCategories={userData?.interestedCategories}
           currentUserType={userData?.userType}
+          budgetRanges={userData?.budgetRanges}
           refetchUserProfile={refetchUserProfile}
         />
       )}

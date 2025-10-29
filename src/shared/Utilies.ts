@@ -8,7 +8,7 @@ import {
   INSTRUCTIONS_FOLDER_NAME,
 } from "@/types";
 import { AxiosError } from "axios";
-import { getEmptyAllObject, STORAGE_KEYS, STRING_DATA } from "./Constants";
+import { BUDGET_RANGES, getEmptyAllObject, STORAGE_KEYS, STRING_DATA } from "./Constants";
 import { ROUTE_CONSTANTS } from "./Routes";
 import MarkdownIt from "markdown-it";
 import { CONFIG } from "@/utilies/Config";
@@ -993,4 +993,68 @@ export const getAssetTypeBySlug = (assetTypes: IAssetType[] | null, slug: string
 
 export const getCurrentYear = () => {
   return new Date().getFullYear();
+};
+
+/**
+ * Convert legacy string budget ranges to object format
+ * Used for backward compatibility when loading existing data
+ */
+export const normalizeBudgetRanges = (ranges: string[] | Array<{ min: string; max: string }> | undefined): Array<{ min: string; max: string }> => {
+  if (!ranges || ranges.length === 0) return [];
+
+  // Check if it's already in object format
+  if (typeof ranges[0] === 'object' && 'min' in ranges[0] && 'max' in ranges[0]) {
+    return ranges as Array<{ min: string; max: string }>;
+  }
+
+  // Convert from legacy string format to object format
+  const stringRanges = ranges as string[];
+  return stringRanges.map(rangeStr => {
+    // Find matching budget range from constants
+    const matchingRange = BUDGET_RANGES.find(r => r.label === rangeStr);
+    if (matchingRange) {
+      return { min: matchingRange.min, max: matchingRange.max };
+    }
+    // If no match, try to parse "min-max" format
+    const [min, max] = rangeStr.split('-');
+    return { min: min || '0', max: max || 'Infinity' };
+  });
+};
+
+// Helper functions to convert between MultiSelect string values and budget range objects
+export const budgetRangesToStrings = (ranges: Array<{ min: string; max: string }> | undefined): string[] => {
+  if (!ranges || ranges.length === 0) return [];
+
+  return ranges.map(range => {
+    const trim = (v: unknown) => String(v ?? '').trim();
+    const rMin = trim(range.min);
+    const rMax = trim(range.max);
+
+    // Find matching BUDGET_RANGE by comparing stored values with label parts (trimmed)
+    const matchingRange = BUDGET_RANGES.find(br => {
+      const labelParts = br.label.split(' - ').map(p => p.trim());
+      if (labelParts.length === 2) {
+        const [labelMin, labelMaxRaw] = labelParts;
+        const labelMax = labelMaxRaw.replace('+', '').trim(); // "10Cr+" -> "10Cr"
+        if (rMin === labelMin && rMax === labelMax) return true;
+      }
+      // Also check numeric format match
+      return (rMin === trim(br.min) && rMax === trim(br.max));
+    });
+
+    if (matchingRange) {
+      // Return the value format expected by budgetOptions: "min-max"
+      return `${matchingRange.min}-${matchingRange.max}`;
+    }
+
+    // Fallback: if stored values are already in numeric format
+    return `${rMin}-${rMax}`;
+  });
+};
+
+export const stringsToBudgetRanges = (strings: string[]): Array<{ min: string; max: string }> => {
+  return strings.map(s => {
+    const [min, max] = s.split('-');
+    return { min: String(min ?? '').trim(), max: String(max ?? '').trim() };
+  });
 };

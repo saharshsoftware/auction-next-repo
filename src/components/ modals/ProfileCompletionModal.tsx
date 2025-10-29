@@ -5,16 +5,18 @@ import ActionButton from "../atoms/ActionButton";
 import TextField from "../atoms/TextField";
 import CustomFormikForm from "../atoms/CustomFormikForm";
 import { Form, Field } from "formik";
-import { REACT_QUERY } from "../../shared/Constants";
+import { BUDGET_RANGES, REACT_QUERY } from "../../shared/Constants";
 import * as Yup from "yup";
-import { getCityNamesCommaSeparated, sanitizeReactSelectOptions, userTypeOptions, getCategoryNamesCommaSeparated } from "@/shared/Utilies";
+import { getCityNamesCommaSeparated, sanitizeReactSelectOptions, userTypeOptions, getCategoryNamesCommaSeparated, normalizeBudgetRanges } from "@/shared/Utilies";
 import { updateProfileServiceClient } from "@/services/auth";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import ReactSelectDropdown from "../atoms/ReactSelectDropdown";
 import { fetchLocationClient } from "@/services/location";
-import { ICategoryCollection, ILocations } from "@/types";
+import { BudgetRangeObject, ICategoryCollection, ILocations } from "@/types";
 import { getCategoryBoxCollectionClient } from "@/services/auction";
 import { useUserProfile } from "@/hooks/useUserProfile";
+import { useMemo } from "react";
+import BudgetRangesSelect from "../atoms/BudgetRangesSelect";
 
 interface IProfileCompletionModal {
   openModal: boolean;
@@ -80,10 +82,14 @@ const ProfileCompletionModal: React.FC<IProfileCompletionModal> = (props) => {
       ? userTypeOptions.find(userType => userType.value === userProfile.userType)
       : userTypeOptions[0];
 
+
+    const normalizedBudgetRanges = normalizeBudgetRanges(userProfile?.budgetRanges);
+    
     return {
       interestedCities: computedInterestedCities,
       interestedCategories: computedInterestedCategories,
       userType: computedUserType,
+      budgetRanges: normalizedBudgetRanges,
     };
   };
 
@@ -100,7 +106,7 @@ const ProfileCompletionModal: React.FC<IProfileCompletionModal> = (props) => {
     },
   });
 
-  const updateProfile = (values: { interestedCities: any[], interestedCategories: any[], userType: any }) => {
+  const updateProfile = (values: { interestedCities: any[], interestedCategories: any[], userType: any, budgetRanges: BudgetRangeObject[] }) => {
     const locations = values?.interestedCities?.length > 0
       ? getCityNamesCommaSeparated(values?.interestedCities)
       : "";
@@ -113,10 +119,11 @@ const ProfileCompletionModal: React.FC<IProfileCompletionModal> = (props) => {
       interestedCities: locations,
       interestedCategories: categories,
       userType: values?.userType?.value,
+      budgetRanges: values?.budgetRanges || [],
     };
     console.log(body);
     mutate(body);
-  };
+  };    
 
   return (
     <CustomModal
@@ -212,6 +219,23 @@ const ProfileCompletionModal: React.FC<IProfileCompletionModal> = (props) => {
                       onChange={(e) => {  
                         setFieldValue("userType", e);
                       }}
+                    />
+                  )}
+                </Field>
+              </TextField>
+
+              <TextField
+                label={"Budget Ranges"}
+                name={"budgetRanges"}
+                hasChildren={true}
+              >
+                <Field name="budgetRanges">
+                  {() => (
+                    <BudgetRangesSelect
+                      name="budget-ranges"
+                      value={values?.budgetRanges}
+                      onChange={(v) => setFieldValue("budgetRanges", v)}
+                      customClass="w-full"
                     />
                   )}
                 </Field>
