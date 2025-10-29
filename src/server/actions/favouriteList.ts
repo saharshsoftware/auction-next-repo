@@ -121,3 +121,101 @@ export const updateFavouriteList = async (payload: {
     return error?.response?.data;
   }
 };
+
+export const fetchPublicCollectionById = async (params: { slug: string }) => {
+  try {
+    const { slug } = params;
+    // const URL = API_BASE_URL + API_ENPOINTS.FAVOURITE_LISTS + `/${id}`;
+    const URL = `${API_BASE_URL}${API_ENPOINTS.FAVOURITE_LISTS}?filters[slug][$eq]=${slug}`;
+    console.log("Fetching collection from:", URL);
+    const response = await fetch(URL, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      next: { revalidate: 3600 }, // Revalidate every hour
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch public collection");
+    }
+
+    const responseResult = await response.json();
+    const sendResponse = responseResult?.data?.[0];
+    return sendResponse;
+  } catch (error) {
+    console.error(error, "fetchPublicCollectionById error");
+    return null;
+  }
+};
+
+export const fetchPropertiesInCollection = async (params: {
+  listId: string;
+  page?: number;
+  sort?: string;
+  isPublic?: boolean;
+}) => {
+  try {
+    const { listId, page = 1, sort = "auctionStartTime:asc", isPublic = true } = params;
+    
+    // Use the new public endpoint that doesn't require authentication
+    const URL =
+      API_BASE_URL +
+      API_ENPOINTS.FAVOURITE_LISTS_PROPERTIES +
+      `?filters[list][id][$eq]=${listId}&populate=*&pagination[page]=${page}&pagination[pageSize]=10`;
+
+    console.log("Fetching properties from:", URL);
+
+    const response = await fetch(URL, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      cache: "no-store",
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("API Error Response:", errorText);
+      
+      // Return empty data instead of throwing error for public pages
+      return {
+        data: [],
+        meta: { total: 0, pageCount: 1 },
+        error: `Failed to fetch properties: ${response.status}`,
+      };
+    }
+
+    const responseResult = await response.json();
+    const meta = responseResult?.meta;
+    console.log("API Response:", JSON.stringify(meta));
+    
+    // Transform the new API response format
+    if (responseResult?.data && Array.isArray(responseResult.data)) {
+      // Extract properties from the nested structure
+      const transformedData = responseResult.data.map((item: any) => ({
+        id: item.id,
+        createdAt: item.attributes?.createdAt,
+        updatedAt: item.attributes?.updatedAt,
+        property: {
+          id: item.attributes?.property?.data?.id,
+          ...item.attributes?.property?.data?.attributes,
+        },
+      }));
+      
+      return {
+        data: transformedData,
+        meta
+      };
+    }
+    
+    // Fallback for unexpected response format
+    return {
+      data: responseResult?.data || [],
+      meta: responseResult?.meta || { total: 0, pageCount: 1 },
+    };
+  } catch (error) {
+    console.error("fetchPropertiesInCollection error:", error);
+    return { data: [], meta: { total: 0, pageCount: 1 }, error: 'Failed to load properties' };
+  }
+};

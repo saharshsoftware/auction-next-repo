@@ -25,6 +25,8 @@ export const API_ENPOINTS = {
   HOME_BOX_COLLECTIONS: "/api/home-box-collections",
   FAVOURITE_LIST: "/api/favorite-list",
   FAVOURITE_LIST_PROPERTY: "/api/property-in-favorite-list",
+  FAVOURITE_LISTS: "/api/favorite-lists",
+  FAVOURITE_LISTS_PROPERTIES: "/api/property-in-favorite-lists",
   PRIVACY_POLICY: "/api/privacy-policy",
   TERMS: "/api/term",
   ABOUT_US: "/api/about-company",

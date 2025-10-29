@@ -158,8 +158,26 @@ export interface IHomeBoxCollection {
 export interface IFavouriteList {
   id: string;
   name: string;
+  slug: string;
   createdAt: Date;
   updatedAt: Date;
+  imageUrl?: string;
+  title?: string;
+  description?: string;
+  isPublic?: boolean;
+}
+
+export interface IPublicCollection {
+  attributes: {
+      name: string;
+      createdAt: string;
+      updatedAt: string;
+      isPublic: boolean;
+      addToSitemap: boolean;
+      title: string;
+      description: string;
+      imageUrl: string;
+    };
 }
 
 export interface IFavouriteListProperty {
@@ -167,6 +185,14 @@ export interface IFavouriteListProperty {
   createdAt: Date;
   updatedAt: Date;
   property: IProperty;
+}
+
+export interface IFavouriteListPropertiesResponse {
+  data: IFavouriteListProperty[];
+  meta: {
+    total: number;
+    pageCount: number;
+  };
 }
 
 export interface IProperty {

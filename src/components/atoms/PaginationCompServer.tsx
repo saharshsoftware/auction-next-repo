@@ -45,6 +45,11 @@ const PaginationCompServer = (props: {
       );
       return;
     }
+    // Handle collection pages
+    if (pathname.startsWith(ROUTE_CONSTANTS.COLLECTION_PUBLIC)) {
+      router.push(pathname + "?page=" + pageValue);
+      return;
+    }
     router.push(pathname + "?page=" + pageValue);
   };
 
