@@ -8,12 +8,13 @@ import {
   INSTRUCTIONS_FOLDER_NAME,
 } from "@/types";
 import { AxiosError } from "axios";
-import { BUDGET_RANGES, getEmptyAllObject, STORAGE_KEYS, STRING_DATA } from "./Constants";
+import { BUDGET_RANGES, COOKIES, getEmptyAllObject, STORAGE_KEYS, STRING_DATA } from "./Constants";
 import { ROUTE_CONSTANTS } from "./Routes";
 import MarkdownIt from "markdown-it";
 import { CONFIG } from "@/utilies/Config";
 import { USER_TYPE } from "@/types.d";
 import { safeArray, safeNumber, safeString } from "@/utilies/imageUtils";
+import { getCookie } from "cookies-next";
 
 export const setDataInQueryParams = (values: any) => {
   const data = btoa(JSON.stringify(values));
@@ -1057,4 +1058,15 @@ export const stringsToBudgetRanges = (strings: string[]): Array<{ min: string; m
     const [min, max] = s.split('-');
     return { min: String(min ?? '').trim(), max: String(max ?? '').trim() };
   });
+};
+
+  
+export const getUserData = (): any => {
+  try {
+    const userCookie = getCookie(COOKIES.AUCTION_USER_KEY);
+    return userCookie ? JSON.parse(userCookie as string) : null;
+  } catch (error) {
+    console.error("Failed to parse user data from cookie:", error);
+    return null;
+  }
 };
