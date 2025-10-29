@@ -24,10 +24,8 @@ import { useScrollToTop } from "@/hooks/useScrollToTop";
 
 const AppLayout = ({
   children,
-  isAuthenticated = false,
 }: {
   children: React.ReactNode;
-  isAuthenticated: boolean;
 }) => {
   const { openModal, showModal, hideModal } = useModal();
   const { openModal: openProfileModal, showModal: showProfileModal, hideModal: hideProfileModal } = useModal();
@@ -35,6 +33,8 @@ const AppLayout = ({
   const { setSurveyData } = useSurveyStore();
   const pathname = usePathname();
   const { isNewUser } = useAuthStore();
+  const token = getCookie(COOKIES.TOKEN_KEY);
+  const isAuthenticated = !!token;
   const userData = getCookie(COOKIES.AUCTION_USER_KEY)
     ? JSON.parse(getCookie(COOKIES.AUCTION_USER_KEY) ?? "")
     : null;
@@ -81,7 +81,8 @@ const AppLayout = ({
   }, [surveyId, setSurveyData]);
 
   useEffect(() => {
-    setUserIdInDataLayer(isAuthenticated ? userData?.id : null);
+    const userId = userData?.id ? String(userData.id) : null;
+    setUserIdInDataLayer(isAuthenticated ? userId : null);
   }, [isAuthenticated, userData?.id]);
 
   // Open profile completion modal for new users or users with incomplete profiles

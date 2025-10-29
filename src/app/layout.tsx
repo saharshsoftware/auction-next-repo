@@ -8,8 +8,7 @@ import NextTopLoader from "nextjs-toploader";
 import GoogleScriptComponent from "@/components/atoms/GoogleScriptComponent";
 import dynamic from "next/dynamic";
 import HeadScripts from "@/components/atoms/HeadScripts";
-import { COOKIES, PAGE_REVALIDATE_TIME_FOR_AUCTION_LIST } from "@/shared/Constants";
-import { cookies } from "next/headers";
+import { PAGE_REVALIDATE_TIME_FOR_AUCTION_LIST } from "@/shared/Constants";
 const Footer = dynamic(() => import("@/components/hoc/Footer"), {
   ssr: false,
 });
@@ -33,10 +32,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const cookieStore = cookies();
-  const token = cookieStore.get(COOKIES.TOKEN_KEY)?.value ?? "";
-  const isAuthenticated = !!token;
-
   return (
     <>
       <html lang="en">
@@ -57,7 +52,7 @@ export default function RootLayout({
                 shadow="0 0 10px #2299DD,0 0 5px #2299DD"
               />
               <Navbar />
-              <AppLayout isAuthenticated={isAuthenticated}>{children}</AppLayout>
+              <AppLayout>{children}</AppLayout>
               <Footer />
             </div>
           </Providers>
