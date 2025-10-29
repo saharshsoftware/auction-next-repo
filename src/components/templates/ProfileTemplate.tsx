@@ -83,9 +83,6 @@ export default function ProfileTemplate() {
                 heading={"Interested Categories"}
                 value={userData?.interestedCategories || "-"}
               />
-              <ShowLabelValue heading={"Budget Ranges"} hasChildren={true}>
-                <BudgetRangePills budgetRanges={userData?.budgetRanges} />
-              </ShowLabelValue>
               <ShowLabelValue
                 heading={"User Type"}
                 hasChildren={true}
@@ -95,6 +92,9 @@ export default function ProfileTemplate() {
                     {renderUserType(userData?.userType)}
                   </div>
                 </div>
+              </ShowLabelValue>
+              <ShowLabelValue heading={"Budget Ranges"} hasChildren={true}>
+                <BudgetRangePills budgetRanges={userData?.budgetRanges} />
               </ShowLabelValue>
             </div>
           </div>
