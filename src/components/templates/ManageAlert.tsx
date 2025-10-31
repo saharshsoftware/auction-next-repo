@@ -1,10 +1,11 @@
 "use client"
 import { REACT_QUERY, STRING_DATA } from '@/shared/Constants';
+import { ROUTE_CONSTANTS } from '@/shared/Routes';
 import React, { useState } from 'react'
 import ActionButton from '../atoms/ActionButton';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { faAdd, faPencil, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faAdd, faPencil, faTrash, faEye } from '@fortawesome/free-solid-svg-icons';
 import { deleteAlert, fetchAlerts } from '@/services/auction';
 import { IAlert } from '@/types';
 import CreateAlert from '../ modals/CreateAlert';
@@ -12,8 +13,11 @@ import useModal from '@/hooks/useModal';
 import ConfirmationModal from '../ modals/ConfirmationModal';
 import { handleOnSettled } from '@/shared/Utilies';
 import EditAlert from '../ modals/EditAlert';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 const ManageAlert = () => {
+  const router = useRouter();
   const queryClient = useQueryClient();
   const [selectedData, setSelectedData] = useState<IAlert>();
   const { showModal, openModal, hideModal } = useModal();
@@ -103,8 +107,20 @@ const ManageAlert = () => {
               key={index}
               className="flex items-center justify-between gap-4 w-full border border-brand-color shadow px-2 py-1 rounded-lg"
             >
-              <span>{item?.name}</span>
+              <Link
+                href={`${ROUTE_CONSTANTS.MANAGE_ALERT}/${item.id}`}
+                className="flex-1 hover:text-brand-color transition-colors cursor-pointer"
+              >
+                <span>{item?.name}</span>
+              </Link>
               <div className="flex items-center justify-end gap-4">
+                <Link href={`${ROUTE_CONSTANTS.MANAGE_ALERT}/${item.id}`}>
+                  <ActionButton
+                    text="View"
+                    onclick={() => {}}
+                    icon={<FontAwesomeIcon icon={faEye} />}
+                  />
+                </Link>
                 <ActionButton
                   text="Edit"
                   onclick={() => handleEditModal(item)}

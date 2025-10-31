@@ -289,6 +289,16 @@ export const createAlertSearch = async (body: {
   }
 };
 
+export const fetchAlertDetail = async (id: string) => {
+  try {
+    const URL = API_BASE_URL + API_ENPOINTS.ALERTS + `/${id}`;
+    const { data } = await getRequest({ API: URL });
+    return data;
+  } catch (e) {
+    console.log(e, "auctionDetail error collection");
+  }
+};
+
 export const fetchAlerts = async () => {
   try {
     const URL = API_BASE_URL + API_ENPOINTS.ALERTS;
