@@ -131,7 +131,7 @@ const ManageAlertDetail: React.FC<{ id: string }> = ({ id }) => {
       return (
         <div className="p-6 mb-6">
           <div className="text-center text-gray-600">
-            <div className="animate-pulse">Loading alert details...</div>
+            <div className="animate-pulse text-xs">Loading alert details...</div>
           </div>
         </div>
       );
@@ -311,8 +311,8 @@ const ManageAlertDetail: React.FC<{ id: string }> = ({ id }) => {
 
     if (isLoadingNotices) {
       return (
-        <div className="text-center py-12 bg-white rounded-lg border border-gray-200">
-          <p className="text-gray-600 text-lg">Loading matching properties...</p>
+        <div className="text-center py-12 ">
+          <p className="text-gray-600 text-xs">Loading matching properties...</p>
         </div>
       );
     }
@@ -457,7 +457,8 @@ const ManageAlertDetail: React.FC<{ id: string }> = ({ id }) => {
 
       <div className="mx-auto lg:w-3/5 sm:w-4/5 w-11/12 my-4">
         {renderAlertInfo()}
-        {renderDynamicAuctionListings()}
+        {/* Only render listings after alert data is loaded */}
+        {!isLoadingAlert && alertData && renderDynamicAuctionListings()}
       </div>
     </>
   );

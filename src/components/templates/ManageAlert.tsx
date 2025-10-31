@@ -89,7 +89,7 @@ const ManageAlert = () => {
 
   const renderData = () => {
     if (fetchStatus === "fetching") {
-      return <div className="text-center">Loading ...</div>;
+      return <div className="text-center text-xs">Loading ...</div>;
     }
 
     if (dataAlert?.length === 0) {
