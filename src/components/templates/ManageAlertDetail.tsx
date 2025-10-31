@@ -337,7 +337,7 @@ const ManageAlertDetail: React.FC<{ id: string }> = ({ id }) => {
   const renderAlertInfo = () => {
     if (isLoadingAlert) {
       return (
-        <div className="bg-white rounded-xl shadow-md border border-gray-200 p-6 mb-6">
+        <div className="p-6 mb-6">
           <div className="text-center text-gray-600">
             <div className="animate-pulse">Loading alert details...</div>
           </div>

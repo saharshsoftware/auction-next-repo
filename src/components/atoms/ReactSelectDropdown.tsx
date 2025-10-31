@@ -86,6 +86,16 @@ const ReactSelectDropdown: React.FC<IReactSelectDropdown> = (props) => {
           onChange={handleChange}
           placeholder={placeholder}
           classNamePrefix="react-select"
+          menuPosition="fixed"
+          menuPortalTarget={typeof document !== "undefined" ? document.body : undefined}
+          styles={{
+            menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+            menu: (base) => ({ 
+              ...base, 
+              zIndex: 9999,
+              position: 'absolute',
+            }),
+          }}
         />
       </div>
     </>

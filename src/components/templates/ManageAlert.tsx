@@ -101,19 +101,24 @@ const ManageAlert = () => {
     }
     return (
       <>
-        <div className="flex flex-col gap-4 min-w-full ">
+        <div className="flex flex-col gap-4 w-full">
           {dataAlert?.map((item: IAlert, index: number) => (
             <div
               key={index}
-              className="flex items-center justify-between gap-4 w-full border border-brand-color shadow px-2 py-1 rounded-lg"
+              className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 w-full border border-brand-color shadow px-4 py-3 rounded-lg"
             >
+              {/* Alert Name - Full width on mobile, flexible on desktop */}
               <Link
                 href={`${ROUTE_CONSTANTS.MANAGE_ALERT}/${item.id}`}
-                className="flex-1 hover:text-brand-color transition-colors cursor-pointer"
+                className="flex-1 min-w-0 hover:text-brand-color transition-colors cursor-pointer"
               >
-                <span>{item?.name}</span>
+                <span className="text-base font-medium break-words">
+                  {item?.name}
+                </span>
               </Link>
-              <div className="flex items-center justify-end gap-4">
+
+              {/* Action Buttons */}
+              <div className="flex items-center justify-end gap-2 flex-shrink-0">
                 <Link href={`${ROUTE_CONSTANTS.MANAGE_ALERT}/${item.id}`}>
                   <ActionButton
                     text="View"
@@ -168,8 +173,8 @@ const ManageAlert = () => {
 
       <div className="common-list-section-class my-4">
         <div className="flex flex-col gap-4">
-          <div className="flex justify-between items-center gap-4">
-            <div className="custom-h2-class">{STRING_DATA.YOUR_ALERTS}</div>
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 sm:gap-4">
+            <h2 className="custom-h2-class">{STRING_DATA.YOUR_ALERTS}</h2>
             <ActionButton
               text="Add alert"
               onclick={showModal}
