@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import { AUTH_ROUTES } from "@/routes/AuthRoutes";
 import { useQuerySurvey } from "@/hooks/useQuerySurvey";
 import { useSurveyStore } from "@/zustandStore/surveyStore";
-import { getOrCreateDeviceId, sanitizeStrapiData } from "@/shared/Utilies";
+import { getOrCreateDeviceId, getUserData, sanitizeStrapiData } from "@/shared/Utilies";
 import {
   checkSurveyTrigger,
   getOrCreateSurveyStorageData,
@@ -24,10 +24,8 @@ import { useScrollToTop } from "@/hooks/useScrollToTop";
 
 const AppLayout = ({
   children,
-  isAuthenticated = false,
 }: {
   children: React.ReactNode;
-  isAuthenticated: boolean;
 }) => {
   const { openModal, showModal, hideModal } = useModal();
   const { openModal: openProfileModal, showModal: showProfileModal, hideModal: hideProfileModal } = useModal();
@@ -35,9 +33,11 @@ const AppLayout = ({
   const { setSurveyData } = useSurveyStore();
   const pathname = usePathname();
   const { isNewUser } = useAuthStore();
-  const userData = getCookie(COOKIES.AUCTION_USER_KEY)
-    ? JSON.parse(getCookie(COOKIES.AUCTION_USER_KEY) ?? "")
-    : null;
+  
+  // Authentication check with defensive error handling
+  const token = getCookie(COOKIES.TOKEN_KEY);
+  const isAuthenticated = !!token;
+  const userData = getUserData();
 
   // Extract survey ID safely
   const surveyId = data?.data?.[0]?.id || null;
@@ -81,7 +81,18 @@ const AppLayout = ({
   }, [surveyId, setSurveyData]);
 
   useEffect(() => {
-    setUserIdInDataLayer(isAuthenticated ? userData?.id : null);
+    try {
+      // Safely extract and convert user ID
+      const userId = userData?.id 
+        ? String(userData.id) 
+        : null;
+      
+      setUserIdInDataLayer(isAuthenticated ? userId : null);
+    } catch (error) {
+      console.error("Failed to set user ID in data layer:", error);
+      // Ensure data layer is set to null on error
+      setUserIdInDataLayer(null);
+    }
   }, [isAuthenticated, userData?.id]);
 
   // Open profile completion modal for new users or users with incomplete profiles
