@@ -406,3 +406,42 @@ export const fetchUserLeadRecommendations = async (payload?: { page?: number; pa
     // return { data: [] } as LeadRecommendationsResponse;
   }
 };
+
+export const fetchAlertMatchingNotices = async (params: {
+  alertId: string;
+  page?: number;
+  pageSize?: number;
+  days?: number;
+  noticesLimit?: number;
+  sortField?: string;
+  sortOrder?: string;
+}) => {
+  try {
+    const {
+      alertId,
+      page = 1,
+      pageSize = 10,
+      days = 60,
+      noticesLimit = 20,
+      sortField = "created_at",
+      sortOrder = "DESC",
+    } = params;
+
+    const queryParams = new URLSearchParams({
+      alertId,
+      page: String(page),
+      pageSize: String(pageSize),
+      days: String(days),
+      noticesLimit: String(noticesLimit),
+      sortField,
+      sortOrder,
+    });
+
+    const URL = `${API_BASE_URL}${API_ENPOINTS.ALERT_MATCHING_NOTICES}?${queryParams.toString()}`;
+    const { data } = await getRequest({ API: URL });
+    return data;
+  } catch (e: any) {
+    console.log(e, "Error fetching alert matching notices");
+    throw e;
+  }
+};

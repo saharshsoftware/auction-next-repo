@@ -112,20 +112,13 @@ const ManageAlert = () => {
                 href={`${ROUTE_CONSTANTS.MANAGE_ALERT}/${item.id}`}
                 className="flex-1 min-w-0 hover:text-brand-color transition-colors cursor-pointer"
               >
-                <span className="text-base font-medium break-words">
+                <span className="break-words">
                   {item?.name}
                 </span>
               </Link>
 
               {/* Action Buttons */}
               <div className="flex items-center justify-end gap-2 flex-shrink-0">
-                <Link href={`${ROUTE_CONSTANTS.MANAGE_ALERT}/${item.id}`}>
-                  <ActionButton
-                    text="View"
-                    onclick={() => {}}
-                    icon={<FontAwesomeIcon icon={faEye} />}
-                  />
-                </Link>
                 <ActionButton
                   text="Edit"
                   onclick={() => handleEditModal(item)}

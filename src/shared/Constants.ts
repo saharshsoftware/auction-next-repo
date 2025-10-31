@@ -161,7 +161,7 @@ export const STRING_DATA = {
 
 export const FEATURE_FLAGS = {
   USE_STATIC_RECOMMENDATIONS: false,
-  USE_STATIC_ALERT_AUCTIONS: true, // Set to false when API is ready
+  USE_STATIC_ALERT_AUCTIONS: false, // Set to true to use static data for testing
 } as const;
 
 export const NAVBAR_NAV_LINKS = [
