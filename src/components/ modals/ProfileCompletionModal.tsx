@@ -5,7 +5,7 @@ import ActionButton from "../atoms/ActionButton";
 import TextField from "../atoms/TextField";
 import CustomFormikForm from "../atoms/CustomFormikForm";
 import { Form, Field } from "formik";
-import { BUDGET_RANGES, REACT_QUERY } from "../../shared/Constants";
+import { BUDGET_RANGES, ERROR_MESSAGE, REACT_QUERY } from "../../shared/Constants";
 import * as Yup from "yup";
 import { getCityNamesCommaSeparated, sanitizeReactSelectOptions, userTypeOptions, getCategoryNamesCommaSeparated, normalizeBudgetRanges } from "@/shared/Utilies";
 import { updateProfileServiceClient } from "@/services/auth";
@@ -27,6 +27,7 @@ const validationSchema = Yup.object({
   interestedCities: Yup.array().optional(),
   interestedCategories: Yup.array().optional(),
   userType: Yup.object().required("User type is required"),
+  budgetRanges: Yup.array().min(1, ERROR_MESSAGE.BUDGET_RANGES_REQUIRED),
 });
 
 

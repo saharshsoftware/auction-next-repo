@@ -28,6 +28,7 @@ interface IEditProfileModal {
 
 const validationSchema = Yup.object({
   interestedCities: Yup.array().min(1, ERROR_MESSAGE.INTERESTED_CITIES_REQUIRED),
+  budgetRanges: Yup.array().min(1, ERROR_MESSAGE.BUDGET_RANGES_REQUIRED),
 });
 
 const initialValues = {

@@ -201,6 +201,7 @@ export const INPUT_TYPE = {
 };
 
 export const ERROR_MESSAGE = {
+  BUDGET_RANGES_REQUIRED: "Budget ranges are required",
   CURRENT_PASSWORD: "Current password is required",
   NEW_PASSWORD_REQUIRED: "New password is required",
   ASSET_TYPE_REQ: "Property type is required",
