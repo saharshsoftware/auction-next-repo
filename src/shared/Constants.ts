@@ -649,7 +649,8 @@ export const BANK_AUCTION_SERVICES = [
 export const BUDGET_RANGES: BudgetRange[] = [
   { min: '0', max: '5000000', label: '0 - 50L' },
   { min: '5000000', max: '10000000', label: '50L - 1Cr' },
-  { min: '10000000', max: '50000000', label: '1Cr - 5Cr' },
-  { min: '50000000', max: '100000000', label: '5Cr - 10Cr' },
-  { min: '100000000', max: 'Infinity', label: '10Cr+' },
+  { min: '10000000', max: '20000000', label: '1Cr - 2Cr' },
+  { min: '20000000', max: '50000000', label: '2Cr - 5Cr' },
+  { min: '50000000', max: '250000000', label: '5Cr - 25Cr' },
+  { min: '250000000', max: '1000000000', label: '25Cr - 100Cr' },
 ];
