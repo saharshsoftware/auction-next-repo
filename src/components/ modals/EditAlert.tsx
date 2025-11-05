@@ -55,6 +55,7 @@ const validationSchema = Yup.object({
   location: Yup.object().required(ERROR_MESSAGE.LOCATION_REQUIRED),
   category: Yup.object().required(ERROR_MESSAGE.CATEGORY_REQUIRED),
   propertyType: Yup.object().required(ERROR_MESSAGE.ASSET_TYPE_REQ),
+  budgetRanges: Yup.array().min(1, ERROR_MESSAGE.BUDGET_RANGES_REQUIRED).required(ERROR_MESSAGE.BUDGET_RANGES_REQUIRED),
 });
 
 const initialValues = {
