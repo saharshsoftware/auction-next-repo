@@ -1,6 +1,7 @@
 import {
   faBell,
   faCrown,
+  faCreditCard,
   faFilter,
   faHeart,
   faList,
@@ -176,6 +177,24 @@ export const STRING_DATA = {
   PAYMENT_GATEWAY_LOADING: "Payment gateway is getting ready.",
   PAYMENT_GATEWAY_ERROR: "Unable to load payment gateway. Please retry later.",
   PAYMENT_CONFIGURATION_MISSING: "Payment gateway configuration missing. Please contact support.",
+  MEMBERSHIP_PLAN_DETAILS: "Plan details",
+  MEMBERSHIP_PAYMENT_INFO: "Payment info",
+  MEMBERSHIP_PAYMENT_HISTORY: "Payment history",
+  MEMBERSHIP_PLAN_STATUS: "Status",
+  MEMBERSHIP_PLAN_RENEWAL: "Renews on",
+  MEMBERSHIP_PLAN_ID: "Plan ID",
+  MEMBERSHIP_PAYMENT_METHOD: "Payment method",
+  MEMBERSHIP_PAYMENT_AUTORENEW: "Auto-renew",
+  MEMBERSHIP_PAYMENT_LAST: "Last payment",
+  MEMBERSHIP_PAYMENT_BILLING_EMAIL: "Billing email",
+  MEMBERSHIP_PAYMENT_GST: "GST number",
+  MEMBERSHIP_HISTORY_DATE: "Date",
+  MEMBERSHIP_HISTORY_DESCRIPTION: "Description",
+  MEMBERSHIP_HISTORY_AMOUNT: "Amount",
+  MEMBERSHIP_HISTORY_STATUS: "Status",
+  MEMBERSHIP_SETTINGS: "Membership",
+  MEMBERSHIP_VIEW_DETAILS: "View membership details",
+  CANCEL_SUBSCRIPTION: "Cancel Subscription",
 };
 
 export const FEATURE_FLAGS = {
@@ -193,6 +212,11 @@ export const NAVBAR_NAV_LINKS = [
     path: ROUTE_CONSTANTS.PRICING,
     label: STRING_DATA.MEMBERSHIP_PLANS,
     icon: faCrown,
+  },
+  {
+    path: ROUTE_CONSTANTS.PROFILE_MEMBERSHIP,
+    label: STRING_DATA.MEMBERSHIP_SETTINGS,
+    icon: faCreditCard,
   },
   {
     path: ROUTE_CONSTANTS.USER_RECOMMENDATIONS,

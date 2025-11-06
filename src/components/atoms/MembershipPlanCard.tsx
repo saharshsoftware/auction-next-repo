@@ -2,15 +2,9 @@
 import React from "react";
 import ActionButton from "./ActionButton";
 import { MembershipPlan } from "@/interfaces/MembershipPlan";
+import { MembershipPlanCardProps } from "@/interfaces/Payment";
 import { STRING_DATA } from "@/shared/Constants";
 import { mapMembershipPlanLimits } from "@/shared/MembershipUtils";
-
-interface MembershipPlanCardProps {
-  readonly plan: MembershipPlan;
-  readonly onSelectPlan: (plan: MembershipPlan) => void;
-  readonly isCheckoutReady: boolean;
-  readonly isProcessing?: boolean;
-}
 
 /**
  * Renders a responsive membership plan card.

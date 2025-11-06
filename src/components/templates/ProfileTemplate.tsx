@@ -1,6 +1,6 @@
 "use client";
 import ShowLabelValue from "@/components/atoms/ShowLabelValue";
-import { STRING_DATA, BUDGET_RANGES } from "@/shared/Constants";
+import { STRING_DATA } from "@/shared/Constants";
 import DeleteUserConfirmationModal from "../ modals/DeleteUserConfirmationModal";
 import useModal from "@/hooks/useModal";
 import UpdatePasswordModal from "../ modals/UpdatePasswordModal";
@@ -11,6 +11,9 @@ import { faEdit } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { USER_TYPE } from "@/types.d";
 import BudgetRangePills from "../atoms/BudgetRangePills";
+import Link from "next/link";
+import { ROUTE_CONSTANTS } from "@/shared/Routes";
+import ActionButton from "../atoms/ActionButton";
 
 export default function ProfileTemplate() {
   const { showModal, openModal, hideModal } = useModal();
@@ -97,6 +100,21 @@ export default function ProfileTemplate() {
                 <BudgetRangePills budgetRanges={userData?.budgetRanges} />
               </ShowLabelValue>
             </div>
+          </div>
+        </div>
+        <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+          <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900">{STRING_DATA.MEMBERSHIP_SETTINGS}</h3>
+              <p className="text-sm text-gray-600">{STRING_DATA.MEMBERSHIP_VIEW_DETAILS}</p>
+            </div>
+            <Link href={ROUTE_CONSTANTS.PROFILE_MEMBERSHIP} className="w-full md:w-auto">
+              <ActionButton
+                text={STRING_DATA.MEMBERSHIP_VIEW_DETAILS}
+                customClass="w-full justify-center"
+                isActionButton={false}
+              />
+            </Link>
           </div>
         </div>
         <div className="flex items-center justify-end gap-4">

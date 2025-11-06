@@ -10,6 +10,7 @@ export const ROUTE_CONSTANTS = {
   MANAGE_LIST: "/manage-list",
   MANAGE_ALERT: "/manage-alert",
   USER_RECOMMENDATIONS: "/user/recommendations",
+  PROFILE_MEMBERSHIP: "/profile/membership",
   E_CITIES_ALL: "/e-auction-in-cities",
   E_CATOGRIES_ALL: "/e-auction-categories",
   E_AUCTION_ASSETS: "/e-auction-assets",
