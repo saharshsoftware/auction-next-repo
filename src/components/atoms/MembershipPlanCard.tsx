@@ -1,29 +1,26 @@
 "use client";
 import React from "react";
-import { useRouter } from "next/navigation";
 import ActionButton from "./ActionButton";
 import { MembershipPlan } from "@/interfaces/MembershipPlan";
 import { STRING_DATA } from "@/shared/Constants";
-import { ROUTE_CONSTANTS } from "@/shared/Routes";
 import { mapMembershipPlanLimits } from "@/shared/MembershipUtils";
 
 interface MembershipPlanCardProps {
   readonly plan: MembershipPlan;
+  readonly onSelectPlan: (plan: MembershipPlan) => void;
+  readonly isCheckoutReady: boolean;
+  readonly isProcessing?: boolean;
 }
-
-const CTA_ROUTE_MAP: Record<MembershipPlan["id"], string> = {
-  free: ROUTE_CONSTANTS.DASHBOARD,
-  broker: ROUTE_CONSTANTS.REGISTER,
-  brokerPlus: ROUTE_CONSTANTS.CONTACT,
-};
 
 /**
  * Renders a responsive membership plan card.
  */
 const MembershipPlanCard: React.FC<MembershipPlanCardProps> = (props) => {
-  const { plan } = props;
-  const router: ReturnType<typeof useRouter> = useRouter();
+  const { plan, onSelectPlan, isCheckoutReady, isProcessing } = props;
   const limitEntries: ReadonlyArray<{ readonly label: string; readonly value: string }> = mapMembershipPlanLimits(plan);
+  const isPaidPlan = plan.amountInPaise > 0;
+  const isButtonDisabled = isPaidPlan && !isCheckoutReady;
+
   return (
     <div
       className={`flex h-full flex-col gap-4 rounded-2xl border bg-white p-6 shadow transition-all duration-300 ${
@@ -58,8 +55,13 @@ const MembershipPlanCard: React.FC<MembershipPlanCardProps> = (props) => {
         <ActionButton
           text={plan.ctaLabel}
           customClass="w-full justify-center"
-          onclick={() => router.push(CTA_ROUTE_MAP[plan.id])}
+          onclick={() => onSelectPlan(plan)}
+          disabled={isButtonDisabled}
+          isLoading={isProcessing}
         />
+        {isButtonDisabled ? (
+          <p className="mt-2 text-center text-xs text-gray-500">{STRING_DATA.PAYMENT_LOADING_MESSAGE}</p>
+        ) : null}
       </div>
     </div>
   );

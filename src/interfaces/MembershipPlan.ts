@@ -7,6 +7,7 @@ export interface MembershipPlan {
   readonly ctaLabel: string;
   readonly isPopular: boolean;
   readonly badgeLabel?: string;
+  readonly amountInPaise: number;
   readonly limits: {
     readonly collectionsMax: number;
     readonly alertsMax: number;

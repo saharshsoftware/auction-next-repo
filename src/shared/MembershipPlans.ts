@@ -11,6 +11,7 @@ export const MEMBERSHIP_PLANS: readonly MembershipPlan[] = [
     description: "Intelligence for everyday tasks",
     ctaLabel: "Stay on Free",
     isPopular: false,
+    amountInPaise: 0,
     limits: {
       collectionsMax: 5,
       alertsMax: 3,
@@ -28,6 +29,7 @@ export const MEMBERSHIP_PLANS: readonly MembershipPlan[] = [
     ctaLabel: "Upgrade to Broker",
     isPopular: true,
     badgeLabel: "Popular",
+    amountInPaise: 39900,
     limits: {
       collectionsMax: 5,
       alertsMax: 3,
@@ -44,6 +46,7 @@ export const MEMBERSHIP_PLANS: readonly MembershipPlan[] = [
     description: "More access to advanced intelligence",
     ctaLabel: "Get Broker Plus",
     isPopular: false,
+    amountInPaise: 199900,
     limits: {
       collectionsMax: 10,
       alertsMax: 5,

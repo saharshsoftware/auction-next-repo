@@ -172,6 +172,10 @@ export const STRING_DATA = {
   MEMBERSHIP_SAVED_SEARCHES: "Saved searches",
   MEMBERSHIP_WHATSAPP_ALERTS: "WhatsApp alerts",
   MEMBERSHIP_EMAIL_ALERTS: "Email alerts",
+  PAYMENT_LOADING_MESSAGE: "Preparing secure checkout...",
+  PAYMENT_GATEWAY_LOADING: "Payment gateway is getting ready.",
+  PAYMENT_GATEWAY_ERROR: "Unable to load payment gateway. Please retry later.",
+  PAYMENT_CONFIGURATION_MISSING: "Payment gateway configuration missing. Please contact support.",
 };
 
 export const FEATURE_FLAGS = {
