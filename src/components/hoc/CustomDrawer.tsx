@@ -16,6 +16,7 @@ import NextLink from "../ui/NextLink";
 import {
   faBagShopping,
   faBank,
+  faCrown,
   faList,
   faMapPin,
   faPhone,
@@ -160,6 +161,15 @@ const CustomDrawer = (props: ICustomDrawer) => {
           >
             <span>{STRING_DATA.PROPERTY_TYPES}</span>
             <FontAwesomeIcon color={NAVICON_COLOR} icon={faList} />
+          </NextLink>
+          <NextLink
+            href={ROUTE_CONSTANTS.PRICING}
+            onClick={toggleTopBar}
+            hasChildren={true}
+            customClass="flex justify-between gap-2"
+          >
+            <span>{STRING_DATA.MEMBERSHIP_PLANS}</span>
+            <FontAwesomeIcon color={NAVICON_COLOR} icon={faCrown} />
           </NextLink>
           <NextLink
             href={ROUTE_CONSTANTS.CONTACT}

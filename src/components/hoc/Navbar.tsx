@@ -207,6 +207,12 @@ const Navbar: React.FC = () => {
               >
                 {STRING_DATA.PROPERTY_TYPES}{" "}
               </Link>
+              <Link
+                href={ROUTE_CONSTANTS.PRICING}
+                className="cursor-pointer text-xs lg:text-sm"
+              >
+                {STRING_DATA.MEMBERSHIP_PLANS}{" "}
+              </Link>
             </div>
           </div>
           <div className="hidden lg:flex items-center gap-12">

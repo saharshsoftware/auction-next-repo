@@ -1,5 +1,6 @@
 import {
   faBell,
+  faCrown,
   faFilter,
   faHeart,
   faList,
@@ -59,6 +60,14 @@ export const STRING_DATA = {
   ASSETS: "Assets",
   SAVED: "Saved",
   SAVED_SEARCH: "Saved Search",
+  PRICING: "Pricing",
+  MEMBERSHIP: "Membership",
+  MEMBERSHIP_PLANS: "Membership plans",
+  MEMBERSHIP_DESCRIPTION:
+    "Choose the membership that matches your deal pipeline and alert needs.",
+  MEMBERSHIP_LIMITS: "Membership limits",
+  MEMBERSHIP_BENEFITS: "Membership benefits",
+  VIEW_ALL_PLANS: "Explore all plans",
   SUBMIT: "Submit",
   CONTACT_FORM: "Contact form",
   EDIT_LIST: "Edit list",
@@ -87,6 +96,7 @@ export const STRING_DATA = {
   ADD_LIST: "Add list",
   CREATE_ALERT: "Create Alert",
   YOUR_LIST: "Your list",
+  UNLIMITED: "Unlimited",
   ALL: "All",
   BACK: "Back",
   EAUCTION_DEKHO: "eauctiondekho",
@@ -157,6 +167,11 @@ export const STRING_DATA = {
   ASSETS_TYPE: "asset-types",
   TYPES: "types",
   BACK_TO_LOGIN: "Back to Login",
+  MEMBERSHIP_COLLECTIONS: "Collections",
+  MEMBERSHIP_ALERTS: "Alerts",
+  MEMBERSHIP_SAVED_SEARCHES: "Saved searches",
+  MEMBERSHIP_WHATSAPP_ALERTS: "WhatsApp alerts",
+  MEMBERSHIP_EMAIL_ALERTS: "Email alerts",
 };
 
 export const FEATURE_FLAGS = {
@@ -169,6 +184,11 @@ export const NAVBAR_NAV_LINKS = [
     path: ROUTE_CONSTANTS.PROFILE,
     label: STRING_DATA.PROFILE,
     icon: faUser,
+  },
+  {
+    path: ROUTE_CONSTANTS.PRICING,
+    label: STRING_DATA.MEMBERSHIP_PLANS,
+    icon: faCrown,
   },
   {
     path: ROUTE_CONSTANTS.USER_RECOMMENDATIONS,

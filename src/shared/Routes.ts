@@ -34,4 +34,5 @@ export const ROUTE_CONSTANTS = {
   HELP: "/help",
   OUR_SERVICES: "/bank-auction-support",
   COLLECTION_PUBLIC: "/collections",
+  PRICING: "/pricing",
 };
