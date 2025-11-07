@@ -82,7 +82,7 @@ const MembershipPlanCard: React.FC<MembershipPlanCardProps> = (props) => {
               <span className="mt-0.5">•</span>
               <div className="flex flex-1 items-center justify-between gap-2">
                 <span>{item.label}</span>
-                <span className={`font-semibold ${item.isBooleanFeature ? 'text-lg' : 'text-gray-900'}`}>
+                <span className={`font-semibold ${item.isBooleanFeature ? '' : 'text-gray-900'}`}>
                   {item.value}
                 </span>
               </div>
