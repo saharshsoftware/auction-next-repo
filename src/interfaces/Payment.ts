@@ -76,5 +76,8 @@ export interface MembershipPlanCardProps {
   readonly onSelectPlan: (plan: MembershipPlan) => void;
   readonly isCheckoutReady: boolean;
   readonly isProcessing?: boolean;
+  readonly allPlans?: readonly MembershipPlan[];
+  readonly isCurrentPlan?: boolean;
+  readonly isLoadingSubscription?: boolean;
 }
 

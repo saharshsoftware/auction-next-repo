@@ -1,5 +1,5 @@
-export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
-// export const API_BASE_URL = 'https://api2.eauctiondekho.com';
+// export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+export const API_BASE_URL = 'https://api2.eauctiondekho.com';
 // export const API_BASE_URL = 'http://localhost:1009';
 
 export const API_ENPOINTS = {
@@ -48,4 +48,9 @@ export const API_ENPOINTS = {
   FAQ: "/api/faqs",
   USER_LEAD_RECOMMENDATIONS: "/api/lead-recommendations/user",
   ALERT_MATCHING_NOTICES: "/api/custom-alert/matching-notices",
+  MEMBERSHIP_PLANS: "/api/membership-plans",
+  SUBSCRIPTIONS_ME: "/api/subscriptions/me",
+  SUBSCRIPTIONS_CREATE: "/api/subscriptions/create",
+  SUBSCRIPTIONS_CHECKOUT: "/api/subscriptions/checkout",
+  SUBSCRIPTIONS_CANCEL: "/api/subscriptions",
 };

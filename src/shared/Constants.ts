@@ -214,11 +214,6 @@ export const NAVBAR_NAV_LINKS = [
     icon: faCrown,
   },
   {
-    path: ROUTE_CONSTANTS.PROFILE_MEMBERSHIP,
-    label: STRING_DATA.MEMBERSHIP_SETTINGS,
-    icon: faCreditCard,
-  },
-  {
     path: ROUTE_CONSTANTS.USER_RECOMMENDATIONS,
     label: STRING_DATA.RECOMMENDATIONS,
     icon: faList,
@@ -413,6 +408,8 @@ export const REACT_QUERY = {
   SURVEYS: "Surveys",
   USERS_SURVEYS: "Users-surveys",
   USER_PROFILE: "User-profile",
+  MEMBERSHIP_PLANS: "Membership-plans",
+  USER_SUBSCRIPTION: "User-subscription",
 };
 
 export const SAMPLE_CITY = [

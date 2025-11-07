@@ -7,15 +7,18 @@ import UpdatePasswordModal from "../ modals/UpdatePasswordModal";
 import EditProfileModal from "../ modals/EditProfileModal";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import FallbackLoading from "../atoms/FallbackLoading";
-import { faEdit } from "@fortawesome/free-solid-svg-icons";
+import { faEdit, faUser, faCrown } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { USER_TYPE } from "@/types.d";
 import BudgetRangePills from "../atoms/BudgetRangePills";
-import Link from "next/link";
-import { ROUTE_CONSTANTS } from "@/shared/Routes";
-import ActionButton from "../atoms/ActionButton";
+import ProfileMembershipSection from "@/components/ui/ProfileMembershipSection";
+import { useState } from "react";
+
+type TabType = "profile" | "membership";
 
 export default function ProfileTemplate() {
+  const [activeTab, setActiveTab] = useState<TabType>("profile");
+  
   const { showModal, openModal, hideModal } = useModal();
   const {
     showModal: showModalDelete,
@@ -43,29 +46,53 @@ export default function ProfileTemplate() {
     return "-";
   }
 
-  const renderUserProfile = () => {
-    if (isLoading) {
-      return <FallbackLoading />;
-    }
-    if (error) {
-      return <div>Error: {error.message}</div>;
-    }
+  const renderTabNavigation = () => (
+    <div className="flex border-b border-gray-200 bg-white rounded-t-2xl overflow-x-auto">
+      <button
+        onClick={() => setActiveTab("profile")}
+        className={`flex items-center gap-2 px-4 sm:px-6 py-3 sm:py-4 font-medium text-xs sm:text-sm transition-colors whitespace-nowrap min-w-0 flex-shrink-0 ${
+          activeTab === "profile"
+            ? "text-blue-600 border-b-2 border-blue-600 bg-blue-50"
+            : "text-gray-600 hover:text-gray-800 hover:bg-gray-50"
+        }`}
+      >
+        <FontAwesomeIcon icon={faUser} size="sm" />
+        <span className="hidden xs:inline">Profile Information</span>
+        <span className="xs:hidden">Profile</span>
+      </button>
+      <button
+        onClick={() => setActiveTab("membership")}
+        className={`flex items-center gap-2 px-4 sm:px-6 py-3 sm:py-4 font-medium text-xs sm:text-sm transition-colors whitespace-nowrap min-w-0 flex-shrink-0 ${
+          activeTab === "membership"
+            ? "text-blue-600 border-b-2 border-blue-600 bg-blue-50"
+            : "text-gray-600 hover:text-gray-800 hover:bg-gray-50"
+        }`}
+      >
+        <FontAwesomeIcon icon={faCrown} size="sm" />
+        <span className="hidden xs:inline">Membership Details</span>
+        <span className="xs:hidden">Membership</span>
+      </button>
+    </div>
+  );
 
-    return (
-      <div className="flex flex-col gap-4">
-        <div>
-          <div className="custom-common-header-class">
-            <div className="flex items-center justify-between gap-2">
-              <div className="text-white">
-                {STRING_DATA.PROFILE}
-              </div>
-              <div className="text-white text-sm font-bold cursor-pointer" onClick={showModalEdit}>
-                <FontAwesomeIcon icon={faEdit} size="lg" />
-              </div>
-            </div>
-          </div>
-          <div className="custom-common-header-detail-class">
-            <div className="flex flex-col gap-4 p-4  w-full min-h-12">
+  const renderProfileContent = () => (
+    <div className="bg-white rounded-b-2xl shadow-sm">
+      <div className="p-4 sm:p-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+          <h2 className="text-lg sm:text-xl font-semibold text-gray-900">Profile Information</h2>
+          <button
+            onClick={showModalEdit}
+            className="flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors w-full sm:w-auto"
+          >
+            <FontAwesomeIcon icon={faEdit} size="sm" />
+            <span>Edit Profile</span>
+          </button>
+        </div>
+        
+        <div className="space-y-6">
+          {/* Basic Information */}
+          <div className="grid gap-4 sm:gap-6">
+            <div className="space-y-4">
               <ShowLabelValue
                 heading={"Full Name"}
                 value={userData?.name ?? "-"}
@@ -75,9 +102,12 @@ export default function ProfileTemplate() {
                 value={userData?.email ?? "-"}
               />
               <ShowLabelValue
-                heading={"Phone number"}
+                heading={"Phone Number"}
                 value={userData?.username ?? "-"}
               />
+            </div>
+            
+            <div className="space-y-4">
               <ShowLabelValue
                 heading={"Interested Cities"}
                 value={userData?.interestedCities || "-"}
@@ -91,39 +121,89 @@ export default function ProfileTemplate() {
                 hasChildren={true}
               >
                 <div className="flex items-center gap-2">
-                  <div className="text-sm font-medium text-gray-700">
+                  <span className={`px-3 py-1 text-xs font-medium rounded-full ${
+                    userData?.userType === USER_TYPE.BROKER ? 'bg-purple-100 text-purple-800' :
+                    userData?.userType === USER_TYPE.INVESTOR ? 'bg-green-100 text-green-800' :
+                    'bg-blue-100 text-blue-800'
+                  }`}>
                     {renderUserType(userData?.userType)}
-                  </div>
+                  </span>
                 </div>
               </ShowLabelValue>
-              <ShowLabelValue heading={"Budget Ranges"} hasChildren={true}>
-                <BudgetRangePills budgetRanges={userData?.budgetRanges} />
-              </ShowLabelValue>
             </div>
           </div>
-        </div>
-        <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-          <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900">{STRING_DATA.MEMBERSHIP_SETTINGS}</h3>
-              <p className="text-sm text-gray-600">{STRING_DATA.MEMBERSHIP_VIEW_DETAILS}</p>
-            </div>
-            <Link href={ROUTE_CONSTANTS.PROFILE_MEMBERSHIP} className="w-full md:w-auto">
-              <ActionButton
-                text={STRING_DATA.MEMBERSHIP_VIEW_DETAILS}
-                customClass="w-full justify-center"
-                isActionButton={false}
-              />
-            </Link>
+          
+          {/* Budget Ranges */}
+          <div className="pt-4 border-t border-gray-100">
+            <ShowLabelValue heading={"Budget Ranges"} hasChildren={true}>
+              <BudgetRangePills budgetRanges={userData?.budgetRanges} />
+            </ShowLabelValue>
           </div>
         </div>
-        <div className="flex items-center justify-end gap-4">
-          <div onClick={showModal} className=" link link-primary">
-            {STRING_DATA.UPDATE_PASSWORD.toUpperCase()}
-          </div>
-          <div onClick={showModalDelete} className=" link link-error">
-            {STRING_DATA.DELETE_ACCOUNT.toUpperCase()}
-          </div>
+        
+        {/* Action Buttons */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-end gap-3 mt-8 pt-6 border-t border-gray-200">
+          <button
+            onClick={showModal}
+            className="w-full sm:w-auto px-4 py-2 text-sm font-medium text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors text-center"
+          >
+            {STRING_DATA.UPDATE_PASSWORD}
+          </button>
+          <button
+            onClick={showModalDelete}
+            className="w-full sm:w-auto px-4 py-2 text-sm font-medium text-red-600 hover:text-red-800 bg-red-50 hover:bg-red-100 rounded-lg transition-colors text-center"
+          >
+            {STRING_DATA.DELETE_ACCOUNT}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderMembershipContent = () => (
+    <div className="bg-white rounded-b-2xl shadow-sm">
+      <div className="p-4 sm:p-6">
+        <div className="mb-6">
+          <h2 className="text-lg sm:text-xl font-semibold text-gray-900">Membership Details</h2>
+          <p className="text-sm text-gray-600 mt-1">
+            Manage your current membership plan, billing preferences, and payment history.
+          </p>
+        </div>
+        <ProfileMembershipSection />
+      </div>
+    </div>
+  );
+
+  const renderUserProfile = () => {
+    if (isLoading) {
+      return (
+        <div className="flex justify-center items-center min-h-96">
+          <FallbackLoading />
+        </div>
+      );
+    }
+    if (error) {
+      return (
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4 mx-4">
+          <div className="text-red-800 text-center">Error: {error.message}</div>
+        </div>
+      );
+    }
+
+    return (
+      <div className="w-full  mx-auto px-4 py-6">
+        {/* Header */}
+        <div className="mb-6 sm:mb-8 text-center sm:text-left">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Account Settings</h1>
+          <p className="text-gray-600 text-sm sm:text-base">
+            Manage your profile information and membership details.
+          </p>
+        </div>
+        
+        {/* Main Content */}
+        <div className="border border-gray-200 rounded-2xl overflow-hidden shadow-sm">
+          {renderTabNavigation()}
+          {activeTab === "profile" ? renderProfileContent() : renderMembershipContent()}
         </div>
       </div>
     )
@@ -131,7 +211,7 @@ export default function ProfileTemplate() {
 
   return (
     <>
-      {/* Delete User*/}
+      {/* Modals */}
       {openModalDelete && (
         <DeleteUserConfirmationModal
           openModal={openModalDelete}
@@ -139,7 +219,6 @@ export default function ProfileTemplate() {
         />
       )}
 
-      {/* Edit Profile */}
       {openModalEdit && (
         <EditProfileModal
           openModal={openModalEdit}
@@ -152,18 +231,11 @@ export default function ProfileTemplate() {
         />
       )}
 
-      {/* Update Password */}
       <UpdatePasswordModal openModal={openModal} hideModal={hideModal} />
       
-      {/* Delete User */}
-      {openModalDelete && (
-        <DeleteUserConfirmationModal
-          openModal={openModalDelete}
-          hideModal={hideModalDelete}
-        />
-      )}
-      
-      {renderUserProfile()}
+      <div className="">
+        {renderUserProfile()}
+      </div>
     </>
   );
 }

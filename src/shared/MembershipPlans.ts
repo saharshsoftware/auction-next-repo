@@ -30,6 +30,7 @@ export const MEMBERSHIP_PLANS: readonly MembershipPlan[] = [
     isPopular: true,
     badgeLabel: "Popular",
     amountInPaise: 39900,
+    previousPlanId: "free",
     limits: {
       collectionsMax: 5,
       alertsMax: 3,
@@ -47,6 +48,7 @@ export const MEMBERSHIP_PLANS: readonly MembershipPlan[] = [
     ctaLabel: "Get Broker Plus",
     isPopular: false,
     amountInPaise: 199900,
+    previousPlanId: "broker",
     limits: {
       collectionsMax: 10,
       alertsMax: 5,

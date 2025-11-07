@@ -2,10 +2,16 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import MembershipPlanCard from "@/components/atoms/MembershipPlanCard";
-import { MEMBERSHIP_PLANS } from "@/shared/MembershipPlans";
 import { MembershipPlan } from "@/interfaces/MembershipPlan";
 import { STRING_DATA } from "@/shared/Constants";
+import { useMembershipPlans } from "@/hooks/useMembershipPlans";
+import { useSubscription } from "@/hooks/useSubscription";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
+import toast from "react-simple-toasts";
+import { CheckoutApiRequest, CheckoutApiResponse } from "@/interfaces/CheckoutApi";
+import { CreateSubscriptionApiRequest, CreateSubscriptionApiResponse } from "@/interfaces/CreateSubscriptionApi";
+import { postRequest } from "@/shared/Axios";
+import { API_ENPOINTS } from "@/services/api";
 
 interface RazorpayOptions {
   readonly key: string;
@@ -40,7 +46,7 @@ interface RazorpayInstance {
 
 declare global {
   interface Window {
-    Razorpay?: new (options: RazorpayOptions) => RazorpayInstance;
+    Razorpay?: new (options: any) => RazorpayInstance;
   }
 }
 
@@ -76,6 +82,19 @@ const PricingPlans: React.FC = () => {
   const [isCheckoutReady, setIsCheckoutReady] = useState<boolean>(false);
   const [checkoutMessage, setCheckoutMessage] = useState<string>(CHECKOUT_NOT_READY_MESSAGE);
   const [activePlanId, setActivePlanId] = useState<string | null>(null);
+  
+  const {
+    data: membershipPlans = [],
+    isLoading: isLoadingPlans,
+    isError: hasPlansError,
+    error: plansError
+  } = useMembershipPlans();
+
+  const {
+    data: subscriptionData,
+    isLoading: isLoadingSubscription,
+    isError: hasSubscriptionError,
+  } = useSubscription();
 
   useEffect(() => {
     if (typeof window === "undefined") {
@@ -127,74 +146,216 @@ const PricingPlans: React.FC = () => {
     };
   }, []);
 
+  /**
+   * Creates a subscription for the selected plan
+   */
+  const createSubscription = async (plan: MembershipPlan): Promise<CreateSubscriptionApiResponse> => {
+    const requestData: CreateSubscriptionApiRequest = {
+      planId: plan.razorpayPlanId,
+      planType: plan.planType,
+    };
+
+    const response = await postRequest({
+      API: API_ENPOINTS.SUBSCRIPTIONS_CREATE,
+      DATA: requestData,
+    });
+
+    return response.data as CreateSubscriptionApiResponse;
+  };
+
+  /**
+   * Calls the checkout API to get Razorpay configuration for a subscription
+   */
+  const getCheckoutConfig = async (subscriptionId: string): Promise<CheckoutApiResponse> => {
+    const requestData: CheckoutApiRequest = {
+      subscriptionId,
+    };
+
+    const response = await postRequest({
+      API: API_ENPOINTS.SUBSCRIPTIONS_CHECKOUT,
+      DATA: requestData,
+    });
+
+    return response.data as CheckoutApiResponse;
+  };
+
   const initiateRazorpayCheckout = useCallback(
-    (plan: MembershipPlan) => {
+    async (plan: MembershipPlan) => {
       if (plan.amountInPaise === 0) {
         logInfo("Free plan selected. Redirecting to signup", { planId: plan.id });
         router.push(ROUTE_CONSTANTS.REGISTER);
         return;
       }
+      
       if (!isCheckoutReady || typeof window === "undefined" || !window.Razorpay) {
         setCheckoutMessage(CHECKOUT_NOT_READY_MESSAGE);
         logInfo("Checkout attempted before Razorpay was ready", { planId: plan.id });
         return;
       }
-      const keyId = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID ?? FALLBACK_RAZORPAY_KEY_ID;
-      if (!keyId) {
-        setCheckoutMessage(STRING_DATA.PAYMENT_CONFIGURATION_MISSING);
-        logError("Missing Razorpay key configuration", { planId: plan.id });
-        return;
-      }
+
       setCheckoutMessage(STRING_DATA.EMPTY);
       setActivePlanId(plan.id);
-      logInfo("Opening Razorpay checkout", { planId: plan.id, amount: plan.amountInPaise });
-      const options: RazorpayOptions = {
-        key: keyId,
-        amount: plan.amountInPaise,
-        currency: RAZORPAY_CURRENCY,
-        name: STRING_DATA.MEMBERSHIP_PLANS,
-        description: plan.description,
-        callback_url: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}`,
-        redirect: true,
-        notes: {
-          planId: plan.id,
-        },
-        handler: () => {
-          setActivePlanId(null);
-          logInfo("Razorpay payment completed", { planId: plan.id });
-        },
-        theme: {
-          color: RAZORPAY_THEME_COLOR,
-        },
-      };
+      
       try {
-        const razorpayInstance = new window.Razorpay(options);
-        razorpayInstance.open();
-        razorpayInstance.on("payment.failed", () => {
-          setActivePlanId(null);
-          logError("Razorpay payment failed", { planId: plan.id });
+        logInfo("Creating subscription", { planId: plan.id, razorpayPlanId: plan.razorpayPlanId, planType: plan.planType });
+        
+        // Step 1: Create subscription
+        const subscriptionResponse = await createSubscription(plan);
+        
+        if (!subscriptionResponse.success) {
+          throw new Error("Subscription creation failed");
+        }
+
+        const { data: subscriptionData } = subscriptionResponse;
+        const { subscriptionId } = subscriptionData;
+        
+        logInfo("Subscription created, fetching checkout configuration", { 
+          planId: plan.id, 
+          subscriptionId,
+          customerId: subscriptionData.customerId 
         });
+        
+        // Step 2: Get checkout configuration using the subscription ID
+        const checkoutResponse = await getCheckoutConfig(subscriptionId);
+        
+        if (!checkoutResponse.success) {
+          throw new Error("Checkout configuration failed");
+        }
+
+        const { data: checkoutConfig } = checkoutResponse;
+        
+        logInfo("Opening Razorpay checkout with API config", { 
+          planId: plan.id, 
+          createdSubscriptionId: subscriptionId,
+          razorpaySubscriptionId: checkoutConfig.subscription_id 
+        });
+
+        const options: RazorpayOptions = {
+          key: checkoutConfig.key,
+          amount: plan.amountInPaise,
+          currency: RAZORPAY_CURRENCY,
+          name: checkoutConfig.name,
+          description: checkoutConfig.description,
+          notes: {
+            planId: plan.id,
+            createdSubscriptionId: subscriptionId,
+            razorpaySubscriptionId: checkoutConfig.subscription_id,
+          },
+          prefill: {
+            name: checkoutConfig.prefill.name,
+            email: checkoutConfig.prefill.email,
+            contact: checkoutConfig.prefill.contact,
+          },
+          handler: () => {
+            setActivePlanId(null);
+            logInfo("Razorpay payment completed", { 
+              planId: plan.id, 
+              createdSubscriptionId: subscriptionId,
+              razorpaySubscriptionId: checkoutConfig.subscription_id 
+            });
+            
+            // Show success message
+            toast("Payment successful! Your subscription is being activated...", {
+              duration: 4000,
+              position: 'top-center',
+              theme: 'success',
+            });
+          },
+          theme: {
+            color: checkoutConfig.theme.color,
+          },
+        };
+
+        try {
+          const razorpayInstance = new window.Razorpay(options);
+          razorpayInstance.open();
+          razorpayInstance.on("payment.failed", () => {
+            setActivePlanId(null);
+            logError("Razorpay payment failed", { 
+              planId: plan.id, 
+              createdSubscriptionId: subscriptionId,
+              razorpaySubscriptionId: checkoutConfig.subscription_id 
+            });
+            
+            // Show error message
+            toast("Payment failed. Please try again.", {
+              duration: 4000,
+              position: 'top-center',
+              theme: 'failure',
+            });
+          });
+        } catch (error) {
+          logError("Failed to open Razorpay checkout", error);
+          setActivePlanId(null);
+          setCheckoutMessage(STRING_DATA.PAYMENT_GATEWAY_ERROR);
+        }
+        
       } catch (error) {
-        logError("Failed to open Razorpay checkout", error);
+        logError("Failed to initialize subscription checkout", error);
         setActivePlanId(null);
-        setCheckoutMessage(STRING_DATA.PAYMENT_GATEWAY_ERROR);
+        
+        // Determine error message based on the type of error
+        const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
+        let userMessage = "Failed to initialize checkout. Please try again.";
+        
+        if (errorMessage.includes("Subscription creation failed")) {
+          userMessage = "Failed to create subscription. Please try again.";
+        } else if (errorMessage.includes("Checkout configuration failed")) {
+          userMessage = "Failed to configure payment. Please try again.";
+        }
+        
+        setCheckoutMessage(userMessage);
+        toast(userMessage, {
+          duration: 4000,
+          position: 'top-center',
+          theme: 'failure',
+        });
       }
     },
     [isCheckoutReady, router],
   );
 
+  // Helper function to determine if a plan is the user's current plan
+  const getCurrentPlanInfo = (plan: MembershipPlan) => {
+    if (!subscriptionData?.subscriptionData) {
+      return { isCurrentPlan: false, currentTier: null };
+    }
+
+    const { subscription, tier } = subscriptionData.subscriptionData;
+    
+    if (subscription) {
+      // User has a paid subscription - match by plan name or ID
+      const isCurrentPlan = plan.label.toLowerCase() === subscription.planName.toLowerCase() || 
+                           plan.id.toLowerCase() === subscription.planId.toLowerCase();
+      return { isCurrentPlan, currentTier: subscription.planName };
+    } else {
+      // User is on free tier - match free plan
+      const isCurrentPlan = plan.amountInPaise === 0 || 
+                           plan.label.toLowerCase() === tier.toLowerCase() || 
+                           plan.id.toLowerCase() === tier.toLowerCase();
+      return { isCurrentPlan, currentTier: tier };
+    }
+  };
+
   const planCards: ReadonlyArray<React.ReactNode> = useMemo(
     () =>
-      MEMBERSHIP_PLANS.map((plan: MembershipPlan) => (
-        <MembershipPlanCard
-          key={plan.id}
-          plan={plan}
-          onSelectPlan={initiateRazorpayCheckout}
-          isCheckoutReady={isCheckoutReady}
-          isProcessing={activePlanId === plan.id}
-        />
-      )),
-    [activePlanId, initiateRazorpayCheckout, isCheckoutReady],
+      membershipPlans.map((plan: MembershipPlan) => {
+        const { isCurrentPlan } = getCurrentPlanInfo(plan);
+        
+        return (
+          <MembershipPlanCard
+            key={plan.id}
+            plan={plan}
+            onSelectPlan={initiateRazorpayCheckout}
+            isCheckoutReady={isCheckoutReady}
+            isProcessing={activePlanId === plan.id}
+            allPlans={membershipPlans}
+            isCurrentPlan={isCurrentPlan}
+            isLoadingSubscription={isLoadingSubscription}
+          />
+        );
+      }),
+    [membershipPlans, activePlanId, initiateRazorpayCheckout, isCheckoutReady, subscriptionData, isLoadingSubscription],
   );
 
   return (
@@ -203,8 +364,43 @@ const PricingPlans: React.FC = () => {
         <header className="flex flex-col items-center gap-4 text-center">
           <h1 className="text-3xl font-bold text-gray-900 md:text-4xl">{STRING_DATA.MEMBERSHIP_PLANS}</h1>
           <p className="max-w-2xl text-sm text-gray-600 md:text-base">{STRING_DATA.MEMBERSHIP_DESCRIPTION}</p>
+          
+          {/* Current Subscription Status */}
+          {subscriptionData?.subscriptionData && !isLoadingSubscription && (
+            <div className="flex items-center gap-2 rounded-lg bg-blue-50 px-4 py-2 text-sm">
+              <span className="text-blue-700">
+                Current plan: <strong>
+                  {subscriptionData.subscriptionData.subscription?.planName || 
+                   subscriptionData.subscriptionData.tier.charAt(0).toUpperCase() + subscriptionData.subscriptionData.tier.slice(1)}
+                </strong>
+              </span>
+            </div>
+          )}
+          
+          {/* Subscription Error Warning */}
+          {hasSubscriptionError && !isLoadingPlans && (
+            <div className="flex items-center gap-2 rounded-lg bg-yellow-50 px-4 py-2 text-sm">
+              <span className="text-yellow-700">
+                ⚠️ Unable to load subscription status. Plan selection may be limited.
+              </span>
+            </div>
+          )}
         </header>
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">{planCards}</div>
+        {isLoadingPlans ? (
+          <div className="flex items-center justify-center py-12">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-4"></div>
+              <p className="text-gray-600">Loading membership plans...</p>
+            </div>
+          </div>
+        ) : hasPlansError ? (
+          <div className="text-center py-12">
+            <p className="text-red-600 mb-2">Failed to load membership plans</p>
+            <p className="text-gray-500 text-sm">{plansError?.message || "Please try again later"}</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">{planCards}</div>
+        )}
         {checkoutMessage ? (
           <p className="text-center text-sm text-gray-500">{checkoutMessage}</p>
         ) : null}
