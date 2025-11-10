@@ -2,12 +2,14 @@
 'use client';
 import { useEffect } from 'react';
 import { IUserData, User } from '@/types';
+import { UserProfileApiResponse } from '@/interfaces/UserProfileApi';
 import { getUserDetails } from '@/services/auth';
 import { REACT_QUERY } from '@/shared/Constants';
 import { QueryObserverResult, useQuery } from '@tanstack/react-query';
 
 interface IUserProfile {
   userProfileData: Pick<User, "name" | "email" | "username" | "interestedCities" | "interestedCategories" | "userType" | "budgetRanges"> | null;
+  fullProfileData: UserProfileApiResponse | null;
   isLoading: boolean;
   error: Error | null;
   refetch: () => Promise<QueryObserverResult<any, Error>>;
@@ -30,6 +32,7 @@ export const useUserProfile = (enabled = true): IUserProfile => {
 
   return {
     userProfileData: userProfile,
+    fullProfileData: userProfile as UserProfileApiResponse,
     isLoading: isLoadingUserProfile,
     error: errorUserProfile,
     setUserProfile: () => {},

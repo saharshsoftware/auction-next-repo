@@ -12,6 +12,7 @@ import { CheckoutApiRequest, CheckoutApiResponse } from "@/interfaces/CheckoutAp
 import { CreateSubscriptionApiRequest, CreateSubscriptionApiResponse } from "@/interfaces/CreateSubscriptionApi";
 import { postRequest } from "@/shared/Axios";
 import { API_ENPOINTS } from "@/services/api";
+import { normalizePlanName, denormalizePlanName } from "@/shared/Utilies";
 
 interface RazorpayOptions {
   readonly key: string;
@@ -90,6 +91,7 @@ const PricingPlans: React.FC = () => {
     error: plansError
   } = useMembershipPlans();
 
+  // Get subscription data from profile API (via useSubscription hook)
   const {
     data: subscriptionData,
     isLoading: isLoadingSubscription,
@@ -324,15 +326,26 @@ const PricingPlans: React.FC = () => {
     const { subscription, tier } = subscriptionData?.subscriptionData;
     
     if (subscription) {
-      // User has a paid subscription - match by plan name or ID
-      const isCurrentPlan = plan?.label?.toLowerCase() === subscription?.planName?.toLowerCase() || 
-                           plan?.id?.toLowerCase() === subscription?.planId?.toLowerCase();
+      // User has a paid subscription - match by plan name or ID with normalized comparison
+      const normalizedPlanLabel = normalizePlanName(plan?.label || '');
+      const normalizedPlanId = normalizePlanName(plan?.id || '');
+      const normalizedSubscriptionPlanName = normalizePlanName(subscription?.planName || '');
+      const normalizedSubscriptionPlanId = normalizePlanName(subscription?.planId || '');
+      
+      const isCurrentPlan = normalizedPlanLabel === normalizedSubscriptionPlanName || 
+                           normalizedPlanId === normalizedSubscriptionPlanName ||
+                           normalizedPlanLabel === normalizedSubscriptionPlanId ||
+                           normalizedPlanId === normalizedSubscriptionPlanId;
       return { isCurrentPlan, currentTier: subscription?.planName || "" };
     } else {
       // User is on free tier - match free plan
+      const normalizedPlanLabel = normalizePlanName(plan?.label || '');
+      const normalizedPlanId = normalizePlanName(plan?.id || '');
+      const normalizedTier = normalizePlanName(tier || '');
+      
       const isCurrentPlan = plan?.amountInPaise === 0 || 
-                           plan?.label?.toLowerCase() === tier?.toLowerCase() || 
-                           plan?.id?.toLowerCase() === tier?.toLowerCase();
+                           normalizedPlanLabel === normalizedTier || 
+                           normalizedPlanId === normalizedTier;
       return { isCurrentPlan, currentTier: tier || "" };
     }
   };
@@ -370,8 +383,7 @@ const PricingPlans: React.FC = () => {
             <div className="flex items-center gap-2 rounded-lg bg-blue-50 px-4 py-2 text-sm">
               <span className="text-blue-700">
                 Current plan: <strong>
-                  {subscriptionData.subscriptionData.subscription?.planName || 
-                   subscriptionData.subscriptionData.tier.charAt(0).toUpperCase() + subscriptionData.subscriptionData.tier.slice(1)}
+                  {denormalizePlanName(subscriptionData.subscriptionData.subscription?.planName || subscriptionData.subscriptionData.tier || '')}
                 </strong>
               </span>
             </div>

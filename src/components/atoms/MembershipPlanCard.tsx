@@ -41,7 +41,7 @@ const MembershipPlanCard: React.FC<MembershipPlanCardProps> = (props) => {
     const baseClasses = "flex h-full flex-col gap-4 rounded-2xl border bg-white p-6 shadow transition-all duration-300";
     
     if (isCurrentPlan) {
-      return `${baseClasses} border-green-500 bg-green-50 shadow-lg ring-2 ring-green-200`;
+      return `${baseClasses} border-green-300 shadow-lg ring-1 ring-green-200`;
     }
     
     if (plan.isPopular) {
@@ -53,19 +53,20 @@ const MembershipPlanCard: React.FC<MembershipPlanCardProps> = (props) => {
 
   return (
     <div className={getCardClassName()}>
-      {/* Current Plan Badge */}
-      {isCurrentPlan && (
-        <span className="w-max rounded-full border border-green-500 bg-green-100 px-3 py-1 text-xs font-semibold text-green-700">
-          Current Plan
-        </span>
-      )}
-      {plan.badgeLabel ? (
-        <span className="w-max rounded-full border border-brand-color px-3 py-1 text-xs font-semibold text-brand-color">
-          {plan.badgeLabel}
-        </span>
-      ) : null}
       <div className="flex flex-col gap-2">
-        <h3 className="text-xl font-semibold text-gray-900">{plan.label}</h3>
+        <div className="flex items-center gap-2 justify-between">
+          <h3 className="text-xl font-semibold text-gray-900">{plan.label}</h3>
+          {isCurrentPlan && (
+            <span className="rounded-full border border-green-500 bg-green-500/10 px-2 py-1 text-xs font-semibold text-green-700">
+              Current Plan
+            </span>
+          )}
+          {plan.badgeLabel && !isCurrentPlan && (
+            <span className="rounded-full border border-brand-color bg-brand-color/5 px-2 py-1 text-xs font-semibold text-brand-color">
+              {plan.badgeLabel}
+            </span>
+          )}
+        </div>
         <p className="text-sm text-gray-600">{plan.description}</p>
       </div>
       <div className="flex items-baseline gap-2">

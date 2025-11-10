@@ -15,57 +15,13 @@ import { postRequest } from "@/shared/Axios";
 import { API_ENPOINTS } from "@/services/api";
 import toast from "react-simple-toasts";
 
-const DEFAULT_PLAN_DETAILS: PlanDetails = {
-  name: "Broker Plus",
-  status: "Active",
-  renewalDate: "06 Nov 2025",
-  planId: "BROKER-PLUS-2025",
-  benefits: [
-    "10 saved collections",
-    "5 active alerts",
-    "Unlimited saved searches",
-    "WhatsApp and email notifications",
-  ],
-};
-
-const DEFAULT_PAYMENT_INFO: PaymentInfo = {
-  method: "Visa ending •••• 4242",
-  autoRenewal: true,
-  lastPaymentDate: "06 Oct 2025",
-  billingEmail: "billing@example.com",
-  gstNumber: "29ABCDE1234F2Z5",
-};
-
-const DEFAULT_PAYMENT_HISTORY: readonly PaymentHistoryEntry[] = [
-  {
-    referenceId: "INV-1024",
-    date: "06 Oct 2025",
-    description: "Broker Plus monthly renewal",
-    amount: "₹1,999",
-    status: "Paid",
-  },
-  {
-    referenceId: "INV-0987",
-    date: "06 Sep 2025",
-    description: "Broker Plus monthly renewal",
-    amount: "₹1,999",
-    status: "Paid",
-  },
-  {
-    referenceId: "INV-0943",
-    date: "06 Aug 2025",
-    description: "Broker Plus monthly renewal",
-    amount: "₹1,999",
-    status: "Paid",
-  },
-];
-
 /**
  * Displays the membership plan details, payment info, and payment history for the profile page.
  */
 const ProfileMembershipSection: React.FC<ProfileMembershipSectionProps> = (props) => {
-  const { planDetails: propPlanDetails, paymentInfo: propPaymentInfo, paymentHistory = DEFAULT_PAYMENT_HISTORY } = props;
+  const { planDetails: propPlanDetails, paymentInfo: propPaymentInfo } = props;
   
+  // Get subscription data from profile API (via useSubscription hook)
   const {
     data: subscriptionData,
     isLoading: isLoadingSubscription,
@@ -120,6 +76,7 @@ const ProfileMembershipSection: React.FC<ProfileMembershipSectionProps> = (props
    * Handles cancel subscription button click with confirmation
    */
   const handleCancelSubscription = () => {
+    // Get the internal subscription ID (not the Razorpay subscription ID)
     const subscriptionId = subscriptionData?.subscriptionData?.subscription?.id;
     
     if (!subscriptionId) {
@@ -137,13 +94,14 @@ const ProfileMembershipSection: React.FC<ProfileMembershipSectionProps> = (props
     );
 
     if (confirmCancel) {
-      cancelSubscription(subscriptionId, false); // Cancel immediately for now
+      // Use the string conversion since the API expects subscription ID as string in URL
+      cancelSubscription(subscriptionId.toString(), false); // Cancel immediately for now
     }
   };
 
   // Use API data if available, otherwise fall back to props or defaults
-  const planDetails = subscriptionData?.planDetails || propPlanDetails || DEFAULT_PLAN_DETAILS;
-  const paymentInfo = subscriptionData?.paymentInfo || propPaymentInfo || (planDetails.name === "Free" ? undefined : DEFAULT_PAYMENT_INFO);
+  const planDetails = subscriptionData?.planDetails || propPlanDetails;
+  const paymentInfo = subscriptionData?.paymentInfo || propPaymentInfo;
   
   if (isLoadingSubscription) {
     return (
@@ -167,19 +125,24 @@ const ProfileMembershipSection: React.FC<ProfileMembershipSectionProps> = (props
 
   return (
     <div className="flex flex-col gap-6">
-      <PlanDetailsCard title={STRING_DATA.MEMBERSHIP_PLAN_DETAILS} statusLabel={planDetails.status}>
-        <p className="text-sm text-gray-500 mb-4">{planDetails.planId}</p>
+      <PlanDetailsCard title={STRING_DATA.MEMBERSHIP_PLAN_DETAILS} statusLabel={planDetails?.status}>
+        {planDetails?.planId && !planDetails?.planId.endsWith('-PLAN') && (
+          <div className="mb-4">
+            <p className="text-xs font-medium text-gray-500 mb-1">Subscription ID</p>
+            <p className="text-sm-xs">{planDetails?.planId}</p>
+          </div>
+        )}
         <div className="grid gap-4 md:grid-cols-2">
           <div className="space-y-1">
-            <p className="text-sm font-medium text-gray-900">{planDetails.name}</p>
-            {planDetails.renewalDate && (
-              <p className="text-sm text-gray-500">
-                {STRING_DATA.MEMBERSHIP_PLAN_RENEWAL}: {planDetails.renewalDate}
+            <p className="text-sm font-medium text-gray-900">{planDetails?.name}</p>
+            {planDetails?.renewalDate && (
+              <p className="text-sm-xs">
+                {STRING_DATA.MEMBERSHIP_PLAN_RENEWAL}: {planDetails?.renewalDate}
               </p>
             )}
           </div>
           <ul className="grid gap-2 text-sm text-gray-600">
-            {planDetails.benefits.map((benefit) => (
+            {planDetails?.benefits?.map((benefit) => (
               <li key={benefit} className="flex items-center gap-2">
                 <span className="h-2 w-2 rounded-full bg-brand-color"></span>
                 <span>{benefit}</span>
@@ -193,29 +156,29 @@ const ProfileMembershipSection: React.FC<ProfileMembershipSectionProps> = (props
         <PlanDetailsCard title={STRING_DATA.MEMBERSHIP_PAYMENT_INFO}>
           <div className="grid gap-4 md:grid-cols-2">
             <div className="space-y-1">
-              <p className="text-sm font-medium text-gray-700">{STRING_DATA.MEMBERSHIP_PAYMENT_METHOD}</p>
-              <p className="text-sm text-gray-900">{paymentInfo.method}</p>
+              <p className="text-sm font-medium text-gray-900">{STRING_DATA.MEMBERSHIP_PAYMENT_METHOD}</p>
+              <p className="text-sm-xs">{paymentInfo.method}</p>
             </div>
             <div className="space-y-1">
-              <p className="text-sm font-medium text-gray-700">{STRING_DATA.MEMBERSHIP_PAYMENT_AUTORENEW}</p>
-              <p className="text-sm text-gray-900">{paymentInfo.autoRenewal ? STRING_DATA.YES : STRING_DATA.NO}</p>
+              <p className="text-sm font-medium text-gray-900">{STRING_DATA.MEMBERSHIP_PAYMENT_AUTORENEW}</p>
+              <p className="text-sm-xs">{paymentInfo.autoRenewal ? STRING_DATA.YES : STRING_DATA.NO}</p>
             </div>
             {paymentInfo.lastPaymentDate && (
               <div className="space-y-1">
-                <p className="text-sm font-medium text-gray-700">{STRING_DATA.MEMBERSHIP_PAYMENT_LAST}</p>
-                <p className="text-sm text-gray-900">{paymentInfo.lastPaymentDate}</p>
+                <p className="text-sm font-medium text-gray-900">{STRING_DATA.MEMBERSHIP_PAYMENT_LAST}</p>
+                <p className="text-sm-xs">{paymentInfo.lastPaymentDate}</p>
               </div>
             )}
             {paymentInfo.billingEmail && (
               <div className="space-y-1">
-                <p className="text-sm font-medium text-gray-700">{STRING_DATA.MEMBERSHIP_PAYMENT_BILLING_EMAIL}</p>
-                <p className="text-sm text-gray-900">{paymentInfo.billingEmail}</p>
+                <p className="text-sm font-medium text-gray-900">{STRING_DATA.MEMBERSHIP_PAYMENT_BILLING_EMAIL}</p>
+                <p className="text-sm-xs">{paymentInfo.billingEmail}</p>
               </div>
             )}
             {paymentInfo.gstNumber && (
               <div className="space-y-1">
-                <p className="text-sm font-medium text-gray-700">{STRING_DATA.MEMBERSHIP_PAYMENT_GST}</p>
-                <p className="text-sm text-gray-900">{paymentInfo.gstNumber}</p>
+                <p className="text-sm font-medium text-gray-900">{STRING_DATA.MEMBERSHIP_PAYMENT_GST}</p>
+                <p className="text-sm-xs">{paymentInfo.gstNumber}</p>
               </div>
             )}
           </div>

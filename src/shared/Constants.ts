@@ -65,7 +65,7 @@ export const STRING_DATA = {
   MEMBERSHIP: "Membership",
   MEMBERSHIP_PLANS: "Membership plans",
   MEMBERSHIP_DESCRIPTION:
-    "Choose the membership that matches your deal pipeline and alert needs.",
+    "Start for free. Upgrade as you go.",
   MEMBERSHIP_LIMITS: "Membership limits",
   MEMBERSHIP_BENEFITS: "Membership benefits",
   VIEW_ALL_PLANS: "Explore all plans",

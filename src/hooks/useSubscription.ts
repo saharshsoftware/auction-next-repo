@@ -1,18 +1,17 @@
 "use client";
-import { useQuery } from "@tanstack/react-query";
-import { API_BASE_URL, API_ENPOINTS } from "@/services/api";
-import { ApiSubscriptionResponse, ApiSubscriptionData } from "@/interfaces/SubscriptionApi";
+import { UserSubscriptionDetails } from "@/interfaces/UserProfileApi";
 import { PlanDetails, PaymentInfo } from "@/interfaces/Payment";
-import { REACT_QUERY, STRING_DATA } from "@/shared/Constants";
-import { getRequest } from "@/shared/Axios";
+import { STRING_DATA } from "@/shared/Constants";
+import { useUserProfile } from "@/hooks/useUserProfile";
+import { denormalizePlanName, formatDateForDisplay } from "@/shared/Utilies";
 
 /**
- * Maps API subscription data to PlanDetails interface
+ * Maps user subscription data to PlanDetails interface
  */
 const mapSubscriptionToPlanDetails = (
-  subscriptionData: ApiSubscriptionData
+  subscriptionDetails: UserSubscriptionDetails
 ): PlanDetails => {
-  const { subscription, tier, limits } = subscriptionData;
+  const { subscription, tier, limits } = subscriptionDetails;
 
   if (subscription) {
     // User has an active subscription
@@ -42,10 +41,10 @@ const mapSubscriptionToPlanDetails = (
     }
 
     return {
-      name: subscription.planName,
-      status: subscription.status,
-      renewalDate: subscription.renewalDate || subscription.endDate,
-      planId: subscription.planId,
+      name: denormalizePlanName(subscription.subscriptionType),
+      status: subscription.status.charAt(0).toUpperCase() + subscription.status.slice(1),
+      renewalDate: formatDateForDisplay(subscription.endDate),
+      planId: subscription.razorpaySubscriptionId,
       benefits,
     };
   } else {
@@ -63,7 +62,7 @@ const mapSubscriptionToPlanDetails = (
     benefits.push("Basic features");
 
     return {
-      name: tier.charAt(0).toUpperCase() + tier.slice(1), // Capitalize first letter
+      name: denormalizePlanName(tier),
       status: "Active",
       renewalDate: STRING_DATA.EMPTY,
       planId: `${tier.toUpperCase()}-PLAN`,
@@ -73,64 +72,63 @@ const mapSubscriptionToPlanDetails = (
 };
 
 /**
- * Maps API subscription data to PaymentInfo interface
+ * Maps user subscription data to PaymentInfo interface
  */
 const mapSubscriptionToPaymentInfo = (
-  subscriptionData: ApiSubscriptionData
+  subscriptionDetails: UserSubscriptionDetails
 ): PaymentInfo | undefined => {
-  const { subscription } = subscriptionData;
+  const { subscription, razorpaySubscription } = subscriptionDetails;
 
   if (!subscription) {
     return undefined; // No payment info for free tier
   }
 
   return {
-    method: subscription.paymentMethod || "Not specified",
-    autoRenewal: subscription.autoRenewal,
-    lastPaymentDate: subscription.lastPaymentDate || STRING_DATA.EMPTY,
-    billingEmail: subscription.billingEmail || STRING_DATA.EMPTY,
-    gstNumber: subscription.gstNumber,
+    method: razorpaySubscription?.payment_method || "Not specified",
+    autoRenewal: true, // Assume auto-renewal for active subscriptions
+    lastPaymentDate: formatDateForDisplay(subscription.currentPeriodStart),
+    billingEmail: STRING_DATA.EMPTY, // Not available in current data structure
+    gstNumber: undefined, // Not available in current data structure
   };
 };
 
 /**
- * Fetches user subscription data from the API
- */
-const fetchSubscriptionData = async (): Promise<{
-  planDetails: PlanDetails;
-  paymentInfo?: PaymentInfo;
-  subscriptionData: ApiSubscriptionData;
-}> => {
-  const response = await getRequest({
-    API: API_ENPOINTS.SUBSCRIPTIONS_ME,
-  });
-
-  const apiResponse: ApiSubscriptionResponse = response.data;
-  
-  if (!apiResponse.success) {
-    throw new Error("Failed to fetch subscription data");
-  }
-
-  const { data: subscriptionData } = apiResponse;
-  
-  return {
-    planDetails: mapSubscriptionToPlanDetails(subscriptionData),
-    paymentInfo: mapSubscriptionToPaymentInfo(subscriptionData),
-    subscriptionData,
-  };
-};
-
-/**
- * Custom hook to fetch and manage user subscription data
+ * Custom hook to get user subscription data from profile
  */
 export const useSubscription = (enabled = true) => {
-  return useQuery({
-    queryKey: [REACT_QUERY.USER_SUBSCRIPTION],
-    queryFn: fetchSubscriptionData,
-    enabled,
-    staleTime: 2 * 60 * 1000, // 2 minutes
-    gcTime: 10 * 60 * 1000, // 10 minutes
-    retry: 2,
-    refetchOnWindowFocus: false,
-  });
+  const { fullProfileData, isLoading, error } = useUserProfile(enabled);
+
+  // Transform the data to match the expected return format
+  const transformedData = fullProfileData?.subscriptionDetails ? {
+    planDetails: mapSubscriptionToPlanDetails(fullProfileData.subscriptionDetails),
+    paymentInfo: mapSubscriptionToPaymentInfo(fullProfileData.subscriptionDetails),
+    subscriptionData: {
+      subscription: fullProfileData.subscriptionDetails.subscription ? {
+        id: fullProfileData.subscriptionDetails.subscription.id, // Use internal subscription ID, not Razorpay ID
+        status: fullProfileData.subscriptionDetails.subscription.status,
+        planId: fullProfileData.subscriptionDetails.razorpaySubscription?.plan_id || '',
+        planName: fullProfileData.subscriptionDetails.subscription.subscriptionType,
+        startDate: fullProfileData.subscriptionDetails.subscription.startDate,
+        endDate: fullProfileData.subscriptionDetails.subscription.endDate,
+        renewalDate: fullProfileData.subscriptionDetails.subscription.endDate,
+        autoRenewal: true,
+        paymentMethod: fullProfileData.subscriptionDetails.razorpaySubscription?.payment_method,
+        lastPaymentDate: fullProfileData.subscriptionDetails.subscription.currentPeriodStart,
+        billingEmail: '',
+        gstNumber: undefined,
+        amount: 0,
+        currency: 'INR',
+      } : null,
+      tier: fullProfileData.subscriptionDetails.tier,
+      limits: fullProfileData.subscriptionDetails.limits,
+    },
+  } : null;
+
+  return {
+    data: transformedData,
+    isLoading,
+    isError: !!error,
+    error,
+    refetch: () => Promise.resolve({ data: transformedData }),
+  };
 };

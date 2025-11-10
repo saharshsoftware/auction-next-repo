@@ -15,12 +15,14 @@ import { handleOnSettled } from '@/shared/Utilies';
 import EditAlert from '../ modals/EditAlert';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { useSubscriptionAccess } from '@/hooks/useSubscriptionAccess';
 
 const ManageAlert = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
   const [selectedData, setSelectedData] = useState<IAlert>();
   const { showModal, openModal, hideModal } = useModal();
+
   const {
     showModal: showModalDelete,
     openModal: openModalDelete,
@@ -57,6 +59,10 @@ const ManageAlert = () => {
       // console.log(result, "fetchinalert");
       return res ?? [];
     },
+  });
+
+  const { canAddAlert, isLoading: isLoadingAccess } = useSubscriptionAccess({
+    alerts: dataAlert?.length ?? 0
   });
 
   // Mutations
@@ -168,11 +174,21 @@ const ManageAlert = () => {
         <div className="flex flex-col gap-4">
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 sm:gap-4">
             <h2 className="custom-h2-class">{STRING_DATA.YOUR_ALERTS}</h2>
-            <ActionButton
-              text="Add alert"
-              onclick={showModal}
-              icon={<FontAwesomeIcon icon={faAdd} />}
-            />
+            <div className="flex flex-col items-end gap-2">
+              <ActionButton
+                text={isLoadingAccess ? "Loading..." : (canAddAlert ? "Add alert" : "Limit reached")}
+                onclick={canAddAlert && !isLoadingAccess ? showModal : undefined}
+                disabled={!canAddAlert || isLoadingAccess}
+                icon={<FontAwesomeIcon icon={faAdd} />}
+              />
+              {!canAddAlert && !isLoadingAccess && (
+                <div className="text-xs text-gray-600">
+                  <Link href="/pricing" className="text-blue-600 hover:underline">
+                    Upgrade your plan
+                  </Link> to create more alerts
+                </div>
+              )}
+            </div>
           </div>
           {renderData()}
         </div>

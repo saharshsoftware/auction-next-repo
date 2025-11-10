@@ -26,6 +26,8 @@ import {
 } from "@/services/favouriteList";
 import { useRouter } from "next/navigation";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
+import { useSubscriptionAccess } from "@/hooks/useSubscriptionAccess";
+import Link from "next/link";
 
 const ManageListComp = () => {
   const router = useRouter();
@@ -74,6 +76,10 @@ const ManageListComp = () => {
       return res ?? [];
     },
     staleTime: 0,
+  });
+
+  const { canAddCollection, isLoading: isLoadingAccess } = useSubscriptionAccess({
+    collections: favouriteListData?.length ?? 0
   });
 
   useEffect(() => {
@@ -209,11 +215,21 @@ const ManageListComp = () => {
         <div className="flex flex-col gap-4">
           <div className="flex justify-between items-center gap-4">
             <div className="custom-h2-class">{STRING_DATA.YOUR_LIST}</div>
-            <ActionButton
-              text="Add list"
-              onclick={showModal}
-              icon={<FontAwesomeIcon icon={faPlus} />}
-            />
+            <div className="flex flex-col items-end gap-2">
+              <ActionButton
+                text={isLoadingAccess ? "Loading..." : (canAddCollection ? "Add list" : "Limit reached")}
+                onclick={canAddCollection && !isLoadingAccess ? showModal : undefined}
+                disabled={!canAddCollection || isLoadingAccess}
+                icon={<FontAwesomeIcon icon={faPlus} />}
+              />
+              {!canAddCollection && !isLoadingAccess && (
+                <div className="text-xs text-gray-600">
+                  <Link href="/pricing" className="text-blue-600 hover:underline">
+                    Upgrade your plan
+                  </Link> to create more collections
+                </div>
+              )}
+            </div>
           </div>
           {renderData()}
         </div>

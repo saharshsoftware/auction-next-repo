@@ -1070,3 +1070,25 @@ export const getUserData = (): any => {
     return null;
   }
 };
+
+
+// Helper function to normalize plan names for comparison
+export const normalizePlanName = (name: string): string => {
+  return name.toLowerCase().replace(/\s+/g, '').replace(/[^a-z0-9]/g, '');
+};
+
+// Helper function to convert normalized plan names back to display format
+export const denormalizePlanName = (normalizedName: string): string => {
+  const planNameMap: Record<string, string> = {
+    'brokerplus': 'Broker Plus',
+    'broker': 'Broker',
+    'free': 'Free',
+    'basic': 'Basic',
+    'premium': 'Premium',
+    'pro': 'Pro',
+    'enterprise': 'Enterprise'
+  };
+
+  const normalized = normalizePlanName(normalizedName);
+  return planNameMap[normalized] || normalizedName.charAt(0).toUpperCase() + normalizedName.slice(1);
+};
