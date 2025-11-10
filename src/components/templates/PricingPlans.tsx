@@ -321,19 +321,19 @@ const PricingPlans: React.FC = () => {
       return { isCurrentPlan: false, currentTier: null };
     }
 
-    const { subscription, tier } = subscriptionData.subscriptionData;
+    const { subscription, tier } = subscriptionData?.subscriptionData;
     
     if (subscription) {
       // User has a paid subscription - match by plan name or ID
-      const isCurrentPlan = plan.label.toLowerCase() === subscription.planName.toLowerCase() || 
-                           plan.id.toLowerCase() === subscription.planId.toLowerCase();
-      return { isCurrentPlan, currentTier: subscription.planName };
+      const isCurrentPlan = plan?.label?.toLowerCase() === subscription?.planName?.toLowerCase() || 
+                           plan?.id?.toLowerCase() === subscription?.planId?.toLowerCase();
+      return { isCurrentPlan, currentTier: subscription?.planName || "" };
     } else {
       // User is on free tier - match free plan
-      const isCurrentPlan = plan.amountInPaise === 0 || 
-                           plan.label.toLowerCase() === tier.toLowerCase() || 
-                           plan.id.toLowerCase() === tier.toLowerCase();
-      return { isCurrentPlan, currentTier: tier };
+      const isCurrentPlan = plan?.amountInPaise === 0 || 
+                           plan?.label?.toLowerCase() === tier?.toLowerCase() || 
+                           plan?.id?.toLowerCase() === tier?.toLowerCase();
+      return { isCurrentPlan, currentTier: tier || "" };
     }
   };
 
