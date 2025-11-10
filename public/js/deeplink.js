@@ -123,24 +123,154 @@
 
   // Routes-to-Deeplink rules
   const deeplinkRoutes = [
-    // Specific deep link routes can be added here
+    // Authentication routes
     {
-      name: "Generic fallback",
-      match: (path) => true,
-      deepLink: (path) => `${CONFIG.APP_SCHEME}${path}`,
+      name: "Login",
+      match: (path) => path === "login" || path === "login/",
+      deepLink: () => `${CONFIG.APP_SCHEME}auth/login`,
+    },
+    {
+      name: "OTP Login",
+      match: (path) => path === "otp-login" || path === "otp-login/",
+      deepLink: () => `${CONFIG.APP_SCHEME}auth/otp-login`,
     },
 
+    // Profile and User Management
+    {
+      name: "Profile",
+      match: (path) => path === "profile" || path === "profile/",
+      deepLink: () => `${CONFIG.APP_SCHEME}profile`,
+    },
+    {
+      name: "Manage Alert",
+      match: (path) => path.startsWith("manage-alert"),
+      deepLink: () => `${CONFIG.APP_SCHEME}alerts`,
+    },
+    {
+      name: "Manage Filter",
+      match: (path) => path.startsWith("manage-filter"),
+      deepLink: () => `${CONFIG.APP_SCHEME}filters`,
+    },
+    {
+      name: "Manage List",
+      match: (path) => path.startsWith("manage-list"),
+      deepLink: () => `${CONFIG.APP_SCHEME}saved-lists`,
+    },
+
+    // Auction-related routes
     {
       name: "Auction Details",
       match: (path) => path.startsWith("auctions/"),
       deepLink: (path) => `${CONFIG.APP_SCHEME}${path}`,
     },
     {
-      name: "Manage Alert",
-      match: (path) => path.startsWith("manage-alert/"),
-      deepLink: (path) => `${CONFIG.APP_SCHEME}alerts/`,
+      name: "E-Auction Assets",
+      match: (path) => path.startsWith("e-auction-assets"),
+      deepLink: (path) => `${CONFIG.APP_SCHEME}auctions/assets`,
+    },
+    {
+      name: "E-Auction Banks",
+      match: (path) => path.startsWith("e-auction-banks"),
+      deepLink: () => `${CONFIG.APP_SCHEME}auctions/banks`,
+    },
+    {
+      name: "E-Auction Categories",
+      match: (path) => path.startsWith("e-auction-categories"),
+      deepLink: () => `${CONFIG.APP_SCHEME}auctions/categories`,
+    },
+    {
+      name: "E-Auction Cities",
+      match: (path) => path.startsWith("e-auction-in-cities"),
+      deepLink: () => `${CONFIG.APP_SCHEME}auctions/cities`,
     },
 
+    // Browse and Search routes
+    {
+      name: "Banks",
+      match: (path) => path.startsWith("banks"),
+      deepLink: (path) => `${CONFIG.APP_SCHEME}browse/banks`,
+    },
+    {
+      name: "Categories",
+      match: (path) => path.startsWith("categories"),
+      deepLink: (path) => `${CONFIG.APP_SCHEME}browse/categories`,
+    },
+    {
+      name: "Cities",
+      match: (path) => path.startsWith("cities"),
+      deepLink: (path) => `${CONFIG.APP_SCHEME}browse/cities`,
+    },
+    {
+      name: "Locations",
+      match: (path) => path.startsWith("locations"),
+      deepLink: (path) => `${CONFIG.APP_SCHEME}browse/locations`,
+    },
+    {
+      name: "Collections",
+      match: (path) => path.startsWith("collections"),
+      deepLink: (path) => `${CONFIG.APP_SCHEME}collections`,
+    },
+
+    // Help and Information routes
+    {
+      name: "How to Create Alerts",
+      match: (path) => path.startsWith("how-to-create-alerts"),
+      deepLink: () => `${CONFIG.APP_SCHEME}help/create-alerts`,
+    },
+    {
+      name: "How to Create Saved Searches",
+      match: (path) => path.startsWith("how-to-create-saved-searches"),
+      deepLink: () => `${CONFIG.APP_SCHEME}help/saved-searches`,
+    },
+    {
+      name: "How to Create Wishlist",
+      match: (path) => path.startsWith("how-to-create-wishlist"),
+      deepLink: () => `${CONFIG.APP_SCHEME}help/wishlist`,
+    },
+    {
+      name: "FAQ",
+      match: (path) => path === "faq" || path === "faq/",
+      deepLink: () => `${CONFIG.APP_SCHEME}help/faq`,
+    },
+    {
+      name: "Bank Auction Support",
+      match: (path) => path.startsWith("bank-auction-support"),
+      deepLink: () => `${CONFIG.APP_SCHEME}support/bank-auctions`,
+    },
+
+    // Content and Information routes
+    {
+      name: "Blogs",
+      match: (path) => path.startsWith("blogs"),
+      deepLink: (path) => `${CONFIG.APP_SCHEME}content/blogs`,
+    },
+    {
+      name: "About Us",
+      match: (path) => path === "about-us" || path === "about-us/",
+      deepLink: () => `${CONFIG.APP_SCHEME}about`,
+    },
+    {
+      name: "Contact",
+      match: (path) => path === "contact" || path === "contact/",
+      deepLink: () => `${CONFIG.APP_SCHEME}contact`,
+    },
+    {
+      name: "Privacy",
+      match: (path) => path === "privacy" || path === "privacy/",
+      deepLink: () => `${CONFIG.APP_SCHEME}privacy`,
+    },
+    {
+      name: "Partner",
+      match: (path) => path === "partner" || path === "partner/",
+      deepLink: () => `${CONFIG.APP_SCHEME}partner`,
+    },
+
+    // Generic fallback - should be last
+    {
+      name: "Generic fallback",
+      match: (path) => true,
+      deepLink: (path) => `${CONFIG.APP_SCHEME}${path}`,
+    },
   ];
 
   // Enhanced app opening function with fallback
