@@ -140,18 +140,23 @@
       match: (path) => path.startsWith("manage-list"),
       deepLink: () => `${CONFIG.APP_SCHEME}wishlist`,
     },
-
+    {
+      name: "Manage filters",
+      match: (path) => path.startsWith("manage-filter"),
+      deepLink: () => `${CONFIG.APP_SCHEME}saved-search`,
+    },
     // Auction-related routes
+    {
+      name: "E-Auction find auctions",
+      match: (path) => path.startsWith("auctions/find-auctions"),
+      deepLink: (path) => `${CONFIG.APP_SCHEME}auctions`,
+    },
+  
     {
       name: "Auction Details",
       match: (path) => path.startsWith("auctions/"),
       deepLink: (path) => `${CONFIG.APP_SCHEME}${path}`,
     },
-    // {
-    //   name: "E-Auction Assets",
-    //   match: (path) => path.startsWith("e-auction-assets"),
-    //   deepLink: (path) => `${CONFIG.APP_SCHEME}auctions/assets`,
-    // },
     {
       name: "E-Auction Banks",
       match: (path) => path.startsWith("e-auction-banks"),
@@ -169,6 +174,114 @@
     },
 
     // Browse and Search routes
+    {
+      name: "Location Bank Details",
+      match: (path) => {
+        // Match pattern: locations/{city}/banks/{bank-name}
+        const parts = path.split('/');
+        return parts.length >= 4 && 
+               parts[0] === 'locations' && 
+               parts[2] === 'banks' && 
+               parts[1] && parts[3];
+      },
+      deepLink: (path) => {
+        // Extract city and bank from the path
+        const parts = path.split('/');
+        const city = parts[1];
+        const bank = parts[3];
+        return `${CONFIG.APP_SCHEME}locations/${city}/banks/${bank}`;
+      },
+    },
+    {
+      name: "Location Category Details",
+      match: (path) => {
+        // Match pattern: locations/{city}/banks/{bank-name}
+        const parts = path.split('/');
+        return parts.length >= 4 && 
+               parts[0] === 'locations' && 
+               parts[2] === 'categories' && 
+               parts[1] && parts[3];
+      },
+      deepLink: (path) => {
+        // Extract city and category from the path
+        const parts = path.split('/');
+        const city = parts[1];
+        const category = parts[3];
+        return `${CONFIG.APP_SCHEME}locations/${city}/categories/${category}`;
+      },
+    },
+    {
+      name: "Location Type Details",
+      match: (path) => {
+        // Match pattern: locations/{city}/types/{type}
+        const parts = path.split('/');
+        return parts.length >= 4 && 
+               parts[0] === 'locations' && 
+               parts[2] === 'types' && 
+               parts[1] && parts[3];
+      },
+      deepLink: (path) => {
+        // Extract city and type from the path
+        const parts = path.split('/');
+        const city = parts[1];
+        const type = parts[3];
+        return `${CONFIG.APP_SCHEME}locations/${city}/types/${type}`;
+      },
+    },
+    {
+      name: "Bank Category Details",
+      match: (path) => {
+        // Match pattern: banks/{bank-name}/categories/{category}
+        const parts = path.split('/');
+        return parts.length >= 4 && 
+               parts[0] === 'banks' && 
+               parts[2] === 'categories' && 
+               parts[1] && parts[3];
+      },
+      deepLink: (path) => {
+        // Extract city and type from the path
+        const parts = path.split('/');
+        const bank = parts[1];
+        const type = parts[3];
+        return `${CONFIG.APP_SCHEME}banks/${bank}/categories/${category}`;
+      },
+    },
+    {
+      name: "Bank Type Details",
+      match: (path) => {
+        // Match pattern: banks/{bank-name}/types/{type}
+        const parts = path.split('/');
+        return parts.length >= 4 && 
+               parts[0] === 'banks' && 
+               parts[2] === 'types' && 
+               parts[1] && parts[3];
+      },
+      deepLink: (path) => {
+        // Extract bank and type from the path
+        const parts = path.split('/');
+        const bank = parts[1];
+        const type = parts[3];
+        return `${CONFIG.APP_SCHEME}banks/${bank}/types/${type}`;
+      },
+    },
+    {
+      name: "Category Type Details",
+      match: (path) => {
+        // Match pattern: categories/{category-name}/types/{type}
+        const parts = path.split('/');
+        return parts.length >= 4 && 
+               parts[0] === 'categories' && 
+               parts[2] === 'types' && 
+               parts[1] && parts[3];
+      },
+      deepLink: (path) => {
+        // Extract category and type from the path
+        const parts = path.split('/');
+        const category = parts[1];
+        const type = parts[3];
+        return `${CONFIG.APP_SCHEME}categories/${category}/types/${type}`;
+      },
+    },
     {
       name: "Banks",
       match: (path) => path.startsWith("banks"),
@@ -231,11 +344,11 @@
     {
       name: "About Us",
       match: (path) => path === "about-us" || path === "about-us/",
-      deepLink: () => `${CONFIG.APP_SCHEME}about`,
+      deepLink: () => `${CONFIG.APP_SCHEME}about-us`,
     },
     {
       name: "Contact",
-      match: (path) => path === "contact" || path === "contact/",
+      match: (path) => path === "contact-us",
       deepLink: () => `${CONFIG.APP_SCHEME}contact`,
     },
     {

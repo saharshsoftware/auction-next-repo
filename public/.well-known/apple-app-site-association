@@ -5,8 +5,7 @@
       {
         "appID": "BW2XNV947S.com.eauctiondekho",
         "paths": [
-          "/auctions/*",
-          "/manage-alert/*"
+          "*"
         ]
       }
     ]
