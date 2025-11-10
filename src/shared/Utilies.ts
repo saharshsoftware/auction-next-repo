@@ -1092,3 +1092,12 @@ export const denormalizePlanName = (normalizedName: string): string => {
   const normalized = normalizePlanName(normalizedName);
   return planNameMap[normalized] || normalizedName.charAt(0).toUpperCase() + normalizedName.slice(1);
 };
+
+export const getPlanTypeForBackend = (planType: string): string => {
+  const planTypeMap: Record<string, string> = {
+    'brokerplus': 'brokerPlus',
+    'broker': 'broker',
+    'free': 'free',
+  };
+  return planTypeMap[planType] || planType;
+};

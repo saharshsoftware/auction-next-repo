@@ -12,7 +12,7 @@ import { CheckoutApiRequest, CheckoutApiResponse } from "@/interfaces/CheckoutAp
 import { CreateSubscriptionApiRequest, CreateSubscriptionApiResponse } from "@/interfaces/CreateSubscriptionApi";
 import { postRequest } from "@/shared/Axios";
 import { API_ENPOINTS } from "@/services/api";
-import { normalizePlanName, denormalizePlanName } from "@/shared/Utilies";
+import { normalizePlanName, denormalizePlanName, getPlanTypeForBackend } from "@/shared/Utilies";
 
 interface RazorpayOptions {
   readonly key: string;
@@ -154,9 +154,8 @@ const PricingPlans: React.FC = () => {
   const createSubscription = async (plan: MembershipPlan): Promise<CreateSubscriptionApiResponse> => {
     const requestData: CreateSubscriptionApiRequest = {
       planId: plan.razorpayPlanId,
-      planType: plan.planType,
+      planType: getPlanTypeForBackend(plan.planType),
     };
-
     const response = await postRequest({
       API: API_ENPOINTS.SUBSCRIPTIONS_CREATE,
       DATA: requestData,
