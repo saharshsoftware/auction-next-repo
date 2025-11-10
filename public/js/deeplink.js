@@ -361,6 +361,11 @@
       match: (path) => path === "terms" || path === "terms/",
       deepLink: () => `${CONFIG.APP_SCHEME}settings/terms`,
     },
+    {
+      name: "User recommendations",
+      match: (path) => path === "user/recommendations",
+      deepLink: () => `${CONFIG.APP_SCHEME}recommended`,
+    },
 
     // Generic fallback - should be last
     {
