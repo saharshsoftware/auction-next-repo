@@ -123,17 +123,6 @@
 
   // Routes-to-Deeplink rules
   const deeplinkRoutes = [
-    // Authentication routes
-    {
-      name: "Login",
-      match: (path) => path === "login" || path === "login/",
-      deepLink: () => `${CONFIG.APP_SCHEME}auth/login`,
-    },
-    {
-      name: "OTP Login",
-      match: (path) => path === "otp-login" || path === "otp-login/",
-      deepLink: () => `${CONFIG.APP_SCHEME}auth/otp-login`,
-    },
 
     // Profile and User Management
     {
@@ -147,14 +136,9 @@
       deepLink: () => `${CONFIG.APP_SCHEME}alerts`,
     },
     {
-      name: "Manage Filter",
-      match: (path) => path.startsWith("manage-filter"),
-      deepLink: () => `${CONFIG.APP_SCHEME}filters`,
-    },
-    {
       name: "Manage List",
       match: (path) => path.startsWith("manage-list"),
-      deepLink: () => `${CONFIG.APP_SCHEME}saved-lists`,
+      deepLink: () => `${CONFIG.APP_SCHEME}wishlist`,
     },
 
     // Auction-related routes
@@ -163,87 +147,87 @@
       match: (path) => path.startsWith("auctions/"),
       deepLink: (path) => `${CONFIG.APP_SCHEME}${path}`,
     },
-    {
-      name: "E-Auction Assets",
-      match: (path) => path.startsWith("e-auction-assets"),
-      deepLink: (path) => `${CONFIG.APP_SCHEME}auctions/assets`,
-    },
+    // {
+    //   name: "E-Auction Assets",
+    //   match: (path) => path.startsWith("e-auction-assets"),
+    //   deepLink: (path) => `${CONFIG.APP_SCHEME}auctions/assets`,
+    // },
     {
       name: "E-Auction Banks",
       match: (path) => path.startsWith("e-auction-banks"),
-      deepLink: () => `${CONFIG.APP_SCHEME}auctions/banks`,
+      deepLink: () => `${CONFIG.APP_SCHEME}banks`,
     },
     {
       name: "E-Auction Categories",
       match: (path) => path.startsWith("e-auction-categories"),
-      deepLink: () => `${CONFIG.APP_SCHEME}auctions/categories`,
+      deepLink: () => `${CONFIG.APP_SCHEME}categories`,
     },
     {
       name: "E-Auction Cities",
       match: (path) => path.startsWith("e-auction-in-cities"),
-      deepLink: () => `${CONFIG.APP_SCHEME}auctions/cities`,
+      deepLink: () => `${CONFIG.APP_SCHEME}locations`,
     },
 
     // Browse and Search routes
     {
       name: "Banks",
       match: (path) => path.startsWith("banks"),
-      deepLink: (path) => `${CONFIG.APP_SCHEME}browse/banks`,
+      deepLink: (path) => `${CONFIG.APP_SCHEME}banks`,
     },
     {
       name: "Categories",
       match: (path) => path.startsWith("categories"),
-      deepLink: (path) => `${CONFIG.APP_SCHEME}browse/categories`,
+      deepLink: (path) => `${CONFIG.APP_SCHEME}categories`,
     },
     {
       name: "Cities",
       match: (path) => path.startsWith("cities"),
-      deepLink: (path) => `${CONFIG.APP_SCHEME}browse/cities`,
+      deepLink: (path) => `${CONFIG.APP_SCHEME}locations`,
     },
     {
       name: "Locations",
       match: (path) => path.startsWith("locations"),
-      deepLink: (path) => `${CONFIG.APP_SCHEME}browse/locations`,
+      deepLink: (path) => `${CONFIG.APP_SCHEME}locations`,
     },
     {
       name: "Collections",
       match: (path) => path.startsWith("collections"),
-      deepLink: (path) => `${CONFIG.APP_SCHEME}collections`,
+      deepLink: (path) => `${CONFIG.APP_SCHEME}properties-collection`,
     },
 
     // Help and Information routes
     {
       name: "How to Create Alerts",
       match: (path) => path.startsWith("how-to-create-alerts"),
-      deepLink: () => `${CONFIG.APP_SCHEME}help/create-alerts`,
+      deepLink: () => `${CONFIG.APP_SCHEME}how-to-create-alerts`,
     },
     {
       name: "How to Create Saved Searches",
       match: (path) => path.startsWith("how-to-create-saved-searches"),
-      deepLink: () => `${CONFIG.APP_SCHEME}help/saved-searches`,
+      deepLink: () => `${CONFIG.APP_SCHEME}how-to-create-saved-searches`,
     },
     {
       name: "How to Create Wishlist",
       match: (path) => path.startsWith("how-to-create-wishlist"),
-      deepLink: () => `${CONFIG.APP_SCHEME}help/wishlist`,
+      deepLink: () => `${CONFIG.APP_SCHEME}how-to-create-wishlist`,
     },
     {
       name: "FAQ",
       match: (path) => path === "faq" || path === "faq/",
-      deepLink: () => `${CONFIG.APP_SCHEME}help/faq`,
+      deepLink: () => `${CONFIG.APP_SCHEME}faq`,
     },
     {
       name: "Bank Auction Support",
       match: (path) => path.startsWith("bank-auction-support"),
-      deepLink: () => `${CONFIG.APP_SCHEME}support/bank-auctions`,
+      deepLink: () => `${CONFIG.APP_SCHEME}bank-auction-support`,
     },
 
     // Content and Information routes
-    {
-      name: "Blogs",
-      match: (path) => path.startsWith("blogs"),
-      deepLink: (path) => `${CONFIG.APP_SCHEME}content/blogs`,
-    },
+    // {
+    //   name: "Blogs",
+    //   match: (path) => path.startsWith("blogs"),
+    //   deepLink: (path) => `${CONFIG.APP_SCHEME}content/blogs`,
+    // },
     {
       name: "About Us",
       match: (path) => path === "about-us" || path === "about-us/",
@@ -257,12 +241,12 @@
     {
       name: "Privacy",
       match: (path) => path === "privacy" || path === "privacy/",
-      deepLink: () => `${CONFIG.APP_SCHEME}privacy`,
+      deepLink: () => `${CONFIG.APP_SCHEME}settings/privacy`,
     },
     {
-      name: "Partner",
-      match: (path) => path === "partner" || path === "partner/",
-      deepLink: () => `${CONFIG.APP_SCHEME}partner`,
+      name: "Terms",
+      match: (path) => path === "terms" || path === "terms/",
+      deepLink: () => `${CONFIG.APP_SCHEME}settings/terms`,
     },
 
     // Generic fallback - should be last
