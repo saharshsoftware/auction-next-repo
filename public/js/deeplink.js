@@ -129,6 +129,18 @@
       match: (path) => true,
       deepLink: (path) => `${CONFIG.APP_SCHEME}${path}`,
     },
+
+    {
+      name: "Auction Details",
+      match: (path) => path.startsWith("auctions/"),
+      deepLink: (path) => `${CONFIG.APP_SCHEME}${path}`,
+    },
+    {
+      name: "Manage Alert",
+      match: (path) => path.startsWith("manage-alert/"),
+      deepLink: (path) => `${CONFIG.APP_SCHEME}alerts/`,
+    },
+
   ];
 
   // Enhanced app opening function with fallback
@@ -208,7 +220,8 @@
       if (pathname.startsWith("admin/") || pathname.startsWith("api/")) {
         return;
       }
-
+      console.log(pathname);
+      console.log(deeplinkRoutes);
       for (const route of deeplinkRoutes) {
         if (route.match(pathname)) {
           const deepLink = route.deepLink(pathname);
