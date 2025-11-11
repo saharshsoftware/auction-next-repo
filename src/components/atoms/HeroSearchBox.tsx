@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import ActionButton from "./ActionButton";
 import ReactSelectDropdown from "./ReactSelectDropdown";
 import CustomFormikForm from "./CustomFormikForm";
@@ -14,8 +14,15 @@ import { getCookie, setCookie } from "cookies-next";
 import dynamic from "next/dynamic";
 import { IFilters, useFilterStore } from "@/zustandStore/filters";
 import { trackSearch } from "@/helpers/SurveyHelper";
-import { IAssetType } from "@/types";
+import { IAssetType, BudgetRangeObject } from "@/types";
 import { SERVICE_PROVIDER_OPTIONS } from "@/shared/Utilies";
+import InlineWarningToast from "./inline-warning-toast";
+import { useUserProfile } from "@/hooks/useUserProfile";
+import { useAuthStore } from "@/zustandStore/authStore";
+
+const hasValue = (value?: string | null): boolean => typeof value === "string" && value.trim().length > 0;
+
+const hasBudgetRanges = (ranges?: BudgetRangeObject[] | null): boolean => Array.isArray(ranges) && ranges.length > 0;
 
 interface IFilter {
   category: string;
@@ -54,10 +61,33 @@ const HeroSearchBox = (props: {
 
   const token = getCookie(COOKIES.TOKEN_KEY) ?? "";
   const [loadingSearch, setLoadingSearch] = useState(false);
+  const [isProfileToastDismissed, setProfileToastDismissed] = useState<boolean>(false);
 
   const [filteredAssets, setFilteredAssets] = useState<IAssetType[]>(
     assetsTypeOptionsWithAll ?? []
   );
+  const isAuthenticated = token.length > 0;
+  const { userProfileData, isLoading: isLoadingUserProfile } = useUserProfile(isAuthenticated);
+  const setNewUserStatus = useAuthStore((state) => state.setNewUserStatus);
+  const isProfileIncomplete = useMemo(() => {
+    if (!userProfileData) {
+      return false;
+    }
+    const hasCities = hasValue(userProfileData.interestedCities);
+    const hasCategories = hasValue(userProfileData.interestedCategories);
+    const hasBudgets = hasBudgetRanges(userProfileData.budgetRanges);
+    return !(hasCities && hasCategories && hasBudgets);
+  }, [userProfileData]);
+  useEffect(() => {
+    if (!isProfileIncomplete) {
+      setProfileToastDismissed(false);
+    }
+  }, [isProfileIncomplete]);
+  const shouldShowProfileToast =
+    isAuthenticated &&
+    !isLoadingUserProfile &&
+    isProfileIncomplete &&
+    !isProfileToastDismissed;
   const getFilterQuery = (values: {
     category: any;
     price: any;
@@ -121,6 +151,15 @@ const HeroSearchBox = (props: {
   return (
     <>
       <div className="bg-white p-4 rounded-lg flex flex-col gap-4 relative pb-12 shadow shadow-brand-color border">
+        {shouldShowProfileToast ? (
+          <InlineWarningToast
+            title="Complete your preferences"
+            description="Add your interested cities, categories, and budget ranges to unlock better property recommendations."
+            actionLabel="Update now"
+            onAction={() => setNewUserStatus(true)}
+            onClose={() => setProfileToastDismissed(true)}
+          />
+        ) : null}
         <CustomFormikForm
           initialValues={initialValues}
           handleSubmit={handleSubmit}

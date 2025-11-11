@@ -234,6 +234,7 @@ export const ERROR_MESSAGE = {
   MAX_PHONE_LENGTH: "Phone number should not exceed 10 digits",
   VALID_EMAIL: "Please enter a valid email address",
   INTERESTED_CITIES_REQUIRED: "Interested cities are required",
+  INTERESTED_CATEGORIES_REQUIRED: "Interested categories are required",
 };
 
 export const NAV_LINKS = [
