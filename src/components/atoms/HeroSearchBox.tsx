@@ -7,7 +7,7 @@ import TextField from "./TextField";
 import { Field, Form } from "formik";
 import { COOKIES, RANGE_PRICE, SORT_OPTIONS, STRING_DATA, getEmptyAllObject } from "../../shared/Constants";
 import { ROUTE_CONSTANTS } from "../../shared/Routes";
-import { formatPrice, setDataInQueryParams } from "../../shared/Utilies";
+import { formatPrice, hasBudgetRanges, hasValue, setDataInQueryParams } from "../../shared/Utilies";
 import Link from "next/link";
 import RangeSliderCustom from "./RangeSliderCustom";
 import { getCookie, setCookie } from "cookies-next";
@@ -19,17 +19,6 @@ import { SERVICE_PROVIDER_OPTIONS } from "@/shared/Utilies";
 import InlineWarningToast from "./inline-warning-toast";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { useAuthStore } from "@/zustandStore/authStore";
-
-const hasValue = (value?: string | null): boolean => typeof value === "string" && value.trim().length > 0;
-
-const hasBudgetRanges = (ranges?: BudgetRangeObject[] | null): boolean => Array.isArray(ranges) && ranges.length > 0;
-
-interface IFilter {
-  category: string;
-  price: string;
-  bank: string;
-  location: string;
-}
 
 const initialValues = {
   propertyType: getEmptyAllObject(),
