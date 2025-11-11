@@ -28,11 +28,13 @@ interface IEditProfileModal {
 
 const validationSchema = Yup.object({
   interestedCities: Yup.array().min(1, ERROR_MESSAGE.INTERESTED_CITIES_REQUIRED),
+  interestedCategories: Yup.array().min(1, ERROR_MESSAGE.INTERESTED_CATEGORIES_REQUIRED),
   budgetRanges: Yup.array().min(1, ERROR_MESSAGE.BUDGET_RANGES_REQUIRED),
 });
 
 const initialValues = {
   interestedCities: [],
+  interestedCategories: [],
 };
 
 const EditProfileModal: React.FC<IEditProfileModal> = (props) => {

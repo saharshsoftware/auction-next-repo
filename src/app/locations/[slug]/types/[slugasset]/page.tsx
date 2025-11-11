@@ -36,6 +36,7 @@ import { SkeletonAuctionList } from "@/components/skeltons/SkeletonAuctionList";
 import AuctionResults from "@/components/templates/AuctionResults";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
 import Breadcrumb from "@/components/atoms/Breadcrumb";
+import ProfilePreferencesToast from "@/components/atoms/ProfilePreferencesToast";
 
 // Add caching functions
 const getLocationsCached = cache(async () => {
@@ -202,6 +203,9 @@ export default async function Page({
         selectedAsset={selectedAsset}
       />
       <div className="common-section">
+        <div className="my-4 block lg:hidden">
+          <ProfilePreferencesToast />
+        </div>
         {/* Breadcrumb Navigation */}
         <div className="pt-4">
           <Breadcrumb
@@ -221,11 +225,16 @@ export default async function Page({
             </Suspense>
           </div>
           <div className="grid-col-span-3">
-            <TopBanks
-              bankOptions={popularBanks}
-              locationSlug={slug}
-              isLocationCategoriesRoute={true}
-            />
+            <div className="mb-4">
+              <ProfilePreferencesToast />
+            </div>
+            <div className="mb-4">
+              <TopBanks
+                bankOptions={popularBanks}
+                locationSlug={slug}
+                isLocationCategoriesRoute={true}
+              />
+            </div>
           </div>
         </div>
       </div>

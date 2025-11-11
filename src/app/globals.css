@@ -90,7 +90,7 @@ body :focus-within {
   ::-webkit-scrollbar-thumb {
     background: #e0cbcb;
     border-radius: 100vh;
-    border: 3px solid red;
+    border: 3px solid var(--brand-color);
   }
 
   ::-webkit-scrollbar-thumb:hover {

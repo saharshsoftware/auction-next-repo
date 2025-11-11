@@ -200,7 +200,6 @@ const FindAuction: React.FC<FindAuctionProps> = ({
     setFieldValue?: any
   ) => {
     setFieldValue?.("propertyType", getEmptyAllObject()); // Reset propertyType
-
     // If category is "All" or empty, show all assets (assets already contain "All" option)
     if (!selectedCategorySlug || selectedCategorySlug === STRING_DATA.EMPTY) {
       setFilteredAssets(assets);
@@ -221,13 +220,13 @@ const FindAuction: React.FC<FindAuctionProps> = ({
   }, [assets]);
 
   useEffect(() => {
-    if ("slug" in selectedCategory && selectedCategory?.slug) {
-      handleCategoryChange(selectedCategory?.slug);
-    } else if (selectedCategory?.value === STRING_DATA.EMPTY || selectedCategory?.label === STRING_DATA.ALL) {
+    if ("slug" in currentFilterValues.category && currentFilterValues.category?.slug) {
+      handleCategoryChange(currentFilterValues.category?.slug);
+    } else if (currentFilterValues.category?.value === STRING_DATA.EMPTY || currentFilterValues.category?.label === STRING_DATA.ALL) {
       // Handle case where category is reset to "All" (assets already contain "All" option)
       setFilteredAssets(assets);
     }
-  }, [selectedCategory, assets, handleCategoryChange]);
+  }, [currentFilterValues.category, assets, handleCategoryChange]);
 
   const renderForm = () => (
     <Formik

@@ -157,6 +157,7 @@ export const STRING_DATA = {
   ASSETS_TYPE: "asset-types",
   TYPES: "types",
   BACK_TO_LOGIN: "Back to Login",
+  PREFERENCES_MESSAGE: "Set your preferences for smarter results.",
 };
 
 export const FEATURE_FLAGS = {
@@ -234,6 +235,7 @@ export const ERROR_MESSAGE = {
   MAX_PHONE_LENGTH: "Phone number should not exceed 10 digits",
   VALID_EMAIL: "Please enter a valid email address",
   INTERESTED_CITIES_REQUIRED: "Interested cities are required",
+  INTERESTED_CATEGORIES_REQUIRED: "Interested categories are required",
 };
 
 export const NAV_LINKS = [

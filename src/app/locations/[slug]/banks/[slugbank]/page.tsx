@@ -42,6 +42,7 @@ import { buildCanonicalUrl, getBankBySlug, getLocationBySlug, getPopularDataBySo
 import BreadcrumbJsonLd from "@/components/atoms/BreadcrumbJsonLd";
 import Breadcrumb from "@/components/atoms/Breadcrumb";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
+import ProfilePreferencesToast from "@/components/atoms/ProfilePreferencesToast";
 
 // Add caching functions
 const getLocationsCached = cache(async () => {
@@ -226,6 +227,9 @@ export default async function Page({
         selectedBank={selectedBank}
       />
       <div className="common-section">
+        <div className="my-4 block lg:hidden">
+          <ProfilePreferencesToast />
+        </div>
         {/* Breadcrumb Navigation */}
         <div className="pt-4">
           <Breadcrumb
@@ -245,11 +249,16 @@ export default async function Page({
             </Suspense>
           </div>
           <div className="lg:col-span-3 col-span-full">
-            <TopBanks
-              bankOptions={popularBanks}
-              isLocationRoute={true}
-              locationSlug={slug}
-            />
+            <div className="mb-4">
+              <ProfilePreferencesToast />
+            </div>
+            <div className="mb-4">
+              <TopBanks
+                bankOptions={popularBanks}
+                isLocationRoute={true}
+                locationSlug={slug}
+              />
+            </div>
           </div>
         </div>
       </div>

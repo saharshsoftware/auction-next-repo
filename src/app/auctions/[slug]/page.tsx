@@ -21,6 +21,7 @@ import { AuctionDetailPage } from "@/components/templates/AuctionDetail2";
 import Breadcrumb from "@/components/atoms/Breadcrumb";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
 import { constructImageUrls, buildAuctionUrl, buildLogoUrl } from "@/utilies/imageUtils";
+import ProfilePreferencesToast from "@/components/atoms/ProfilePreferencesToast";
 
 async function getAuctionDetailData(slug: string) {
   const res = await getAuctionDetail({ slug });
@@ -186,6 +187,9 @@ export default async function Page({
           locations={locationOptions}
         />
         <div className="lg:px-32 px-2">
+          <div className="my-4 block lg:hidden">
+            <ProfilePreferencesToast />
+          </div>
           {/* Breadcrumb Navigation */}
           <div className="pt-4">
             <Breadcrumb 
@@ -197,6 +201,9 @@ export default async function Page({
               <AuctionDetailPage auctionDetail={auctionDetail} slug={slug} isInterested={isInterested} />
             </div>
             <div className="grid-col-span-3">
+            <div className="mb-4">
+              <ProfilePreferencesToast />
+            </div>
               {renderWishlistComponent()}
             </div>
           </div>
