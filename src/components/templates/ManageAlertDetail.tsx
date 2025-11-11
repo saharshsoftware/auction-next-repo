@@ -66,7 +66,7 @@ const ManageAlertDetail: React.FC<{ id: string }> = ({ id }) => {
         alertId: id,
         page: currentPage,
         pageSize: ITEMS_PER_PAGE,
-        days: 60,
+        days: 2,
         noticesLimit: 100,
         sortField: "created_at",
         sortOrder: "DESC",
