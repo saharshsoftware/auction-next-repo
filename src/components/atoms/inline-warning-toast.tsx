@@ -71,7 +71,7 @@ const InlineWarningToast: React.FC<InlineWarningToastProps> = (props) => {
   const actionContent = renderActionButton({ actionLabel, onAction, onClick: handleAction });
   const closeContent = renderCloseButton({ onClose, onClick: handleClose });
   return (
-    <div className="flex w-full items-start gap-3 rounded-md border border-yellow-200 border-l-4 border-l-yellow-500 bg-yellow-50 px-4 py-3 shadow-sm">
+    <div className="flex w-full items-start gap-3 rounded-md border border-yellow-200 border-l-4 border-l-yellow-500 bg-yellow-50 p-3 shadow-sm">
       <AlertTriangle aria-hidden="true" className="h-5 w-5 text-yellow-600" />
       <div className="flex flex-1 flex-col text-left text-sm text-yellow-900">
         <span className="font-semibold">{title}</span>

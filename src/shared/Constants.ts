@@ -157,6 +157,7 @@ export const STRING_DATA = {
   ASSETS_TYPE: "asset-types",
   TYPES: "types",
   BACK_TO_LOGIN: "Back to Login",
+  PREFERENCES_MESSAGE: "Set your preferences for smarter results.",
 };
 
 export const FEATURE_FLAGS = {

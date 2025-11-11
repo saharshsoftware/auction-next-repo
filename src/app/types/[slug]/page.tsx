@@ -40,6 +40,7 @@ import AuctionResults from "@/components/templates/AuctionResults";
 import ImageJsonLd from "@/components/atoms/ImageJsonLd";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
 import Breadcrumb from "@/components/atoms/Breadcrumb";
+import ProfilePreferencesToast from "@/components/atoms/ProfilePreferencesToast";
 
 async function getSlugData(slug: string) {
   const selectedAsset = (await fetchAssetTypeBySlug({
@@ -198,6 +199,9 @@ export default async function Page({
         selectedAsset={selectedAsset}
       />
       <div className="common-section">
+        <div className="my-4 block lg:hidden">
+          <ProfilePreferencesToast />
+        </div>
         {/* Breadcrumb Navigation */}
         <div className="pt-4">
           <Breadcrumb
@@ -217,7 +221,12 @@ export default async function Page({
             </Suspense>
           </div>
           <div className="grid-col-span-3">
-            <TopAssets assetsTypeData={popularAssets} />
+            <div className="mb-4 hidden md:block">
+              <ProfilePreferencesToast />
+            </div>
+            <div className="mb-4">
+              <TopAssets assetsTypeData={popularAssets} />
+            </div>
           </div>
         </div>
       </div>
