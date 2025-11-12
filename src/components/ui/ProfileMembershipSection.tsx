@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { STRING_DATA } from "@/shared/Constants";
+import { STRING_DATA, REACT_QUERY } from "@/shared/Constants";
 import PlanDetailsCard from "@/components/ui/PlanDetailsCard";
 import PaymentHistoryTable from "@/components/ui/PaymentHistoryTable";
 import {
@@ -14,12 +14,14 @@ import { CancelSubscriptionApiRequest, CancelSubscriptionApiResponse } from "@/i
 import { postRequest } from "@/shared/Axios";
 import { API_ENPOINTS } from "@/services/api";
 import toast from "react-simple-toasts";
+import { useQueryClient } from "@tanstack/react-query";
 
 /**
  * Displays the membership plan details, payment info, and payment history for the profile page.
  */
 const ProfileMembershipSection: React.FC<ProfileMembershipSectionProps> = (props) => {
   const { planDetails: propPlanDetails, paymentInfo: propPaymentInfo } = props;
+  const queryClient = useQueryClient();
   
   // Get subscription data from profile API (via useSubscription hook)
   const {
@@ -58,6 +60,11 @@ const ProfileMembershipSection: React.FC<ProfileMembershipSectionProps> = (props
         duration: 4000,
         position: 'top-center',
         theme: 'success',
+      });
+
+      // Refetch user profile data to update subscription status
+      await queryClient.invalidateQueries({
+        queryKey: [REACT_QUERY.USER_PROFILE],
       });
 
     } catch (error) {
@@ -198,7 +205,7 @@ const ProfileMembershipSection: React.FC<ProfileMembershipSectionProps> = (props
               </div>
               <button
                 onClick={handleCancelSubscription}
-                disabled={true} // Disabled for testing as requested
+                // disabled={true} // Disabled for testing as requested
                 className="px-4 py-2 text-sm font-medium text-red-600 bg-red-50 border border-red-200 rounded-md hover:bg-red-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 title="Currently disabled for testing"
               >

@@ -5,15 +5,18 @@ import { MembershipPlan } from "@/interfaces/MembershipPlan";
 import { MembershipPlanCardProps } from "@/interfaces/Payment";
 import { STRING_DATA } from "@/shared/Constants";
 import { getIncrementalFeatures } from "@/shared/MembershipUtils";
-
+import { ROUTE_CONSTANTS } from "@/shared/Routes";
+import { useRouter } from "next/navigation";
 /**
  * Renders a responsive membership plan card.
  */
 const MembershipPlanCard: React.FC<MembershipPlanCardProps> = (props) => {
-  const { plan, onSelectPlan, isCheckoutReady, isProcessing, allPlans, isCurrentPlan = false, isLoadingSubscription = false } = props;
+  const { plan, onSelectPlan, isCheckoutReady, isProcessing = false, isThisPlanProcessing = false, allPlans, isCurrentPlan = false, isLoadingSubscription = false, isAuthenticated = false } = props;
+  const router = useRouter();
   const limitEntries = getIncrementalFeatures(plan, allPlans);
+
   const isPaidPlan = plan.amountInPaise > 0;
-  const isButtonDisabled = (isPaidPlan && !isCheckoutReady) || isCurrentPlan || isLoadingSubscription;
+  const isButtonDisabled = (isPaidPlan && !isCheckoutReady) || isCurrentPlan || isLoadingSubscription || isProcessing;
   
   const getPreviousPlanLabel = (previousPlanId?: string): string => {
     if (!previousPlanId || !allPlans) {
@@ -51,6 +54,35 @@ const MembershipPlanCard: React.FC<MembershipPlanCardProps> = (props) => {
     return `${baseClasses} border-gray-200`;
   };
 
+  const handleSelectPlan = () => {
+    if (isButtonDisabled) {
+      return;
+    }
+    if (!isAuthenticated) {
+      router.push(ROUTE_CONSTANTS.LOGIN);
+      return;
+    }
+    onSelectPlan(plan);
+  };
+
+  const getMessage = (): string => {
+    if (isCurrentPlan) {
+      return "You're currently on this plan";
+    }
+    if (isLoadingSubscription) {
+      return "Loading subscription...";
+    }
+    if (isProcessing && isThisPlanProcessing) {
+      return "Processing this subscription...";
+    }
+    if (isProcessing && !isThisPlanProcessing) {
+      return "Processing another subscription...";
+    }
+    else {
+      return STRING_DATA.PAYMENT_LOADING_MESSAGE;
+    }
+  };
+  
   return (
     <div className={getCardClassName()}>
       <div className="flex flex-col gap-2">
@@ -95,20 +127,13 @@ const MembershipPlanCard: React.FC<MembershipPlanCardProps> = (props) => {
         <ActionButton
           text={getButtonText()}
           customClass="w-full justify-center"
-          onclick={() => onSelectPlan(plan)}
+          onclick={handleSelectPlan}
           disabled={isButtonDisabled}
-          isLoading={isProcessing}
+          isLoading={isThisPlanProcessing}
         />
         {isButtonDisabled && (
           <p className="mt-2 text-center text-xs text-gray-500">
-            {isCurrentPlan 
-              ? "You're currently on this plan" 
-              : isLoadingSubscription 
-                ? "Loading subscription..." 
-                : isProcessing
-                  ? "Initializing checkout..."
-                  : STRING_DATA.PAYMENT_LOADING_MESSAGE
-            }
+              { getMessage() }
           </p>
         )}
       </div>

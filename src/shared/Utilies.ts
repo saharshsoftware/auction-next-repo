@@ -1101,3 +1101,19 @@ export const getPlanTypeForBackend = (planType: string): string => {
   };
   return planTypeMap[planType] || planType;
 };
+
+export const logInfo = (message: string, extra?: unknown, logScope: string = "[Utilies]") => {
+  if (extra !== undefined) {
+    console.info(`${logScope} ${message}`, extra);
+    return;
+  }
+  console.info(`${logScope} ${message}`);
+};
+
+export const logError = (message: string, extra?: unknown, logScope: string = "[Utilies]") => {
+  if (extra !== undefined) {
+    console.error(`${logScope} ${message}`, extra);
+    return;
+  }
+  console.error(`${logScope} ${message}`);
+};

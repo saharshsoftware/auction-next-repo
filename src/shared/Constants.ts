@@ -195,6 +195,7 @@ export const STRING_DATA = {
   MEMBERSHIP_SETTINGS: "Membership",
   MEMBERSHIP_VIEW_DETAILS: "View membership details",
   CANCEL_SUBSCRIPTION: "Cancel Subscription",
+  SUBSCRIPTION_PENDING_MESSAGE: "Your subscription is currently being processed. Please wait while we activate your plan. You will not be able to make changes until the activation is complete.",
 };
 
 export const FEATURE_FLAGS = {

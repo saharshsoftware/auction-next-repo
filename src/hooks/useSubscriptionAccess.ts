@@ -27,7 +27,7 @@ export const useSubscriptionAccess = (currentCounts?: CurrentCounts): Subscripti
 
   return useMemo(() => {
     const isLoading = profileLoading;
-    
+
     if (isLoading || !limits) {
       return {
         canAddCollection: false,
@@ -48,9 +48,9 @@ export const useSubscriptionAccess = (currentCounts?: CurrentCounts): Subscripti
     const canAdd = {
       canAddCollection: limits.collectionsMax > 0 && actualCounts.collections < limits.collectionsMax,
       canAddAlert: limits.alertsMax > 0 && actualCounts.alerts < limits.alertsMax,
-      canAddSavedSearch: limits.savedSearchesMax === null || 
-                         limits.savedSearchesMax === Number.POSITIVE_INFINITY || 
-                         (limits.savedSearchesMax > 0 && actualCounts.savedSearches < limits.savedSearchesMax),
+      canAddSavedSearch: limits.savedSearchesMax === null ||
+        limits.savedSearchesMax === Number.POSITIVE_INFINITY ||
+        (limits.savedSearchesMax > 0 && actualCounts.savedSearches < limits.savedSearchesMax),
       canReceiveWhatsApp: limits.whatsappAlerts,
       canReceiveEmail: limits.emailAlerts,
       isLoading: false,

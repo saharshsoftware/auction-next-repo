@@ -52,4 +52,5 @@ export const API_ENPOINTS = {
   SUBSCRIPTIONS_CREATE: "/api/subscriptions/create",
   SUBSCRIPTIONS_CHECKOUT: "/api/subscriptions/checkout",
   SUBSCRIPTIONS_CANCEL: "/api/subscriptions",
+  SUBSCRIPTIONS_ME: "/api/subscriptions/me",
 };
