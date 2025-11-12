@@ -9,7 +9,7 @@ import { denormalizePlanName } from "@/shared/Utilies";
 import { useQueryClient } from "@tanstack/react-query";
 import { useIsAuthenticated } from "@/hooks/useAuthenticated";
 import { useRazorpayLoader } from "@/hooks/useRazorpayLoader";
-import { useSubscriptionPolling } from "@/hooks/useSubscriptionPolling";
+import { useSubscriptionPolling, useAutoPollPendingSubscription } from "@/hooks/useSubscriptionPolling";
 import { useRazorpayCheckout } from "@/hooks/useRazorpayCheckout";
 import { useCurrentPlanInfo } from "@/hooks/useCurrentPlanInfo";
 import { useSubscriptionPendingStatus } from "@/hooks/useSubscriptionPendingStatus";
@@ -43,9 +43,15 @@ const PricingPlans: React.FC = () => {
     subscriptionData,
     isLoadingSubscription
   );
+
+  // Auto-poll when subscription status is pending on page load
+  useAutoPollPendingSubscription(queryClient, subscriptionData, isLoadingSubscription);
   
-  const handlePaymentSuccess = useCallback(async (subscriptionId: string) => {
-    const isActivated = await pollSubscriptionStatus(subscriptionId);
+  const handlePaymentSuccess = useCallback(async (subscriptionId: string, planType: string) => {
+    const isActivated = await pollSubscriptionStatus({
+      expectedSubscriptionId: subscriptionId,
+      expectedSubscriptionType: planType,
+    });
     
     if (isActivated) {
       toast("Subscription activated successfully!", {
@@ -79,6 +85,10 @@ const PricingPlans: React.FC = () => {
 
   const getCurrentPlanInfo = useCurrentPlanInfo(subscriptionData);
   
+  // Don't show loading if we have active subscription data
+  const hasActiveSubscription = subscriptionData?.subscriptionData?.subscription?.status?.toLowerCase() === "active";
+  const shouldShowLoading = isLoadingSubscription && !hasActiveSubscription;
+  
   const handlePlanSelection = useCallback((plan: MembershipPlan) => {
     if (isActionsDisabled) {
       return;
@@ -103,12 +113,12 @@ const PricingPlans: React.FC = () => {
             isThisPlanProcessing={isThisPlanProcessing}
             allPlans={membershipPlans}
             isCurrentPlan={isCurrentPlan}
-            isLoadingSubscription={isLoadingSubscription}
+            isLoadingSubscription={shouldShowLoading}
             isAuthenticated={isAuthenticated}
           />
         );
       }),
-    [membershipPlans, activePlanId, handlePlanSelection, isCheckoutReady, isActionsDisabled, isLoadingSubscription, getCurrentPlanInfo, isAuthenticated],
+    [membershipPlans, activePlanId, handlePlanSelection, isCheckoutReady, isActionsDisabled, shouldShowLoading, getCurrentPlanInfo, isAuthenticated],
   );
 
   return (
@@ -119,7 +129,7 @@ const PricingPlans: React.FC = () => {
           <p className="max-w-2xl text-sm text-gray-600 md:text-base">{STRING_DATA.MEMBERSHIP_DESCRIPTION}</p>
           
           {/* Subscription Pending Warning */}
-          {isPending && !isLoadingSubscription && (
+          {isPending && !shouldShowLoading && (
             <div className="flex items-center gap-2 rounded-lg bg-orange-50 border border-orange-200 px-4 py-3 text-sm">
               <span className="text-orange-800 font-medium">
                 ⏳ {pendingMessage}
@@ -128,7 +138,7 @@ const PricingPlans: React.FC = () => {
           )}
           
           {/* Current Subscription Status */}
-          {subscriptionData?.subscriptionData && !isLoadingSubscription && !isPending && (
+          {subscriptionData?.subscriptionData && !shouldShowLoading && !isPending && (
             <div className="flex items-center gap-2 rounded-lg bg-blue-50 px-4 py-2 text-sm">
               <span className="text-blue-700">
                 Current plan: <strong>

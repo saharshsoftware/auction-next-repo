@@ -47,7 +47,7 @@ declare global {
 
 interface UseRazorpayCheckoutParams {
   readonly isCheckoutReady: boolean;
-  readonly onPaymentSuccess: (subscriptionId: string) => Promise<void>;
+  readonly onPaymentSuccess: (subscriptionId: string, planType: string) => Promise<void>;
 }
 
 /**
@@ -130,7 +130,7 @@ export const useRazorpayCheckout = ({
             });
 
             try {
-              await onPaymentSuccess(subscriptionId);
+              await onPaymentSuccess(subscriptionId, plan.planType);
             } catch (error) {
               setActivePlanId(null);
               logError("Error in payment success handler", error);
