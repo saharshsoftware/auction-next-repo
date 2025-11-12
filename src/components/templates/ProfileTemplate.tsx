@@ -13,12 +13,13 @@ import { USER_TYPE } from "@/types.d";
 import BudgetRangePills from "../atoms/BudgetRangePills";
 import ProfileMembershipSection from "@/components/ui/ProfileMembershipSection";
 import { useState } from "react";
+import { useIsAuthenticated } from "@/hooks/useAuthenticated";
 
 type TabType = "profile" | "membership";
 
 export default function ProfileTemplate() {
   const [activeTab, setActiveTab] = useState<TabType>("profile");
-  
+  const { isAuthenticated } = useIsAuthenticated();
   const { showModal, openModal, hideModal } = useModal();
   const {
     showModal: showModalDelete,
@@ -31,7 +32,7 @@ export default function ProfileTemplate() {
     hideModal: hideModalEdit,
   } = useModal();
 
-  const { userProfileData: userData, isLoading, error, refetch: refetchUserProfile } = useUserProfile();
+  const { userProfileData: userData, isLoading, error, refetch: refetchUserProfile } = useUserProfile(isAuthenticated);
 
   const renderUserType = (userType: USER_TYPE | undefined) => {
     if (userType === USER_TYPE.INDIVIDUAL) {
@@ -169,7 +170,7 @@ export default function ProfileTemplate() {
             Manage your current membership plan, billing preferences, and payment history.
           </p>
         </div>
-        <ProfileMembershipSection />
+        <ProfileMembershipSection refetchUserProfile={refetchUserProfile} />
       </div>
     </div>
   );
@@ -191,7 +192,7 @@ export default function ProfileTemplate() {
     }
 
     return (
-      <div className="w-full  mx-auto px-4 py-6">
+      <div className="w-full  mx-auto py-6">
         {/* Header */}
         <div className="mb-6 sm:mb-8 text-center sm:text-left">
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Account Settings</h1>

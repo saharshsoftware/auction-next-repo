@@ -1,6 +1,8 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
+import Link from "next/link";
 import { STRING_DATA, REACT_QUERY } from "@/shared/Constants";
+import { ROUTE_CONSTANTS } from "@/shared/Routes";
 import PlanDetailsCard from "@/components/ui/PlanDetailsCard";
 import PaymentHistoryTable from "@/components/ui/PaymentHistoryTable";
 import {
@@ -15,13 +17,16 @@ import { postRequest } from "@/shared/Axios";
 import { API_ENPOINTS } from "@/services/api";
 import toast from "react-simple-toasts";
 import { useQueryClient } from "@tanstack/react-query";
+import CancelSubscriptionConfirmationModal from "@/components/ modals/CancelSubscriptionConfirmationModal";
 
 /**
  * Displays the membership plan details, payment info, and payment history for the profile page.
  */
 const ProfileMembershipSection: React.FC<ProfileMembershipSectionProps> = (props) => {
-  const { planDetails: propPlanDetails, paymentInfo: propPaymentInfo } = props;
-  const queryClient = useQueryClient();
+  const { planDetails: propPlanDetails, paymentInfo: propPaymentInfo, refetchUserProfile } = props;
+  // const queryClient = useQueryClient();
+  const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
+  const [isCanceling, setIsCanceling] = useState(false);
   
   // Get subscription data from profile API (via useSubscription hook)
   const {
@@ -35,6 +40,7 @@ const ProfileMembershipSection: React.FC<ProfileMembershipSectionProps> = (props
    * Cancels the user's subscription
    */
   const cancelSubscription = async (subscriptionId: string, cancelAtCycleEnd: boolean = false): Promise<void> => {
+    setIsCanceling(true);
     try {
       const requestData: CancelSubscriptionApiRequest = {
         cancelAtCycleEnd,
@@ -62,10 +68,11 @@ const ProfileMembershipSection: React.FC<ProfileMembershipSectionProps> = (props
         theme: 'success',
       });
 
+      // Close modal
+      setIsCancelModalOpen(false);
+
       // Refetch user profile data to update subscription status
-      await queryClient.invalidateQueries({
-        queryKey: [REACT_QUERY.USER_PROFILE],
-      });
+      refetchUserProfile();
 
     } catch (error) {
       console.error("Failed to cancel subscription:", error);
@@ -76,14 +83,15 @@ const ProfileMembershipSection: React.FC<ProfileMembershipSectionProps> = (props
         position: 'top-center',
         theme: 'failure',
       });
+    } finally {
+      setIsCanceling(false);
     }
   };
 
   /**
-   * Handles cancel subscription button click with confirmation
+   * Handles cancel subscription button click - opens confirmation modal
    */
-  const handleCancelSubscription = () => {
-    // Get the internal subscription ID (not the Razorpay subscription ID)
+  const handleCancelSubscriptionClick = () => {
     const subscriptionId = subscriptionData?.subscriptionData?.subscription?.id;
     
     if (!subscriptionId) {
@@ -95,15 +103,26 @@ const ProfileMembershipSection: React.FC<ProfileMembershipSectionProps> = (props
       return;
     }
 
-    // Show confirmation dialog
-    const confirmCancel = window.confirm(
-      "Are you sure you want to cancel your subscription? This action cannot be undone."
-    );
+    setIsCancelModalOpen(true);
+  };
 
-    if (confirmCancel) {
-      // Use the string conversion since the API expects subscription ID as string in URL
-      cancelSubscription(subscriptionId.toString(), false); // Cancel immediately for now
+  /**
+   * Handles confirmation from modal
+   */
+  const handleConfirmCancel = () => {
+    const subscriptionId = subscriptionData?.subscriptionData?.subscription?.id;
+    
+    if (!subscriptionId) {
+      toast("No active subscription found to cancel", {
+        duration: 4000,
+        position: 'top-center',
+        theme: 'failure',
+      });
+      setIsCancelModalOpen(false);
+      return;
     }
+
+    cancelSubscription(subscriptionId.toString(), false);
   };
 
   // Use API data if available, otherwise fall back to props or defaults
@@ -192,11 +211,49 @@ const ProfileMembershipSection: React.FC<ProfileMembershipSectionProps> = (props
         </PlanDetailsCard>
       )}
 
+      {/* Upgrade Section - Only show for free tier users */}
+      {!subscriptionData?.subscriptionData?.subscription && (
+        <PlanDetailsCard title="Upgrade Your Membership">
+          <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+              <div className="flex-1">
+                <h4 className="text-sm font-medium text-gray-900 mb-2">Unlock Premium Features</h4>
+                <p className="text-sm text-gray-600 mb-3">
+                  Upgrade to a premium plan to access advanced features like unlimited saved searches, 
+                  priority alerts, WhatsApp notifications, and more. Choose a plan that fits your needs 
+                  and take your auction experience to the next level.
+                </p>
+                <ul className="text-sm text-gray-600 space-y-1 mb-4">
+                  <li className="flex items-center gap-2">
+                    <span className="h-1.5 w-1.5 rounded-full bg-blue-500"></span>
+                    <span>Unlimited saved searches</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="h-1.5 w-1.5 rounded-full bg-blue-500"></span>
+                    <span>Priority email and WhatsApp alerts</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="h-1.5 w-1.5 rounded-full bg-blue-500"></span>
+                    <span>Enhanced collection management</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <Link
+              href={ROUTE_CONSTANTS.PRICING}
+              className="w-full md:w-auto px-6 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors text-center whitespace-nowrap"
+            >
+              View Pricing Plans
+            </Link>
+          </div>
+        </PlanDetailsCard>
+      )}
+
       {/* Cancel Subscription Section - Only show for paid subscriptions */}
       {subscriptionData?.subscriptionData?.subscription && (
         <PlanDetailsCard title="Subscription Management">
           <div className="flex flex-col gap-4">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
               <div className="flex-1">
                 <h4 className="text-sm font-medium text-gray-900 mb-1">Cancel Subscription</h4>
                 <p className="text-sm text-gray-600">
@@ -204,20 +261,24 @@ const ProfileMembershipSection: React.FC<ProfileMembershipSectionProps> = (props
                 </p>
               </div>
               <button
-                onClick={handleCancelSubscription}
-                // disabled={true} // Disabled for testing as requested
-                className="px-4 py-2 text-sm font-medium text-red-600 bg-red-50 border border-red-200 rounded-md hover:bg-red-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                title="Currently disabled for testing"
+                onClick={handleCancelSubscriptionClick}
+                disabled={isCanceling}
+                className="w-full md:w-auto px-4 py-2 text-sm font-medium text-red-600 bg-red-50 border border-red-200 rounded-md hover:bg-red-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors whitespace-nowrap"
               >
                 {STRING_DATA.CANCEL_SUBSCRIPTION}
               </button>
             </div>
-            <div className="text-xs text-gray-500 bg-gray-50 p-3 rounded-md">
-              ⚠️ Cancel subscription is currently disabled for testing purposes
-            </div>
           </div>
         </PlanDetailsCard>
       )}
+
+      {/* Cancel Subscription Confirmation Modal */}
+      <CancelSubscriptionConfirmationModal
+        openModal={isCancelModalOpen}
+        hideModal={() => setIsCancelModalOpen(false)}
+        onConfirm={handleConfirmCancel}
+        isLoading={isCanceling}
+      />
       
       {/* <PaymentHistoryTable entries={paymentHistory} /> */}
     </div>

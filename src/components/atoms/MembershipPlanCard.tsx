@@ -1,12 +1,12 @@
 "use client";
 import React from "react";
 import ActionButton from "./ActionButton";
-import { MembershipPlan } from "@/interfaces/MembershipPlan";
 import { MembershipPlanCardProps } from "@/interfaces/Payment";
 import { STRING_DATA } from "@/shared/Constants";
 import { getIncrementalFeatures } from "@/shared/MembershipUtils";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
 import { useRouter } from "next/navigation";
+
 /**
  * Renders a responsive membership plan card.
  */
@@ -15,9 +15,8 @@ const MembershipPlanCard: React.FC<MembershipPlanCardProps> = (props) => {
   const router = useRouter();
   const limitEntries = getIncrementalFeatures(plan, allPlans);
 
-  const isPaidPlan = plan.amountInPaise > 0;
-  const isButtonDisabled = (isPaidPlan && !isCheckoutReady) || isCurrentPlan || isLoadingSubscription || isProcessing;
-  
+  const isButtonDisabled = (!isCheckoutReady) || isCurrentPlan || isLoadingSubscription || isProcessing;
+
   const getPreviousPlanLabel = (previousPlanId?: string): string => {
     if (!previousPlanId || !allPlans) {
       return STRING_DATA.EMPTY;
@@ -25,7 +24,7 @@ const MembershipPlanCard: React.FC<MembershipPlanCardProps> = (props) => {
     const previousPlan = allPlans.find((p) => p.id === previousPlanId);
     return previousPlan?.label ?? STRING_DATA.EMPTY;
   };
-  
+
   const previousPlanLabel = getPreviousPlanLabel(plan.previousPlanId);
 
   // Determine button text based on current plan status
@@ -42,15 +41,15 @@ const MembershipPlanCard: React.FC<MembershipPlanCardProps> = (props) => {
   // Determine card styling based on current plan status
   const getCardClassName = (): string => {
     const baseClasses = "flex h-full flex-col gap-4 rounded-2xl border bg-white p-6 shadow transition-all duration-300";
-    
+
     if (isCurrentPlan) {
       return `${baseClasses} border-green-300 shadow-lg ring-1 ring-green-200`;
     }
-    
+
     if (plan.isPopular) {
       return `${baseClasses} border-brand-color shadow-lg`;
     }
-    
+
     return `${baseClasses} border-gray-200`;
   };
 
@@ -82,7 +81,7 @@ const MembershipPlanCard: React.FC<MembershipPlanCardProps> = (props) => {
       return STRING_DATA.PAYMENT_LOADING_MESSAGE;
     }
   };
-  
+
   return (
     <div className={getCardClassName()}>
       <div className="flex flex-col gap-2">
@@ -133,7 +132,7 @@ const MembershipPlanCard: React.FC<MembershipPlanCardProps> = (props) => {
         />
         {isButtonDisabled && (
           <p className="mt-2 text-center text-xs text-gray-500">
-              { getMessage() }
+            {getMessage()}
           </p>
         )}
       </div>

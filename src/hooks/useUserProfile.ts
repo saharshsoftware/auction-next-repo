@@ -1,6 +1,4 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 'use client';
-import { useEffect } from 'react';
 import { IUserData, User } from '@/types';
 import { UserProfileApiResponse } from '@/interfaces/UserProfileApi';
 import { getUserDetails } from '@/services/auth';
@@ -23,12 +21,6 @@ export const useUserProfile = (enabled = true): IUserProfile => {
     queryFn: getUserDetails,
     enabled: enabled
   });
-  
-  useEffect(() => {
-    if (enabled) {
-      refetchUserProfile();
-    }
-  }, [enabled]);
 
   return {
     userProfileData: userProfile,

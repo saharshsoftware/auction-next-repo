@@ -57,6 +57,7 @@ export interface ProfileMembershipSectionProps {
   readonly planDetails?: PlanDetails;
   readonly paymentInfo?: PaymentInfo;
   readonly paymentHistory?: readonly PaymentHistoryEntry[];
+  readonly refetchUserProfile: () => void;
 }
 
 /**
