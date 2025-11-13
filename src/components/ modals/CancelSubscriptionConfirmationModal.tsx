@@ -14,6 +14,7 @@ interface ICancelSubscriptionConfirmationModal {
 }
 
 const CONFIRMATION_TEXT = "CANCEL";
+const CANCEL_SUBSCRIPTION_MESSAGE = "Are you sure you want to cancel your subscription? You will immediately lose access to premium features. This action cannot be undone.";
 
 /**
  * Double confirmation modal for canceling subscription
@@ -44,8 +45,8 @@ const CancelSubscriptionConfirmationModal: React.FC<ICancelSubscriptionConfirmat
       isCrossVisible={!isLoading}
     >
       <div className="flex flex-col gap-2">
-        <p className="text-left">
-          Are you sure you want to cancel your subscription? This action will immediately cancel your current plan and you will lose access to premium features. This action cannot be undone.
+        <p className="text-left text-sm">
+          {CANCEL_SUBSCRIPTION_MESSAGE}
         </p>
         <CustomFormikForm
           initialValues={{ confirmationText: STRING_DATA.EMPTY }}

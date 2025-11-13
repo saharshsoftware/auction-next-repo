@@ -22,6 +22,8 @@ import { isFeatureUnavailable, personaData, featureIcons, denormalizePlanName } 
 import { InfoTooltip } from "@/components/atoms/InfoTooltip";
 import { useRouter } from "next/navigation";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
+import useModal from "@/hooks/useModal";
+import LoginModal from "../ modals/LoginModal";
 
 interface PersonaPlanCardProps {
   plan: MembershipPlan;
@@ -48,7 +50,7 @@ const PersonaPlanCard: React.FC<PersonaPlanCardProps> = ({
   showDescriptions = false,
   isMounted = false,
 }) => {
-  const isButtonDisabled = !isAuthenticated || !isCheckoutReady || isProcessing || isCurrentPlan;
+  const isButtonDisabled =  !isCheckoutReady || isProcessing || isCurrentPlan;
   const persona = personaData[plan.label] || {};
   const featureEntries = useMemo(() => mapMembershipPlanLimits(plan), [plan]);
 
@@ -64,7 +66,7 @@ const PersonaPlanCard: React.FC<PersonaPlanCardProps> = ({
       return plan.ctaLabel;
     }
     if (!isAuthenticated) {
-      return "Login to Subscribe";
+      return "Signup to Subscribe";
     }
     return plan.ctaLabel;
   };
@@ -216,6 +218,7 @@ const PricingPlansV3: React.FC<PricingPlansV3Props> = ({
   const queryClient = useQueryClient();
   const { isAuthenticated } = useIsAuthenticated();
   const router = useRouter();
+  const { showModal, openModal, hideModal } = useModal();
 
   // Prevent hydration mismatch by only using client-side state after mount
   useEffect(() => {
@@ -276,7 +279,7 @@ const PricingPlansV3: React.FC<PricingPlansV3Props> = ({
     if (isActionsDisabled) return;
 
     if (!isAuthenticated) {
-      initiateCheckout(plan); // This will redirect to register
+      showModal();
       return;
     }
 
@@ -293,7 +296,7 @@ const PricingPlansV3: React.FC<PricingPlansV3Props> = ({
     });
     router.push(ROUTE_CONSTANTS.PROFILE + "#membership");
 
-  }, [isActionsDisabled, initiateCheckout, isAuthenticated, getCurrentPlanInfo, router]);
+  }, [isActionsDisabled, initiateCheckout, isAuthenticated, getCurrentPlanInfo, router, showModal]);
 
   const allFeatureDescriptions = useMemo(() => {
     if (!membershipPlans.length) return [];
@@ -411,6 +414,9 @@ const PricingPlansV3: React.FC<PricingPlansV3Props> = ({
           <p className="text-center text-sm text-gray-500">{displayMessage}</p>
         ) : null}
       </div>
+      {openModal && (
+        <LoginModal openModal={openModal} hideModal={hideModal} />
+      )}
     </section>
   );
 };

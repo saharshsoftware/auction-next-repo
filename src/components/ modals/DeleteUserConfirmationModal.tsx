@@ -48,7 +48,7 @@ const DeleteUserConfirmationModal: React.FC<IDeleteUserConfirmationModal> = (
       customWidthClass="md:w-[50%] sm:w-3/5 w-11/12"
     >
       <div className="flex flex-col gap-2">
-        <p className="text-left">
+        <p className="text-left text-sm">
           {
             "This will permanently delete the user from the database. This action cannot be undone. Are you sure you want to continue?"
           }
