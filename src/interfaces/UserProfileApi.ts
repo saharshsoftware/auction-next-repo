@@ -17,6 +17,7 @@ export interface UserSubscription {
   readonly currentPeriodEnd: string;
   readonly cancelAt: string | null;
   readonly canceledAt: string | null;
+  readonly cancelAtCycleEnd: boolean;
 }
 
 export interface UserRazorpaySubscription {

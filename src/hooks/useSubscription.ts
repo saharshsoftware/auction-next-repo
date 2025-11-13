@@ -106,26 +106,27 @@ export const useSubscription = (enabled = true) => {
   const transformedData = fullProfileData?.subscriptionDetails ? {
     planDetails: mapSubscriptionToPlanDetails(fullProfileData.subscriptionDetails),
     paymentInfo: mapSubscriptionToPaymentInfo(fullProfileData.subscriptionDetails),
-    subscriptionData: {
-      subscription: fullProfileData.subscriptionDetails.subscription ? {
-        id: fullProfileData.subscriptionDetails.subscription.id, // Use internal subscription ID, not Razorpay ID
-        status: fullProfileData.subscriptionDetails.subscription.status,
-        planId: fullProfileData.subscriptionDetails.razorpaySubscription?.plan_id || '',
-        planName: fullProfileData.subscriptionDetails.subscription.subscriptionType,
-        startDate: fullProfileData.subscriptionDetails.subscription.startDate,
-        endDate: fullProfileData.subscriptionDetails.subscription.endDate,
-        renewalDate: fullProfileData.subscriptionDetails.subscription.endDate,
-        autoRenewal: true,
-        paymentMethod: fullProfileData.subscriptionDetails.razorpaySubscription?.payment_method,
-        lastPaymentDate: fullProfileData.subscriptionDetails.subscription.currentPeriodStart,
-        billingEmail: '',
-        gstNumber: undefined,
-        amount: 0,
-        currency: 'INR',
-      } : null,
-      tier: fullProfileData.subscriptionDetails.tier,
-      limits: fullProfileData.subscriptionDetails.limits,
-    },
+      subscriptionData: {
+        subscription: fullProfileData.subscriptionDetails.subscription ? {
+          id: fullProfileData.subscriptionDetails.subscription.id, // Use internal subscription ID, not Razorpay ID
+          status: fullProfileData.subscriptionDetails.subscription.status,
+          planId: fullProfileData.subscriptionDetails.razorpaySubscription?.plan_id || '',
+          planName: fullProfileData.subscriptionDetails.subscription.subscriptionType,
+          startDate: fullProfileData.subscriptionDetails.subscription.startDate,
+          endDate: fullProfileData.subscriptionDetails.subscription.endDate,
+          renewalDate: fullProfileData.subscriptionDetails.subscription.endDate,
+          autoRenewal: true,
+          paymentMethod: fullProfileData.subscriptionDetails.razorpaySubscription?.payment_method,
+          lastPaymentDate: fullProfileData.subscriptionDetails.subscription.currentPeriodStart,
+          billingEmail: '',
+          gstNumber: undefined,
+          amount: 0,
+          currency: 'INR',
+          cancelAtCycleEnd: fullProfileData.subscriptionDetails.subscription.cancelAtCycleEnd,
+        } : null,
+        tier: fullProfileData.subscriptionDetails.tier,
+        limits: fullProfileData.subscriptionDetails.limits,
+      },
   } : null;
 
   return {

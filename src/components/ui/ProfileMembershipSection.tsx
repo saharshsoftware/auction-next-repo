@@ -245,27 +245,34 @@ const ProfileMembershipSection: React.FC<ProfileMembershipSectionProps> = (props
       )}
 
       {/* Cancel Subscription Section - Only show for paid subscriptions */}
-      {subscriptionData?.subscriptionData?.subscription && (
-        <PlanDetailsCard title="Subscription Management">
-          <div className="flex flex-col gap-4">
-            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-              <div className="flex-1">
-                <h4 className="text-sm font-medium text-gray-900 mb-1">Cancel Subscription</h4>
-                <p className="text-sm text-gray-600">
-                  Cancel your current subscription. You&apos;ll lose access to premium features.
-                </p>
+      {subscriptionData?.subscriptionData?.subscription && (() => {
+        const subscription = subscriptionData.subscriptionData.subscription;
+        const isCancelScheduled = (subscription as any).cancelAtCycleEnd === true;
+        
+        return (
+          <PlanDetailsCard title="Subscription Management">
+            <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                <div className="flex-1">
+                  <h4 className="text-sm font-medium text-gray-900 mb-1">Cancel Subscription</h4>
+                  <p className="text-sm text-gray-600">
+                    {isCancelScheduled
+                      ? "Your subscription is scheduled to cancel at the end of the current billing cycle."
+                      : "Once you cancel the current subscription, it will be scheduled to cancel at the end of the current billing cycle"}
+                  </p>
+                </div>
+                <button
+                  onClick={handleCancelSubscriptionClick}
+                  disabled={isCanceling || isCancelScheduled}
+                  className="w-full md:w-auto px-4 py-2 text-sm font-medium text-red-600 bg-red-50 border border-red-200 rounded-md hover:bg-red-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors whitespace-nowrap"
+                >
+                  {STRING_DATA.CANCEL_SUBSCRIPTION}
+                </button>
               </div>
-              <button
-                onClick={handleCancelSubscriptionClick}
-                disabled={isCanceling}
-                className="w-full md:w-auto px-4 py-2 text-sm font-medium text-red-600 bg-red-50 border border-red-200 rounded-md hover:bg-red-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors whitespace-nowrap"
-              >
-                {STRING_DATA.CANCEL_SUBSCRIPTION}
-              </button>
             </div>
-          </div>
-        </PlanDetailsCard>
-      )}
+          </PlanDetailsCard>
+        );
+      })()}
 
       {/* Cancel Subscription Confirmation Modal */}
       <CancelSubscriptionConfirmationModal

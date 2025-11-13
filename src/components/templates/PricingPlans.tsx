@@ -15,6 +15,7 @@ import useModal from "@/hooks/useModal";
 import LoginModal from "../ modals/LoginModal";
 import InfoModal from "../ modals/InfoModal";
 import { PersonaPlanCard } from "./PersonaPlanCard";
+import { SubscriptionPendingScreen } from "./SubscriptionPendingScreen";
 
 interface PricingPlansProps {
   readonly showLegend?: boolean;
@@ -39,6 +40,7 @@ const PricingPlans: React.FC<PricingPlansProps> = ({
   useEffect(() => {
     setIsMounted(true);
   }, []);
+
   
   const {
     subscriptionData,
@@ -106,6 +108,10 @@ const PricingPlans: React.FC<PricingPlansProps> = ({
     }));
   }, [membershipPlans]);
   
+  if (isPending && !shouldShowLoading) {
+    return <SubscriptionPendingScreen pendingMessage={pendingMessage} />;
+  }
+
   return (
     <section className="px-4 lg:px-16 py-10 bg-gray-50">
       <div className="mx-auto flex w-full flex-col gap-8 px-1">
@@ -117,15 +123,7 @@ const PricingPlans: React.FC<PricingPlansProps> = ({
             {STRING_DATA.MEMBERSHIP_DESCRIPTION}
           </p>
           
-          {isPending && !shouldShowLoading && (
-            <div className="flex items-center gap-2 rounded-lg bg-orange-50 border border-orange-200 px-4 py-3 text-sm">
-              <span className="text-orange-800 font-medium">
-                ⏳ {pendingMessage}
-              </span>
-            </div>
-          )}
-          
-          {subscriptionData?.subscriptionData && !shouldShowLoading && !isPending && (
+          {subscriptionData?.subscriptionData && !shouldShowLoading && (
             <div className="flex items-center gap-2 rounded-lg bg-blue-50 px-4 py-2 text-sm">
               <span className="text-blue-700">
                 Current plan: <strong>
