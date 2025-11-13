@@ -41,6 +41,7 @@ const PricingPlans: React.FC<PricingPlansProps> = ({
     setIsMounted(true);
   }, []);
 
+  const isPending = true;
   
   const {
     subscriptionData,
@@ -48,8 +49,8 @@ const PricingPlans: React.FC<PricingPlansProps> = ({
     hasSubscriptionError,
     isCheckoutReady,
     loaderMessage,
-    isPending,
-    pendingMessage,
+    // isPending,
+    // pendingMessage,
     isActionsDisabled,
     initiateCheckout,
     activePlanId,
@@ -109,7 +110,7 @@ const PricingPlans: React.FC<PricingPlansProps> = ({
   }, [membershipPlans]);
   
   if (isPending && !shouldShowLoading) {
-    return <SubscriptionPendingScreen pendingMessage={pendingMessage} />;
+    return <SubscriptionPendingScreen />;
   }
 
   return (
