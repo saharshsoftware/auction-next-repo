@@ -41,6 +41,11 @@ export const PAGE_REVALIDATE_TIME_FOR_AUCTION_LIST = 3600; // 1 hr
 export const FILTER_API_REVALIDATE_TIME = 300; // 5 min
 
 export const STRING_DATA = {
+  MEMBERSHIP_WHATSAPP_EMAIL_NOTIFICATIONS: "WhatsApp & Email alerts",
+  MEMBERSHIP_WHATSAPP_MOBILE_NOTIFICATIONS: "WhatsApp & Mobile alerts",
+  MEMBERSHIP_EMAIL_MOBILE_NOTIFICATIONS: "Email & Mobile alerts",
+  MEMBERSHIP_WHATSAPP_EMAIL_MOBILE_NOTIFICATIONS: "WhatsApp, Email & Mobile alerts",
+  BROKER_PLUS: "Broker Plus",
   FREE: "Free",
   BANK_AUCTION_SUPPORT: "Bank Auction Support",
   PROPERTY_TYPES: "Property Types",
@@ -174,11 +179,13 @@ export const STRING_DATA = {
   MEMBERSHIP_SAVED_SEARCHES: "Saved searches",
   MEMBERSHIP_WHATSAPP_ALERTS: "WhatsApp alerts",
   MEMBERSHIP_EMAIL_ALERTS: "Email alerts",
+  MEMBERSHIP_NOTIFICATIONS_ALERTS: "Mobile app notifications",
   MEMBERSHIP_COLLECTIONS_DESCRIPTION: "Organize and manage properties that catch your eye in custom collections for easy access and comparison.",
   MEMBERSHIP_ALERTS_DESCRIPTION: "Receive instant notifications about new properties, price changes, and auction updates tailored to your preferences.",
   MEMBERSHIP_SAVED_SEARCHES_DESCRIPTION: "Save your specific search criteria and get notified when new properties matching your preferences become available.",
   MEMBERSHIP_WHATSAPP_ALERTS_DESCRIPTION: "Get real-time updates and important notifications directly on your WhatsApp for quick access.",
   MEMBERSHIP_EMAIL_ALERTS_DESCRIPTION: "Receive detailed auction information and updates conveniently in your email inbox.",
+  MEMBERSHIP_NOTIFICATIONS_ALERTS_DESCRIPTION: "Get instant push notifications on your mobile app about new properties, price changes, and auction updates.",
   PAYMENT_LOADING_MESSAGE: "Preparing secure checkout...",
   PAYMENT_GATEWAY_LOADING: "Payment gateway is getting ready.",
   PAYMENT_GATEWAY_ERROR: "Unable to load payment gateway. Please retry later.",

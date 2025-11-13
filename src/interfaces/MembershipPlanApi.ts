@@ -1,10 +1,6 @@
-export interface ApiPlanLimits {
-  readonly alertsMax: number;
-  readonly emailAlerts: boolean;
-  readonly collectionsMax: number;
-  readonly whatsappAlerts: boolean;
-  readonly savedSearchesMax: "infinity" | number;
-}
+import { ApiPlanLimits } from "./PlanLimits";
+
+export type { ApiPlanLimits };
 
 export interface ApiMembershipPlanAttributes {
   readonly planLimits: ApiPlanLimits;

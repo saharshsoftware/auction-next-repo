@@ -15,7 +15,7 @@ import { CONFIG } from "@/utilies/Config";
 import { USER_TYPE } from "@/types.d";
 import { safeArray, safeNumber, safeString } from "@/utilies/imageUtils";
 import { getCookie } from "cookies-next";
-import { MessagesSquare, Search, BellRing, Folder, Users } from "lucide-react";
+import { MessagesSquare, Search, BellRing, Folder, Users, Bell } from "lucide-react";
 
 export const setDataInQueryParams = (values: any) => {
   const data = btoa(JSON.stringify(values));
@@ -1061,7 +1061,7 @@ export const stringsToBudgetRanges = (strings: string[]): Array<{ min: string; m
   });
 };
 
-  
+
 export const getUserData = (): any => {
   try {
     const userCookie = getCookie(COOKIES.AUCTION_USER_KEY);
@@ -1127,28 +1127,28 @@ export const isFeatureUnavailable = (value: string): boolean => {
 
 export const personaData: { [key: string]: any } = {
   'Free': {
-      persona: "Free Plan",
-      audience: "Ideal for new users exploring auctions.",
-      description: "Start your journey into property auctions at zero cost. Save your favorite searches and get a feel for how eAuctionDekho works before upgrading.",
-      icon: Users
+    persona: "Free Plan",
+    audience: "Ideal for new users exploring auctions.",
+    description: "Start your journey into property auctions at zero cost. Save your favorite searches and get a feel for how eAuctionDekho works before upgrading.",
+    icon: Users
   },
   'Premium': {
-      persona: "Premium",
-      audience: "Perfect for active buyers or small investors.",
-      description: "Enjoy more flexibility with extra alerts and saved searches. Get notified instantly via email when new properties match your preferences.",
-      icon: Users
+    persona: "Premium",
+    audience: "Perfect for active buyers or small investors.",
+    description: "Enjoy more flexibility with extra alerts and saved searches. Get notified instantly via email when new properties match your preferences.",
+    icon: Users
   },
   'Broker': {
-      persona: "Broker",
-      audience: "Built for professional brokers and serious users.",
-      description: "Organize listings efficiently and share curated property collections with clients via custom links. Stay ahead with multiple alerts and unlimited searches.",
-      icon: Users
+    persona: "Broker",
+    audience: "Built for professional brokers and serious users.",
+    description: "Organize listings efficiently and share curated property collections with clients via custom links. Stay ahead with multiple alerts and unlimited searches.",
+    icon: Users
   },
   'Broker Plus': {
-      persona: "Broker Plus",
-      audience: "Designed for agencies and top-tier partners.",
-      description: "Get full access to all premium tools, including a dedicated partner dashboard with active lead access. Pricing varies by city and lead requirements.",
-      icon: Users
+    persona: "Broker Plus",
+    audience: "Designed for agencies and top-tier partners.",
+    description: "Get full access to all premium tools, including a dedicated partner dashboard with active lead access. Pricing varies by city and lead requirements.",
+    icon: Users
   }
 };
 
@@ -1158,4 +1158,9 @@ export const featureIcons: { [key: string]: any } = {
   [STRING_DATA.MEMBERSHIP_SAVED_SEARCHES]: Search,
   [STRING_DATA.MEMBERSHIP_WHATSAPP_ALERTS]: MessagesSquare,
   [STRING_DATA.MEMBERSHIP_EMAIL_ALERTS]: MessagesSquare,
+  [STRING_DATA.MEMBERSHIP_NOTIFICATIONS_ALERTS]: Bell,
+  [STRING_DATA.MEMBERSHIP_WHATSAPP_EMAIL_NOTIFICATIONS]: MessagesSquare,
+  [STRING_DATA.MEMBERSHIP_WHATSAPP_MOBILE_NOTIFICATIONS]: MessagesSquare,
+  [STRING_DATA.MEMBERSHIP_EMAIL_MOBILE_NOTIFICATIONS]: MessagesSquare,
+  [STRING_DATA.MEMBERSHIP_WHATSAPP_EMAIL_MOBILE_NOTIFICATIONS]: MessagesSquare,
 };

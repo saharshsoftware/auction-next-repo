@@ -1,10 +1,6 @@
-export interface UserSubscriptionLimits {
-  readonly collectionsMax: number;
-  readonly alertsMax: number;
-  readonly savedSearchesMax: number | null;
-  readonly whatsappAlerts: boolean;
-  readonly emailAlerts: boolean;
-}
+import { UserSubscriptionLimits } from "./PlanLimits";
+
+export type { UserSubscriptionLimits };
 
 export interface UserSubscription {
   readonly createdAt: string;

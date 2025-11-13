@@ -1,3 +1,5 @@
+import { PlanLimits } from "./PlanLimits";
+
 export interface MembershipPlan {
   readonly id: string;
   readonly label: string;
@@ -11,12 +13,6 @@ export interface MembershipPlan {
   readonly previousPlanId?: string;
   readonly razorpayPlanId: string;
   readonly planType: string;
-  readonly limits: {
-    readonly collectionsMax: number;
-    readonly alertsMax: number;
-    readonly savedSearchesMax: number;
-    readonly whatsappAlerts: boolean;
-    readonly emailAlerts: boolean;
-  };
+  readonly limits: PlanLimits;
 }
 

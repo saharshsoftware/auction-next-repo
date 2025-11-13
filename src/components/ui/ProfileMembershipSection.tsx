@@ -1,22 +1,17 @@
 "use client";
 import React, { useState } from "react";
 import Link from "next/link";
-import { STRING_DATA, REACT_QUERY } from "@/shared/Constants";
+import { STRING_DATA } from "@/shared/Constants";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
 import PlanDetailsCard from "@/components/ui/PlanDetailsCard";
-import PaymentHistoryTable from "@/components/ui/PaymentHistoryTable";
 import {
-  PlanDetails,
-  PaymentInfo,
   ProfileMembershipSectionProps,
-  PaymentHistoryEntry,
 } from "@/interfaces/Payment";
 import { useSubscription } from "@/hooks/useSubscription";
 import { CancelSubscriptionApiRequest, CancelSubscriptionApiResponse } from "@/interfaces/CancelSubscriptionApi";
 import { postRequest } from "@/shared/Axios";
 import { API_ENPOINTS } from "@/services/api";
 import toast from "react-simple-toasts";
-import { useQueryClient } from "@tanstack/react-query";
 import CancelSubscriptionConfirmationModal from "@/components/ modals/CancelSubscriptionConfirmationModal";
 
 /**
@@ -122,7 +117,7 @@ const ProfileMembershipSection: React.FC<ProfileMembershipSectionProps> = (props
       return;
     }
 
-    cancelSubscription(subscriptionId.toString(), false);
+    cancelSubscription(subscriptionId.toString(), true);
   };
 
   // Use API data if available, otherwise fall back to props or defaults

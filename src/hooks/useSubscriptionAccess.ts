@@ -14,6 +14,7 @@ interface SubscriptionAccess {
   readonly canAddSavedSearch: boolean;
   readonly canReceiveWhatsApp: boolean;
   readonly canReceiveEmail: boolean;
+  readonly canReceiveNotifications: boolean;
   readonly isLoading: boolean;
 }
 
@@ -35,6 +36,7 @@ export const useSubscriptionAccess = (currentCounts?: CurrentCounts): Subscripti
         canAddSavedSearch: false,
         canReceiveWhatsApp: false,
         canReceiveEmail: false,
+        canReceiveNotifications: false,
         isLoading: true,
       };
     }
@@ -53,6 +55,7 @@ export const useSubscriptionAccess = (currentCounts?: CurrentCounts): Subscripti
         (limits.savedSearchesMax > 0 && actualCounts.savedSearches < limits.savedSearchesMax),
       canReceiveWhatsApp: limits.whatsappAlerts,
       canReceiveEmail: limits.emailAlerts,
+      canReceiveNotifications: limits.notificationsAlerts,
       isLoading: false,
     };
 

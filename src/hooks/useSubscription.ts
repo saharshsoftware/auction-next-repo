@@ -39,6 +39,10 @@ const mapSubscriptionToPlanDetails = (
     } else if (limits.whatsappAlerts) {
       benefits.push("WhatsApp notifications");
     }
+    
+    if (limits.notificationsAlerts) {
+      benefits.push("Mobile app notifications");
+    }
 
     return {
       name: denormalizePlanName(subscription.subscriptionType),
