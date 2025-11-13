@@ -173,6 +173,11 @@ export const STRING_DATA = {
   MEMBERSHIP_SAVED_SEARCHES: "Saved searches",
   MEMBERSHIP_WHATSAPP_ALERTS: "WhatsApp alerts",
   MEMBERSHIP_EMAIL_ALERTS: "Email alerts",
+  MEMBERSHIP_COLLECTIONS_DESCRIPTION: "Organize and manage properties that catch your eye in custom collections for easy access and comparison.",
+  MEMBERSHIP_ALERTS_DESCRIPTION: "Receive instant notifications about new properties, price changes, and auction updates tailored to your preferences.",
+  MEMBERSHIP_SAVED_SEARCHES_DESCRIPTION: "Save your specific search criteria and get notified when new properties matching your preferences become available.",
+  MEMBERSHIP_WHATSAPP_ALERTS_DESCRIPTION: "Get real-time updates and important notifications directly on your WhatsApp for quick access.",
+  MEMBERSHIP_EMAIL_ALERTS_DESCRIPTION: "Receive detailed auction information and updates conveniently in your email inbox.",
   PAYMENT_LOADING_MESSAGE: "Preparing secure checkout...",
   PAYMENT_GATEWAY_LOADING: "Payment gateway is getting ready.",
   PAYMENT_GATEWAY_ERROR: "Unable to load payment gateway. Please retry later.",
@@ -196,6 +201,10 @@ export const STRING_DATA = {
   MEMBERSHIP_VIEW_DETAILS: "View membership details",
   CANCEL_SUBSCRIPTION: "Cancel Subscription",
   SUBSCRIPTION_PENDING_MESSAGE: "Your subscription is currently being processed. Please wait while we activate your plan. You will not be able to make changes until the activation is complete.",
+  MEMBERSHIP_POPULAR_BADGE: "Popular",
+  MEMBERSHIP_MORE_FEATURES: "And more benefits.",
+  MEMBERSHIP_COMPARE_HEADING: "Compare plan benefits",
+  MEMBERSHIP_FEATURES_HEADER: "Features",
 };
 
 export const FEATURE_FLAGS = {

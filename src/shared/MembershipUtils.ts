@@ -9,6 +9,15 @@ export const MEMBERSHIP_LIMIT_LABELS: Record<keyof MembershipPlan["limits"], str
   emailAlerts: STRING_DATA.MEMBERSHIP_EMAIL_ALERTS,
 };
 
+const MEMBERSHIP_FEATURE_DESCRIPTIONS: Record<string, string> = {
+  [STRING_DATA.MEMBERSHIP_COLLECTIONS]: STRING_DATA.MEMBERSHIP_COLLECTIONS_DESCRIPTION,
+  [STRING_DATA.MEMBERSHIP_ALERTS]: STRING_DATA.MEMBERSHIP_ALERTS_DESCRIPTION,
+  [STRING_DATA.MEMBERSHIP_SAVED_SEARCHES]: STRING_DATA.MEMBERSHIP_SAVED_SEARCHES_DESCRIPTION,
+  [STRING_DATA.MEMBERSHIP_WHATSAPP_ALERTS]: STRING_DATA.MEMBERSHIP_WHATSAPP_ALERTS_DESCRIPTION,
+  [STRING_DATA.MEMBERSHIP_EMAIL_ALERTS]: STRING_DATA.MEMBERSHIP_EMAIL_ALERTS_DESCRIPTION,
+  "WhatsApp & Email Alerts": STRING_DATA.MEMBERSHIP_WHATSAPP_ALERTS_DESCRIPTION,
+};
+
 export const MEMBERSHIP_LIMIT_ORDER: ReadonlyArray<keyof MembershipPlan["limits"]> = [
   "collectionsMax",
   "alertsMax",
@@ -29,12 +38,12 @@ export const getMembershipBooleanDisplayValue = (value: boolean): string => {
 };
 
 /**
- * Gets all features for a plan with proper formatting
+ * Gets all features for a plan with proper formatting including descriptions
  */
 export const mapMembershipPlanLimits = (
   plan: MembershipPlan,
-): ReadonlyArray<{ readonly label: string; readonly value: string; readonly isBooleanFeature: boolean }> => {
-  const features: Array<{ readonly label: string; readonly value: string; readonly isBooleanFeature: boolean }> = [];
+): ReadonlyArray<{ readonly label: string; readonly value: string; readonly isBooleanFeature: boolean; readonly description?: string }> => {
+  const features: Array<{ readonly label: string; readonly value: string; readonly isBooleanFeature: boolean; readonly description?: string }> = [];
   
   MEMBERSHIP_LIMIT_ORDER.forEach((limitKey) => {
     const rawValue: number | boolean = plan.limits[limitKey];
@@ -52,20 +61,26 @@ export const mapMembershipPlanLimits = (
       
       // Show specific label based on what's actually enabled
       let label = "Notifications";
+      let description: string | undefined;
       if (bothEnabled) {
         label = "WhatsApp & Email Alerts";
+        description = MEMBERSHIP_FEATURE_DESCRIPTIONS["WhatsApp & Email Alerts"];
       } else if (emailValue) {
-        label = "Email Alerts";
+        label = STRING_DATA.MEMBERSHIP_EMAIL_ALERTS;
+        description = MEMBERSHIP_FEATURE_DESCRIPTIONS[STRING_DATA.MEMBERSHIP_EMAIL_ALERTS];
       } else if (whatsappValue) {
-        label = "WhatsApp Alerts";
+        label = STRING_DATA.MEMBERSHIP_WHATSAPP_ALERTS;
+        description = MEMBERSHIP_FEATURE_DESCRIPTIONS[STRING_DATA.MEMBERSHIP_WHATSAPP_ALERTS];
       } else {
         label = "WhatsApp & Email Alerts";
+        description = MEMBERSHIP_FEATURE_DESCRIPTIONS["WhatsApp & Email Alerts"];
       }
       
       features.push({
         label,
         value: bothEnabled || emailValue || whatsappValue ? "✅" : "❌",
         isBooleanFeature: true,
+        description,
       });
       return;
     }
@@ -75,10 +90,12 @@ export const mapMembershipPlanLimits = (
         ? getMembershipLimitDisplayValue(rawValue)
         : getMembershipBooleanDisplayValue(rawValue);
     
+    const label = MEMBERSHIP_LIMIT_LABELS[limitKey];
     features.push({
-      label: MEMBERSHIP_LIMIT_LABELS[limitKey],
+      label,
       value,
       isBooleanFeature,
+      description: MEMBERSHIP_FEATURE_DESCRIPTIONS[label],
     });
   });
   
