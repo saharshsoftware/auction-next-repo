@@ -4,7 +4,6 @@ import { MembershipPlan } from "@/interfaces/MembershipPlan";
 import { STRING_DATA } from "@/shared/Constants";
 import { useMembershipPlans } from "@/hooks/useMembershipPlans";
 import { useSubscription } from "@/hooks/useSubscription";
-import { denormalizePlanName } from "@/shared/Utilies";
 import { useQueryClient } from "@tanstack/react-query";
 import { useIsAuthenticated } from "@/hooks/useAuthenticated";
 import { useRazorpayLoader } from "@/hooks/useRazorpayLoader";
@@ -13,262 +12,204 @@ import { useRazorpayCheckout } from "@/hooks/useRazorpayCheckout";
 import { useCurrentPlanInfo } from "@/hooks/useCurrentPlanInfo";
 import { useSubscriptionPendingStatus } from "@/hooks/useSubscriptionPendingStatus";
 import toast from "react-simple-toasts";
-import { Check, X } from "lucide-react";
 import {
-  Folder,
-  BellRing,
-  Search,
-  MessagesSquare
+  Check,
+  X,
+  Info
 } from "lucide-react";
 import { mapMembershipPlanLimits } from "@/shared/MembershipUtils";
+import { isFeatureUnavailable, personaData, featureIcons, denormalizePlanName } from "@/shared/Utilies";
+import { InfoTooltip } from "@/components/atoms/InfoTooltip";
 
-const featureIcons: Record<string, React.ComponentType<{ className?: string }>> = {
-  [STRING_DATA.MEMBERSHIP_COLLECTIONS]: Folder,
-  [STRING_DATA.MEMBERSHIP_ALERTS]: BellRing,
-  [STRING_DATA.MEMBERSHIP_SAVED_SEARCHES]: Search,
-  [STRING_DATA.MEMBERSHIP_WHATSAPP_ALERTS]: MessagesSquare,
-  [STRING_DATA.MEMBERSHIP_EMAIL_ALERTS]: MessagesSquare,
-  "WhatsApp & Email Alerts": MessagesSquare,
-};
-
-// Note: The following simple components are defined here for now.
-// In future, consider moving them to src/components/atoms for reuse and clarity.
-
-interface SimplifiedPlanCardProps {
+interface PersonaPlanCardProps {
   plan: MembershipPlan;
   onSelectPlan: (plan: MembershipPlan) => void;
   isCheckoutReady: boolean;
   isProcessing: boolean;
   isThisPlanProcessing: boolean;
   isCurrentPlan: boolean;
-  isLoadingSubscription: boolean;
   isAuthenticated: boolean;
+  showTooltips?: boolean;
+  showDescriptions?: boolean;
 }
 
-/**
- * A simplified card to display essential plan information.
- */
-const SimplifiedPlanCard: React.FC<SimplifiedPlanCardProps> = ({
+const PersonaPlanCard: React.FC<PersonaPlanCardProps> = ({
   plan,
   onSelectPlan,
   isCheckoutReady,
   isProcessing,
   isThisPlanProcessing,
   isCurrentPlan,
-  isLoadingSubscription,
   isAuthenticated,
+  showTooltips = false,
+  showDescriptions = false,
 }) => {
-  const isButtonDisabled = !isAuthenticated || !isCheckoutReady || isProcessing || isCurrentPlan || isLoadingSubscription;
-  const featureEntries = useMemo(() => mapMembershipPlanLimits(plan), [plan]);
-  const displayedFeatures = useMemo(() => featureEntries.slice(0, 4), [featureEntries]);
+    const isButtonDisabled = !isAuthenticated || !isCheckoutReady || isProcessing || isCurrentPlan;
+    const persona = personaData[plan.label] || {};
+    const featureEntries = useMemo(() => mapMembershipPlanLimits(plan), [plan]);
 
-  const getButtonText = (): string => {
-    if (isCurrentPlan) {
-      return "Current Plan";
-    }
-    if (isThisPlanProcessing) {
-      return "Processing...";
-    }
-    if (isLoadingSubscription || isProcessing) {
-      return "Please wait";
-    }
-    if (!isAuthenticated) {
-      return "Login to Subscribe";
-    }
-    return plan.ctaLabel;
-  };
+    const getButtonText = (): string => {
+      if (isCurrentPlan) {
+        return "Your Current Plan";
+      }
+      if (isThisPlanProcessing) {
+        return "Processing...";
+      }
+      if (!isAuthenticated) {
+        return "Login to Subscribe";
+      }
+      return plan.ctaLabel;
+    };
 
-  const renderFeatureValue = (value: string, isBooleanFeature: boolean): React.ReactNode => {
-    if (!isBooleanFeature) {
-      return <span className="font-semibold text-gray-800">{value}</span>;
-    }
-    return value === "✅" ? (
-      <Check className="h-5 w-5 text-green-500" />
-    ) : (
-      <X className="h-5 w-5 text-red-500" />
-    );
-  };
-
-  return (
-    <div
-      className={`relative flex flex-col h-full rounded-2xl border p-6 shadow-lg transition-transform hover:scale-105
-        ${isCurrentPlan ? "border-green-500 bg-green-50" : "border-gray-200 bg-white"}
-        ${plan.isPopular ? "border-2 border-blue-500" : ""}`}
-    >
-      {plan.isPopular && (
-        <div className="absolute -top-3 right-4 rounded-full bg-blue-500 px-3 py-1 text-xs font-semibold text-white">
-          {STRING_DATA.MEMBERSHIP_POPULAR_BADGE}
-        </div>
-      )}
-      {plan.badgeLabel && !plan.isPopular && (
-        <div className="absolute -top-3 right-4 rounded-full bg-blue-500/10 px-3 py-1 text-xs font-semibold text-blue-600 border border-blue-300">
-          {plan.badgeLabel}
-        </div>
-      )}
-      <div className="flex-1 flex flex-col">
-        <h3 className="text-xl font-semibold text-gray-800">{plan.label}</h3>
-        <p className="mt-2 text-sm text-gray-500">{plan.description}</p>
-        <div className="mt-4 flex items-baseline gap-2">
-          <span className="text-4xl font-bold tracking-tight text-gray-900">{plan.priceText}</span>
-          <span className="text-sm font-medium text-gray-500">/ {plan.priceSubtext}</span>
-        </div>
-        <ul className="mt-6 flex flex-col gap-4">
-          {displayedFeatures.map((feature) => {
-            const Icon = featureIcons[feature.label] || Check;
-            return (
-              <li key={feature.label} className="flex items-start">
-                <Icon className="h-6 w-6 flex-shrink-0 text-gray-600 mt-0.5" />
-                <div className="ml-3 flex-1 min-w-0">
-                  <div className="flex items-center justify-between gap-2 mb-1">
-                    <span className="text-sm text-gray-700 font-semibold">{feature.label}:</span>
-                    <span className="flex-shrink-0 text-sm text-gray-700 font-medium">
-                      {renderFeatureValue(feature.value, feature.isBooleanFeature)}
-                    </span>
-                  </div>
-                  {feature.description && (
-                    <p className="text-xs text-gray-500 leading-relaxed">
-                      {feature.description}
-                    </p>
-                  )}
-                </div>
-              </li>
-            );
-          })}
-        </ul>
-        {featureEntries.length > displayedFeatures.length && (
-          <p className="mt-3 text-xs text-gray-500">{STRING_DATA.MEMBERSHIP_MORE_FEATURES}</p>
-        )}
-      </div>
-      <button
-        onClick={() => onSelectPlan(plan)}
-        disabled={isButtonDisabled}
-        className={`mt-6 w-full rounded-lg px-4 py-2.5 text-center font-semibold text-white shadow-sm transition
-          ${isCurrentPlan
-            ? "bg-gray-300 cursor-not-allowed"
-            : "bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-200"
-          }
-          ${isButtonDisabled && !isCurrentPlan ? "opacity-50 cursor-not-allowed" : ""}`}
+    return (
+      <div
+        className={`relative flex flex-col h-full rounded-xl border p-6 shadow-md transition-all duration-300
+        ${plan.isPopular ? "border-2 border-blue-500 scale-105" : "border-gray-200 bg-white"}
+        ${isCurrentPlan ? "bg-green-50 border-green-400" : ""}`}
       >
-        {getButtonText()}
-      </button>
-    </div>
-  );
-};
+        {plan.isPopular && (
+          <div className="absolute -top-2.5 right-4 rounded-full bg-blue-500 px-2.5 py-0.5 text-xs font-semibold text-white">
+            Popular
+          </div>
+        )}
+        {plan.badgeLabel && !plan.isPopular && (
+          <div className="absolute -top-2.5 right-4 rounded-full bg-blue-500/10 px-2.5 py-0.5 text-xs font-semibold text-blue-600 border border-blue-300">
+            {plan.badgeLabel}
+          </div>
+        )}
 
-/**
- * A table for detailed feature comparison across all plans.
- */
-type PlanFeature = ReturnType<typeof mapMembershipPlanLimits>[number];
+        <div className="flex-1 flex flex-col">
+          {/* Plan Title */}
+          <h3 className="mb-2 text-2xl font-bold text-gray-900 leading-tight">{persona.persona || plan.label}</h3>
 
-const FeatureComparisonTable: React.FC<{ plans: ReadonlyArray<MembershipPlan> }> = ({ plans }) => {
-  const featureLookup = useMemo<Record<string, ReadonlyArray<PlanFeature>>>(() => {
-    return plans.reduce<Record<string, ReadonlyArray<PlanFeature>>>((accumulator, plan) => {
-      accumulator[plan.id] = mapMembershipPlanLimits(plan);
-      return accumulator;
-    }, {});
-  }, [plans]);
+          {/* Price Section */}
+          <div className="mb-3 flex items-baseline gap-2 pb-5 border-b border-gray-200">
+            <span className="text-3xl font-extrabold tracking-tight text-gray-900">{plan.priceText}</span>
+            <span className="text-sm font-medium text-gray-500">/ {plan.priceSubtext}</span>
+          </div>
 
-  const allFeatureNames = useMemo(() => {
-    const featureSet = new Set<string>();
-    Object.values(featureLookup).forEach((features) => {
-      features.forEach((feature) => {
-        featureSet.add(feature.label);
-      });
-    });
-    return Array.from(featureSet);
-  }, [featureLookup]);
+          {/* Audience and Description */}
+          {persona.audience && (
+            <p className="mt-2 text-xs font-semibold text-gray-800 leading-snug">{persona.audience}</p>
+          )}
+          {persona.description && (
+            <p className="mt-3 text-xs text-gray-600 leading-relaxed">
+              {persona.description}
+            </p>
+          )}
 
-  const renderComparisonValue = (feature: PlanFeature | undefined): React.ReactNode => {
-    if (!feature) {
-      return <X className="h-5 w-5 text-red-500 mx-auto" />;
-    }
-    if (!feature.isBooleanFeature) {
-      return <span className="font-semibold text-gray-800">{feature.value}</span>;
-    }
-    return feature.value === "✅" ? (
-      <Check className="h-5 w-5 text-green-500 mx-auto" />
-    ) : (
-      <X className="h-5 w-5 text-red-500 mx-auto" />
-    );
-  };
+          {/* Features Section */}
+          <ul className="mt-5 space-y-4">
+            {featureEntries.map(feature => {
+              const Icon = featureIcons[feature.label] || Check;
+              const isUnavailable = isFeatureUnavailable(feature.value);
+              const isUnlimited = feature.value === STRING_DATA.UNLIMITED;
+              const isNumeric = !feature.isBooleanFeature && !isUnavailable && !isUnlimited;
 
-  return (
-    <div className="mt-12 overflow-x-auto">
-      <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">{STRING_DATA.MEMBERSHIP_COMPARE_HEADING}</h2>
-      <table className="min-w-full divide-y divide-gray-200 border border-gray-200 rounded-lg">
-        <thead className="bg-gray-50">
-          <tr>
-            <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-              {STRING_DATA.MEMBERSHIP_FEATURES_HEADER}
-            </th>
-            {plans.map((plan) => (
-              <th key={plan.id} scope="col" className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-500">
-                {plan.label}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-gray-200 bg-white">
-          {allFeatureNames.map((featureName) => {
-            const firstPlanFeature = Object.values(featureLookup)[0]?.find((entry) => entry.label === featureName);
-            return (
-              <tr key={featureName} className="group">
-                <td className="px-6 py-4 text-sm font-medium text-gray-900">
-                  <div className="flex items-center gap-2">
-                    <span>{featureName}</span>
-                    {firstPlanFeature?.description && (
-                      <span className="relative flex items-center">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          strokeWidth="1.5"
-                          stroke="currentColor"
-                          className="h-4 w-4 text-gray-400 cursor-help hover:text-gray-600 transition-colors"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.02c.192-.043.351-.26.298-.45l-1.46-5.842a.75.75 0 00-.71-.513H12c-.414 0-.672.41-.491.752zM12 21a9 9 0 100-18 9 9 0 000 18z"
-                          />
-                        </svg>
-                        <span className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-64 rounded-md bg-gray-800 px-3 py-2 text-xs text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10">
-                          {firstPlanFeature.description}
+              const renderValue = () => {
+                if (feature.isBooleanFeature) {
+                  return feature.value === "✅" ? (
+                    <Check className="h-5 w-5 text-green-500" />
+                  ) : (
+                    <X className="h-5 w-5 text-red-500" />
+                  );
+                }
+                
+                if (isUnavailable) {
+                  return (
+                    <span className="text-xs text-gray-400 font-medium">
+                      {feature.value}
+                    </span>
+                  );
+                }
+                
+                if (isUnlimited) {
+                  return (
+                    <span className="inline-flex items-center px-2 rounded-full text-xs font-bold bg-blue-100 text-blue-700 border border-blue-200 mb-1">
+                      {feature.value}
+                    </span>
+                  );
+                }
+                
+                if (isNumeric) {
+                  return (
+                    <span className="inline-flex items-center justify-center min-w-[2rem] px-2 py-0.5 rounded-md text-xs font-bold text-gray-900">
+                      {feature.value}
+                    </span>
+                  );
+                }
+                
+                return (
+                  <span className="text-xs font-medium text-gray-700">
+                    {feature.value}
+                  </span>
+                );
+              };
+
+              return (
+                <li key={feature.label} className={`flex items-start ${isUnavailable ? "opacity-60" : ""}`}>
+                  <Icon className={`h-5 w-5 flex-shrink-0 mt-0.5 ${isUnavailable ? "text-gray-400" : "text-green-500"}`} />
+                  <div className="ml-2.5 flex-1 min-w-0">
+                    <div className="flex items-center justify-between gap-2 mb-0.5">
+                      <div className="flex items-center gap-1.5">
+                        <span className={`text-xs font-semibold ${isUnavailable ? "text-gray-500" : "text-gray-700"}`}>
+                          {feature.label}:
                         </span>
-                      </span>
+                        {showTooltips && feature.description && (
+                          <InfoTooltip
+                            content={feature.description}
+                            position="top"
+                            iconClassName="h-3.5 w-3.5"
+                          />
+                        )}
+                      </div>
+                      {renderValue()}
+                    </div>
+                    {showDescriptions && feature.description && (
+                      <p className={`text-xs leading-snug ${isUnavailable ? "text-gray-400" : "text-gray-600"}`}>
+                        {feature.description}
+                      </p>
                     )}
                   </div>
-                </td>
-                {plans.map((plan) => {
-                  const feature = featureLookup[plan.id]?.find((entry) => entry.label === featureName);
-                  return (
-                    <td key={`${plan.id}-${featureName}`} className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
-                      {renderComparisonValue(feature)}
-                    </td>
-                  );
-                })}
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-    </div>
-  );
-};
+                </li>
+              );
+            })}
+          </ul>
+        </div>
 
-/**
- * Displays the pricing plans page with membership information.
- */
+        <button
+          onClick={() => onSelectPlan(plan)}
+          disabled={isButtonDisabled}
+          className={`mt-6 w-full rounded-lg px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-200
+          ${isCurrentPlan ? "bg-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700 active:bg-blue-800"}
+          ${isButtonDisabled && !isCurrentPlan ? "opacity-60 cursor-not-allowed" : ""}`}
+        >
+          {getButtonText()}
+        </button>
+      </div>
+    );
+  };
 
-const PricingPlans: React.FC = () => {
+
+interface PricingPlansV3Props {
+  showLegend?: boolean;
+  showTooltips?: boolean;
+  showDescriptions?: boolean;
+}
+
+const PricingPlansV3: React.FC<PricingPlansV3Props> = ({
+  showLegend = false,
+  showTooltips = true,
+  showDescriptions = false,
+}) => {
   const queryClient = useQueryClient();
   const { isAuthenticated } = useIsAuthenticated();
-  
+
   const {
     data: membershipPlans = [],
     isLoading: isLoadingPlans,
     isError: hasPlansError,
-    error: plansError
+    error: plansError,
   } = useMembershipPlans();
 
   const {
@@ -279,31 +220,25 @@ const PricingPlans: React.FC = () => {
 
   const { isReady: isCheckoutReady, message: loaderMessage } = useRazorpayLoader();
   const pollSubscriptionStatus = useSubscriptionPolling(queryClient);
-  
   const { isPending, message: pendingMessage, isActionsDisabled } = useSubscriptionPendingStatus(
     subscriptionData,
     isLoadingSubscription
   );
 
-  // Auto-poll when subscription status is pending on page load
   useAutoPollPendingSubscription(queryClient, subscriptionData, isLoadingSubscription);
-  
+
   const handlePaymentSuccess = useCallback(async (subscriptionId: string, planType: string) => {
     const isActivated = await pollSubscriptionStatus({
       expectedSubscriptionId: subscriptionId,
       expectedSubscriptionType: planType,
     });
-    
     if (isActivated) {
       toast("Subscription activated successfully!", {
         duration: 4000,
         position: 'top-center',
         theme: 'success',
       });
-      
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000);
+      setTimeout(() => window.location.reload(), 1000);
     } else {
       toast("Subscription is being processed. Please refresh the page in a few moments.", {
         duration: 5000,
@@ -313,33 +248,44 @@ const PricingPlans: React.FC = () => {
     }
   }, [pollSubscriptionStatus]);
 
-  const { 
-    initiateCheckout, 
+  const {
+    initiateCheckout,
     activePlanId,
-    checkoutMessage 
+    checkoutMessage
   } = useRazorpayCheckout({
     isCheckoutReady: isCheckoutReady && !isActionsDisabled,
     onPaymentSuccess: handlePaymentSuccess,
   });
 
-  const displayMessage = checkoutMessage || loaderMessage;
-
   const getCurrentPlanInfo = useCurrentPlanInfo(subscriptionData);
-  
-  // Don't show loading if we have active subscription data
   const hasActiveSubscription = subscriptionData?.subscriptionData?.subscription?.status?.toLowerCase() === "active";
   const shouldShowLoading = isLoadingSubscription && !hasActiveSubscription;
-  
+  const displayMessage = checkoutMessage || loaderMessage;
+
   const handlePlanSelection = useCallback((plan: MembershipPlan) => {
-    if (isActionsDisabled) {
-      return;
-    }
+    if (isActionsDisabled) return;
     initiateCheckout(plan);
   }, [isActionsDisabled, initiateCheckout]);
 
+  const allFeatureDescriptions = useMemo(() => {
+    if (!membershipPlans.length) return [];
+    const firstPlan = membershipPlans[0];
+    const features = mapMembershipPlanLimits(firstPlan);
+    const uniqueFeatures = new Map<string, string>();
+    features.forEach(feature => {
+      if (feature.description && !uniqueFeatures.has(feature.label)) {
+        uniqueFeatures.set(feature.label, feature.description);
+      }
+    });
+    return Array.from(uniqueFeatures.entries()).map(([label, description]) => ({
+      label,
+      description,
+    }));
+  }, [membershipPlans]);
+
   return (
     <section className="common-section py-10 bg-gray-50">
-      <div className="mx-auto flex w-full max-w-6xl flex-col gap-10 px-4">
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-8">
         <header className="flex flex-col items-center gap-4 text-center">
           <h1 className="text-3xl font-bold text-gray-900 md:text-4xl">{STRING_DATA.MEMBERSHIP_PLANS}</h1>
           <p className="max-w-2xl text-sm text-gray-600 md:text-base">{STRING_DATA.MEMBERSHIP_DESCRIPTION}</p>
@@ -373,6 +319,7 @@ const PricingPlans: React.FC = () => {
             </div>
           )}
         </header>
+
         {isLoadingPlans ? (
           <div className="flex items-center justify-center py-12">
             <div className="text-center">
@@ -392,9 +339,8 @@ const PricingPlans: React.FC = () => {
                 const { isCurrentPlan } = getCurrentPlanInfo(plan);
                 const isThisPlanProcessing = activePlanId === plan.id;
                 const isAnyPlanProcessing = activePlanId !== null;
-
                 return (
-                  <SimplifiedPlanCard
+                  <PersonaPlanCard
                     key={plan.id}
                     plan={plan}
                     onSelectPlan={handlePlanSelection}
@@ -402,13 +348,41 @@ const PricingPlans: React.FC = () => {
                     isProcessing={isAnyPlanProcessing}
                     isThisPlanProcessing={isThisPlanProcessing}
                     isCurrentPlan={isCurrentPlan}
-                    isLoadingSubscription={shouldShowLoading}
                     isAuthenticated={isAuthenticated}
+                    showTooltips={showTooltips}
+                    showDescriptions={showDescriptions}
                   />
                 );
               })}
             </div>
-            <FeatureComparisonTable plans={membershipPlans} />
+            {showLegend && allFeatureDescriptions.length > 0 && (
+              <div className="mt-8 pt-6 border-t border-gray-200">
+                <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+                  <h3 className="text-sm font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                    <Info className="h-4 w-4 text-blue-500" />
+                    Feature Definitions
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {allFeatureDescriptions.map((feature) => {
+                      const Icon = featureIcons[feature.label] || Info;
+                      return (
+                        <div key={feature.label} className="flex items-start gap-2">
+                          <Icon className="h-4 w-4 text-blue-500 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="text-xs font-semibold text-gray-700 mb-0.5">
+                              {feature.label}:
+                            </p>
+                            <p className="text-xs text-gray-600 leading-relaxed">
+                              {feature.description}
+                            </p>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            )}
           </>
         )}
         {displayMessage ? (
@@ -419,5 +393,4 @@ const PricingPlans: React.FC = () => {
   );
 };
 
-export default PricingPlans;
-
+export default PricingPlansV3;

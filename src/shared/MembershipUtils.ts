@@ -1,5 +1,6 @@
 import { MembershipPlan } from "@/interfaces/MembershipPlan";
 import { STRING_DATA } from "@/shared/Constants";
+import { logInfo } from "./Utilies";
 
 export const MEMBERSHIP_LIMIT_LABELS: Record<keyof MembershipPlan["limits"], string> = {
   collectionsMax: STRING_DATA.MEMBERSHIP_COLLECTIONS,
@@ -27,10 +28,13 @@ export const MEMBERSHIP_LIMIT_ORDER: ReadonlyArray<keyof MembershipPlan["limits"
 ];
 
 export const getMembershipLimitDisplayValue = (value: number): string => {
-  if (Number.isFinite(value)) {
-    return value.toString();
+  if (!Number.isFinite(value)) {
+    return STRING_DATA.UNLIMITED;
   }
-  return STRING_DATA.UNLIMITED;
+  // if (value === 0) {
+  //   return "—";
+  // }
+  return value.toString();
 };
 
 export const getMembershipBooleanDisplayValue = (value: boolean): string => {
@@ -62,18 +66,21 @@ export const mapMembershipPlanLimits = (
       // Show specific label based on what's actually enabled
       let label = "Notifications";
       let description: string | undefined;
-      if (bothEnabled) {
-        label = "WhatsApp & Email Alerts";
-        description = MEMBERSHIP_FEATURE_DESCRIPTIONS["WhatsApp & Email Alerts"];
-      } else if (emailValue) {
+      // if (bothEnabled) {
+      //   label = "WhatsApp & Email Alerts";
+      //   description = MEMBERSHIP_FEATURE_DESCRIPTIONS["WhatsApp & Email Alerts"];
+      // } else 
+      if (emailValue) {
         label = STRING_DATA.MEMBERSHIP_EMAIL_ALERTS;
         description = MEMBERSHIP_FEATURE_DESCRIPTIONS[STRING_DATA.MEMBERSHIP_EMAIL_ALERTS];
       } else if (whatsappValue) {
         label = STRING_DATA.MEMBERSHIP_WHATSAPP_ALERTS;
         description = MEMBERSHIP_FEATURE_DESCRIPTIONS[STRING_DATA.MEMBERSHIP_WHATSAPP_ALERTS];
       } else {
-        label = "WhatsApp & Email Alerts";
-        description = MEMBERSHIP_FEATURE_DESCRIPTIONS["WhatsApp & Email Alerts"];
+        label = STRING_DATA.MEMBERSHIP_EMAIL_ALERTS;
+        description = MEMBERSHIP_FEATURE_DESCRIPTIONS[STRING_DATA.MEMBERSHIP_EMAIL_ALERTS];
+        // label = "WhatsApp & Email Alerts1";
+        // description = MEMBERSHIP_FEATURE_DESCRIPTIONS["WhatsApp & Email Alerts"];
       }
       
       features.push({
@@ -86,7 +93,7 @@ export const mapMembershipPlanLimits = (
     }
     
     const value =
-      typeof rawValue === "number"
+      typeof rawValue === "number" || typeof rawValue === "string"
         ? getMembershipLimitDisplayValue(rawValue)
         : getMembershipBooleanDisplayValue(rawValue);
     
