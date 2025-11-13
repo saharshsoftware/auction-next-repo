@@ -378,43 +378,53 @@
   // Enhanced app opening function with fallback
   function tryOpeningApp(deepLink) {
     if (!isMobileDevice()) return;
-
-    // Check if user has set a permanent preference
-    const userChoice = sessionStorage.getItem(
-      CONFIG.STORAGE_KEYS.USER_PREFERENCE
-    );
-
+  
+    const userChoice = sessionStorage.getItem(CONFIG.STORAGE_KEYS.USER_PREFERENCE);
     if (userChoice === "web") return;
     if (userChoice === "app") {
       window.location.href = deepLink;
       return;
     }
-
-    // If no choice made yet, proceed with detection
+  
+    const userAgent = navigator.userAgent || navigator.vendor || window.opera;
     let appOpened = false;
-    const visibilityChangeHandler = () => {
-      if (document.hidden) {
-        appOpened = true;
-        document.removeEventListener(
-          "visibilitychange",
-          visibilityChangeHandler
-        );
-      }
+  
+    const visibilityHandler = () => {
+      if (document.hidden) appOpened = true;
     };
-
-    document.addEventListener("visibilitychange", visibilityChangeHandler);
-
-    // Try to open app
-    window.location.href = deepLink;
-
+    document.addEventListener("visibilitychange", visibilityHandler);
+  
+    if (/android/i.test(userAgent)) {
+      // ✅ Use Intent URL for Android Chrome
+      const intentUrl = `intent://${window.location.pathname.replace(
+        /^\//,
+        ""
+      )}#Intent;scheme=com.eauctiondekho;package=${CONFIG.ANDROID_PACKAGE};S.browser_fallback_url=${encodeURIComponent(
+        CONFIG.PLAYSTORE_URL
+      )};end`;
+  
+      window.location.href = intentUrl;
+    } else if (/iphone|ipad|ipod/i.test(userAgent)) {
+      // ✅ Use Universal Link if available
+      const universalLink = `https://eauctiondekho.com/${window.location.pathname}`;
+      window.location.href = universalLink;
+  
+      // fallback to custom scheme after a short delay (for older iOS or if Universal not configured)
+      setTimeout(() => {
+        if (!appOpened) window.location.href = CONFIG.APP_SCHEME + window.location.pathname;
+      }, 1000);
+    } else {
+      // fallback for unknown device types
+      window.location.href = deepLink;
+    }
+  
+    // Final fallback (show modal if nothing opened)
     setTimeout(() => {
-      document.removeEventListener("visibilitychange", visibilityChangeHandler);
-
-      if (!appOpened) {
-        showInstallModal(deepLink);
-      }
-    }, CONFIG.MODAL_TIMEOUT);
+      document.removeEventListener("visibilitychange", visibilityHandler);
+      if (!appOpened) showInstallModal(deepLink);
+    }, CONFIG.MODAL_TIMEOUT || 1500);
   }
+  
 
   function showInstallModal(deepLink) {
     showModal(
