@@ -1,6 +1,8 @@
 @import "@fortawesome/fontawesome-svg-core/styles.css";
 @import 'react-simple-toasts/dist/theme/success.css';
 @import 'react-simple-toasts/dist/theme/failure.css';
+@import 'react-simple-toasts/dist/theme/warning.css';
+@import 'react-simple-toasts/dist/theme/info.css';
 
 /* toastConfig({ theme: 'dark' }); */
 @tailwind base;

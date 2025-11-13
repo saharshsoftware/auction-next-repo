@@ -12,12 +12,17 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { USER_TYPE } from "@/types.d";
 import BudgetRangePills from "../atoms/BudgetRangePills";
 import ProfileMembershipSection from "@/components/ui/ProfileMembershipSection";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useIsAuthenticated } from "@/hooks/useAuthenticated";
+import { useRouter } from "next/navigation";
+import { slugify } from "@/shared/Utilies";
+import { ROUTE_CONSTANTS } from "@/shared/Routes";
 
 type TabType = "profile" | "membership";
 
 export default function ProfileTemplate() {
+  const router = useRouter();
+  const [hash, setHash] = useState("");
   const [activeTab, setActiveTab] = useState<TabType>("profile");
   const { isAuthenticated } = useIsAuthenticated();
   const { showModal, openModal, hideModal } = useModal();
@@ -33,6 +38,36 @@ export default function ProfileTemplate() {
   } = useModal();
 
   const { userProfileData: userData, isLoading, error, refetch: refetchUserProfile } = useUserProfile(isAuthenticated);
+
+  useEffect(() => {
+    const currentHash = window.location.hash;
+    setHash(currentHash.replace("#", ""));
+  }, []);
+
+  useEffect(() => {
+    const handleHashChange = () => {
+      setHash(window.location.hash.replace("#", ""));
+    };
+
+    handleHashChange();
+    window.addEventListener("hashchange", handleHashChange);
+
+    return () => window.removeEventListener("hashchange", handleHashChange);
+  }, []);
+
+  useEffect(() => {
+    const hashValue = hash.toLowerCase();
+    if (hashValue === slugify("profile") || hashValue === "") {
+      setActiveTab("profile");
+    } else if (hashValue === slugify("membership")) {
+      setActiveTab("membership");
+    }
+  }, [hash]);
+
+  const handleTabClick = (tab: TabType) => {
+    router.push(`${ROUTE_CONSTANTS.PROFILE}#${slugify(tab)}`);
+    setActiveTab(tab);
+  };
 
   const renderUserType = (userType: USER_TYPE | undefined) => {
     if (userType === USER_TYPE.INDIVIDUAL) {
@@ -50,7 +85,7 @@ export default function ProfileTemplate() {
   const renderTabNavigation = () => (
     <div className="flex border-b border-gray-200 bg-white rounded-t-2xl overflow-x-auto">
       <button
-        onClick={() => setActiveTab("profile")}
+        onClick={() => handleTabClick("profile")}
         className={`flex items-center gap-2 px-4 sm:px-6 py-3 sm:py-4 font-medium text-xs sm:text-sm transition-colors whitespace-nowrap min-w-0 flex-shrink-0 ${
           activeTab === "profile"
             ? "text-blue-600 border-b-2 border-blue-600 bg-blue-50"
@@ -62,7 +97,7 @@ export default function ProfileTemplate() {
         <span className="xs:hidden">Profile</span>
       </button>
       <button
-        onClick={() => setActiveTab("membership")}
+        onClick={() => handleTabClick("membership")}
         className={`flex items-center gap-2 px-4 sm:px-6 py-3 sm:py-4 font-medium text-xs sm:text-sm transition-colors whitespace-nowrap min-w-0 flex-shrink-0 ${
           activeTab === "membership"
             ? "text-blue-600 border-b-2 border-blue-600 bg-blue-50"
