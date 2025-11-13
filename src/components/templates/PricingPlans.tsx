@@ -50,11 +50,15 @@ const PersonaPlanCard: React.FC<PersonaPlanCardProps> = ({
   showDescriptions = false,
   isMounted = false,
 }) => {
-  const isButtonDisabled =  !isCheckoutReady || isProcessing || isCurrentPlan;
+  const isBrokerPlus = plan.label === "Broker Plus";
+  const isButtonDisabled = !isCheckoutReady || isProcessing || isCurrentPlan || isBrokerPlus;
   const persona = personaData[plan.label] || {};
   const featureEntries = useMemo(() => mapMembershipPlanLimits(plan), [plan]);
 
   const getButtonText = (): string => {
+    if (isBrokerPlus) {
+      return "Contact Sales";
+    }
     if (isCurrentPlan) {
       return "Your Current Plan";
     }
@@ -94,8 +98,14 @@ const PersonaPlanCard: React.FC<PersonaPlanCardProps> = ({
 
         {/* Price Section */}
         <div className="mb-3 flex items-baseline gap-2 pb-5 border-b border-gray-200">
-          <span className="text-3xl font-extrabold tracking-tight text-gray-900">{plan.priceText}</span>
-          <span className="text-sm font-medium text-gray-500">/ {plan.priceSubtext}</span>
+          {isBrokerPlus ? (
+            <span className="text-2xl font-extrabold tracking-tight text-gray-900">Contact Sales</span>
+          ) : (
+            <>
+              <span className="text-3xl font-extrabold tracking-tight text-gray-900">{plan.priceText}</span>
+              <span className="text-sm font-medium text-gray-500">/ {plan.priceSubtext}</span>
+            </>
+          )}
         </div>
 
         {/* Audience and Description */}
@@ -190,9 +200,13 @@ const PersonaPlanCard: React.FC<PersonaPlanCardProps> = ({
       <button
         onClick={() => onSelectPlan(plan)}
         disabled={isButtonDisabled}
-        className={`mt-6 w-full rounded-lg px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-200
-          ${isCurrentPlan ? "bg-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700 active:bg-blue-800"}
-          ${isButtonDisabled && !isCurrentPlan ? "opacity-60 cursor-not-allowed" : ""}`}
+        className={`mt-6 w-full rounded-lg px-4 py-2.5 text-sm font-semibold text-white shadow-sm
+          ${isCurrentPlan
+            ? "bg-gray-400 cursor-not-allowed"
+            : isBrokerPlus
+            ? "bg-purple-600 cursor-not-allowed opacity-75"
+            : "bg-blue-600 hover:bg-blue-700 active:bg-blue-800"}
+          ${isButtonDisabled && !isCurrentPlan && !isBrokerPlus ? "opacity-60 cursor-not-allowed" : ""}`}
       >
         {getButtonText()}
       </button>
