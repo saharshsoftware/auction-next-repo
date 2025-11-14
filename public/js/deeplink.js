@@ -1,7 +1,7 @@
 (function () {
   // Configuration
   const CONFIG = {
-    APP_SCHEME: "com.eauctiondekho://",
+    APP_SCHEME: "eauctiondekho://",
     ANDROID_PACKAGE: "com.eauctiondekho",
     PLAYSTORE_URL: "https://play.google.com/store/apps/details?id=com.eauctiondekho",
     APPSTORE_URL: "https://apps.apple.com/us/app/e-auctiondekho/id6742924249",
@@ -460,10 +460,11 @@
     
     window.location.href = intentUrl;
 
-    // For Android Chrome, use longer timeout to allow browser prompt interaction
-    // If browser prompt appears, we need to wait for user to interact with it
-    // Then show our modal only if app is not installed
-    const timeout = systemWillHandle ? 3000 : CONFIG.MODAL_TIMEOUT; // 3 seconds for Chrome to allow prompt interaction
+    // For Android Chrome, we need to handle carefully:
+    // 1. If app is installed: Browser shows native prompt, user can open app
+    // 2. If app is NOT installed: After timeout, show our custom modal
+    // We'll wait longer on Chrome to give the browser prompt time to appear
+    const timeout = systemWillHandle ? 2500 : CONFIG.MODAL_TIMEOUT;
     
     setTimeout(() => {
       document.removeEventListener("visibilitychange", visibilityHandler);
@@ -484,19 +485,14 @@
       });
       
       if (!appOpened) {
-        // On Android Chrome, the browser ALWAYS shows its native prompt (via assetlinks.json)
-        // We should NEVER show our custom modal in this case
-        // Let the browser handle everything - user can choose to open app or stay on website
+        // App didn't open - means app is likely not installed
+        // Show our custom modal to offer installation or continue on website
         if (systemWillHandle) {
-          console.log("[Deeplink] ⚠️ Android Chrome with App Links - browser handled prompt, NOT showing custom modal to avoid duplicates");
-          console.log("[Deeplink] User will use browser's native prompt to open app or continue on website");
-          // Don't show our modal - browser already handled it
-          return;
+          console.log("[Deeplink] Android Chrome: App not installed or user dismissed prompt - showing install modal");
         } else {
-          // Non-Chrome browser - show our modal as fallback
           console.log("[Deeplink] App not detected - showing install modal");
-          showInstallModal(deepLink);
         }
+        showInstallModal(deepLink);
       } else {
         console.log("[Deeplink] ✅ App opened successfully - not showing modal");
       }
