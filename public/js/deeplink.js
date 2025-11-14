@@ -151,7 +151,7 @@
       match: (path) => path.startsWith("auctions/find-auctions"),
       deepLink: (path) => `${CONFIG.APP_SCHEME}auctions`,
     },
-  
+
     {
       name: "Auction Details",
       match: (path) => path.startsWith("auctions/"),
@@ -179,10 +179,10 @@
       match: (path) => {
         // Match pattern: locations/{city}/banks/{bank-name}
         const parts = path.split('/');
-        return parts.length >= 4 && 
-               parts[0] === 'locations' && 
-               parts[2] === 'banks' && 
-               parts[1] && parts[3];
+        return parts.length >= 4 &&
+          parts[0] === 'locations' &&
+          parts[2] === 'banks' &&
+          parts[1] && parts[3];
       },
       deepLink: (path) => {
         // Extract city and bank from the path
@@ -197,10 +197,10 @@
       match: (path) => {
         // Match pattern: locations/{city}/banks/{bank-name}
         const parts = path.split('/');
-        return parts.length >= 4 && 
-               parts[0] === 'locations' && 
-               parts[2] === 'categories' && 
-               parts[1] && parts[3];
+        return parts.length >= 4 &&
+          parts[0] === 'locations' &&
+          parts[2] === 'categories' &&
+          parts[1] && parts[3];
       },
       deepLink: (path) => {
         // Extract city and category from the path
@@ -215,10 +215,10 @@
       match: (path) => {
         // Match pattern: locations/{city}/types/{type}
         const parts = path.split('/');
-        return parts.length >= 4 && 
-               parts[0] === 'locations' && 
-               parts[2] === 'types' && 
-               parts[1] && parts[3];
+        return parts.length >= 4 &&
+          parts[0] === 'locations' &&
+          parts[2] === 'types' &&
+          parts[1] && parts[3];
       },
       deepLink: (path) => {
         // Extract city and type from the path
@@ -233,10 +233,10 @@
       match: (path) => {
         // Match pattern: banks/{bank-name}/categories/{category}
         const parts = path.split('/');
-        return parts.length >= 4 && 
-               parts[0] === 'banks' && 
-               parts[2] === 'categories' && 
-               parts[1] && parts[3];
+        return parts.length >= 4 &&
+          parts[0] === 'banks' &&
+          parts[2] === 'categories' &&
+          parts[1] && parts[3];
       },
       deepLink: (path) => {
         // Extract city and type from the path
@@ -251,10 +251,10 @@
       match: (path) => {
         // Match pattern: banks/{bank-name}/types/{type}
         const parts = path.split('/');
-        return parts.length >= 4 && 
-               parts[0] === 'banks' && 
-               parts[2] === 'types' && 
-               parts[1] && parts[3];
+        return parts.length >= 4 &&
+          parts[0] === 'banks' &&
+          parts[2] === 'types' &&
+          parts[1] && parts[3];
       },
       deepLink: (path) => {
         // Extract bank and type from the path
@@ -269,10 +269,10 @@
       match: (path) => {
         // Match pattern: categories/{category-name}/types/{type}
         const parts = path.split('/');
-        return parts.length >= 4 && 
-               parts[0] === 'categories' && 
-               parts[2] === 'types' && 
-               parts[1] && parts[3];
+        return parts.length >= 4 &&
+          parts[0] === 'categories' &&
+          parts[2] === 'types' &&
+          parts[1] && parts[3];
       },
       deepLink: (path) => {
         // Extract category and type from the path
@@ -378,37 +378,37 @@
   // Enhanced app opening function with fallback
   function tryOpeningApp(deepLink) {
     if (!isMobileDevice()) return;
-  
+
     const userChoice = sessionStorage.getItem(CONFIG.STORAGE_KEYS.USER_PREFERENCE);
     if (userChoice === "web") return;
     if (userChoice === "app") {
       window.location.href = deepLink;
       return;
     }
-  
+
     const userAgent = navigator.userAgent || navigator.vendor || window.opera;
     let appOpened = false;
-  
+
     const visibilityHandler = () => {
       if (document.hidden) appOpened = true;
     };
     document.addEventListener("visibilitychange", visibilityHandler);
-  
+
     if (/android/i.test(userAgent)) {
       // ✅ Use Intent URL for Android Chrome
       const intentUrl = `intent://${window.location.pathname.replace(
         /^\//,
         ""
-      )}#Intent;scheme=com.eauctiondekho;package=${CONFIG.ANDROID_PACKAGE};S.browser_fallback_url=${encodeURIComponent(
-        CONFIG.PLAYSTORE_URL
-      )};end`;
-  
+      )}#Intent;scheme=com.eauctiondekho;package=${CONFIG.ANDROID_PACKAGE};end`;
+
+
       window.location.href = intentUrl;
     } else if (/iphone|ipad|ipod/i.test(userAgent)) {
       // ✅ Use Universal Link if available
-      const universalLink = `https://eauctiondekho.com/${window.location.pathname}`;
+      const universalLink = `${window.location.origin}${window.location.pathname}`;
+
       window.location.href = universalLink;
-  
+
       // fallback to custom scheme after a short delay (for older iOS or if Universal not configured)
       setTimeout(() => {
         if (!appOpened) window.location.href = CONFIG.APP_SCHEME + window.location.pathname;
@@ -417,14 +417,17 @@
       // fallback for unknown device types
       window.location.href = deepLink;
     }
-  
+
     // Final fallback (show modal if nothing opened)
     setTimeout(() => {
       document.removeEventListener("visibilitychange", visibilityHandler);
-      if (!appOpened) showInstallModal(deepLink);
-    }, CONFIG.MODAL_TIMEOUT || 1500);
+      if (appOpened) return; // 🚫 STOP fallback redirect
+
+      // If still visible → show install modal
+      showInstallModal(deepLink);
+    }, CONFIG.MODAL_TIMEOUT || 2000);
   }
-  
+
 
   function showInstallModal(deepLink) {
     showModal(
