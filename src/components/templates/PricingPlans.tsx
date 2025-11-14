@@ -14,8 +14,12 @@ import { ROUTE_CONSTANTS } from "@/shared/Routes";
 import useModal from "@/hooks/useModal";
 import LoginModal from "../ modals/LoginModal";
 import InfoModal from "../ modals/InfoModal";
+import ContactSalesModal from "../ modals/ContactSalesModal";
 import { PersonaPlanCard } from "./PersonaPlanCard";
 import { SubscriptionPendingScreen } from "./SubscriptionPendingScreen";
+import { useUserProfile } from "@/hooks/useUserProfile";
+import { getUserData } from "@/shared/Utilies";
+import { UserProfileApiResponse } from "@/interfaces/UserProfileApi";
 
 interface PricingPlansProps {
   readonly showLegend?: boolean;
@@ -36,12 +40,13 @@ const PricingPlans: React.FC<PricingPlansProps> = ({
   const router = useRouter();
   const { showModal, openModal, hideModal } = useModal();
   const { showModal: showInfoModal, openModal: openInfoModal, hideModal: hideInfoModal } = useModal();
+  const { showModal: showContactSalesModal, openModal: openContactSalesModal, hideModal: hideContactSalesModal } = useModal();
+  const { fullProfileData } = useUserProfile(isAuthenticated);
   
   useEffect(() => {
     setIsMounted(true);
   }, []);
 
-  const isPending = true;
   
   const {
     subscriptionData,
@@ -49,8 +54,7 @@ const PricingPlans: React.FC<PricingPlansProps> = ({
     hasSubscriptionError,
     isCheckoutReady,
     loaderMessage,
-    // isPending,
-    // pendingMessage,
+    isPending,
     isActionsDisabled,
     initiateCheckout,
     activePlanId,
@@ -67,7 +71,7 @@ const PricingPlans: React.FC<PricingPlansProps> = ({
   
   const handlePlanSelection = useCallback((plan: MembershipPlan) => {
     if (plan.label === STRING_DATA.BROKER_PLUS) {
-      router.push(ROUTE_CONSTANTS.PARTNER);
+      showContactSalesModal();
       return;
     }
     
@@ -91,7 +95,7 @@ const PricingPlans: React.FC<PricingPlansProps> = ({
       showInfoModal();
       return;
     }
-  }, [isActionsDisabled, initiateCheckout, isAuthenticated, getCurrentPlanInfo, router, showModal, showInfoModal, subscriptionData]);
+  }, [isActionsDisabled, initiateCheckout, isAuthenticated, getCurrentPlanInfo, router, showModal, showInfoModal, subscriptionData, showContactSalesModal]);
   
   const allFeatureDescriptions = useMemo(() => {
     if (!membershipPlans.length) return [];
@@ -214,6 +218,14 @@ const PricingPlans: React.FC<PricingPlansProps> = ({
           openModal={openInfoModal}
           hideModal={hideInfoModal}
           message="Want to switch plans? You'll need to cancel your current one first. You can then choose a new plan when your billing period ends."
+        />
+      )}
+      {openContactSalesModal && (
+        <ContactSalesModal
+          openModal={openContactSalesModal}
+          hideModal={hideContactSalesModal}
+          initialPhoneNumber={fullProfileData?.username || ""}
+          userData={fullProfileData as UserProfileApiResponse}
         />
       )}
     </section>
