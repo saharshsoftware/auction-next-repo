@@ -448,7 +448,7 @@
     document.addEventListener("visibilitychange", visibilityHandler);
 
     const pathname = window.location.pathname.replace(/^\//, "");
-    const intentUrl = `intent://${pathname}#Intent;scheme=${CONFIG.APP_SCHEME.replace("://", "")};package=${CONFIG.ANDROID_PACKAGE};end`;
+    // const intentUrl = `intent://${pathname}#Intent;scheme=${CONFIG.APP_SCHEME.replace("://", "")};package=${CONFIG.ANDROID_PACKAGE};end`;
     
     console.log("[Deeplink] Attempting to open app via Intent URL:", {
       pathname,
@@ -458,7 +458,7 @@
       timeout: CONFIG.MODAL_TIMEOUT + "ms"
     });
     
-    window.location.href = intentUrl;
+    window.location.href = pathname;
 
     // For Android Chrome, we need to handle carefully:
     // 1. If app is installed: Browser shows native prompt, user can open app
