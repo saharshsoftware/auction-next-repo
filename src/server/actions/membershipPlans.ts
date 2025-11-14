@@ -28,7 +28,7 @@ const mapApiPlanToMembershipPlan = (apiPlan: ApiMembershipPlan): MembershipPlan 
   return {
     id: planId,
     label: name,
-    priceText: price === 0 ? "₹0" : `₹${price.toLocaleString()}`,
+    priceText: price === 0 ? "₹0" : `₹${price?.toLocaleString()}`,
     priceSubtext: "per month",
     description,
     ctaLabel: price === 0 ? "Stay on Free" : `Upgrade to ${name}`,
