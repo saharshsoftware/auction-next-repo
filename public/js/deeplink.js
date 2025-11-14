@@ -452,7 +452,7 @@
     
     console.log("[Deeplink] Attempting to open app via Intent URL:", {
       pathname,
-      intentUrl,
+      // intentUrl,
       deepLink,
       systemWillHandle,
       timeout: CONFIG.MODAL_TIMEOUT + "ms"
