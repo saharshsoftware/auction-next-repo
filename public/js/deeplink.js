@@ -448,23 +448,25 @@
     document.addEventListener("visibilitychange", visibilityHandler);
 
     const pathname = window.location.pathname.replace(/^\//, "");
-    // const intentUrl = `intent://${pathname}#Intent;scheme=${CONFIG.APP_SCHEME.replace("://", "")};package=${CONFIG.ANDROID_PACKAGE};end`;
+    const intentUrl = `intent://${pathname}#Intent;scheme=${CONFIG.APP_SCHEME.replace("://", "")};package=${CONFIG.ANDROID_PACKAGE};end`;
     
     console.log("[Deeplink] Attempting to open app via Intent URL:", {
       pathname,
-      // intentUrl,
+      intentUrl,
       deepLink,
       systemWillHandle,
       timeout: CONFIG.MODAL_TIMEOUT + "ms"
     });
     
-    window.location.href = pathname;
+    // Use Intent URL for Android - this is the correct format for App Links
+    // Intent URL format: intent://path#Intent;scheme=appscheme;package=com.package;end
+    window.location.href = intentUrl;
 
     // For Android Chrome, we need to handle carefully:
-    // 1. If app is installed: Browser shows native prompt, user can open app
-    // 2. If app is NOT installed: After timeout, show our custom modal
-    // We'll wait longer on Chrome to give the browser prompt time to appear
-    const timeout = systemWillHandle ? 2500 : CONFIG.MODAL_TIMEOUT;
+    // 1. If app is installed: Browser shows native prompt (assetlinks.json)
+    // 2. If app is NOT installed: No prompt appears, we should show our modal
+    // Strategy: Wait longer on Chrome. If no interaction detected, assume app not installed
+    const timeout = systemWillHandle ? 3000 : CONFIG.MODAL_TIMEOUT; // 3s for Chrome
     
     setTimeout(() => {
       document.removeEventListener("visibilitychange", visibilityHandler);
@@ -485,10 +487,20 @@
       });
       
       if (!appOpened) {
-        // App didn't open - means app is likely not installed
-        // Show our custom modal to offer installation or continue on website
+        // On Android Chrome:
+        // - If browser prompt appeared (blur detected), user likely dismissed it → Don't nag with modal
+        // - If no prompt detected after 3s, app is likely NOT installed → Show install modal
+        if (systemWillHandle && browserPromptShown) {
+          console.log("[Deeplink] ⚠️ Android Chrome: Browser prompt was shown");
+          console.log("[Deeplink] User dismissed prompt - NOT showing custom modal (respecting user choice)");
+          return; // User made their choice via browser prompt
+        }
+        
+        // App didn't open AND no browser prompt detected
+        // This means app is likely NOT installed - show install modal
         if (systemWillHandle) {
-          console.log("[Deeplink] Android Chrome: App not installed or user dismissed prompt - showing install modal");
+          console.log("[Deeplink] Android Chrome: No browser prompt detected after 3s");
+          console.log("[Deeplink] App likely NOT installed - showing install modal");
         } else {
           console.log("[Deeplink] App not detected - showing install modal");
         }
@@ -499,45 +511,56 @@
     }, timeout);
   }
 
-  // iOS handling remains the same
+  // iOS handling - use custom scheme to open app
   function tryUniversalLinkWithFallback(deepLink) {
     console.log("[Deeplink] tryUniversalLinkWithFallback called", { deepLink });
     
     let appOpened = false;
-    let visibilityChanged = false;
     
     const visibilityHandler = () => {
-      visibilityChanged = true;
       if (document.hidden) {
         appOpened = true;
-        console.log("[Deeplink] Page hidden - Universal Link likely opened app");
-      } else {
-        console.log("[Deeplink] Page visible again");
+        console.log("[Deeplink] ✅ Page hidden - iOS app opened");
       }
     };
     document.addEventListener("visibilitychange", visibilityHandler);
 
-    // For iOS, Universal Links should work automatically with current URL
-    const currentUrl = window.location.href;
-    console.log("[Deeplink] Waiting for Universal Link to trigger:", {
-      currentUrl,
+    const pathname = window.location.pathname.replace(/^\//, "");
+    const customSchemeUrl = `${CONFIG.APP_SCHEME}${pathname}`;
+    
+    console.log("[Deeplink] Attempting to open iOS app:", {
+      customSchemeUrl,
       deepLink,
       timeout: CONFIG.MODAL_TIMEOUT + "ms"
     });
+    
+    // Try to open app with custom scheme
+    // On iOS Safari/Chrome, this ALWAYS shows system alert if app is installed
+    // If app is not installed, it fails silently
+    window.location.href = customSchemeUrl;
 
+    // Wait and check if app opened
     setTimeout(() => {
       document.removeEventListener("visibilitychange", visibilityHandler);
+      
       console.log("[Deeplink] Timeout reached - checking app status:", {
         appOpened,
-        visibilityChanged,
         documentHidden: document.hidden
       });
       
       if (!appOpened) {
-        console.log("[Deeplink] Universal Link failed - showing install modal");
+        // iOS behaves consistently:
+        // - If app installed: System alert ALWAYS appears, user opens or dismisses
+        // - If app NOT installed: Nothing happens, no alert
+        // 
+        // PROBLEM: We can't reliably detect if alert was dismissed vs app not installed
+        // SOLUTION: Follow industry standard - show custom modal as fallback
+        //           This gives users a clear path to install the app
+        console.log("[Deeplink] iOS: App didn't open - showing install modal");
+        console.log("[Deeplink] Note: If you dismissed the system alert, you can also use this modal");
         showInstallModal(deepLink);
       } else {
-        console.log("[Deeplink] App opened via Universal Link - not showing modal");
+        console.log("[Deeplink] ✅ App opened successfully - not showing modal");
       }
     }, CONFIG.MODAL_TIMEOUT);
   }
