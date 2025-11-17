@@ -6,7 +6,6 @@ const HeadScripts = () => {
   return (
     <>
       {/* Preconnect & Preload */}
-      <script src="/js/deeplink.js" defer></script>
       <link rel="preconnect" href="https://api.eauctiondekho.com" />
       <link rel="preload" as="image" href={logo.src} type="image/svg+xml" />
 

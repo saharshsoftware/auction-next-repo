@@ -15,6 +15,7 @@ import {
 import useModal from "@/hooks/useModal";
 import SurveyModal from "../ modals/SurveyModal";
 import ProfileCompletionModal from "../ modals/ProfileCompletionModal";
+import DeepLinkModal from "../ modals/DeepLinkModal";
 import { COOKIES, STORAGE_KEYS } from "@/shared/Constants";
 import { USER_SURVEY_STATUS } from "@/types";
 import { setUserIdInDataLayer } from "@/helpers/WindowHelper";
@@ -22,6 +23,7 @@ import { getCookie } from "cookies-next";
 import { useAuthStore } from "@/zustandStore/authStore";
 import { useScrollToTop } from "@/hooks/useScrollToTop";
 import { useRouter } from "next/navigation";
+import { useDeepLinkHandler } from "@/hooks/useDeepLinkHandler";
 
 const AppLayout = ({
   children,
@@ -36,6 +38,7 @@ const AppLayout = ({
   const router = useRouter();
   const { isNewUser } = useAuthStore();
   const isAuthRoute = AUTH_ROUTES.some((route) => route.path === pathname);
+  const { shouldShowDeepLinkModal, handleCloseDeepLinkModal } = useDeepLinkHandler();
   
   // Authentication check with defensive error handling
   const token = getCookie(COOKIES.TOKEN_KEY);
@@ -131,6 +134,7 @@ const AppLayout = ({
           hideModal={handleCloseProfileModal}
         />
       )}
+      <DeepLinkModal open={shouldShowDeepLinkModal} onClose={handleCloseDeepLinkModal} />
     </div>
   );
 };
