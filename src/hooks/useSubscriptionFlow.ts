@@ -2,6 +2,7 @@
 import { useCallback } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { MembershipPlan } from "@/interfaces/MembershipPlan";
+import { UserProfileApiResponse } from "@/interfaces/UserProfileApi";
 import { useSubscription } from "./useSubscription";
 import { useRazorpayLoader } from "./useRazorpayLoader";
 import { useSubscriptionPolling, useAutoPollPendingSubscription } from "./useSubscriptionPolling";
@@ -13,6 +14,7 @@ import toast from "react-simple-toasts";
 interface UseSubscriptionFlowParams {
   readonly isAuthenticated: boolean;
   readonly queryClient: ReturnType<typeof useQueryClient>;
+  readonly initialProfileData?: UserProfileApiResponse | null;
 }
 
 interface UseSubscriptionFlowReturn {
@@ -38,12 +40,13 @@ interface UseSubscriptionFlowReturn {
 export const useSubscriptionFlow = ({
   isAuthenticated,
   queryClient,
+  initialProfileData = null,
 }: UseSubscriptionFlowParams): UseSubscriptionFlowReturn => {
   const {
     data: subscriptionData,
     isLoading: isLoadingSubscription,
     isError: hasSubscriptionError,
-  } = useSubscription(isAuthenticated);
+  } = useSubscription(isAuthenticated, initialProfileData);
   
   const { isReady: isCheckoutReady, message: loaderMessage } = useRazorpayLoader();
   const pollSubscriptionStatus = useSubscriptionPolling(queryClient);

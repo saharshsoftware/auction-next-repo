@@ -236,9 +236,9 @@ const ProfileMembershipSection: React.FC<ProfileMembershipSectionProps> = (props
             </div>
             <Link
               href={ROUTE_CONSTANTS.PRICING}
-              className="w-full md:w-auto px-6 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors text-center whitespace-nowrap"
+              className="w-fit px-6 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors text-center whitespace-nowrap"
             >
-              View Pricing Plans
+              View Pricing
             </Link>
           </div>
         </PlanDetailsCard>

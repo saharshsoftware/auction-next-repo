@@ -11,6 +11,7 @@ import { faFilter } from "@fortawesome/free-solid-svg-icons";
 import { getDataFromQueryParamsMethod } from "@/shared/Utilies";
 import { useSubscriptionAccess } from "@/hooks/useSubscriptionAccess";
 import Link from "next/link";
+import { useUserProfile } from "@/hooks/useUserProfile";
 interface IAuctionHeaderSaveSearchProps {
   searchParams?: { [key: string]: string | string[] | undefined };
 }
@@ -19,6 +20,7 @@ const AuctionHeaderSaveSearch = ({ searchParams }: IAuctionHeaderSaveSearchProps
   const [showSavedSearchModal, setShowSavedSearchModal] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const token = getCookie(COOKIES.TOKEN_KEY) ?? "";
+  const { isInternalUser } = useUserProfile(Boolean(token));
   const { canAddSavedSearch, isLoading: isLoadingAccess } = useSubscriptionAccess();
   const encodedQuery: string = Array.isArray(searchParams?.q)
     ? (searchParams?.q?.[0] as string)
@@ -63,7 +65,11 @@ const AuctionHeaderSaveSearch = ({ searchParams }: IAuctionHeaderSaveSearchProps
   const getSubText = () => {
     if (!token) return "Resume your journey later with saved filters";
     if (isLoadingAccess) return "Checking availability...";
-    if (!canAddSavedSearch) return "Upgrade your plan to save more searches";
+    if (!canAddSavedSearch) {
+      return isInternalUser
+        ? "Upgrade your plan to save more searches"
+        : "You have reached the limit for saved searches";
+    }
     return "Resume your journey later with saved filters";
   };
 
@@ -85,7 +91,7 @@ const AuctionHeaderSaveSearch = ({ searchParams }: IAuctionHeaderSaveSearchProps
             <FontAwesomeIcon icon={faFilter} className="" />
             <span>{getSubText()}</span>
           </div>
-          {shouldDisableButton && !isLoadingAccess && (
+          {shouldDisableButton && !isLoadingAccess && isInternalUser && (
             <div className="text-xs text-gray-600">
               <Link href="/pricing" className="text-blue-600 hover:underline">
                 Upgrade your plan

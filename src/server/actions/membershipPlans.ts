@@ -43,7 +43,7 @@ const mapApiPlanToMembershipPlan = (apiPlan: ApiMembershipPlan): MembershipPlan 
       savedSearchesMax,
       whatsappAlerts: planLimits.whatsappAlerts,
       emailAlerts: planLimits.emailAlerts,
-      notificationsAlerts: planLimits.notificationsAlerts,
+      notificationAlerts: planLimits.notificationAlerts,
     },
   };
 };

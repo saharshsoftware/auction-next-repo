@@ -8,7 +8,7 @@ export interface PlanLimits {
   readonly savedSearchesMax: number;
   readonly whatsappAlerts: boolean;
   readonly emailAlerts: boolean;
-  readonly notificationsAlerts: boolean;
+  readonly notificationAlerts: boolean;
 }
 
 /**

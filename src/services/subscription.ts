@@ -18,6 +18,7 @@ export const getSubscription = async (): Promise<UserSubscriptionDetails> => {
 export const createSubscription = async (plan: MembershipPlan): Promise<CreateSubscriptionApiResponse> => {
   const requestData: CreateSubscriptionApiRequest = {
     planId: plan.razorpayPlanId,
+    startDate: new Date().toISOString(),
     planType: getPlanTypeForBackend(plan.planType),
   };
   const response = await postRequest({

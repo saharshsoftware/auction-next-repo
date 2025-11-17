@@ -55,7 +55,7 @@ export const useSubscriptionAccess = (currentCounts?: CurrentCounts): Subscripti
         (limits.savedSearchesMax > 0 && actualCounts.savedSearches < limits.savedSearchesMax),
       canReceiveWhatsApp: limits.whatsappAlerts,
       canReceiveEmail: limits.emailAlerts,
-      canReceiveNotifications: limits.notificationsAlerts,
+      canReceiveNotifications: limits.notificationAlerts,
       isLoading: false,
     };
 

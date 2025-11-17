@@ -1,5 +1,5 @@
 "use client";
-import { UserSubscriptionDetails } from "@/interfaces/UserProfileApi";
+import { UserProfileApiResponse, UserSubscriptionDetails } from "@/interfaces/UserProfileApi";
 import { PlanDetails, PaymentInfo } from "@/interfaces/Payment";
 import { STRING_DATA } from "@/shared/Constants";
 import { useUserProfile } from "@/hooks/useUserProfile";
@@ -40,7 +40,7 @@ const mapSubscriptionToPlanDetails = (
       benefits.push("WhatsApp notifications");
     }
     
-    if (limits.notificationsAlerts) {
+    if (limits.notificationAlerts) {
       benefits.push("Mobile app notifications");
     }
 
@@ -99,8 +99,8 @@ const mapSubscriptionToPaymentInfo = (
 /**
  * Custom hook to get user subscription data from profile
  */
-export const useSubscription = (enabled = true) => {
-  const { fullProfileData, isLoading, error } = useUserProfile(enabled);
+export const useSubscription = (enabled = true, initialProfileData?: UserProfileApiResponse | null) => {
+  const { fullProfileData, isLoading, error } = useUserProfile(enabled, initialProfileData);
 
   // Transform the data to match the expected return format
   const transformedData = fullProfileData?.subscriptionDetails ? {

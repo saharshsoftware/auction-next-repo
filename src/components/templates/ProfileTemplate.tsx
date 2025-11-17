@@ -25,6 +25,7 @@ export default function ProfileTemplate() {
   const [hash, setHash] = useState("");
   const [activeTab, setActiveTab] = useState<TabType>("profile");
   const { isAuthenticated } = useIsAuthenticated();
+
   const { showModal, openModal, hideModal } = useModal();
   const {
     showModal: showModalDelete,
@@ -37,8 +38,13 @@ export default function ProfileTemplate() {
     hideModal: hideModalEdit,
   } = useModal();
 
-  const { userProfileData: userData, isLoading, error, refetch: refetchUserProfile } = useUserProfile(isAuthenticated);
-
+  const {
+    userProfileData: userData,
+    isLoading,
+    error,
+    refetch: refetchUserProfile,
+    isInternalUser,
+  } = useUserProfile(isAuthenticated);
   useEffect(() => {
     const currentHash = window.location.hash;
     setHash(currentHash.replace("#", ""));
@@ -86,28 +92,26 @@ export default function ProfileTemplate() {
     <div className="flex border-b border-gray-200 bg-white rounded-t-2xl overflow-x-auto">
       <button
         onClick={() => handleTabClick("profile")}
-        className={`flex items-center gap-2 px-4 sm:px-6 py-3 sm:py-4 font-medium text-xs sm:text-sm transition-colors whitespace-nowrap min-w-0 flex-shrink-0 ${
-          activeTab === "profile"
-            ? "text-blue-600 border-b-2 border-blue-600 bg-blue-50"
-            : "text-gray-600 hover:text-gray-800 hover:bg-gray-50"
-        }`}
+        className={`flex items-center gap-2 px-4 sm:px-6 py-3 sm:py-4 font-medium text-xs sm:text-sm transition-colors whitespace-nowrap min-w-0 flex-shrink-0 ${activeTab === "profile"
+          ? "text-blue-600 border-b-2 border-blue-600 bg-blue-50"
+          : "text-gray-600 hover:text-gray-800 hover:bg-gray-50"
+          }`}
       >
         <FontAwesomeIcon icon={faUser} size="sm" />
         <span className="hidden xs:inline">Profile Information</span>
         <span className="xs:hidden">Profile</span>
       </button>
-      <button
+      {isInternalUser && <button
         onClick={() => handleTabClick("membership")}
-        className={`flex items-center gap-2 px-4 sm:px-6 py-3 sm:py-4 font-medium text-xs sm:text-sm transition-colors whitespace-nowrap min-w-0 flex-shrink-0 ${
-          activeTab === "membership"
-            ? "text-blue-600 border-b-2 border-blue-600 bg-blue-50"
-            : "text-gray-600 hover:text-gray-800 hover:bg-gray-50"
-        }`}
+        className={`flex items-center gap-2 px-4 sm:px-6 py-3 sm:py-4 font-medium text-xs sm:text-sm transition-colors whitespace-nowrap min-w-0 flex-shrink-0 ${activeTab === "membership"
+          ? "text-blue-600 border-b-2 border-blue-600 bg-blue-50"
+          : "text-gray-600 hover:text-gray-800 hover:bg-gray-50"
+          }`}
       >
         <FontAwesomeIcon icon={faCrown} size="sm" />
         <span className="hidden xs:inline">Membership Details</span>
         <span className="xs:hidden">Membership</span>
-      </button>
+      </button>}
     </div>
   );
 
@@ -124,7 +128,7 @@ export default function ProfileTemplate() {
             <span>Edit Profile</span>
           </button>
         </div>
-        
+
         <div className="space-y-6">
           {/* Basic Information */}
           <div className="grid gap-4 sm:gap-6">
@@ -142,7 +146,7 @@ export default function ProfileTemplate() {
                 value={userData?.username ?? "-"}
               />
             </div>
-            
+
             <div className="space-y-4">
               <ShowLabelValue
                 heading={"Interested Cities"}
@@ -157,18 +161,17 @@ export default function ProfileTemplate() {
                 hasChildren={true}
               >
                 <div className="flex items-center gap-2">
-                  <span className={`px-3 py-1 text-xs font-medium rounded-full ${
-                    userData?.userType === USER_TYPE.BROKER ? 'bg-purple-100 text-purple-800' :
+                  <span className={`px-3 py-1 text-xs font-medium rounded-full ${userData?.userType === USER_TYPE.BROKER ? 'bg-purple-100 text-purple-800' :
                     userData?.userType === USER_TYPE.INVESTOR ? 'bg-green-100 text-green-800' :
-                    'bg-blue-100 text-blue-800'
-                  }`}>
+                      'bg-blue-100 text-blue-800'
+                    }`}>
                     {renderUserType(userData?.userType)}
                   </span>
                 </div>
               </ShowLabelValue>
             </div>
           </div>
-          
+
           {/* Budget Ranges */}
           <div className="pt-4 border-t border-gray-100">
             <ShowLabelValue heading={"Budget Ranges"} hasChildren={true}>
@@ -176,7 +179,7 @@ export default function ProfileTemplate() {
             </ShowLabelValue>
           </div>
         </div>
-        
+
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-end gap-3 mt-8 pt-6 border-t border-gray-200">
           <button
@@ -196,19 +199,22 @@ export default function ProfileTemplate() {
     </div>
   );
 
-  const renderMembershipContent = () => (
-    <div className="bg-white rounded-b-2xl shadow-sm">
-      <div className="p-4 sm:p-6">
-        <div className="mb-6">
-          <h2 className="text-lg sm:text-xl font-semibold text-gray-900">Membership Details</h2>
-          <p className="text-sm text-gray-600 mt-1">
-            Manage your current membership plan, billing preferences, and payment history.
-          </p>
+  const renderMembershipContent = () => {
+    return (
+      <div className="bg-white rounded-b-2xl shadow-sm">
+        <div className="p-4 sm:p-6">
+          <div className="mb-6">
+            <h2 className="text-lg sm:text-xl font-semibold text-gray-900">Membership Details</h2>
+            <p className="text-sm text-gray-600 my-2">
+              Manage your current membership plan, billing preferences, and payment history.
+            </p>
+            <ProfileMembershipSection refetchUserProfile={refetchUserProfile} />
+
+          </div>
         </div>
-        <ProfileMembershipSection refetchUserProfile={refetchUserProfile} />
       </div>
-    </div>
-  );
+    )
+  };
 
   const renderUserProfile = () => {
     if (isLoading) {
@@ -235,7 +241,7 @@ export default function ProfileTemplate() {
             Manage your profile information and membership details.
           </p>
         </div>
-        
+
         {/* Main Content */}
         <div className="border border-gray-200 rounded-2xl overflow-hidden shadow-sm">
           {renderTabNavigation()}
@@ -268,7 +274,7 @@ export default function ProfileTemplate() {
       )}
 
       <UpdatePasswordModal openModal={openModal} hideModal={hideModal} />
-      
+
       <div className="">
         {renderUserProfile()}
       </div>

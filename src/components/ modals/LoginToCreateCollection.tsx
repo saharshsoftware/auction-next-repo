@@ -14,6 +14,7 @@ import { fetchFavoriteListClient } from "@/services/favouriteList";
 import { IFavouriteList } from "@/types";
 import { REACT_QUERY } from "@/shared/Constants";
 import { useQuery } from "@tanstack/react-query";
+import { useUserProfile } from "@/hooks/useUserProfile";
 
 function LoginToCreateCollection({
   isAuthenticated,
@@ -24,6 +25,7 @@ function LoginToCreateCollection({
 }) {
   const { showModal, openModal, hideModal } = useModal();
   const router = useRouter();
+  const { isInternalUser } = useUserProfile(Boolean(isAuthenticated));
 
   const {
     data: favouriteListData,
@@ -65,7 +67,7 @@ function LoginToCreateCollection({
   const getButtonText = () => {
     if (!isAuthenticated) return "Signup to create collection";
     if (isLoadingAccess) return "Loading...";
-    if (!canAddCollection) return "Limit reached - Upgrade plan";
+    if (!canAddCollection) return "Limit reached";
     return "Create Collection";
   };
 
@@ -79,7 +81,7 @@ function LoginToCreateCollection({
         disabled={shouldDisableButton}
         iconLeft={<FontAwesomeIcon icon={faBell} className="h-4 w-4 " />}
       />
-      {shouldDisableButton && isAuthenticated && !isLoadingAccess && (
+      {shouldDisableButton && isAuthenticated && !isLoadingAccess && isInternalUser && (
         <div className="mt-2 text-xs text-gray-600">
           <Link href="/pricing" className="text-blue-600 hover:underline">
             Upgrade your plan

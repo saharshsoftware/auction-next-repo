@@ -228,7 +228,7 @@ export const NAVBAR_NAV_LINKS = [
   },
   {
     path: ROUTE_CONSTANTS.PRICING,
-    label: STRING_DATA.MEMBERSHIP_PLANS,
+    label: STRING_DATA.MEMBERSHIP,
     icon: faCrown,
   },
   {
@@ -252,6 +252,38 @@ export const NAVBAR_NAV_LINKS = [
     icon: faFilter,
   },
 ];
+
+const parseInternalUserEmails = (): string[] => {
+  const envValue = process.env.NEXT_PUBLIC_TESTING_MAILS ?? process.env.TESTING_MAILS ?? "";
+  if (!envValue) {
+    return [];
+  }
+  return envValue
+    .split(",")
+    .map((email) => email.trim().toLowerCase())
+    .filter((email) => email.length > 0);
+};
+
+export const INTERNAL_TEST_USER_EMAILS = parseInternalUserEmails();
+
+export const isInternalUserEmail = (email?: string | null): boolean => {
+  if (!email) {
+    return false;
+  }
+  return INTERNAL_TEST_USER_EMAILS.includes(email.trim().toLowerCase());
+};
+
+export const getNavbarLinksForUser = (
+  email?: string | null
+): typeof NAVBAR_NAV_LINKS => {
+  const isInternal = isInternalUserEmail(email);
+  return NAVBAR_NAV_LINKS.filter((link) => {
+    if (link.path === ROUTE_CONSTANTS.PRICING) {
+      return isInternal;
+    }
+    return true;
+  });
+};
 
 export const INPUT_TYPE = {
   TEXT: "text",

@@ -18,7 +18,6 @@ import ContactSalesModal from "../ modals/ContactSalesModal";
 import { PersonaPlanCard } from "./PersonaPlanCard";
 import { SubscriptionPendingScreen } from "./SubscriptionPendingScreen";
 import { useUserProfile } from "@/hooks/useUserProfile";
-import { getUserData } from "@/shared/Utilies";
 import { UserProfileApiResponse } from "@/interfaces/UserProfileApi";
 
 interface PricingPlansProps {
@@ -26,6 +25,9 @@ interface PricingPlansProps {
   readonly showTooltips?: boolean;
   readonly showDescriptions?: boolean;
   readonly membershipPlans: MembershipPlan[];
+  readonly initialSubscriptionStatus?: string | null;
+  readonly hasServerSubscriptionSnapshot?: boolean;
+  readonly initialUserProfile?: UserProfileApiResponse | null;
 }
 
 const PricingPlans: React.FC<PricingPlansProps> = ({
@@ -33,6 +35,9 @@ const PricingPlans: React.FC<PricingPlansProps> = ({
   showTooltips = true,
   showDescriptions = false,
   membershipPlans,
+  initialSubscriptionStatus = null,
+  hasServerSubscriptionSnapshot = false,
+  initialUserProfile = null,
 }) => {
   const [isMounted, setIsMounted] = useState(false);
   const queryClient = useQueryClient();
@@ -41,7 +46,7 @@ const PricingPlans: React.FC<PricingPlansProps> = ({
   const { showModal, openModal, hideModal } = useModal();
   const { showModal: showInfoModal, openModal: openInfoModal, hideModal: hideInfoModal } = useModal();
   const { showModal: showContactSalesModal, openModal: openContactSalesModal, hideModal: hideContactSalesModal } = useModal();
-  const { fullProfileData } = useUserProfile(isAuthenticated);
+  const { fullProfileData } = useUserProfile(isAuthenticated, initialUserProfile);
   
   useEffect(() => {
     setIsMounted(true);
@@ -55,6 +60,7 @@ const PricingPlans: React.FC<PricingPlansProps> = ({
     isCheckoutReady,
     loaderMessage,
     isPending,
+    pendingMessage,
     isActionsDisabled,
     initiateCheckout,
     activePlanId,
@@ -63,11 +69,13 @@ const PricingPlans: React.FC<PricingPlansProps> = ({
   } = useSubscriptionFlow({
     isAuthenticated,
     queryClient,
+    initialProfileData: initialUserProfile,
   });
   
-  const hasActiveSubscription = subscriptionData?.subscriptionData?.subscription?.status?.toLowerCase() === "active";
+  const hasActiveSubscription = isAuthenticated && subscriptionData?.subscriptionData?.subscription?.status?.toLowerCase() === "active";
   const shouldShowLoading = isLoadingSubscription && !hasActiveSubscription;
   const displayMessage = checkoutMessage || loaderMessage;
+  const shouldShowInitialPending = isAuthenticated && hasServerSubscriptionSnapshot && initialSubscriptionStatus === "pending" && isLoadingSubscription;
   
   const handlePlanSelection = useCallback((plan: MembershipPlan) => {
     if (plan.label === STRING_DATA.BROKER_PLUS) {
@@ -113,8 +121,12 @@ const PricingPlans: React.FC<PricingPlansProps> = ({
     }));
   }, [membershipPlans]);
   
-  if (isPending && !shouldShowLoading) {
-    return <SubscriptionPendingScreen />;
+  if (shouldShowInitialPending) {
+    return <SubscriptionPendingScreen pendingMessage={STRING_DATA.SUBSCRIPTION_PENDING_MESSAGE} />;
+  }
+
+  if (isAuthenticated && isPending && !shouldShowLoading) {
+    return <SubscriptionPendingScreen pendingMessage={pendingMessage} />;
   }
 
   return (
@@ -128,7 +140,7 @@ const PricingPlans: React.FC<PricingPlansProps> = ({
             {STRING_DATA.MEMBERSHIP_DESCRIPTION}
           </p>
           
-          {subscriptionData?.subscriptionData && !shouldShowLoading && (
+          {isAuthenticated && subscriptionData?.subscriptionData && !shouldShowLoading && (
             <div className="flex items-center gap-2 rounded-lg bg-blue-50 px-4 py-2 text-sm">
               <span className="text-blue-700">
                 Current plan: <strong>
@@ -157,6 +169,7 @@ const PricingPlans: React.FC<PricingPlansProps> = ({
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4 items-stretch">
               {membershipPlans.map((plan: MembershipPlan) => {
                 const { isCurrentPlan } = getCurrentPlanInfo(plan);
+                const shouldHighlightPlan = isAuthenticated && isCurrentPlan;
                 const isThisPlanProcessing = activePlanId === plan.id;
                 const isAnyPlanProcessing = activePlanId !== null;
                 return (
@@ -167,7 +180,7 @@ const PricingPlans: React.FC<PricingPlansProps> = ({
                     isCheckoutReady={isCheckoutReady && !isActionsDisabled}
                     isProcessing={isAnyPlanProcessing}
                     isThisPlanProcessing={isThisPlanProcessing}
-                    isCurrentPlan={isCurrentPlan}
+                    isCurrentPlan={shouldHighlightPlan}
                     isAuthenticated={isAuthenticated}
                     showTooltips={showTooltips}
                     showDescriptions={showDescriptions}

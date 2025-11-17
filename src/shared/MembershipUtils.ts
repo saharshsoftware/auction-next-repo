@@ -9,7 +9,7 @@ export const MEMBERSHIP_LIMIT_LABELS: Record<keyof PlanLimits, string> = {
   savedSearchesMax: STRING_DATA.MEMBERSHIP_SAVED_SEARCHES,
   whatsappAlerts: STRING_DATA.MEMBERSHIP_WHATSAPP_ALERTS,
   emailAlerts: STRING_DATA.MEMBERSHIP_EMAIL_ALERTS,
-  notificationsAlerts: STRING_DATA.MEMBERSHIP_NOTIFICATIONS_ALERTS,
+  notificationAlerts: STRING_DATA.MEMBERSHIP_NOTIFICATIONS_ALERTS,
 };
 
 const MEMBERSHIP_FEATURE_DESCRIPTIONS: Record<string, string> = {
@@ -28,7 +28,7 @@ export const MEMBERSHIP_LIMIT_ORDER: ReadonlyArray<keyof PlanLimits> = [
   "savedSearchesMax",
   "emailAlerts",
   "whatsappAlerts",
-  "notificationsAlerts",
+  "notificationAlerts",
 ];
 
 export const getMembershipLimitDisplayValue = (value: number): string => {
@@ -61,14 +61,14 @@ export const mapMembershipPlanLimits = (
       return;
     }
     
-    if (limitKey === "notificationsAlerts") {
+    if (limitKey === "notificationAlerts") {
       return;
     }
     
     if (limitKey === "emailAlerts") {
       const whatsappValue = plan.limits.whatsappAlerts;
       const emailValue = plan.limits.emailAlerts;
-      const notificationsValue = plan.limits.notificationsAlerts;
+      const notificationsValue = plan.limits.notificationAlerts;
       
       // Combine all notification types in the label
       let label: string;
@@ -172,17 +172,17 @@ export const getIncrementalFeatures = (
       return;
     }
 
-    if (limitKey === "notificationsAlerts") {
+    if (limitKey === "notificationAlerts") {
       return;
     }
 
     if (limitKey === "emailAlerts") {
       const currentWhatsapp = plan.limits.whatsappAlerts;
       const currentEmail = plan.limits.emailAlerts;
-      const currentNotifications = plan.limits.notificationsAlerts;
+      const currentNotifications = plan.limits.notificationAlerts;
       const prevWhatsapp = previousPlan.limits.whatsappAlerts;
       const prevEmail = previousPlan.limits.emailAlerts;
-      const prevNotifications = previousPlan.limits.notificationsAlerts;
+      const prevNotifications = previousPlan.limits.notificationAlerts;
 
       // Check if any notification type changed
       const emailChanged = currentEmail && !prevEmail;

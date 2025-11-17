@@ -2,7 +2,7 @@
 import { IUserData, User } from '@/types';
 import { UserProfileApiResponse } from '@/interfaces/UserProfileApi';
 import { getUserDetails } from '@/services/auth';
-import { REACT_QUERY } from '@/shared/Constants';
+import { REACT_QUERY, isInternalUserEmail } from '@/shared/Constants';
 import { QueryObserverResult, useQuery } from '@tanstack/react-query';
 
 interface IUserProfile {
@@ -12,22 +12,35 @@ interface IUserProfile {
   error: Error | null;
   refetch: () => Promise<QueryObserverResult<any, Error>>;
   setUserProfile: (user: IUserData) => void;
+  isInternalUser: boolean;
 }
 
-export const useUserProfile = (enabled = true): IUserProfile => {
-  const { data: userProfile, isLoading: isLoadingUserProfile, refetch: refetchUserProfile,error: errorUserProfile} =
-  useQuery({
+export const useUserProfile = (
+  enabled = true,
+  initialProfileData?: UserProfileApiResponse | null
+): IUserProfile => {
+  const {
+    data: userProfile,
+    isLoading: isLoadingUserProfile,
+    refetch: refetchUserProfile,
+    error: errorUserProfile,
+  } = useQuery<UserProfileApiResponse>({
     queryKey: [REACT_QUERY.USER_PROFILE],
     queryFn: getUserDetails,
-    enabled: enabled
+    enabled,
+    initialData: initialProfileData ?? undefined,
   });
 
+  const normalizedProfile = userProfile ?? null;
+  const isInternalUser = isInternalUserEmail(normalizedProfile?.email ?? null);
+
   return {
-    userProfileData: userProfile,
-    fullProfileData: userProfile as UserProfileApiResponse,
+    userProfileData: normalizedProfile as Pick<User, "name" | "email" | "username" | "interestedCities" | "interestedCategories" | "userType" | "budgetRanges"> | null,
+    fullProfileData: normalizedProfile,
     isLoading: isLoadingUserProfile,
     error: errorUserProfile,
     setUserProfile: () => {},
     refetch: refetchUserProfile,
+    isInternalUser,
   };
 };

@@ -16,9 +16,11 @@ import EditAlert from '../ modals/EditAlert';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useSubscriptionAccess } from '@/hooks/useSubscriptionAccess';
+import { useUserProfile } from '@/hooks/useUserProfile';
 
 const ManageAlert = () => {
   const router = useRouter();
+  const { isInternalUser } = useUserProfile(true);
   const queryClient = useQueryClient();
   const [selectedData, setSelectedData] = useState<IAlert>();
   const { showModal, openModal, hideModal } = useModal();
@@ -176,12 +178,18 @@ const ManageAlert = () => {
             <h2 className="custom-h2-class">{STRING_DATA.YOUR_ALERTS}</h2>
             <div className="flex flex-col items-end gap-2">
               <ActionButton
-                text={isLoadingAccess ? "Loading..." : (canAddAlert ? "Add alert" : "Limit reached")}
+                text={
+                  isLoadingAccess
+                    ? "Loading..."
+                    : canAddAlert
+                      ? "Add alert"
+                      : "Limit reached"
+                }
                 onclick={canAddAlert && !isLoadingAccess ? showModal : undefined}
                 disabled={!canAddAlert || isLoadingAccess}
                 icon={<FontAwesomeIcon icon={faAdd} />}
               />
-              {!canAddAlert && !isLoadingAccess && (
+              {!canAddAlert && !isLoadingAccess && isInternalUser && (
                 <div className="text-xs text-gray-600">
                   <Link href="/pricing" className="text-blue-600 hover:underline">
                     Upgrade your plan

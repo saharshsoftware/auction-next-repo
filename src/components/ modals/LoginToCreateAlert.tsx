@@ -14,6 +14,7 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchAlerts } from "@/services/auction";
 import { REACT_QUERY } from "@/shared/Constants";
 import { IAlert } from "@/types";
+import { useUserProfile } from "@/hooks/useUserProfile";
 
 function LoginToCreateAlert({
   isAuthenticated,
@@ -24,6 +25,7 @@ function LoginToCreateAlert({
 }) {
   const { showModal, openModal, hideModal } = useModal();
   const router = useRouter();
+  const { isInternalUser } = useUserProfile(Boolean(isAuthenticated));
 
 
   const { data: dataAlert } = useQuery({
@@ -58,7 +60,7 @@ function LoginToCreateAlert({
   const getButtonText = () => {
     if (!isAuthenticated) return "Signup to create alert";
     if (isLoadingAccess) return "Loading...";
-    if (!canAddAlert) return "Limit reached - Upgrade plan";
+    if (!canAddAlert) return "Limit reached";
     return "Create Alert";
   };
 
@@ -72,7 +74,7 @@ function LoginToCreateAlert({
         disabled={shouldDisableButton}
         iconLeft={<FontAwesomeIcon icon={faBell} className="h-4 w-4 " />}
       />
-      {shouldDisableButton && isAuthenticated && !isLoadingAccess && (
+      {shouldDisableButton && isAuthenticated && !isLoadingAccess && isInternalUser && (
         <div className="mt-2 text-xs text-gray-600">
           <Link href="/pricing" className="text-blue-600 hover:underline">
             Upgrade your plan
