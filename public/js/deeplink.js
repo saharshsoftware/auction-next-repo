@@ -3,15 +3,15 @@
   const CONFIG = {
     APP_SCHEME: "eauctiondekho://",
     ANDROID_PACKAGE: "com.eauctiondekho",
-    PLAYSTORE_URL: "https://play.google.com/store/apps/details?id=com.eauctiondekho",
-    APPSTORE_URL: "https://apps.apple.com/us/app/e-auctiondekho/id6742924249",
-    IOS_APP_STORE_ID: "6742924249",
-    MODAL_TIMEOUT: 1500, // Increased timeout
-    STORAGE_KEYS: {
-      PREFER_WEB: "preferWeb",
-      APP_CHECK_DONE: "appCheckDone",
-      USER_PREFERENCE: "userLinkPreference",
-    },
+    APP_CHECK_DELAY: 1500,
+    // PLAYSTORE_URL: "https://play.google.com/store/apps/details?id=com.eauctiondekho",
+    // APPSTORE_URL: "https://apps.apple.com/us/app/e-auctiondekho/id6742924249",
+    // IOS_APP_STORE_ID: "6742924249",
+    // STORAGE_KEYS: {
+    //   PREFER_WEB: "preferWeb",
+    //   APP_CHECK_DONE: "appCheckDone",
+    //   USER_PREFERENCE: "userLinkPreference",
+    // },
   };
 
   // Detect if we're in a supported Android browser that handles intents
@@ -52,17 +52,18 @@
     return result;
   }
 
-  function getAppStoreLink() {
-    const userAgent = navigator.userAgent || navigator.vendor || window.opera;
-    if (/android/i.test(userAgent)) {
-      return CONFIG.PLAYSTORE_URL;
-    } else if (/iphone|ipad|ipod/i.test(userAgent)) {
-      return CONFIG.APPSTORE_URL;
-    }
-    return null;
-  }
+  // function getAppStoreLink() {
+  //   const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+  //   if (/android/i.test(userAgent)) {
+  //     return CONFIG.PLAYSTORE_URL;
+  //   } else if (/iphone|ipad|ipod/i.test(userAgent)) {
+  //     return CONFIG.APPSTORE_URL;
+  //   }
+  //   return null;
+  // }
 
-  // Utility: Create and show modal with improved UX
+  /*
+  // Legacy modal-based prompt kept for reference
   function showModal(message, onContinue, onCancel) {
     const modal = document.createElement("div");
     modal.style.position = "fixed";
@@ -75,7 +76,6 @@
     modal.style.justifyContent = "center";
     modal.style.alignItems = "center";
     modal.style.zIndex = "1000";
-
     const modalContent = document.createElement("div");
     modalContent.style.backgroundColor = "#fff";
     modalContent.style.padding = "25px";
@@ -85,18 +85,15 @@
     modalContent.style.maxWidth = "400px";
     modalContent.style.boxShadow = "0 4px 10px rgba(0, 0, 0, 0.2)";
     modalContent.style.fontFamily = "Arial, sans-serif";
-
     const modalMessage = document.createElement("p");
     modalMessage.innerText = message;
     modalMessage.style.fontSize = "16px";
     modalMessage.style.marginBottom = "20px";
     modalMessage.style.color = "#333";
-
     const buttonContainer = document.createElement("div");
     buttonContainer.style.display = "flex";
     buttonContainer.style.justifyContent = "center";
     buttonContainer.style.gap = "15px";
-
     const continueButton = document.createElement("button");
     continueButton.innerText = "Install App";
     continueButton.style.padding = "10px 20px";
@@ -114,7 +111,6 @@
       onContinue();
       document.body.removeChild(modal);
     };
-
     const cancelButton = document.createElement("button");
     cancelButton.innerText = "Continue on Website";
     cancelButton.style.padding = "10px 20px";
@@ -134,15 +130,43 @@
       onCancel();
       document.body.removeChild(modal);
     };
-
     buttonContainer.appendChild(cancelButton);
     buttonContainer.appendChild(continueButton);
-
     modalContent.appendChild(modalMessage);
     modalContent.appendChild(buttonContainer);
     modal.appendChild(modalContent);
     document.body.appendChild(modal);
   }
+
+  function showInstallModal(deepLink) {
+    console.log("[Deeplink] showInstallModal called", { deepLink });
+    showModal(
+      "For the best experience, we recommend using the eAuctionDekho app. What would you like to do?",
+      () => {
+        console.log("[Deeplink] User clicked 'Install App'");
+        sessionStorage.setItem(CONFIG.STORAGE_KEYS.USER_PREFERENCE, "app");
+        const appStoreLink = getAppStoreLink();
+        console.log("[Deeplink] App store link:", appStoreLink);
+        if (appStoreLink) {
+          console.log("[Deeplink] Attempting to open app, then redirecting to store");
+          window.location.href = deepLink;
+          setTimeout(() => {
+            console.log("[Deeplink] Redirecting to app store:", appStoreLink);
+            window.location.href = appStoreLink;
+          }, 300);
+        } else {
+          console.log("[Deeplink] No app store link found, using deep link only");
+          window.location.href = deepLink;
+        }
+      },
+      () => {
+        console.log("[Deeplink] User clicked 'Continue on Website'");
+        sessionStorage.setItem(CONFIG.STORAGE_KEYS.USER_PREFERENCE, "web");
+        console.log("[Deeplink] User preference set to 'web' - will skip deeplink routing");
+      }
+    );
+  }
+  */
 
   // Your existing deeplinkRoutes array remains the same...
  // Routes-to-Deeplink rules
@@ -447,15 +471,15 @@
     };
     document.addEventListener("visibilitychange", visibilityHandler);
 
-    const pathname = window.location.pathname.replace(/^\//, "");
-    const intentUrl = `intent://${pathname}#Intent;scheme=${CONFIG.APP_SCHEME.replace("://", "")};package=${CONFIG.ANDROID_PACKAGE};end`;
+    const deepLinkPath = deepLink.replace(CONFIG.APP_SCHEME, "");
+    const intentUrl = `intent://${deepLinkPath}#Intent;scheme=${CONFIG.APP_SCHEME.replace("://", "")};package=${CONFIG.ANDROID_PACKAGE};end`;
     
     console.log("[Deeplink] Attempting to open app via Intent URL:", {
-      pathname,
+      pathname: deepLinkPath,
       intentUrl,
       deepLink,
       systemWillHandle,
-      timeout: CONFIG.MODAL_TIMEOUT + "ms"
+      timeout: CONFIG.APP_CHECK_DELAY + "ms"
     });
     
     // Use Intent URL for Android - this is the correct format for App Links
@@ -464,9 +488,9 @@
 
     // For Android Chrome, we need to handle carefully:
     // 1. If app is installed: Browser shows native prompt (assetlinks.json)
-    // 2. If app is NOT installed: No prompt appears, we should show our modal
+    // 2. If app is NOT installed: No prompt appears
     // Strategy: Wait longer on Chrome. If no interaction detected, assume app not installed
-    const timeout = systemWillHandle ? 3000 : CONFIG.MODAL_TIMEOUT; // 3s for Chrome
+    const timeout = systemWillHandle ? 3000 : CONFIG.APP_CHECK_DELAY;
     
     setTimeout(() => {
       document.removeEventListener("visibilitychange", visibilityHandler);
@@ -488,25 +512,19 @@
       
       if (!appOpened) {
         // On Android Chrome:
-        // - If browser prompt appeared (blur detected), user likely dismissed it → Don't nag with modal
-        // - If no prompt detected after 3s, app is likely NOT installed → Show install modal
+        // - If browser prompt appeared (blur detected), user likely dismissed it
+        // - If no prompt detected after 3s, app is likely NOT installed
         if (systemWillHandle && browserPromptShown) {
-          console.log("[Deeplink] ⚠️ Android Chrome: Browser prompt was shown");
-          console.log("[Deeplink] User dismissed prompt - NOT showing custom modal (respecting user choice)");
-          return; // User made their choice via browser prompt
+          console.log("[Deeplink] ⚠️ Android Chrome: Browser prompt was shown and dismissed");
+          return;
         }
-        
-        // App didn't open AND no browser prompt detected
-        // This means app is likely NOT installed - show install modal
         if (systemWillHandle) {
-          console.log("[Deeplink] Android Chrome: No browser prompt detected after 3s");
-          console.log("[Deeplink] App likely NOT installed - showing install modal");
-        } else {
-          console.log("[Deeplink] App not detected - showing install modal");
+          console.log("[Deeplink] Android Chrome: No browser prompt detected after 3s. App likely not installed.");
+          return;
         }
-        showInstallModal(deepLink);
+        console.log("[Deeplink] App not detected. Browser handled the flow.");
       } else {
-        console.log("[Deeplink] ✅ App opened successfully - not showing modal");
+        console.log("[Deeplink] ✅ App opened successfully");
       }
     }, timeout);
   }
@@ -525,13 +543,12 @@
     };
     document.addEventListener("visibilitychange", visibilityHandler);
 
-    const pathname = window.location.pathname.replace(/^\//, "");
-    const customSchemeUrl = `${CONFIG.APP_SCHEME}${pathname}`;
+    const customSchemeUrl = deepLink;
     
     console.log("[Deeplink] Attempting to open iOS app:", {
       customSchemeUrl,
       deepLink,
-      timeout: CONFIG.MODAL_TIMEOUT + "ms"
+      timeout: CONFIG.APP_CHECK_DELAY + "ms"
     });
     
     // Try to open app with custom scheme
@@ -549,51 +566,11 @@
       });
       
       if (!appOpened) {
-        // iOS behaves consistently:
-        // - If app installed: System alert ALWAYS appears, user opens or dismisses
-        // - If app NOT installed: Nothing happens, no alert
-        // 
-        // PROBLEM: We can't reliably detect if alert was dismissed vs app not installed
-        // SOLUTION: Follow industry standard - show custom modal as fallback
-        //           This gives users a clear path to install the app
-        console.log("[Deeplink] iOS: App didn't open - showing install modal");
-        console.log("[Deeplink] Note: If you dismissed the system alert, you can also use this modal");
-        showInstallModal(deepLink);
+        console.log("[Deeplink] iOS: App did not open. Relying on system behavior.");
       } else {
-        console.log("[Deeplink] ✅ App opened successfully - not showing modal");
+        console.log("[Deeplink] ✅ App opened successfully");
       }
-    }, CONFIG.MODAL_TIMEOUT);
-  }
-
-  function showInstallModal(deepLink) {
-    console.log("[Deeplink] showInstallModal called", { deepLink });
-    
-    showModal(
-      "For the best experience, we recommend using the eAuctionDekho app. What would you like to do?",
-      () => {
-        console.log("[Deeplink] User clicked 'Install App'");
-        sessionStorage.setItem(CONFIG.STORAGE_KEYS.USER_PREFERENCE, "app");
-        const appStoreLink = getAppStoreLink();
-        console.log("[Deeplink] App store link:", appStoreLink);
-        
-        if (appStoreLink) {
-          console.log("[Deeplink] Attempting to open app, then redirecting to store");
-          window.location.href = deepLink;
-          setTimeout(() => {
-            console.log("[Deeplink] Redirecting to app store:", appStoreLink);
-            window.location.href = appStoreLink;
-          }, 300);
-        } else {
-          console.log("[Deeplink] No app store link found, using deep link only");
-          window.location.href = deepLink;
-        }
-      },
-      () => {
-        console.log("[Deeplink] User clicked 'Continue on Website'");
-        sessionStorage.setItem(CONFIG.STORAGE_KEYS.USER_PREFERENCE, "web");
-        console.log("[Deeplink] User preference set to 'web' - will skip deeplink routing");
-      }
-    );
+    }, CONFIG.APP_CHECK_DELAY);
   }
 
   // Enhanced main routing function
@@ -608,14 +585,12 @@
         return;
       }
 
-      const userChoice = sessionStorage.getItem(CONFIG.STORAGE_KEYS.USER_PREFERENCE);
-      console.log("[Deeplink] User preference:", userChoice || "none");
-      
-      if (userChoice === "web") {
-        console.log("[Deeplink] ❌ User prefers web, skipping deeplink routing");
-        return;
-      }
-
+      // const userChoice = sessionStorage.getItem(CONFIG.STORAGE_KEYS.USER_PREFERENCE);
+      // console.log("[Deeplink] User preference:", userChoice || "none");
+      // if (userChoice === "web") {
+      //   console.log("[Deeplink] ❌ User prefers web, skipping deeplink routing");
+      //   return;
+      // }
       const pathname = window.location.pathname.slice(1);
       console.log("[Deeplink] Processing pathname:", pathname);
       
@@ -648,11 +623,11 @@
         return;
       }
 
-      if (userChoice === "app") {
-        console.log("[Deeplink] ✅ User explicitly chose app - redirecting directly:", matchedDeepLink);
-        window.location.href = matchedDeepLink;
-        return;
-      }
+      // if (userChoice === "app") {
+      //   console.log("[Deeplink] ✅ User explicitly chose app - redirecting directly:", matchedDeepLink);
+      //   window.location.href = matchedDeepLink;
+      //   return;
+      // }
 
       const userAgent = navigator.userAgent || navigator.vendor || window.opera;
       const isAndroid = /android/i.test(userAgent);
@@ -671,8 +646,8 @@
         console.log("[Deeplink] → Routing to iOS handler");
         tryUniversalLinkWithFallback(matchedDeepLink);
       } else {
-        console.log("[Deeplink] → Routing to desktop/other handler");
-        showInstallModal(matchedDeepLink);
+        console.log("[Deeplink] → Platform not supported for automatic app routing");
+        // showInstallModal(matchedDeepLink);
       }
       
       console.log("[Deeplink] ===== Deeplink routing completed =====");
