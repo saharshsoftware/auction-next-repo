@@ -12,6 +12,11 @@ import { getDataFromQueryParamsMethod } from "@/shared/Utilies";
 import { useSubscriptionAccess } from "@/hooks/useSubscriptionAccess";
 import Link from "next/link";
 import { useUserProfile } from "@/hooks/useUserProfile";
+import { fetchSavedSearch } from "@/services/auction";
+import { useQuery } from "@tanstack/react-query";
+import { REACT_QUERY } from "@/shared/Constants";
+import { ISavedSearch } from "@/types";
+
 interface IAuctionHeaderSaveSearchProps {
   searchParams?: { [key: string]: string | string[] | undefined };
 }
@@ -21,11 +26,25 @@ const AuctionHeaderSaveSearch = ({ searchParams }: IAuctionHeaderSaveSearchProps
   const [showLoginModal, setShowLoginModal] = useState(false);
   const token = getCookie(COOKIES.TOKEN_KEY) ?? "";
   const { isInternalUser } = useUserProfile(Boolean(token));
-  const { canAddSavedSearch, isLoading: isLoadingAccess } = useSubscriptionAccess();
+  const {
+    data: savedSearchData
+  } = useQuery({
+    queryKey: [REACT_QUERY.SAVED_SEARCH],
+    queryFn: async () => {
+      const res = (await fetchSavedSearch()) as unknown as ISavedSearch[];
+      return res ?? [];
+    },
+    staleTime: 0,
+  });
+  const { canAddSavedSearch, isLoading: isLoadingAccess } = useSubscriptionAccess(
+    {
+      savedSearches: savedSearchData?.length ?? 0
+    }
+  );
   const encodedQuery: string = Array.isArray(searchParams?.q)
     ? (searchParams?.q?.[0] as string)
     : ((searchParams?.q as string) || "");
-  const decodedFilters: any = getDataFromQueryParamsMethod(encodedQuery) || {};
+    const decodedFilters: any = getDataFromQueryParamsMethod(encodedQuery) || {};
 
   const getActiveFiltersCount = (): number => {
     let count = 0;
@@ -66,32 +85,31 @@ const AuctionHeaderSaveSearch = ({ searchParams }: IAuctionHeaderSaveSearchProps
     if (!token) return "Resume your journey later with saved filters";
     if (isLoadingAccess) return "Checking availability...";
     if (!canAddSavedSearch) {
-      return isInternalUser
-        ? "Upgrade your plan to save more searches"
-        : "You have reached the limit for saved searches";
+      return "You have reached the limit for saved searches";
     }
     return "Resume your journey later with saved filters";
   };
 
   const shouldDisableButton = token && (!canAddSavedSearch || isLoadingAccess);
+  const shouldShowUpgradePrompt = shouldDisableButton && !isLoadingAccess && isInternalUser;
 
   return (
     <>
       <div className="w-full flex items-center justify-between gap-2 mb-2 ">
         <div className="max-w-fit flex flex-col gap-1">
-          <button 
-            type="button" 
+          <button
+            type="button"
             className={`link max-w-fit ${shouldDisableButton ? 'link-disabled cursor-not-allowed text-gray-400' : 'link-primary cursor-pointer'}`}
             onClick={shouldDisableButton ? undefined : handleSaveSearchClick}
             disabled={!!shouldDisableButton ? true : false}
           >
             {getButtonText().toUpperCase()}
           </button>
-          <div className="inline-flex items-center gap-2 text-xs py-1 rounded-full w-fit text-gray-600">
+          <div className={`inline-flex items-center gap-2 text-xs py-1 rounded-full w-fit text-gray-600 ${shouldShowUpgradePrompt ? '!hidden' : ''}`}>
             <FontAwesomeIcon icon={faFilter} className="" />
             <span>{getSubText()}</span>
           </div>
-          {shouldDisableButton && !isLoadingAccess && isInternalUser && (
+          {shouldShowUpgradePrompt && (
             <div className="text-xs text-gray-600">
               <Link href="/pricing" className="text-blue-600 hover:underline">
                 Upgrade your plan

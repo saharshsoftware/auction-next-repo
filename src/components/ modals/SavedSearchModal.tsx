@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import TextField from "../atoms/TextField";
 import CustomFormikForm from "../atoms/CustomFormikForm";
 import CustomModal from "../atoms/CustomModal";
-import { ERROR_MESSAGE, STRING_DATA } from "@/shared/Constants";
+import { ERROR_MESSAGE, REACT_QUERY, STRING_DATA } from "@/shared/Constants";
 import * as Yup from "yup";
 import ActionButton from "../atoms/ActionButton";
 import { useSearchParams } from "next/navigation";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createSavedSearch } from "@/services/auction";
 import { handleOnSettled } from "@/shared/Utilies";
 import toast from "react-simple-toasts";
@@ -26,7 +26,7 @@ const initialValues = {
 
 const SavedSearchModal = (props: ISavedSearchModal) => {
   const { openModal, hideModal = () => {} } = props;
-
+  const queryClient = useQueryClient();
   const searchParams = useSearchParams();
   const [respError, setRespError] = useState<string>("");
 
@@ -42,6 +42,7 @@ const SavedSearchModal = (props: ISavedSearchModal) => {
             theme: "success",
             position: "top-center",
           });
+          queryClient.invalidateQueries({ queryKey: [REACT_QUERY.SAVED_SEARCH] });
         },
         fail: (error: any) => {
           const { message } = error;
