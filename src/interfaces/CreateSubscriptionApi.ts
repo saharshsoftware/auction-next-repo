@@ -1,6 +1,6 @@
 export interface CreateSubscriptionApiRequest {
   readonly planId: string;
-  readonly startDate: string;
+  readonly startAt: string;
   readonly planType: string;
 }
 
