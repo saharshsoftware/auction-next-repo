@@ -5,66 +5,61 @@ import { STRING_DATA } from "@/shared/Constants";
 import TextField from "../atoms/TextField";
 import CustomFormikForm from "../atoms/CustomFormikForm";
 import { Form } from "formik";
-import { useMutation } from "@tanstack/react-query";
-import { deleteUserAccount } from "@/services/auth";
-import { logout } from "@/server/actions";
-import { useRouter } from "next/navigation";
 
-interface IDeleteUserConfirmationModal {
-  openModal: boolean;
-  hideModal: () => void;
+interface ICancelSubscriptionConfirmationModal {
+  readonly openModal: boolean;
+  readonly hideModal: () => void;
+  readonly onConfirm: () => void;
+  readonly isLoading?: boolean;
 }
 
-const DeleteUserConfirmationModal: React.FC<IDeleteUserConfirmationModal> = (
+const CONFIRMATION_TEXT = "CANCEL";
+const CANCEL_SUBSCRIPTION_MESSAGE = "Are you sure you want to cancel your subscription? You will immediately lose access to premium features. This action cannot be undone.";
+
+/**
+ * Double confirmation modal for canceling subscription
+ */
+const CancelSubscriptionConfirmationModal: React.FC<ICancelSubscriptionConfirmationModal> = (
   props
 ) => {
-  const { openModal, hideModal = () => {} } = props;
-  const router = useRouter();
+  const { openModal, hideModal = () => {}, onConfirm = () => {}, isLoading = false } = props;
   const [respError, setRespError] = useState<string>("");
 
-  const { mutate: mutateDelete, isPending: isLoadingDeletePassword } =
-    useMutation({
-      mutationFn: deleteUserAccount,
-      onSuccess() {
-        router.push("/");
-        logout();
-      },
-      onError(error) {
-        console.log(error);
-        setRespError(error?.message);
-      },
-    });
+  const handleCancelSubscription = () => {
+    setRespError("");
+    onConfirm();
+  };
 
-  const deleteUserRequest = () => {
-    // DELETE USER API CALL
-    console.log("Delete api call");
-    mutateDelete();
+  const handleHideModal = () => {
+    if (!isLoading) {
+      hideModal();
+    }
   };
 
   return (
     <CustomModal
       openModal={openModal}
-      modalHeading={"Permanently Delete User"}
+      modalHeading="Cancel Subscription"
       customWidthClass="md:w-[50%] sm:w-3/5 w-11/12"
+      onClose={handleHideModal}
+      isCrossVisible={!isLoading}
     >
       <div className="flex flex-col gap-2">
         <p className="text-left text-sm">
-          {
-            "This will permanently delete the user from the database. This action cannot be undone. Are you sure you want to continue?"
-          }
+          {CANCEL_SUBSCRIPTION_MESSAGE}
         </p>
         <CustomFormikForm
-          initialValues={{ name: STRING_DATA.EMPTY }}
+          initialValues={{ confirmationText: STRING_DATA.EMPTY }}
           wantToUseFormikEvent={true}
-          handleSubmit={deleteUserRequest}
+          handleSubmit={handleCancelSubscription}
         >
           {({ values }: any) => (
             <Form>
-              <div className="flex flex-col gap-4 ">
+              <div className="flex flex-col gap-4">
                 <TextField
                   type="text"
-                  name="name"
-                  placeholder="Type 'DELETE' to confirm"
+                  name="confirmationText"
+                  placeholder={`Type '${CONFIRMATION_TEXT}' to confirm`}
                 />
                 {respError ? (
                   <span className="text-center text-sm text-red-700">
@@ -74,17 +69,18 @@ const DeleteUserConfirmationModal: React.FC<IDeleteUserConfirmationModal> = (
                 <div className="flex justify-end items-center">
                   <div className="flex justify-end items-center gap-4">
                     <ActionButton
-                      text={"Cancel"}
-                      onclick={hideModal}
+                      text={STRING_DATA.CANCEL}
+                      onclick={handleHideModal}
                       customClass="btn btn-sm"
                       isActionButton={false}
+                      disabled={isLoading}
                     />
 
                     <ActionButton
-                      text={STRING_DATA.DELETE}
-                      isLoading={isLoadingDeletePassword}
+                      text={STRING_DATA.CANCEL_SUBSCRIPTION}
+                      isLoading={isLoading}
                       isSubmit={true}
-                      disabled={values?.name !== "DELETE"}
+                      disabled={values?.confirmationText !== CONFIRMATION_TEXT || isLoading}
                       isDeleteButton={true}
                       customClass="btn btn-sm h-full min-w-24"
                     />
@@ -99,4 +95,5 @@ const DeleteUserConfirmationModal: React.FC<IDeleteUserConfirmationModal> = (
   );
 };
 
-export default DeleteUserConfirmationModal;
+export default CancelSubscriptionConfirmationModal;
+

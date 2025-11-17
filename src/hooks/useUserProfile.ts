@@ -1,38 +1,46 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 'use client';
-import { useEffect } from 'react';
 import { IUserData, User } from '@/types';
+import { UserProfileApiResponse } from '@/interfaces/UserProfileApi';
 import { getUserDetails } from '@/services/auth';
-import { REACT_QUERY } from '@/shared/Constants';
+import { REACT_QUERY, isInternalUserEmail } from '@/shared/Constants';
 import { QueryObserverResult, useQuery } from '@tanstack/react-query';
 
 interface IUserProfile {
   userProfileData: Pick<User, "name" | "email" | "username" | "interestedCities" | "interestedCategories" | "userType" | "budgetRanges"> | null;
+  fullProfileData: UserProfileApiResponse | null;
   isLoading: boolean;
   error: Error | null;
   refetch: () => Promise<QueryObserverResult<any, Error>>;
   setUserProfile: (user: IUserData) => void;
+  isInternalUser: boolean;
 }
 
-export const useUserProfile = (enabled = true): IUserProfile => {
-  const { data: userProfile, isLoading: isLoadingUserProfile, refetch: refetchUserProfile,error: errorUserProfile} =
-  useQuery({
+export const useUserProfile = (
+  enabled = true,
+  initialProfileData?: UserProfileApiResponse | null
+): IUserProfile => {
+  const {
+    data: userProfile,
+    isLoading: isLoadingUserProfile,
+    refetch: refetchUserProfile,
+    error: errorUserProfile,
+  } = useQuery<UserProfileApiResponse>({
     queryKey: [REACT_QUERY.USER_PROFILE],
     queryFn: getUserDetails,
-    enabled: enabled
+    enabled,
+    initialData: initialProfileData ?? undefined,
   });
-  
-  useEffect(() => {
-    if (enabled) {
-      refetchUserProfile();
-    }
-  }, [enabled]);
+
+  const normalizedProfile = userProfile ?? null;
+  const isInternalUser = isInternalUserEmail(normalizedProfile?.email ?? null);
 
   return {
-    userProfileData: userProfile,
+    userProfileData: normalizedProfile as Pick<User, "name" | "email" | "username" | "interestedCities" | "interestedCategories" | "userType" | "budgetRanges"> | null,
+    fullProfileData: normalizedProfile,
     isLoading: isLoadingUserProfile,
     error: errorUserProfile,
     setUserProfile: () => {},
     refetch: refetchUserProfile,
+    isInternalUser,
   };
 };

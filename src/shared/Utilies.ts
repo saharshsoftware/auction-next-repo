@@ -16,6 +16,7 @@ import { CONFIG } from "@/utilies/Config";
 import { USER_TYPE } from "@/types.d";
 import { safeArray, safeNumber, safeString } from "@/utilies/imageUtils";
 import { getCookie } from "cookies-next";
+import { MessagesSquare, Search, BellRing, Folder, Users, Bell } from "lucide-react";
 
 export const setDataInQueryParams = (values: any) => {
   const data = btoa(JSON.stringify(values));
@@ -1061,7 +1062,7 @@ export const stringsToBudgetRanges = (strings: string[]): Array<{ min: string; m
   });
 };
 
-  
+
 export const getUserData = (): any => {
   try {
     const userCookie = getCookie(COOKIES.AUCTION_USER_KEY);
@@ -1073,6 +1074,97 @@ export const getUserData = (): any => {
 };
 
 
+// Helper function to normalize plan names for comparison
+export const normalizePlanName = (name: string): string => {
+  return name.toLowerCase().replace(/\s+/g, '').replace(/[^a-z0-9]/g, '');
+};
+
+// Helper function to convert normalized plan names back to display format
+export const denormalizePlanName = (normalizedName: string): string => {
+  const planNameMap: Record<string, string> = {
+    'brokerplus': 'Broker Plus',
+    'broker': 'Broker',
+    'free': 'Free',
+    'basic': 'Basic',
+    'premium': 'Premium',
+    'pro': 'Pro',
+    'enterprise': 'Enterprise'
+  };
+
+  const normalized = normalizePlanName(normalizedName);
+  return planNameMap[normalized] || normalizedName.charAt(0).toUpperCase() + normalizedName.slice(1);
+};
+
+export const getPlanTypeForBackend = (planType: string): string => {
+  const planTypeMap: Record<string, string> = {
+    'brokerplus': 'brokerPlus',
+    'broker': 'broker',
+    'free': 'free',
+  };
+  return planTypeMap[planType] || planType;
+};
+
+export const logInfo = (message: string, extra?: unknown, logScope: string = "[Utilies]") => {
+  if (extra !== undefined) {
+    console.info(`${logScope} ${message}`, extra);
+    return;
+  }
+  console.info(`${logScope} ${message}`);
+};
+
+export const logError = (message: string, extra?: unknown, logScope: string = "[Utilies]") => {
+  if (extra !== undefined) {
+    console.error(`${logScope} ${message}`, extra);
+    return;
+  }
+  console.error(`${logScope} ${message}`);
+};
+
+export const isFeatureUnavailable = (value: string): boolean => {
+  // return value === "—" || value === "0" || value === "❌";
+  return false
+};
+
+
+export const personaData: { [key: string]: any } = {
+  'Free': {
+    persona: "Free Plan",
+    audience: "Ideal for new users exploring auctions.",
+    description: "Start your journey into property auctions at zero cost. Save your favorite searches and get a feel for how eAuctionDekho works before upgrading.",
+    icon: Users
+  },
+  'Premium': {
+    persona: "Premium",
+    audience: "Perfect for active buyers or small investors.",
+    description: "Enjoy more flexibility with extra alerts and saved searches. Get notified instantly via email when new properties match your preferences.",
+    icon: Users
+  },
+  'Broker': {
+    persona: "Broker",
+    audience: "Built for professional brokers and serious users.",
+    description: "Organize listings efficiently and share curated property collections with clients via custom links. Stay ahead with multiple alerts and unlimited searches.",
+    icon: Users
+  },
+  'Broker Plus': {
+    persona: "Broker Plus",
+    audience: "Designed for agencies and top-tier partners.",
+    description: "Get full access to all premium tools, including a dedicated partner dashboard with active lead access. Pricing varies by city and lead requirements.",
+    icon: Users
+  }
+};
+
+export const featureIcons: { [key: string]: any } = {
+  [STRING_DATA.MEMBERSHIP_COLLECTIONS]: Folder,
+  [STRING_DATA.MEMBERSHIP_ALERTS]: BellRing,
+  [STRING_DATA.MEMBERSHIP_SAVED_SEARCHES]: Search,
+  [STRING_DATA.MEMBERSHIP_WHATSAPP_ALERTS]: MessagesSquare,
+  [STRING_DATA.MEMBERSHIP_EMAIL_ALERTS]: MessagesSquare,
+  [STRING_DATA.MEMBERSHIP_NOTIFICATIONS_ALERTS]: Bell,
+  [STRING_DATA.MEMBERSHIP_WHATSAPP_EMAIL_NOTIFICATIONS]: MessagesSquare,
+  [STRING_DATA.MEMBERSHIP_WHATSAPP_MOBILE_NOTIFICATIONS]: MessagesSquare,
+  [STRING_DATA.MEMBERSHIP_EMAIL_MOBILE_NOTIFICATIONS]: MessagesSquare,
+  [STRING_DATA.MEMBERSHIP_WHATSAPP_EMAIL_MOBILE_NOTIFICATIONS]: MessagesSquare,
+};
 export const hasValue = (value?: string | null): boolean => typeof value === "string" && value.trim().length > 0;
 
 export const hasBudgetRanges = (ranges?: BudgetRangeObject[] | null): boolean => Array.isArray(ranges) && ranges.length > 0;

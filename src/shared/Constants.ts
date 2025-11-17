@@ -1,5 +1,7 @@
 import {
   faBell,
+  faCrown,
+  faCreditCard,
   faFilter,
   faHeart,
   faList,
@@ -39,6 +41,12 @@ export const PAGE_REVALIDATE_TIME_FOR_AUCTION_LIST = 3600; // 1 hr
 export const FILTER_API_REVALIDATE_TIME = 300; // 5 min
 
 export const STRING_DATA = {
+  MEMBERSHIP_WHATSAPP_EMAIL_NOTIFICATIONS: "WhatsApp & Email alerts",
+  MEMBERSHIP_WHATSAPP_MOBILE_NOTIFICATIONS: "WhatsApp & Mobile alerts",
+  MEMBERSHIP_EMAIL_MOBILE_NOTIFICATIONS: "Email & Mobile alerts",
+  MEMBERSHIP_WHATSAPP_EMAIL_MOBILE_NOTIFICATIONS: "WhatsApp, Email & Mobile alerts",
+  BROKER_PLUS: "Broker Plus",
+  FREE: "Free",
   BANK_AUCTION_SUPPORT: "Bank Auction Support",
   PROPERTY_TYPES: "Property Types",
   INDIVIDUAL: "Individual",
@@ -59,6 +67,14 @@ export const STRING_DATA = {
   ASSETS: "Assets",
   SAVED: "Saved",
   SAVED_SEARCH: "Saved Search",
+  PRICING: "Pricing",
+  MEMBERSHIP: "Membership",
+  MEMBERSHIP_PLANS: "Membership plans",
+  MEMBERSHIP_DESCRIPTION:
+    "Start for free. Upgrade as you go.",
+  MEMBERSHIP_LIMITS: "Membership limits",
+  MEMBERSHIP_BENEFITS: "Membership benefits",
+  VIEW_ALL_PLANS: "Explore all plans",
   SUBMIT: "Submit",
   CONTACT_FORM: "Contact form",
   EDIT_LIST: "Edit list",
@@ -87,6 +103,7 @@ export const STRING_DATA = {
   ADD_LIST: "Add list",
   CREATE_ALERT: "Create Alert",
   YOUR_LIST: "Your list",
+  UNLIMITED: "Unlimited",
   ALL: "All",
   BACK: "Back",
   EAUCTION_DEKHO: "eauctiondekho",
@@ -157,6 +174,45 @@ export const STRING_DATA = {
   ASSETS_TYPE: "asset-types",
   TYPES: "types",
   BACK_TO_LOGIN: "Back to Login",
+  MEMBERSHIP_COLLECTIONS: "Collections",
+  MEMBERSHIP_ALERTS: "Alerts",
+  MEMBERSHIP_SAVED_SEARCHES: "Saved searches",
+  MEMBERSHIP_WHATSAPP_ALERTS: "WhatsApp alerts",
+  MEMBERSHIP_EMAIL_ALERTS: "Email alerts",
+  MEMBERSHIP_NOTIFICATIONS_ALERTS: "Mobile app notifications",
+  MEMBERSHIP_COLLECTIONS_DESCRIPTION: "Organize and manage properties that catch your eye in custom collections for easy access and comparison.",
+  MEMBERSHIP_ALERTS_DESCRIPTION: "Receive instant notifications about new properties, price changes, and auction updates tailored to your preferences.",
+  MEMBERSHIP_SAVED_SEARCHES_DESCRIPTION: "Save your specific search criteria and get notified when new properties matching your preferences become available.",
+  MEMBERSHIP_WHATSAPP_ALERTS_DESCRIPTION: "Get real-time updates and important notifications directly on your WhatsApp for quick access.",
+  MEMBERSHIP_EMAIL_ALERTS_DESCRIPTION: "Receive detailed auction information and updates conveniently in your email inbox.",
+  MEMBERSHIP_NOTIFICATIONS_ALERTS_DESCRIPTION: "Get instant push notifications on your mobile app about new properties, price changes, and auction updates.",
+  PAYMENT_LOADING_MESSAGE: "Preparing secure checkout...",
+  PAYMENT_GATEWAY_LOADING: "Payment gateway is getting ready.",
+  PAYMENT_GATEWAY_ERROR: "Unable to load payment gateway. Please retry later.",
+  PAYMENT_CONFIGURATION_MISSING: "Payment gateway configuration missing. Please contact support.",
+  MEMBERSHIP_PLAN_DETAILS: "Plan details",
+  MEMBERSHIP_PAYMENT_INFO: "Payment info",
+  MEMBERSHIP_PAYMENT_HISTORY: "Payment history",
+  MEMBERSHIP_PLAN_STATUS: "Status",
+  MEMBERSHIP_PLAN_RENEWAL: "Renews on",
+  MEMBERSHIP_PLAN_ID: "Plan ID",
+  MEMBERSHIP_PAYMENT_METHOD: "Payment method",
+  MEMBERSHIP_PAYMENT_AUTORENEW: "Auto-renew",
+  MEMBERSHIP_PAYMENT_LAST: "Last payment",
+  MEMBERSHIP_PAYMENT_BILLING_EMAIL: "Billing email",
+  MEMBERSHIP_PAYMENT_GST: "GST number",
+  MEMBERSHIP_HISTORY_DATE: "Date",
+  MEMBERSHIP_HISTORY_DESCRIPTION: "Description",
+  MEMBERSHIP_HISTORY_AMOUNT: "Amount",
+  MEMBERSHIP_HISTORY_STATUS: "Status",
+  MEMBERSHIP_SETTINGS: "Membership",
+  MEMBERSHIP_VIEW_DETAILS: "View membership details",
+  CANCEL_SUBSCRIPTION: "Cancel Subscription",
+  SUBSCRIPTION_PENDING_MESSAGE: "Your subscription is currently being processed. Please wait while we activate your plan. You will not be able to make changes until the activation is complete.",
+  MEMBERSHIP_POPULAR_BADGE: "Popular",
+  MEMBERSHIP_MORE_FEATURES: "And more benefits.",
+  MEMBERSHIP_COMPARE_HEADING: "Compare plan benefits",
+  MEMBERSHIP_FEATURES_HEADER: "Features",
   PREFERENCES_MESSAGE: "Set your preferences for smarter results.",
 };
 
@@ -170,6 +226,11 @@ export const NAVBAR_NAV_LINKS = [
     path: ROUTE_CONSTANTS.PROFILE,
     label: STRING_DATA.PROFILE,
     icon: faUser,
+  },
+  {
+    path: ROUTE_CONSTANTS.PRICING,
+    label: STRING_DATA.MEMBERSHIP,
+    icon: faCrown,
   },
   {
     path: ROUTE_CONSTANTS.USER_RECOMMENDATIONS,
@@ -192,6 +253,38 @@ export const NAVBAR_NAV_LINKS = [
     icon: faFilter,
   },
 ];
+
+const parseInternalUserEmails = (): string[] => {
+  const envValue = process.env.NEXT_PUBLIC_TESTING_MAILS ?? process.env.TESTING_MAILS ?? "";
+  if (!envValue) {
+    return [];
+  }
+  return envValue
+    .split(",")
+    .map((email) => email.trim().toLowerCase())
+    .filter((email) => email.length > 0);
+};
+
+export const INTERNAL_TEST_USER_EMAILS = parseInternalUserEmails();
+
+export const isInternalUserEmail = (email?: string | null): boolean => {
+  if (!email) {
+    return false;
+  }
+  return INTERNAL_TEST_USER_EMAILS.includes(email.trim().toLowerCase());
+};
+
+export const getNavbarLinksForUser = (
+  email?: string | null
+): typeof NAVBAR_NAV_LINKS => {
+  const isInternal = isInternalUserEmail(email);
+  return NAVBAR_NAV_LINKS.filter((link) => {
+    if (link.path === ROUTE_CONSTANTS.PRICING) {
+      return isInternal;
+    }
+    return true;
+  });
+};
 
 export const INPUT_TYPE = {
   TEXT: "text",
@@ -367,6 +460,8 @@ export const REACT_QUERY = {
   SURVEYS: "Surveys",
   USERS_SURVEYS: "Users-surveys",
   USER_PROFILE: "User-profile",
+  MEMBERSHIP_PLANS: "Membership-plans",
+  USER_SUBSCRIPTION: "User-subscription",
 };
 
 export const SAMPLE_CITY = [

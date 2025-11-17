@@ -48,4 +48,9 @@ export const API_ENPOINTS = {
   FAQ: "/api/faqs",
   USER_LEAD_RECOMMENDATIONS: "/api/lead-recommendations/user",
   ALERT_MATCHING_NOTICES: "/api/custom-alert/matching-notices",
+  MEMBERSHIP_PLANS: "/api/membership-plans",
+  SUBSCRIPTIONS_CREATE: "/api/subscriptions/create",
+  SUBSCRIPTIONS_CHECKOUT: "/api/subscriptions/checkout",
+  SUBSCRIPTIONS_CANCEL: "/api/subscriptions",
+  SUBSCRIPTIONS_ME: "/api/subscriptions/me",
 };

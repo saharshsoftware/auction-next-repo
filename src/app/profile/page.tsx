@@ -13,10 +13,7 @@ export default function Page() {
   }
   return (
     <div className="common-section">
-      <div className="lg:w-3/5 md:w-4/5 w-full mx-auto py-4">
-        <div className="mb-4">
-          <ProfilePreferencesToast />
-        </div>
+      <div className="md:w-4/5 w-full mx-auto py-4">
         <ProfileTemplate />
       </div>
     </div>

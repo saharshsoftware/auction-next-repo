@@ -3,9 +3,9 @@ import React, { useEffect, useState } from "react";
 import { getCookie } from "cookies-next";
 import {
   COOKIES,
-  NAVBAR_NAV_LINKS,
   NAVICON_COLOR,
   STRING_DATA,
+  getNavbarLinksForUser,
 } from "@/shared/Constants";
 import { getInitials } from "@/shared/Utilies";
 import LogoutButton from "../ui/LogoutButton";
@@ -16,6 +16,7 @@ import NextLink from "../ui/NextLink";
 import {
   faBagShopping,
   faBank,
+  faCrown,
   faList,
   faMapPin,
   faPhone,
@@ -69,12 +70,14 @@ const CustomDrawer = (props: ICustomDrawer) => {
     return null;
   };
 
+  const internalNavLinks = getNavbarLinksForUser(userData?.email ?? null);
+
   const renderLinks = () => {
     if (myToken) {
       return (
         <>
           <ul className="flex flex-col gap-4">
-            {NAVBAR_NAV_LINKS.map((nav: any, index) => {
+            {internalNavLinks.map((nav: any, index) => {
               return (
                 <li key={index}>
                   <NextLink

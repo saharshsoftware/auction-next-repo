@@ -52,7 +52,7 @@ const ActionButton: React.FC<IActionButton> = (props) => {
         type={isSubmit ? "submit" : "button"}
         disabled={disabled || isLoading}
         className={`min-w-[80px] max-w-max-content ${
-          disabled ? "custom-btn-disabled" : ""
+          disabled ? "!text-gray-600 !font-medium" : ""
         } ${
           customClass ?? "custom-action-button-class"
         } btn ${getButtonClass()}`}

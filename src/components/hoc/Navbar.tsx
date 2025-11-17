@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { COOKIES, STRING_DATA } from "../../shared/Constants";
+import { COOKIES, isInternalUserEmail, STRING_DATA } from "../../shared/Constants";
 import ActionButton from "../atoms/ActionButton";
 import { ROUTE_CONSTANTS } from "../../shared/Routes";
 import Link from "next/link";
@@ -59,8 +59,9 @@ const Navbar: React.FC = () => {
   const pathname = usePathname();
   const token = getCookie(COOKIES.TOKEN_KEY) ?? "";
   const userData = getCookie(COOKIES.AUCTION_USER_KEY)
-    ? JSON.parse(getCookie(COOKIES.AUCTION_USER_KEY) ?? "")
+  ? JSON.parse(getCookie(COOKIES.AUCTION_USER_KEY) ?? "")
     : null;
+  const isInternal = isInternalUserEmail(userData?.email ?? null);
   const [myToken, setMyToken] = useState("");
   const [isOpen, setIsOpen] = React.useState(false);
   // console.log(getCookie(COOKIES.TOKEN_KEY), "getCookie(COOKIES.TOKEN_KEY)");
@@ -126,7 +127,10 @@ const Navbar: React.FC = () => {
                 </div>
               </PopoverTrigger>
               <PopoverContent>
-                <TooltipContent closePopover={() => setIsOpen(false)} />
+                <TooltipContent
+                  closePopover={() => setIsOpen(false)}
+                  userEmail={userData?.email ?? null}
+                />
               </PopoverContent>
             </Popover>
           </div>
@@ -207,6 +211,12 @@ const Navbar: React.FC = () => {
               >
                 {STRING_DATA.PROPERTY_TYPES}{" "}
               </Link>
+              {isInternal && <Link
+                href={ROUTE_CONSTANTS.PRICING}
+                className="cursor-pointer text-xs lg:text-sm"
+              >
+                {STRING_DATA.MEMBERSHIP}{" "}
+              </Link>}
             </div>
           </div>
           <div className="hidden lg:flex items-center gap-12">
