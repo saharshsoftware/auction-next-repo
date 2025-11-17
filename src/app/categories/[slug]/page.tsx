@@ -32,6 +32,7 @@ import AuctionResults from "@/components/templates/AuctionResults";
 import ImageJsonLd from "@/components/atoms/ImageJsonLd";
 import Breadcrumb from "@/components/atoms/Breadcrumb";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
+import ProfilePreferencesToast from "@/components/atoms/ProfilePreferencesToast";
 
 const getCategoriesCached = cache(async () => {
   return (await fetchCategories()) as ICategoryCollection[] | null;
@@ -205,6 +206,9 @@ export default async function Page({
         selectedCategory={selectedCategory}
       />
       <div className="common-section">
+        <div className="my-4 block lg:hidden">
+          <ProfilePreferencesToast />
+        </div>
         {/* Breadcrumb Navigation */}
         
         <div className="pt-4">
@@ -227,6 +231,9 @@ export default async function Page({
             </Suspense>
           </div>
           <div className="grid-col-span-3">
+            <div className="mb-4">
+              <ProfilePreferencesToast />
+            </div>
             <div className="mb-4">
               <TopCategory categoryOptions={popularCategories} />
             </div>

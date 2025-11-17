@@ -24,8 +24,8 @@ interface IProfileCompletionModal {
 }
 
 const validationSchema = Yup.object({
-  interestedCities: Yup.array().optional(),
-  interestedCategories: Yup.array().optional(),
+  interestedCities: Yup.array().min(1, ERROR_MESSAGE.INTERESTED_CITIES_REQUIRED),
+  interestedCategories: Yup.array().min(1, ERROR_MESSAGE.INTERESTED_CATEGORIES_REQUIRED),
   userType: Yup.object().required("User type is required"),
   budgetRanges: Yup.array().min(1, ERROR_MESSAGE.BUDGET_RANGES_REQUIRED),
 });
@@ -35,9 +35,9 @@ const ProfileCompletionModal: React.FC<IProfileCompletionModal> = (props) => {
   const { openModal, hideModal = () => {}} = props;
   const [respError, setRespError] = useState<string>("");
   const [citiesList, setCitiesList] = useState<ILocations[]>([]);
-  
+
   // Get current user profile data to pre-fill the form
-  const { userProfileData: userProfile } = useUserProfile();
+  const { userProfileData: userProfile, refetch: refetchUserProfile } = useUserProfile();
   
   // Fetch location options
   const { data: locationOptions, isLoading: isLoadingLocation } = useQuery({
@@ -99,7 +99,7 @@ const ProfileCompletionModal: React.FC<IProfileCompletionModal> = (props) => {
     mutationFn: updateProfileServiceClient,
     onSuccess: (data) => {
       hideModal?.();
-
+      refetchUserProfile?.();
     },
     onError: (error) => {
       const { message } = error;

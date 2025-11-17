@@ -14,15 +14,9 @@ import { getCookie, setCookie } from "cookies-next";
 import dynamic from "next/dynamic";
 import { IFilters, useFilterStore } from "@/zustandStore/filters";
 import { trackSearch } from "@/helpers/SurveyHelper";
-import { IAssetType } from "@/types";
+import { IAssetType, BudgetRangeObject } from "@/types";
 import { SERVICE_PROVIDER_OPTIONS } from "@/shared/Utilies";
-
-interface IFilter {
-  category: string;
-  price: string;
-  bank: string;
-  location: string;
-}
+import ProfilePreferencesToast from "./ProfilePreferencesToast";
 
 const initialValues = {
   propertyType: getEmptyAllObject(),
@@ -52,7 +46,6 @@ const HeroSearchBox = (props: {
   const assetsTypeOptionsWithAll = [getEmptyAllObject(), ...(assetsTypeOptions ?? [])];
   const { setFilter } = useFilterStore();
 
-  const token = getCookie(COOKIES.TOKEN_KEY) ?? "";
   const [loadingSearch, setLoadingSearch] = useState(false);
 
   const [filteredAssets, setFilteredAssets] = useState<IAssetType[]>(
@@ -121,6 +114,7 @@ const HeroSearchBox = (props: {
   return (
     <>
       <div className="bg-white p-4 rounded-lg flex flex-col gap-4 relative pb-12 shadow shadow-brand-color border">
+        <ProfilePreferencesToast />
         <CustomFormikForm
           initialValues={initialValues}
           handleSubmit={handleSubmit}

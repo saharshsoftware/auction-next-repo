@@ -154,6 +154,7 @@ export default function SignupComp(props: {
                             className="bg-gray-50 border border-brand-color text-gray-900 sm:text-sm hover:bg-gray-100 block w-full p-2 ps-12 rounded text-sm-xs"
                             autoComplete="false"
                             placeholder="Enter phone number"
+                            maxLength={10}
                             onChange={(e) => {
                               setFieldValue("phoneNumber", e.target.value);
                             }}

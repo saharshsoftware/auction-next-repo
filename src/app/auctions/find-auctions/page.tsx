@@ -31,6 +31,7 @@ import TopCities from "@/components/atoms/TopCities";
 import AuctionResults from "../../../components/templates/AuctionResults";
 import { SkeletonAuctionList } from "@/components/skeltons/SkeletonAuctionList";
 import TopBanks from "@/components/atoms/TopBanks";
+import ProfilePreferencesToast from "@/components/atoms/ProfilePreferencesToast";
 
 export const metadata: Metadata = {
   title: "Search Results | eauctiondekho",
@@ -155,6 +156,9 @@ export default async function Page({
         selectedServiceProvider={selectedServiceProvider}
       />
       <div className="common-section">
+        <div className="my-4 block lg:hidden">
+          <ProfilePreferencesToast />
+        </div>
         <div className="grid grid-cols-12 gap-4 py-4">
           <div className="grid-col-span-9">
             <Suspense key={Array.isArray(searchParams?.q) ? searchParams.q[0] : searchParams?.q ?? ""} fallback={<SkeletonAuctionList />}>
@@ -162,6 +166,9 @@ export default async function Page({
             </Suspense>
           </div>
           <div className="grid-col-span-3">
+            <div className="mb-4">
+              <ProfilePreferencesToast />
+            </div>
             <div className="mb-4">
               <TopCities locationOptions={popularLocations} />
             </div>

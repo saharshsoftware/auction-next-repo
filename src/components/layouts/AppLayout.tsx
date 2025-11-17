@@ -21,6 +21,7 @@ import { setUserIdInDataLayer } from "@/helpers/WindowHelper";
 import { getCookie } from "cookies-next";
 import { useAuthStore } from "@/zustandStore/authStore";
 import { useScrollToTop } from "@/hooks/useScrollToTop";
+import { useRouter } from "next/navigation";
 
 const AppLayout = ({
   children,
@@ -32,7 +33,9 @@ const AppLayout = ({
   const { data } = useQuerySurvey();
   const { setSurveyData } = useSurveyStore();
   const pathname = usePathname();
+  const router = useRouter();
   const { isNewUser } = useAuthStore();
+  const isAuthRoute = AUTH_ROUTES.some((route) => route.path === pathname);
   
   // Authentication check with defensive error handling
   const token = getCookie(COOKIES.TOKEN_KEY);
@@ -97,7 +100,10 @@ const AppLayout = ({
 
   // Open profile completion modal for new users or users with incomplete profiles
   useEffect(() => {
-    if (isAuthenticated && isNewUser) {
+    if (!isAuthenticated) {
+      return;
+    }
+    if (isNewUser) {
       showProfileModal();
     }
   }, [isNewUser, isAuthenticated]);
@@ -109,19 +115,15 @@ const AppLayout = ({
     preserveOnBack: true
   });
 
-  const isAuthRoute = AUTH_ROUTES.some((route) => route.path === pathname);
-
   const handleCloseProfileModal = () => {
     hideProfileModal();
     useAuthStore.getState().setNewUserStatus(false);
+    router.refresh();
   };
 
   return (
-    <div
-      className={`flex-1 ${isAuthRoute ? "flex items-center justify-center" : ""
-        }`}
-    >
-      {children}
+    <div className={`flex-1 ${isAuthRoute ? "flex items-center justify-center" : ""}`}>
+      <div className="flex-1">{children}</div>
       {openModal && <SurveyModal openModal={openModal} hideModal={hideModal} />}
       {openProfileModal && (
         <ProfileCompletionModal

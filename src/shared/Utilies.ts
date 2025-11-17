@@ -6,6 +6,7 @@ import {
   ICategoryCollection,
   ILocations,
   INSTRUCTIONS_FOLDER_NAME,
+  BudgetRangeObject,
 } from "@/types";
 import { AxiosError } from "axios";
 import { BUDGET_RANGES, COOKIES, getEmptyAllObject, STORAGE_KEYS, STRING_DATA } from "./Constants";
@@ -1164,3 +1165,6 @@ export const featureIcons: { [key: string]: any } = {
   [STRING_DATA.MEMBERSHIP_EMAIL_MOBILE_NOTIFICATIONS]: MessagesSquare,
   [STRING_DATA.MEMBERSHIP_WHATSAPP_EMAIL_MOBILE_NOTIFICATIONS]: MessagesSquare,
 };
+export const hasValue = (value?: string | null): boolean => typeof value === "string" && value.trim().length > 0;
+
+export const hasBudgetRanges = (ranges?: BudgetRangeObject[] | null): boolean => Array.isArray(ranges) && ranges.length > 0;

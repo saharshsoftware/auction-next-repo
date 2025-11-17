@@ -42,6 +42,7 @@ import { SEO_BRAND } from "@/shared/seo.constant";
 import BreadcrumbJsonLd from "@/components/atoms/BreadcrumbJsonLd";
 import Breadcrumb from "@/components/atoms/Breadcrumb";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
+import ProfilePreferencesToast from "@/components/atoms/ProfilePreferencesToast";
 
 // Add caching functions
 const getBanksCached = cache(async () => {
@@ -211,6 +212,9 @@ export default async function Page({
         selectedBank={selectedBank}
       />
       <div className="common-section">
+        <div className="my-4 block lg:hidden">
+          <ProfilePreferencesToast />
+        </div>
         {/* Breadcrumb Navigation */}
         <div className="pt-4">
           <Breadcrumb
@@ -230,6 +234,9 @@ export default async function Page({
             </Suspense>
           </div>
           <div className="grid-col-span-3">
+            <div className="mb-4">
+              <ProfilePreferencesToast />
+            </div>
             <TopCities
               locationOptions={popularLocations}
               isBankRoute={true}

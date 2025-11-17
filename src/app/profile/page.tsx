@@ -2,6 +2,7 @@ import ProfileTemplate from "@/components/templates/ProfileTemplate";
 import { COOKIES } from "@/shared/Constants";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import ProfilePreferencesToast from "@/components/atoms/ProfilePreferencesToast";
 
 export default function Page() {
   const cookieStore = cookies();
