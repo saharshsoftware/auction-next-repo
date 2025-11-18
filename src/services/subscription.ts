@@ -21,12 +21,16 @@ export const createSubscription = async (plan: MembershipPlan): Promise<CreateSu
     startAt: new Date().toISOString(),
     planType: getPlanTypeForBackend(plan.planType),
   };
-  const response = await postRequest({
-    API: API_ENPOINTS.SUBSCRIPTIONS_CREATE,
-    DATA: requestData,
-  });
+  try {
+    const response = await postRequest({
+      API: API_ENPOINTS.SUBSCRIPTIONS_CREATE,
+      DATA: requestData,
+    });
 
-  return response.data as CreateSubscriptionApiResponse;
+    return response.data as CreateSubscriptionApiResponse;
+  } catch (error: any) {
+    throw error.response.data?.error;
+  }
 };
 
 

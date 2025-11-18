@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 interface SubscriptionPendingScreenProps {
   readonly pendingMessage?: string;
 }
@@ -9,6 +9,12 @@ interface SubscriptionPendingScreenProps {
 export const SubscriptionPendingScreen: React.FC<SubscriptionPendingScreenProps> = ({
   pendingMessage,
 }) => {
+
+  // move scroll to top
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <section className="px-4 lg:px-16 py-10 min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-blue-50">
       <div className="mx-auto flex w-full max-w-2xl flex-col items-center">

@@ -38,7 +38,8 @@ export interface PlanDetails {
 export interface PaymentInfo {
   readonly method: string;
   readonly autoRenewal: boolean;
-  readonly lastPaymentDate: string;
+  readonly currentPeriodStart: string;
+  readonly currentPeriodEnd: string;
   readonly billingEmail: string;
   readonly gstNumber?: string;
 }

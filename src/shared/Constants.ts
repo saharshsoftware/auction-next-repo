@@ -41,6 +41,8 @@ export const PAGE_REVALIDATE_TIME_FOR_AUCTION_LIST = 3600; // 1 hr
 export const FILTER_API_REVALIDATE_TIME = 300; // 5 min
 
 export const STRING_DATA = {
+  MEMBERSHIP_PAYMENT_CURRENT_PERIOD_START: "Current period start",
+  MEMBERSHIP_PAYMENT_CURRENT_PERIOD_END: "Current period end",
   MEMBERSHIP_WHATSAPP_EMAIL_NOTIFICATIONS: "WhatsApp & Email alerts",
   MEMBERSHIP_WHATSAPP_MOBILE_NOTIFICATIONS: "WhatsApp & Mobile alerts",
   MEMBERSHIP_EMAIL_MOBILE_NOTIFICATIONS: "Email & Mobile alerts",
@@ -229,7 +231,7 @@ export const NAVBAR_NAV_LINKS = [
   },
   {
     path: ROUTE_CONSTANTS.PRICING,
-    label: STRING_DATA.MEMBERSHIP,
+    label: STRING_DATA.PRICING,
     icon: faCrown,
   },
   {

@@ -9,6 +9,7 @@ import { useSubscriptionPolling, useAutoPollPendingSubscription } from "./useSub
 import { useRazorpayCheckout } from "./useRazorpayCheckout";
 import { useCurrentPlanInfo } from "./useCurrentPlanInfo";
 import { useSubscriptionPendingStatus } from "./useSubscriptionPendingStatus";
+import { clearSubscriptionProcessing } from "@/utils/subscription-storage";
 import toast from "react-simple-toasts";
 
 interface UseSubscriptionFlowParams {
@@ -30,7 +31,7 @@ interface UseSubscriptionFlowReturn {
   readonly activePlanId: string | null;
   readonly checkoutMessage: string;
   readonly getCurrentPlanInfo: ReturnType<typeof useCurrentPlanInfo>;
-  readonly handlePaymentSuccess: (subscriptionId: string, planType: string) => Promise<void>;
+  readonly handlePaymentSuccess: (subscriptionId: string, planType: string, razorpaySubscriptionId: string) => Promise<void>;
 }
 
 /**
@@ -57,18 +58,22 @@ export const useSubscriptionFlow = ({
   
   useAutoPollPendingSubscription(queryClient, subscriptionData, isLoadingSubscription);
   
-  const handlePaymentSuccess = useCallback(async (subscriptionId: string, planType: string) => {
+  const handlePaymentSuccess = useCallback(async (subscriptionId: string, planType: string, razorpaySubscriptionId: string) => {
     const isActivated = await pollSubscriptionStatus({
       expectedSubscriptionId: subscriptionId,
       expectedSubscriptionType: planType,
+      expectedRazorpaySubscriptionId: razorpaySubscriptionId,
     });
     if (isActivated) {
+      // Clear localStorage flag when subscription is successfully activated
+      clearSubscriptionProcessing();
+      
       toast("Subscription activated successfully!", {
         duration: 4000,
         position: 'top-center',
         theme: 'success',
       });
-      setTimeout(() => window.location.reload(), 1000);
+      // setTimeout(() => window.location.reload(), 1000);
     } else {
       toast("Subscription is being processed. Please refresh the page in a few moments.", {
         duration: 5000,
@@ -105,4 +110,3 @@ export const useSubscriptionFlow = ({
     handlePaymentSuccess,
   };
 };
-

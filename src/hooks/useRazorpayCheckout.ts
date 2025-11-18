@@ -6,6 +6,7 @@ import { ROUTE_CONSTANTS } from "@/shared/Routes";
 import { createSubscription, getCheckoutConfig } from "@/services/subscription";
 import { logInfo, logError } from "@/shared/Utilies";
 import toast from "react-simple-toasts";
+import { setSubscriptionProcessing } from "@/utils/subscription-storage";
 
 interface RazorpayOptions {
   readonly key: string;
@@ -47,7 +48,7 @@ declare global {
 
 interface UseRazorpayCheckoutParams {
   readonly isCheckoutReady: boolean;
-  readonly onPaymentSuccess: (subscriptionId: string, planType: string) => Promise<void>;
+  readonly onPaymentSuccess: (subscriptionId: string, planType: string, razorpaySubscriptionId: string) => Promise<void>;
 }
 
 /**
@@ -129,8 +130,11 @@ export const useRazorpayCheckout = ({
               theme: 'success',
             });
 
+            // Set localStorage flag to track processing state
+            setSubscriptionProcessing(true);
+
             try {
-              await onPaymentSuccess(subscriptionId, plan.planType);
+              await onPaymentSuccess(subscriptionId, plan.planType, checkoutConfig.subscription_id.toString());
             } catch (error) {
               setActivePlanId(null);
               logError("Error in payment success handler", error);
@@ -183,21 +187,12 @@ export const useRazorpayCheckout = ({
           setCheckoutMessage(STRING_DATA.PAYMENT_GATEWAY_ERROR);
         }
 
-      } catch (error) {
+      } catch (error: any) {
         logError("Failed to initialize subscription checkout", error);
         setActivePlanId(null);
-
-        const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
-        let userMessage = "Failed to initialize checkout. Please try again.";
-
-        if (errorMessage.includes("Subscription creation failed")) {
-          userMessage = "Failed to create subscription. Please try again.";
-        } else if (errorMessage.includes("Checkout configuration failed")) {
-          userMessage = "Failed to configure payment. Please try again.";
-        }
-
-        setCheckoutMessage(userMessage);
-        toast(userMessage, {
+        const errorMessage = error?.message || "Failed to initialize checkout. Please try again.";
+        setCheckoutMessage(errorMessage);
+        toast(errorMessage, {
           duration: 4000,
           position: 'top-center',
           theme: 'failure',
