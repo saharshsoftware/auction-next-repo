@@ -24,6 +24,9 @@ export const getButtonText = (
  */
 export const getPlanCardClasses = (plan: MembershipPlan, isCurrentPlan: boolean): string => {
   const baseClasses = "relative flex flex-col h-full rounded-xl border p-6 shadow-md transition-all duration-300";
+  if (plan.isPopular && isCurrentPlan) {
+    return `${baseClasses} scale-105 bg-green-50 border-green-400`;
+  }
   if (plan.isPopular) {
     return `${baseClasses} border-2 border-blue-500 scale-105`;
   }
