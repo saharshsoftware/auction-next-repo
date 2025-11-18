@@ -215,6 +215,7 @@ export const useImmediatePollingOnCheckout = (
 
     logInfo("Immediate polling triggered by localStorage flag");
     pollingRef.current = true;
+    let pollInterval: ReturnType<typeof setInterval> | null = null;
 
     // Start immediate polling with a small initial delay
     const startImmediatePolling = async () => {
@@ -222,7 +223,7 @@ export const useImmediatePollingOnCheckout = (
       await new Promise(resolve => setTimeout(resolve, INITIAL_POLL_DELAY_MS));
       
       let attempts = 0;
-      const pollInterval = setInterval(async () => {
+      pollInterval = setInterval(async () => {
         attempts++;
         
         try {
@@ -248,7 +249,10 @@ export const useImmediatePollingOnCheckout = (
               subscriptionId: subscriptionDetails.subscription.id,
               subscriptionType: subscriptionDetails.subscription.subscriptionType
             });
-            clearInterval(pollInterval);
+            if (pollInterval) {
+              clearInterval(pollInterval);
+              pollInterval = null;
+            }
             clearSubscriptionProcessing();
             pollingRef.current = false;
             useConfettiStore.getState().showConfetti();
@@ -261,7 +265,10 @@ export const useImmediatePollingOnCheckout = (
           
           // Stop if max attempts reached
           if (attempts >= MAX_POLLING_ATTEMPTS) {
-            clearInterval(pollInterval);
+            if (pollInterval) {
+              clearInterval(pollInterval);
+              pollInterval = null;
+            }
             pollingRef.current = false;
             logInfo("Immediate polling - max attempts reached");
             return;
@@ -270,7 +277,10 @@ export const useImmediatePollingOnCheckout = (
           logError("Immediate polling error", error);
           
           if (attempts >= MAX_POLLING_ATTEMPTS) {
-            clearInterval(pollInterval);
+            if (pollInterval) {
+              clearInterval(pollInterval);
+              pollInterval = null;
+            }
             pollingRef.current = false;
             return;
           }
@@ -283,6 +293,9 @@ export const useImmediatePollingOnCheckout = (
     // Cleanup
     return () => {
       pollingRef.current = false;
+      if (pollInterval) {
+        clearInterval(pollInterval);
+      }
     };
   }, [queryClient, isAuthenticated]);
 };
