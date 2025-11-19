@@ -37,6 +37,14 @@ export const useDeepLinkHandler = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
+    // Skip redirection logic entirely - let OS handle universal links
+    // This allows direct app opening for supported domains
+    return undefined;
+    
+    // Keep existing logic for fallback scenarios only
+    // ... (rest of your existing code for non-universal-link scenarios)
+    
+    /* eslint-disable-next-line no-unreachable */
     if (typeof window === "undefined") {
       return undefined;
     }
@@ -95,14 +103,9 @@ export const useDeepLinkHandler = () => {
     };
   }, [pathname]);
 
-  const handleCloseModal = () => {
-    setUserPreference("web");
-    setIsModalOpen(false);
-  };
-
   return {
-    shouldShowDeepLinkModal: isModalOpen,
-    handleCloseDeepLinkModal: handleCloseModal,
+    shouldShowDeepLinkModal: false, // Disable modal for now
+    handleCloseDeepLinkModal: () => {},
   };
 };
 
