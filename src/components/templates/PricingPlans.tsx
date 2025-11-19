@@ -124,6 +124,14 @@ const PricingPlans: React.FC<PricingPlansProps> = ({
   const shouldShowLoading = isLoadingSubscription && !hasActiveSubscription;
   const displayMessage = checkoutMessage || loaderMessage;
   const shouldShowInitialPending = isAuthenticated && hasServerSubscriptionSnapshot && isLoadingSubscription;
+
+  const getInfoModalMessage = () => {
+    let message: string = 'Want to switch plans? You\'ll need to cancel your current one first. ';
+    if (fullProfileData?.subscriptionDetails?.subscription?.status?.toLowerCase() === "trial") {
+      return message;
+    }
+    return `${message} You can then choose a new plan when your billing period ends.`;
+  };
   
   const handlePlanSelection = useCallback((plan: MembershipPlan) => {
     if (plan.label === STRING_DATA.BROKER_PLUS) {
@@ -287,7 +295,7 @@ const PricingPlans: React.FC<PricingPlansProps> = ({
         <InfoModal
           openModal={openInfoModal}
           hideModal={hideInfoModal}
-          message="Want to switch plans? You'll need to cancel your current one first. You can then choose a new plan when your billing period ends."
+          message={getInfoModalMessage()}
         />
       )}
       {openContactSalesModal && (

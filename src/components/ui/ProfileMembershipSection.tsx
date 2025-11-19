@@ -144,6 +144,16 @@ const ProfileMembershipSection: React.FC<ProfileMembershipSectionProps> = (props
     );
   }
 
+  const renderCancelSubscriptionMessage = (isCancelScheduled: boolean, subscriptionStatus: string) => {
+    if (isCancelScheduled) {
+      return "Your subscription is scheduled to cancel at the end of the current billing cycle.";
+    }
+    if (subscriptionStatus === "trial") {
+      return "You can cancelled your subscription anytime, until the trial period ends";
+    }
+    return "Once you cancel the current subscription, it will be scheduled to cancel at the end of the current billing cycle";
+  };
+
   return (
     <div className="flex flex-col gap-6">
       <PlanDetailsCard title={STRING_DATA.MEMBERSHIP_PLAN_DETAILS} statusLabel={planDetails?.status}>
@@ -251,8 +261,8 @@ const ProfileMembershipSection: React.FC<ProfileMembershipSectionProps> = (props
       {/* Cancel Subscription Section - Only show for paid subscriptions */}
       {subscriptionData?.subscriptionData?.subscription && (() => {
         const subscription = subscriptionData.subscriptionData.subscription;
-        const isCancelScheduled = (subscription as any).cancelAtCycleEnd === true;
-
+        const isCancelScheduled = subscription.cancelAtCycleEnd === true;
+        const subscriptionStatus = subscription.status;
         return (
           <PlanDetailsCard title="Subscription Management">
             <div className="flex flex-col gap-4">
@@ -260,9 +270,7 @@ const ProfileMembershipSection: React.FC<ProfileMembershipSectionProps> = (props
                 <div className="flex-1">
                   <h4 className="text-sm font-medium text-gray-900 mb-1">Cancel Subscription</h4>
                   <p className="text-sm text-gray-600">
-                    {isCancelScheduled
-                      ? "Your subscription is scheduled to cancel at the end of the current billing cycle."
-                      : "Once you cancel the current subscription, it will be scheduled to cancel at the end of the current billing cycle"}
+                    {renderCancelSubscriptionMessage(isCancelScheduled, subscriptionStatus)}
                   </p>
                 </div>
                 <button
