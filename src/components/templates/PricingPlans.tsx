@@ -2,10 +2,11 @@
 "use client";
 import React, { useMemo, useCallback, useState, useEffect } from "react";
 import { MembershipPlan } from "@/interfaces/MembershipPlan";
-import { STRING_DATA } from "@/shared/Constants";
+import { STRING_DATA, REACT_QUERY } from "@/shared/Constants";
 import { useQueryClient } from "@tanstack/react-query";
 import { useIsAuthenticated } from "@/hooks/useAuthenticated";
 import { useSubscriptionFlow } from "@/hooks/useSubscriptionFlow";
+import { useImmediatePollingOnCheckout } from "@/hooks/useSubscriptionPolling";
 import { Info } from "lucide-react";
 import { mapMembershipPlanLimits } from "@/shared/MembershipUtils";
 import { featureIcons, denormalizePlanName } from "@/shared/Utilies";
@@ -19,6 +20,11 @@ import { PersonaPlanCard } from "./PersonaPlanCard";
 import { SubscriptionPendingScreen } from "./SubscriptionPendingScreen";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { UserProfileApiResponse } from "@/interfaces/UserProfileApi";
+import { 
+  isSubscriptionProcessing, 
+  clearSubscriptionProcessing,
+  subscribeToSubscriptionProcessing,
+} from "@/utils/subscription-storage";
 
 interface PricingPlansProps {
   readonly showLegend?: boolean;
@@ -40,6 +46,7 @@ const PricingPlans: React.FC<PricingPlansProps> = ({
   initialUserProfile = null,
 }) => {
   const [isMounted, setIsMounted] = useState(false);
+  const [showLocalStorageProcessing, setShowLocalStorageProcessing] = useState(false);
   const queryClient = useQueryClient();
   const { isAuthenticated } = useIsAuthenticated();
   const router = useRouter();
@@ -51,6 +58,37 @@ const PricingPlans: React.FC<PricingPlansProps> = ({
   useEffect(() => {
     setIsMounted(true);
   }, []);
+
+  // Start immediate polling if localStorage flag is set (right after checkout)
+  useImmediatePollingOnCheckout(queryClient, isAuthenticated);
+
+  // Sync localStorage processing flag with component state
+  useEffect(() => {
+    if (!isMounted || !isAuthenticated) return;
+
+    const applyProcessingState = (isProcessing: boolean) => {
+      setShowLocalStorageProcessing(isProcessing);
+      if (isProcessing) {
+        queryClient.invalidateQueries({ queryKey: [REACT_QUERY.USER_PROFILE] });
+      }
+    };
+
+    applyProcessingState(isSubscriptionProcessing());
+
+    const unsubscribe = subscribeToSubscriptionProcessing(applyProcessingState);
+    const handleStorage = (event: StorageEvent) => {
+      if (event.key === 'subscriptionProcessing') {
+        applyProcessingState(event.newValue === 'true');
+      }
+    };
+
+    window.addEventListener('storage', handleStorage);
+
+    return () => {
+      unsubscribe();
+      window.removeEventListener('storage', handleStorage);
+    };
+  }, [isMounted, isAuthenticated, queryClient]);
 
   
   const {
@@ -71,11 +109,21 @@ const PricingPlans: React.FC<PricingPlansProps> = ({
     queryClient,
     initialProfileData: initialUserProfile,
   });
+
+  // Clear localStorage flag when subscription becomes active
+  useEffect(() => {
+    const subscriptionStatus = subscriptionData?.subscriptionData?.subscription?.status?.toLowerCase();
+    if (showLocalStorageProcessing && subscriptionStatus === "active") {
+      clearSubscriptionProcessing();
+      setShowLocalStorageProcessing(false);
+    }
+  }, [showLocalStorageProcessing, subscriptionData]);
   
-  const hasActiveSubscription = isAuthenticated && subscriptionData?.subscriptionData?.subscription?.status?.toLowerCase() === "active";
+  const subscriptionStatus = subscriptionData?.subscriptionData?.subscription?.status?.toLowerCase();
+  const hasActiveSubscription = isAuthenticated && subscriptionStatus === "active";
   const shouldShowLoading = isLoadingSubscription && !hasActiveSubscription;
   const displayMessage = checkoutMessage || loaderMessage;
-  const shouldShowInitialPending = isAuthenticated && hasServerSubscriptionSnapshot && initialSubscriptionStatus === "pending" && isLoadingSubscription;
+  const shouldShowInitialPending = isAuthenticated && hasServerSubscriptionSnapshot && isLoadingSubscription;
   
   const handlePlanSelection = useCallback((plan: MembershipPlan) => {
     if (plan.label === STRING_DATA.BROKER_PLUS) {
@@ -123,6 +171,15 @@ const PricingPlans: React.FC<PricingPlansProps> = ({
   
   if (shouldShowInitialPending) {
     return <SubscriptionPendingScreen pendingMessage={STRING_DATA.SUBSCRIPTION_PENDING_MESSAGE} />;
+  }
+
+  // Show localStorage-based processing screen
+  if (showLocalStorageProcessing && isAuthenticated && !hasActiveSubscription) {
+    return (
+      <SubscriptionPendingScreen 
+        pendingMessage="Your subscription is being activated. This may take up to 5 minutes." 
+      />
+    );
   }
 
   if (isAuthenticated && isPending && !shouldShowLoading) {

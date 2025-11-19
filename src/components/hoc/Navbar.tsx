@@ -215,7 +215,7 @@ const Navbar: React.FC = () => {
                 href={ROUTE_CONSTANTS.PRICING}
                 className="cursor-pointer text-xs lg:text-sm"
               >
-                {STRING_DATA.MEMBERSHIP}{" "}
+                {STRING_DATA.PRICING}{" "}
               </Link>}
             </div>
           </div>

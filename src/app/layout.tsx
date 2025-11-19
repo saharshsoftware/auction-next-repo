@@ -9,6 +9,7 @@ import GoogleScriptComponent from "@/components/atoms/GoogleScriptComponent";
 import dynamic from "next/dynamic";
 import HeadScripts from "@/components/atoms/HeadScripts";
 import { PAGE_REVALIDATE_TIME_FOR_AUCTION_LIST } from "@/shared/Constants";
+import ConfettiCelebration from "@/components/atoms/ConfettiCelebration";
 const Footer = dynamic(() => import("@/components/hoc/Footer"), {
   ssr: false,
 });
@@ -40,21 +41,24 @@ export default function RootLayout({
         </head>
         <body className={inter.className}>
           <Providers>
-            <div className="flex flex-col h-screen">
-              <NextTopLoader
-                color="#5356FF"
-                initialPosition={0.08}
-                crawlSpeed={200}
-                height={3}
-                crawl={true}
-                easing="ease"
-                speed={200}
-                shadow="0 0 10px #2299DD,0 0 5px #2299DD"
-              />
-              <Navbar />
-              <AppLayout>{children}</AppLayout>
-              <Footer />
-            </div>
+            <>
+              <div className="flex flex-col h-screen">
+                <ConfettiCelebration />
+                <NextTopLoader
+                  color="#5356FF"
+                  initialPosition={0.08}
+                  crawlSpeed={200}
+                  height={3}
+                  crawl={true}
+                  easing="ease"
+                  speed={200}
+                  shadow="0 0 10px #2299DD,0 0 5px #2299DD"
+                />
+                <Navbar />
+                <AppLayout>{children}</AppLayout>
+                <Footer />
+              </div>
+            </>
           </Providers>
           <GoogleScriptComponent />
         </body>

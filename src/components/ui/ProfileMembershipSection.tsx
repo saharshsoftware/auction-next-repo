@@ -22,7 +22,7 @@ const ProfileMembershipSection: React.FC<ProfileMembershipSectionProps> = (props
   // const queryClient = useQueryClient();
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
   const [isCanceling, setIsCanceling] = useState(false);
-  
+
   // Get subscription data from profile API (via useSubscription hook)
   const {
     data: subscriptionData,
@@ -47,16 +47,16 @@ const ProfileMembershipSection: React.FC<ProfileMembershipSectionProps> = (props
       });
 
       const apiResponse: CancelSubscriptionApiResponse = response.data;
-      
+
       if (!apiResponse.success) {
         throw new Error(apiResponse.message || "Failed to cancel subscription");
       }
 
       // Show success message
-      const message = cancelAtCycleEnd 
-        ? "Subscription will be cancelled at the end of current cycle" 
+      const message = cancelAtCycleEnd
+        ? "Subscription will be cancelled at the end of current cycle"
         : "Subscription cancelled successfully";
-        
+
       toast(message, {
         duration: 4000,
         position: 'top-center',
@@ -72,7 +72,7 @@ const ProfileMembershipSection: React.FC<ProfileMembershipSectionProps> = (props
     } catch (error) {
       console.error("Failed to cancel subscription:", error);
       const errorMessage = error instanceof Error ? error.message : "Failed to cancel subscription";
-      
+
       toast(errorMessage, {
         duration: 4000,
         position: 'top-center',
@@ -88,7 +88,7 @@ const ProfileMembershipSection: React.FC<ProfileMembershipSectionProps> = (props
    */
   const handleCancelSubscriptionClick = () => {
     const subscriptionId = subscriptionData?.subscriptionData?.subscription?.id;
-    
+
     if (!subscriptionId) {
       toast("No active subscription found to cancel", {
         duration: 4000,
@@ -106,7 +106,7 @@ const ProfileMembershipSection: React.FC<ProfileMembershipSectionProps> = (props
    */
   const handleConfirmCancel = () => {
     const subscriptionId = subscriptionData?.subscriptionData?.subscription?.id;
-    
+
     if (!subscriptionId) {
       toast("No active subscription found to cancel", {
         duration: 4000,
@@ -123,7 +123,7 @@ const ProfileMembershipSection: React.FC<ProfileMembershipSectionProps> = (props
   // Use API data if available, otherwise fall back to props or defaults
   const planDetails = subscriptionData?.planDetails || propPlanDetails;
   const paymentInfo = subscriptionData?.paymentInfo || propPaymentInfo;
-  
+
   if (isLoadingSubscription) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -147,15 +147,17 @@ const ProfileMembershipSection: React.FC<ProfileMembershipSectionProps> = (props
   return (
     <div className="flex flex-col gap-6">
       <PlanDetailsCard title={STRING_DATA.MEMBERSHIP_PLAN_DETAILS} statusLabel={planDetails?.status}>
-        {planDetails?.planId && !planDetails?.planId.endsWith('-PLAN') && (
-          <div className="mb-4">
-            <p className="text-xs font-medium text-gray-500 mb-1">Subscription ID</p>
-            <p className="text-sm-xs">{planDetails?.planId}</p>
-          </div>
-        )}
         <div className="grid gap-4 md:grid-cols-2">
-          <div className="space-y-1">
-            <p className="text-sm font-medium text-gray-900">{planDetails?.name}</p>
+          <div className="space-y-3">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="text-sm font-medium text-gray-700">Plan Type:</span>
+              <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold
+            
+              bg-blue-500 text-white 
+            `}>
+                {planDetails?.name}
+              </span>
+            </div>
             {planDetails?.renewalDate && (
               <p className="text-sm-xs">
                 {STRING_DATA.MEMBERSHIP_PLAN_RENEWAL}: {planDetails?.renewalDate}
@@ -172,7 +174,7 @@ const ProfileMembershipSection: React.FC<ProfileMembershipSectionProps> = (props
           </ul>
         </div>
       </PlanDetailsCard>
-      
+
       {paymentInfo && (
         <PlanDetailsCard title={STRING_DATA.MEMBERSHIP_PAYMENT_INFO}>
           <div className="grid gap-4 md:grid-cols-2">
@@ -184,12 +186,14 @@ const ProfileMembershipSection: React.FC<ProfileMembershipSectionProps> = (props
               <p className="text-sm font-medium text-gray-900">{STRING_DATA.MEMBERSHIP_PAYMENT_AUTORENEW}</p>
               <p className="text-sm-xs">{paymentInfo.autoRenewal ? STRING_DATA.YES : STRING_DATA.NO}</p>
             </div>
-            {paymentInfo.lastPaymentDate && (
-              <div className="space-y-1">
-                <p className="text-sm font-medium text-gray-900">{STRING_DATA.MEMBERSHIP_PAYMENT_LAST}</p>
-                <p className="text-sm-xs">{paymentInfo.lastPaymentDate}</p>
-              </div>
-            )}
+            <div className="space-y-1">
+              <p className="text-sm font-medium text-gray-900">{STRING_DATA.MEMBERSHIP_PAYMENT_CURRENT_PERIOD_START}</p>
+              <p className="text-sm-xs">{paymentInfo?.currentPeriodStart}</p>
+            </div>
+            <div className="space-y-1">
+              <p className="text-sm font-medium text-gray-900">{STRING_DATA.MEMBERSHIP_PAYMENT_CURRENT_PERIOD_END}</p>
+              <p className="text-sm-xs">{paymentInfo?.currentPeriodEnd}</p>
+            </div>
             {paymentInfo.billingEmail && (
               <div className="space-y-1">
                 <p className="text-sm font-medium text-gray-900">{STRING_DATA.MEMBERSHIP_PAYMENT_BILLING_EMAIL}</p>
@@ -214,8 +218,8 @@ const ProfileMembershipSection: React.FC<ProfileMembershipSectionProps> = (props
               <div className="flex-1">
                 <h4 className="text-sm font-medium text-gray-900 mb-2">Unlock Premium Features</h4>
                 <p className="text-sm text-gray-600 mb-3">
-                  Upgrade to a premium plan to access advanced features like unlimited saved searches, 
-                  priority alerts, WhatsApp notifications, and more. Choose a plan that fits your needs 
+                  Upgrade to a premium plan to access advanced features like unlimited saved searches,
+                  priority alerts, WhatsApp notifications, and more. Choose a plan that fits your needs
                   and take your auction experience to the next level.
                 </p>
                 <ul className="text-sm text-gray-600 space-y-1 mb-4">
@@ -248,7 +252,7 @@ const ProfileMembershipSection: React.FC<ProfileMembershipSectionProps> = (props
       {subscriptionData?.subscriptionData?.subscription && (() => {
         const subscription = subscriptionData.subscriptionData.subscription;
         const isCancelScheduled = (subscription as any).cancelAtCycleEnd === true;
-        
+
         return (
           <PlanDetailsCard title="Subscription Management">
             <div className="flex flex-col gap-4">
@@ -281,7 +285,7 @@ const ProfileMembershipSection: React.FC<ProfileMembershipSectionProps> = (props
         onConfirm={handleConfirmCancel}
         isLoading={isCanceling}
       />
-      
+
       {/* <PaymentHistoryTable entries={paymentHistory} /> */}
     </div>
   );
@@ -289,4 +293,3 @@ const ProfileMembershipSection: React.FC<ProfileMembershipSectionProps> = (props
 
 export default ProfileMembershipSection;
 
-  
