@@ -8,8 +8,8 @@
             "namespace": "android_app",
             "package_name": "com.eauctiondekho",
             "sha256_cert_fingerprints": [
-                "57:7C:6A:5D:C2:AF:08:80:21:7C:EC:51:71:A7:67:5D:75:A3:FA:9A:5D:EF:D6:AA:F4:1B:75:05:4E:3D:B9:0D"
-               
+                "57:7C:6A:5D:C2:AF:08:80:21:7C:EC:51:71:A7:67:5D:75:A3:FA:9A:5D:EF:D6:AA:F4:1B:75:05:4E:3D:B9:0D",
+                "69:5B:1E:37:8F:A6:C6:14:10:5F:92:91:D2:4D:18:E4:F8:0B:E3:16:34:A7:1D:CE:6B:35:5E:82:2C:0C:92:3C"
             ]
         }
     }
