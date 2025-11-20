@@ -7,6 +7,7 @@ export interface ApiMembershipPlanAttributes {
   readonly razorpayPlanId: string;
   readonly isRecommended: boolean;
   readonly price: number;
+  readonly discountedPrice: number;
   readonly name: string;
   readonly description: string;
   readonly createdAt: string;

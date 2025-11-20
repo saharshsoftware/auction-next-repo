@@ -14,5 +14,6 @@ export interface MembershipPlan {
   readonly razorpayPlanId: string;
   readonly planType: string;
   readonly limits: PlanLimits;
+  readonly discountedPriceText: string;
 }
 

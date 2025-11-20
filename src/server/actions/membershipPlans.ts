@@ -12,13 +12,15 @@ const UNLIMITED_LIMIT_VALUE = Number.POSITIVE_INFINITY;
  */
 const mapApiPlanToMembershipPlan = (apiPlan: ApiMembershipPlan): MembershipPlan => {
   const { id, attributes } = apiPlan;
-  const { name, description, price, planLimits, razorpayPlanId, isRecommended } = attributes;
+  const { name, description, price, planLimits, razorpayPlanId, isRecommended, discountedPrice } = attributes;
 
   // Create plan ID based on name (lowercase, no spaces)
   const planId = name.toLowerCase().replace(/\s+/g, "");
 
   // Convert price from rupees to paise
   const amountInPaise = price * 100;
+  const hasDiscount = discountedPrice && discountedPrice > 0;
+  const discountedPriceText = hasDiscount ? `₹${discountedPrice?.toLocaleString()}` : '';
 
   // Handle savedSearchesMax - convert "infinity" string to number
   const savedSearchesMax = planLimits.savedSearchesMax === "infinity"
@@ -31,6 +33,7 @@ const mapApiPlanToMembershipPlan = (apiPlan: ApiMembershipPlan): MembershipPlan 
     priceText: price === 0 ? "₹0" : `₹${price?.toLocaleString()}`,
     priceSubtext: "per month",
     description,
+    discountedPriceText,
     ctaLabel: price === 0 ? "Stay on Free" : `Upgrade to ${name}`,
     isPopular: isRecommended,
     badgeLabel: isRecommended ? "Popular" : undefined,
