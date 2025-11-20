@@ -9,12 +9,12 @@ import ActionButton from "../atoms/ActionButton";
 import CreateAlert from "./CreateAlert";
 import LoginModal from "./LoginModal";
 import { useSubscriptionAccess } from "@/hooks/useSubscriptionAccess";
-import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import { fetchAlerts } from "@/services/auction";
 import { REACT_QUERY } from "@/shared/Constants";
 import { IAlert } from "@/types";
 import { useUserProfile } from "@/hooks/useUserProfile";
+import { LimitReachedBanner } from "../molecules/limit-reached-banner";
 
 function LoginToCreateAlert({
   isAuthenticated,
@@ -39,7 +39,7 @@ function LoginToCreateAlert({
 
   const { canAddAlert, isLoading: isLoadingAccess } = useSubscriptionAccess({
     alerts: dataAlert?.length ?? 0
-  }); 
+  });
 
   const handleCloseCreateAlert = () => {
     hideModal();
@@ -60,26 +60,31 @@ function LoginToCreateAlert({
   const getButtonText = () => {
     if (!isAuthenticated) return "Signup to create alert";
     if (isLoadingAccess) return "Loading...";
-    if (!canAddAlert) return "Limit reached";
     return "Create Alert";
   };
 
-  const shouldDisableButton = isAuthenticated && (!canAddAlert || isLoadingAccess);
+  const shouldDisableButton = isAuthenticated && (isLoadingAccess);
+
+  const renderActionButton = () => {
+    if (!canAddAlert && isAuthenticated) {
+      return null
+    } else {
+      return (
+        <ActionButton
+          text={getButtonText()}
+          onclick={shouldDisableButton ? undefined : showModal}
+          disabled={shouldDisableButton}
+          iconLeft={<FontAwesomeIcon icon={faBell} className="h-4 w-4 " />}
+        />
+      );
+    }
+  };
 
   return (
     <>
-      <ActionButton
-        text={getButtonText()}
-        onclick={shouldDisableButton ? undefined : showModal}
-        disabled={shouldDisableButton}
-        iconLeft={<FontAwesomeIcon icon={faBell} className="h-4 w-4 " />}
-      />
-      {shouldDisableButton && isAuthenticated && !isLoadingAccess && isInternalUser && (
-        <div className="mt-2 text-xs text-gray-600">
-          <Link href="/pricing" className="text-blue-600 hover:underline">
-            Upgrade your plan
-          </Link> to create more alerts
-        </div>
+      {renderActionButton()}
+      {!canAddAlert && !isLoadingAccess && isInternalUser && (
+        <LimitReachedBanner featureType="alerts" className="mt-4" featureName="alerts" />
       )}
       {openModal ? renderModalContainer() : null}
     </>

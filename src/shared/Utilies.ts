@@ -71,6 +71,25 @@ export const formatPrice = (price: any) => {
   return `₹ ${formattedPrice}`;
 };
 
+/**
+ * Format a price value to a compact readable format without currency symbol
+ * Used for budget ranges and similar displays
+ */
+export const formatPriceCompact = (price: string | number): string => {
+  const numericPrice = parseFloat(String(price));
+  if (isNaN(numericPrice) || numericPrice < 0) return String(price);
+
+  if (numericPrice >= 1_00_00_000) {
+    const crValue = numericPrice / 1_00_00_000;
+    return crValue % 1 === 0 ? `${crValue}Cr` : `${crValue.toFixed(2)}Cr`;
+  } else if (numericPrice >= 1_00_000) {
+    const lakhValue = numericPrice / 1_00_000;
+    return lakhValue % 1 === 0 ? `${lakhValue}L` : `${lakhValue.toFixed(2)}L`;
+  } else {
+    return numericPrice.toLocaleString();
+  }
+};
+
 export const formattedDate = (data: string | Date) => {
   if (!data) return ""; // Avoid errors for undefined/null input
 
@@ -1020,7 +1039,7 @@ export const normalizeBudgetRanges = (ranges: string[] | Array<{ min: string; ma
     }
     // If no match, try to parse "min-max" format
     const [min, max] = rangeStr.split('-');
-    return { min: min || '0', max: max || 'Infinity' };
+    return { min: min || '0', max: max || 'Infinity', label: rangeStr };
   });
 };
 

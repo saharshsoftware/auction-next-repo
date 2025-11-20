@@ -175,7 +175,7 @@ export default function ProfileTemplate() {
           {/* Budget Ranges */}
           <div className="pt-4 border-t border-gray-100">
             <ShowLabelValue heading={"Budget Ranges"} hasChildren={true}>
-              <BudgetRangePills budgetRanges={userData?.budgetRanges} />
+              <BudgetRangePills budgetRanges={(userData?.budgetRanges ?? [])} />
             </ShowLabelValue>
           </div>
         </div>

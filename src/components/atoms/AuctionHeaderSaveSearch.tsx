@@ -10,12 +10,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilter } from "@fortawesome/free-solid-svg-icons";
 import { getDataFromQueryParamsMethod } from "@/shared/Utilies";
 import { useSubscriptionAccess } from "@/hooks/useSubscriptionAccess";
-import Link from "next/link";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { fetchSavedSearch } from "@/services/auction";
 import { useQuery } from "@tanstack/react-query";
 import { REACT_QUERY } from "@/shared/Constants";
 import { ISavedSearch } from "@/types";
+import { LimitReachedBanner } from "../molecules/limit-reached-banner";
 
 interface IAuctionHeaderSaveSearchProps {
   searchParams?: { [key: string]: string | string[] | undefined };
@@ -95,31 +95,30 @@ const AuctionHeaderSaveSearch = ({ searchParams }: IAuctionHeaderSaveSearchProps
 
   return (
     <>
-      <div className="w-full flex items-center justify-between gap-2 mb-2 ">
-        <div className="max-w-fit flex flex-col gap-1">
-          <button
-            type="button"
-            className={`link max-w-fit ${shouldDisableButton ? 'link-disabled cursor-not-allowed text-gray-400' : 'link-primary cursor-pointer'}`}
-            onClick={shouldDisableButton ? undefined : handleSaveSearchClick}
-            disabled={!!shouldDisableButton ? true : false}
-          >
-            {getButtonText().toUpperCase()}
-          </button>
-          <div className={`inline-flex items-center gap-2 text-xs py-1 rounded-full w-fit text-gray-600 ${shouldShowUpgradePrompt ? '!hidden' : ''}`}>
-            <FontAwesomeIcon icon={faFilter} className="" />
-            <span>{getSubText()}</span>
+      <div className="w-full flex flex-col gap-3">
+        <div className="w-full flex items-center justify-between gap-2">
+          <div className="max-w-fit flex flex-col gap-1">
+            <button
+              type="button"
+              className={`link max-w-fit ${shouldDisableButton ? 'link-disabled cursor-not-allowed text-gray-400' : 'link-primary cursor-pointer'}`}
+              onClick={shouldDisableButton ? undefined : handleSaveSearchClick}
+              disabled={!!shouldDisableButton ? true : false}
+            >
+              {getButtonText().toUpperCase()}
+            </button>
+            {!shouldShowUpgradePrompt && (
+              <div className="inline-flex items-center gap-2 text-xs py-1 rounded-full w-fit text-gray-600">
+                <FontAwesomeIcon icon={faFilter} className="" />
+                <span>{getSubText()}</span>
+              </div>
+            )}
           </div>
-          {shouldShowUpgradePrompt && (
-            <div className="text-xs text-gray-600">
-              <Link href="/pricing" className="text-blue-600 hover:underline">
-                Upgrade your plan
-              </Link> to save more searches
-            </div>
-          )}
+          <MobileSortContainer />
+          <SortByDropdown />
         </div>
-        <MobileSortContainer />
-        <SortByDropdown />
-
+        {shouldShowUpgradePrompt && (
+          <LimitReachedBanner featureType="savedSearches" />
+        )}
       </div>
       <LoginModal openModal={showLoginModal} hideModal={() => setShowLoginModal(false)} />
 

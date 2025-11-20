@@ -17,6 +17,9 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useSubscriptionAccess } from '@/hooks/useSubscriptionAccess';
 import { useUserProfile } from '@/hooks/useUserProfile';
+import {
+  LimitReachedBanner
+} from "../molecules/limit-reached-banner";
 
 const ManageAlert = () => {
   const router = useRouter();
@@ -89,11 +92,11 @@ const ManageAlert = () => {
     },
   });
 
-    const handleDeleteAction = () => {
-      // refetch();
+  const handleDeleteAction = () => {
+    // refetch();
 
-      mutate({ id: selectedData?.id ?? "" });
-    };
+    mutate({ id: selectedData?.id ?? "" });
+  };
 
   const renderData = () => {
     if (fetchStatus === "fetching") {
@@ -146,6 +149,23 @@ const ManageAlert = () => {
     );
   };
 
+  const renderActionButton = () => {
+    if (canAddAlert) {
+      return (
+        <ActionButton
+          text={
+            isLoadingAccess
+              ? "Loading..."
+              : STRING_DATA.CREATE_ALERT
+          }
+          onclick={canAddAlert && !isLoadingAccess ? showModal : undefined}
+          disabled={!canAddAlert || isLoadingAccess}
+          icon={<FontAwesomeIcon icon={faAdd} />}
+        />
+      );
+    }
+  };
+
   return (
     <>
       {/* Create alert Modal */}
@@ -176,28 +196,13 @@ const ManageAlert = () => {
         <div className="flex flex-col gap-4">
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 sm:gap-4">
             <h2 className="custom-h2-class">{STRING_DATA.YOUR_ALERTS}</h2>
-            <div className="flex flex-col items-end gap-2">
-              <ActionButton
-                text={
-                  isLoadingAccess
-                    ? "Loading..."
-                    : canAddAlert
-                      ? "Add alert"
-                      : "Limit reached"
-                }
-                onclick={canAddAlert && !isLoadingAccess ? showModal : undefined}
-                disabled={!canAddAlert || isLoadingAccess}
-                icon={<FontAwesomeIcon icon={faAdd} />}
-              />
-              {!canAddAlert && !isLoadingAccess && isInternalUser && (
-                <div className="text-xs text-gray-600">
-                  <Link href="/pricing" className="text-blue-600 hover:underline">
-                    Upgrade your plan
-                  </Link> to create more alerts
-                </div>
-              )}
-            </div>
+            {renderActionButton()}
           </div>
+          {!canAddAlert && !isLoadingAccess && isInternalUser && (
+            <div className="flex flex-col gap-4">
+              <LimitReachedBanner featureType="alerts" featureName="alerts" />
+            </div>
+          )}
           {renderData()}
         </div>
       </div>

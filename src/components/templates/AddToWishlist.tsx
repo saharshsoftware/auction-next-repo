@@ -18,7 +18,7 @@ const AddToWishlist = async (props: {
   return (
     <div>
       <div className="custom-common-header-class">
-        {STRING_DATA.ADD_TO_LIST}
+        {STRING_DATA.ADD_TO_COLLECTION}
       </div>
       <div className="custom-common-header-detail-class p-4">
         <WishlistClient
