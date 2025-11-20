@@ -27,8 +27,8 @@ import {
 import { useRouter } from "next/navigation";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
 import { useSubscriptionAccess } from "@/hooks/useSubscriptionAccess";
-import Link from "next/link";
 import { useUserProfile } from "@/hooks/useUserProfile";
+import { LimitReachedBanner } from "../molecules/limit-reached-banner";
 
 const ManageListComp = () => {
   const router = useRouter();
@@ -83,6 +83,8 @@ const ManageListComp = () => {
   const { canAddCollection, isLoading: isLoadingAccess } = useSubscriptionAccess({
     collections: favouriteListData?.length ?? 0
   });
+
+  // const canAddCollection = false;
 
   useEffect(() => {
     if ((favouriteListData?.length ?? 0) > 0) {
@@ -187,6 +189,23 @@ const ManageListComp = () => {
     );
   };
 
+  const renderActionButton = () => {
+    if (canAddCollection) {
+      return (
+        <ActionButton
+          text={
+            isLoadingAccess
+              ? "Loading..."
+              : STRING_DATA.ADD_COLLECTION
+          }
+          onclick={canAddCollection && !isLoadingAccess ? showModal : undefined}
+          disabled={!canAddCollection || isLoadingAccess}
+          icon={<FontAwesomeIcon icon={faPlus} />}
+        />
+      );
+    }
+  };
+
   return (
     <>
       {/* Create List Modal */}
@@ -216,29 +235,12 @@ const ManageListComp = () => {
       <div className="common-list-section-class my-4">
         <div className="flex flex-col gap-4">
           <div className="flex justify-between items-center gap-4">
-            <div className="custom-h2-class">{STRING_DATA.YOUR_LIST}</div>
-            <div className="flex flex-col items-end gap-2">
-              <ActionButton
-                text={
-                  isLoadingAccess
-                    ? "Loading..."
-                    : canAddCollection
-                      ? "Add list"
-                      : "Limit reached"
-                }
-                onclick={canAddCollection && !isLoadingAccess ? showModal : undefined}
-                disabled={!canAddCollection || isLoadingAccess}
-                icon={<FontAwesomeIcon icon={faPlus} />}
-              />
-              {!canAddCollection && !isLoadingAccess && isInternalUser && (
-                <div className="text-xs text-gray-600">
-                  <Link href="/pricing" className="text-blue-600 hover:underline">
-                    Upgrade your plan
-                  </Link> to create more collections
-                </div>
-              )}
-            </div>
+            <div className="custom-h2-class">{STRING_DATA.YOUR_COLLECTIONS}</div>
+            {renderActionButton()}
           </div>
+          {!canAddCollection && !isLoadingAccess && isInternalUser && (
+            <LimitReachedBanner featureType="collections" featureName="collections" />
+          )}
           {renderData()}
         </div>
       </div>

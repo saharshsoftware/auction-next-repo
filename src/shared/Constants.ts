@@ -41,6 +41,8 @@ export const PAGE_REVALIDATE_TIME_FOR_AUCTION_LIST = 3600; // 1 hr
 export const FILTER_API_REVALIDATE_TIME = 300; // 5 min
 
 export const STRING_DATA = {
+  ADD_COLLECTION: "Add collection",
+  EDIT_COLLECTION: "Edit collection",
   MEMBERSHIP_PAYMENT_CURRENT_PERIOD_START: "Current period start",
   MEMBERSHIP_PAYMENT_CURRENT_PERIOD_END: "Current period end",
   MEMBERSHIP_WHATSAPP_EMAIL_NOTIFICATIONS: "WhatsApp & Email alerts",
@@ -105,12 +107,23 @@ export const STRING_DATA = {
   ADD_LIST: "Add list",
   CREATE_ALERT: "Create Alert",
   YOUR_LIST: "Your list",
+  YOUR_COLLECTIONS: "Your collections",
   UNLIMITED: "Unlimited",
   ALL: "All",
   BACK: "Back",
   EAUCTION_DEKHO: "eauctiondekho",
   EMPTY: "",
   LOGOUT: "Logout",
+  LIMIT_REACHED: "Limit reached",
+  LIMIT_REACHED_COLLECTIONS_TITLE: "Collection limit reached",
+  LIMIT_REACHED_ALERTS_TITLE: "Alert limit reached",
+  LIMIT_REACHED_SAVED_SEARCHES_TITLE: "Saved search limit reached",
+  LIMIT_REACHED_COLLECTIONS_DESCRIPTION: "You've reached your plan's collection limit. Upgrade to create more collections and organize your properties better.",
+  LIMIT_REACHED_ALERTS_DESCRIPTION: "You've reached your plan's alert limit. Upgrade to create more alerts and never miss important auction updates.",
+  LIMIT_REACHED_SAVED_SEARCHES_DESCRIPTION: "You've reached your plan's saved search limit. Upgrade to save more searches and access them anytime.",
+  UPGRADE_TO_CREATE_MORE: "Upgrade to create more",
+  UPGRADE_YOUR_PLAN: "Upgrade your plan",
+  UPGRADE_NOW: "Upgrade now",
   ALREADY_HAVE_ACCOUNT: "Already have an account?",
   NOT_REGISTERED: "Not registered?",
   NOTICE: "Notice",
@@ -157,6 +170,7 @@ export const STRING_DATA = {
   MANAGE_LIST: "Manage list",
   MANAGE_ALERT: "Manage alert",
   ADD_TO_LIST: "Add to list",
+  ADD_TO_COLLECTION: "Add to collection",
   NO_DATA_FOUND_LIST_PROPERTY:
     "No property added to the list. Please go to the property detail and add the property in your desired list",
   NO_DATA_FOUND_LIST:
@@ -688,6 +702,26 @@ export const SORT_OPTIONS: SortOption[] = [
   { label: 'Price: Low - High', value: 'reservePrice:asc' },
   { label: 'Price: High - Low', value: 'reservePrice:desc' },
 ];
+
+export const BROKER_PLUS_FEATURES = [
+  {
+    feature: "Unlimited Collections",
+    description: "Organize unlimited properties in custom collections"
+  },
+  {
+    feature: "Unlimited Alerts",
+    description: "Get instant notifications for new properties matching your criteria"
+  },
+  {
+    feature: "Unlimited Saved Searches",
+    description: "Save unlimited search filters and access them anytime"
+  },
+  {
+    feature: "Priority Support",
+    description: "Get dedicated support for agencies and top-tier partners"
+  }
+];
+
 
 export const DEFAULT_FAQ_DATA = [
   {

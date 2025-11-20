@@ -25,6 +25,8 @@ import {
   fetchFavoriteListClient,
 } from "@/services/favouriteList";
 import { deleteSavedSearch, fetchSavedSearch } from "@/services/auction";
+import { useSubscriptionAccess } from "@/hooks/useSubscriptionAccess";
+import { LimitReachedBanner } from "../molecules/limit-reached-banner";
 
 const ManageSavedList = () => {
   const queryClient = useQueryClient();
@@ -55,6 +57,14 @@ const ManageSavedList = () => {
     },
     staleTime: 0,
   });
+
+  const { canAddSavedSearch, isLoading: isLoadingAccess } = useSubscriptionAccess(
+    {
+      savedSearches: savedSearchData?.length ?? 0
+    }
+  );
+
+  // const canAddSavedSearch = false;
 
   // Mutations
   const { mutate, isPending } = useMutation({
@@ -106,7 +116,7 @@ const ManageSavedList = () => {
   };
 
   const renderData = () => {
-    if (isLoadingSaved) {
+    if (isLoadingSaved || isLoadingAccess) {
       return <div className="text-center">Loading ...</div>;
     }
 
@@ -172,6 +182,9 @@ const ManageSavedList = () => {
           <div className="flex justify-between items-center gap-4">
             <div className="custom-h2-class">{STRING_DATA.YOUR_FILTERS}</div>
           </div>
+          {!isLoadingAccess && !canAddSavedSearch && (
+            <LimitReachedBanner featureType="savedSearches" featureName="saved searches" />
+          )}
           {renderData()}
         </div>
       </div>

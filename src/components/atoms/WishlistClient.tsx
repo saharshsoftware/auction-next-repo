@@ -73,7 +73,7 @@ const WishlistClient = ({
       return;
     }
     if (!selectedOption) {
-      setRespError("Please select a List");
+      setRespError("Please select a collection");
       return;
     }
     addPropertyToFavourite();
@@ -84,7 +84,7 @@ const WishlistClient = ({
       return (
         <>
           <div className="w-full min-h-[38px] border border-gray-400 rounded px-3 flex items-center justify-between bg-white">
-            <span className="text-gray-400">Select list</span>
+            <span className="text-gray-400">Select collection</span>
             <div className="flex items-center h-[20px]">
               {/* Ensure it's block */}
               <span>
@@ -111,7 +111,7 @@ const WishlistClient = ({
     return (
       <Select
         className="w-full"
-        placeholder="Select list"
+        placeholder="Select collection"
         name="wishlist"
         value={selectedOption}
         onChange={setSelectedOption}

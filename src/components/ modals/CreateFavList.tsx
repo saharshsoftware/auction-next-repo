@@ -66,7 +66,7 @@ const CreateFavList = (props: ICreateFavList) => {
     <>
       <CustomModal
         openModal={openModal}
-        modalHeading={STRING_DATA.ADD_LIST}
+        modalHeading={STRING_DATA.ADD_COLLECTION}
         customWidthClass="md:w-[40%] sm:w-3/5 w-11/12"
       >
         <div className="w-full">

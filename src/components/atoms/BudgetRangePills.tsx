@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { normalizeBudgetRanges } from "@/shared/Utilies";
+import { normalizeBudgetRanges, formatPriceCompact } from "@/shared/Utilies";
 import { BudgetRangeObject } from "@/types";
 
 interface BudgetRangePillsProps {
@@ -33,7 +33,9 @@ const BudgetRangePills: React.FC<BudgetRangePillsProps> = ({
     <div className={containerClassName}>
       {normalized.map((r, idx) => {
         const isInfinity = r.max.toLowerCase() === "infinity";
-        const displayText = isInfinity ? `₹${r.min}+` : `₹${r.min} - ₹${r.max}`;
+        const formattedMin = formatPriceCompact(r.min);
+        const formattedMax = formatPriceCompact(r.max);
+        const displayText = isInfinity ? `₹${formattedMin}+` : `₹${formattedMin} - ₹${formattedMax}`;
         
         return (
           <span key={`budget-chip-${idx}`} className={pillClassName}>

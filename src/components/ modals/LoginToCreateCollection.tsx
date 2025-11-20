@@ -9,12 +9,12 @@ import ActionButton from "../atoms/ActionButton";
 import LoginModal from "./LoginModal";
 import CreateFavList from "./CreateFavList";
 import { useSubscriptionAccess } from "@/hooks/useSubscriptionAccess";
-import Link from "next/link";
 import { fetchFavoriteListClient } from "@/services/favouriteList";
 import { IFavouriteList } from "@/types";
 import { REACT_QUERY } from "@/shared/Constants";
 import { useQuery } from "@tanstack/react-query";
 import { useUserProfile } from "@/hooks/useUserProfile";
+import { LimitReachedBanner } from "../molecules/limit-reached-banner";
 
 function LoginToCreateCollection({
   isAuthenticated,
@@ -67,26 +67,30 @@ function LoginToCreateCollection({
   const getButtonText = () => {
     if (!isAuthenticated) return "Signup to create collection";
     if (isLoadingAccess) return "Loading...";
-    if (!canAddCollection) return "Limit reached";
     return "Create Collection";
   };
 
-  const shouldDisableButton = isAuthenticated && (!canAddCollection || isLoadingAccess);
+  const shouldDisableButton = isAuthenticated && (isLoadingAccess);
 
-  return (
-    <>
-      <ActionButton
+  const renderActionButton = () => {
+    if (!canAddCollection && isAuthenticated) {
+      return null
+    } else {
+      return (
+        <ActionButton
         text={getButtonText()}
         onclick={shouldDisableButton ? undefined : showModal}
         disabled={shouldDisableButton}
         iconLeft={<FontAwesomeIcon icon={faBell} className="h-4 w-4 " />}
       />
-      {shouldDisableButton && isAuthenticated && !isLoadingAccess && isInternalUser && (
-        <div className="mt-2 text-xs text-gray-600">
-          <Link href="/pricing" className="text-blue-600 hover:underline">
-            Upgrade your plan
-          </Link> to create more collections
-        </div>
+      );
+    }
+  };
+  return (
+    <>
+      {renderActionButton()}
+      {!canAddCollection && !isLoadingAccess && isInternalUser && (
+        <LimitReachedBanner featureType="collections" className="mt-4" featureName="collections" />
       )}
       {openModal ? renderModalContainer() : null}
     </>
