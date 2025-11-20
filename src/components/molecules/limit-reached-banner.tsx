@@ -34,8 +34,8 @@ export const LimitReachedBanner: React.FC<LimitReachedBannerProps> = ({
         <FontAwesomeIcon icon={faInfoCircle} className="h-5 w-5 text-blue-600 flex-shrink-0" />
         <div>
           <p className="text-sm text-gray-800 text-left">
-            You&apos;ve reached your alert limit. Upgrade to{' '}
-            <span className="font-semibold text-blue-700">{planInfo.suggestedPlan}</span> for unlimited {featureName}.
+            You&apos;ve used all {featureName} limit.  <br />
+            Upgrade to <span className="font-semibold">{planInfo.suggestedPlan}</span> to unlock unlimited {featureName} and never miss profitable auctions.
           </p>
         </div>
       </div>
