@@ -55,11 +55,11 @@ export const PriceDisplay: React.FC<PriceDisplayProps> = ({ plan, isBrokerPlus }
   return (
     <div className="mb-3 pb-5 border-b border-gray-200">
       <div className="flex items-center gap-2 flex-wrap">
-        <span className="text-3xl font-extrabold tracking-tight text-gray-900">
-          {plan.priceText}
-        </span>
-        {plan.discountedPriceText && <span className="text-lg font-medium text-gray-500 line-through">
+        {plan.discountedPriceText && <span className="text-3xl font-extrabold tracking-tight text-gray-900">
           {plan.discountedPriceText}
+        </span>}
+        {plan.priceText && <span className="text-lg font-medium text-gray-500 line-through">
+          {plan.priceText}
         </span>}
         <span className="text-sm font-medium text-gray-500">
           / {plan.priceSubtext}

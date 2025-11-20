@@ -19,8 +19,7 @@ const mapApiPlanToMembershipPlan = (apiPlan: ApiMembershipPlan): MembershipPlan 
 
   // Convert price from rupees to paise
   const amountInPaise = price * 100;
-  const hasDiscount = discountedPrice && discountedPrice > 0;
-  const discountedPriceText = hasDiscount ? `₹${discountedPrice?.toLocaleString()}` : '';
+  const discountedPriceText = discountedPrice ? `₹${discountedPrice?.toLocaleString()}` : '₹0';
 
   // Handle savedSearchesMax - convert "infinity" string to number
   const savedSearchesMax = planLimits.savedSearchesMax === "infinity"
