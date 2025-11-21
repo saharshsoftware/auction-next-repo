@@ -5,6 +5,7 @@ import { logInfo, logError, getPlanTypeForBackend } from "@/shared/Utilies";
 import { getUserDetails } from "@/services/auth";
 import { isSubscriptionProcessing, clearSubscriptionProcessing } from "@/utils/subscription-storage";
 import { useConfettiStore } from "@/zustandStore/confettiStore";
+import { isInMobileApp, sendToApp } from "@/helpers/NativeHelper";
 
 const POLLING_INTERVAL_MS = 4000;
 const MAX_POLLING_ATTEMPTS = 30;
@@ -15,6 +16,21 @@ interface PollingParams {
   readonly expectedSubscriptionType: string;
   readonly expectedRazorpaySubscriptionId: string;
 }
+
+const isMobileApp = isInMobileApp();
+
+export const handleSubscriptionSuccess = async (queryClient: QueryClient, freshData: unknown): Promise<void> => { 
+  if (isMobileApp) {
+    sendToApp('SUBSCRIPTION_ACTIVATED', {
+      subscriptionId: (freshData as any)?.subscriptionDetails?.subscription?.id,
+      subscriptionType: (freshData as any)?.subscriptionDetails?.subscription?.subscriptionType,
+    });
+  }
+  clearSubscriptionProcessing();
+  useConfettiStore.getState().showConfetti();
+  queryClient.setQueryData([REACT_QUERY.USER_PROFILE], freshData);
+  await queryClient.invalidateQueries({ queryKey: [REACT_QUERY.USER_PROFILE] });
+};
 
 /**
  * Custom hook for polling subscription status after payment
@@ -70,12 +86,7 @@ export const useSubscriptionPolling = (queryClient: QueryClient): ((params: Poll
                 subscriptionId: currentRazorpaySubscriptionId,
                 subscriptionType: normalizedCurrentType
               });
-              clearSubscriptionProcessing();
-              useConfettiStore.getState().showConfetti();
-              // Immediately update the cache with fresh data to sync UI
-              queryClient.setQueryData([REACT_QUERY.USER_PROFILE], freshData);
-              // Invalidate to trigger refetch and ensure all components update
-              await queryClient.invalidateQueries({ queryKey: [REACT_QUERY.USER_PROFILE] });
+              await handleSubscriptionSuccess(queryClient, freshData);
               resolve(true);
               return;
             }
@@ -253,12 +264,8 @@ export const useImmediatePollingOnCheckout = (
               clearInterval(pollInterval);
               pollInterval = null;
             }
-            clearSubscriptionProcessing();
+            await handleSubscriptionSuccess(queryClient, freshData);
             pollingRef.current = false;
-            useConfettiStore.getState().showConfetti();
-            // Update cache and invalidate
-            queryClient.setQueryData([REACT_QUERY.USER_PROFILE], freshData);
-            await queryClient.invalidateQueries({ queryKey: [REACT_QUERY.USER_PROFILE] });
             return;
    
           }

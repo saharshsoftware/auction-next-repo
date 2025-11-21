@@ -11,7 +11,6 @@ import { Info } from "lucide-react";
 import { mapMembershipPlanLimits } from "@/shared/MembershipUtils";
 import { featureIcons, denormalizePlanName } from "@/shared/Utilies";
 import { useRouter } from "next/navigation";
-import { ROUTE_CONSTANTS } from "@/shared/Routes";
 import useModal from "@/hooks/useModal";
 import LoginModal from "../ modals/LoginModal";
 import InfoModal from "../ modals/InfoModal";
@@ -25,6 +24,9 @@ import {
   clearSubscriptionProcessing,
   subscribeToSubscriptionProcessing,
 } from "@/utils/subscription-storage";
+import { sendToApp } from "@/helpers/NativeHelper";
+import { authenticateFromMobileApp } from "@/helpers/NativeHelper";
+import { isInMobileApp } from "@/helpers/NativeHelper";
 
 interface PricingPlansProps {
   readonly showLegend?: boolean;
@@ -45,15 +47,77 @@ const PricingPlans: React.FC<PricingPlansProps> = ({
   hasServerSubscriptionSnapshot = false,
   initialUserProfile = null,
 }) => {
+
+  const [authError, setAuthError] = useState<string | null>(null);
   const [isMounted, setIsMounted] = useState(false);
   const [showLocalStorageProcessing, setShowLocalStorageProcessing] = useState(false);
   const queryClient = useQueryClient();
   const { isAuthenticated } = useIsAuthenticated();
+  const [mobileAppAuthentication, setMobileAppAuthentication] = useState(false);
   const router = useRouter();
   const { showModal, openModal, hideModal } = useModal();
   const { showModal: showInfoModal, openModal: openInfoModal, hideModal: hideInfoModal } = useModal();
   const { showModal: showContactSalesModal, openModal: openContactSalesModal, hideModal: hideContactSalesModal } = useModal();
   const { fullProfileData } = useUserProfile(isAuthenticated, initialUserProfile);
+  // Handle WebView authentication
+  const handleWebViewAuth = async () => {
+    if (!isInMobileApp()) {
+      console.log('Not in mobile app, skipping WebView auth');
+      return;
+    }
+
+    console.log('In mobile app, authenticating...');
+    setMobileAppAuthentication(true);
+
+    try {
+      // Authenticate using token from URL
+      const result = await authenticateFromMobileApp();
+
+      if (result.success) {
+        console.log('Authentication successful:', result.user);
+        
+        // Notify mobile app of success
+        sendToApp('AUTH_SUCCESS', {
+          userId: result.user.id,
+          email: result.user.email,
+          timestamp: Date.now(),
+        });
+
+        // Mark as ready
+        sendToApp('WEBVIEW_READY', {
+          authenticated: true,
+          user: {
+            id: result.user.id,
+            email: result.user.email,
+          },
+        });
+
+        setMobileAppAuthentication(false);
+      } else {
+        throw new Error(result.error);
+      }
+    } catch (error: any) {
+      console.error('WebView authentication failed:', error);
+      setAuthError(error.message);
+      setMobileAppAuthentication(false);
+
+      // Notify mobile app of failure
+      if (error.message === 'USER_MISMATCH') {
+        sendToApp('USER_MISMATCH', {
+          message: 'Account mismatch detected',
+        });
+      } else if (error.message.includes('expired')) {
+        sendToApp('TOKEN_EXPIRED', {
+          message: 'Session expired',
+        });
+      } else {
+        sendToApp('AUTH_FAILED', {
+          message: error.message || 'Authentication failed',
+        });
+      }
+    }
+  };
+  
   
   useEffect(() => {
     setIsMounted(true);
@@ -138,7 +202,7 @@ const PricingPlans: React.FC<PricingPlansProps> = ({
       return;
     }
     
-    const currentTier = subscriptionData?.subscriptionData?.tier?.toLowerCase();
+    const currentTier = subscriptionData?.subscriptionData?.tier?.toLowerCase() || STRING_DATA.FREE?.toLowerCase();
     const isFreePlan = currentTier === STRING_DATA.FREE?.toLowerCase();
     
     if (isFreePlan) {
