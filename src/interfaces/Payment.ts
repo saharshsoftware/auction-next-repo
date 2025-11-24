@@ -37,7 +37,6 @@ export interface PlanDetails {
  */
 export interface PaymentInfo {
   readonly method: string;
-  readonly autoRenewal: boolean;
   readonly currentPeriodStart: string;
   readonly currentPeriodEnd: string;
   readonly billingEmail: string;
