@@ -25,7 +25,6 @@ import {
   subscribeToSubscriptionProcessing,
 } from "@/utils/subscription-storage";
 import { useWebViewAuth } from "@/hooks/useWebViewAuth";
-import MobileAuthDebug from "../debug/MobileAuthDebug";
 
 interface PricingPlansProps {
   readonly showLegend?: boolean;
