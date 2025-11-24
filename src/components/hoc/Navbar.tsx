@@ -13,6 +13,7 @@ import { getInitials } from "@/shared/Utilies";
 import CustomDrawer from "./CustomDrawer";
 import SearchKeywordComp from "../atoms/SearchKeywordComp";
 import Image from "next/image";
+import { isInMobileApp } from "@/helpers/NativeHelper";
 
 const getWaveSvg = () => {
   return (
@@ -158,6 +159,10 @@ const Navbar: React.FC = () => {
       }));
     }
   };
+
+  if (isInMobileApp()) {
+    return null
+  }
 
   return (
     <>

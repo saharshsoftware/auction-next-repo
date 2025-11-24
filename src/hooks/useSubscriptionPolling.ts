@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef } from "react";
 import { QueryClient } from "@tanstack/react-query";
-import { REACT_QUERY } from "@/shared/Constants";
+import { NATIVE_APP_MESSAGE_TYPES, REACT_QUERY } from "@/shared/Constants";
 import { logInfo, logError, getPlanTypeForBackend } from "@/shared/Utilies";
 import { getUserDetails } from "@/services/auth";
 import { isSubscriptionProcessing, clearSubscriptionProcessing } from "@/utils/subscription-storage";
@@ -21,7 +21,7 @@ const isMobileApp = isInMobileApp();
 
 export const handleSubscriptionSuccess = async (queryClient: QueryClient, freshData: unknown): Promise<void> => { 
   if (isMobileApp) {
-    sendToApp('SUBSCRIPTION_ACTIVATED', {
+    sendToApp(NATIVE_APP_MESSAGE_TYPES.SUBSCRIPTION_ACTIVATED, {
       subscriptionId: (freshData as any)?.subscriptionDetails?.subscription?.id,
       subscriptionType: (freshData as any)?.subscriptionDetails?.subscription?.subscriptionType,
     });

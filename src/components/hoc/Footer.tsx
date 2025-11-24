@@ -1,3 +1,4 @@
+'use client'
 import React from "react";
 import { STRING_DATA } from "../../shared/Constants";
 import Link from "next/link";
@@ -7,9 +8,12 @@ import { Mail } from "lucide-react";
 import { getCurrentYear } from "@/shared/Utilies";
 import Image from "next/image";
 import { IMAGES } from "@/shared/Images";
+import { isInMobileApp } from "@/helpers/NativeHelper";
 
 const Footer: React.FC = () => {
-
+  if (isInMobileApp()) {
+    return null
+  }
   return (
     <>
        <footer className="bg-gray-900 text-neutral-content rounded-t">

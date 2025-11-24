@@ -1,12 +1,13 @@
 import { useCallback, useState } from "react";
 import { useRouter } from "next/navigation";
 import { MembershipPlan } from "@/interfaces/MembershipPlan";
-import { STRING_DATA, REACT_QUERY } from "@/shared/Constants";
+import { STRING_DATA, REACT_QUERY, NATIVE_APP_MESSAGE_TYPES } from "@/shared/Constants";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
 import { createSubscription, getCheckoutConfig } from "@/services/subscription";
 import { logInfo, logError } from "@/shared/Utilies";
 import toast from "react-simple-toasts";
 import { setSubscriptionProcessing } from "@/utils/subscription-storage";
+import { isInMobileApp, sendToApp } from "@/helpers/NativeHelper";
 
 interface RazorpayOptions {
   readonly key: string;
@@ -160,6 +161,12 @@ export const useRazorpayCheckout = ({
                 position: "top-center",
                 theme: "warning",
               });
+
+              if (isInMobileApp()) {
+                sendToApp(NATIVE_APP_MESSAGE_TYPES.PAYMENT_CANCELLED, {
+                  message: "Payment cancelled",
+                });
+              }
             },
           },
         };
@@ -183,12 +190,22 @@ export const useRazorpayCheckout = ({
           });
         } catch (error) {
           logError("Failed to open Razorpay checkout", error);
+          if (isInMobileApp()) {
+            sendToApp(NATIVE_APP_MESSAGE_TYPES.PAYMENT_FAILED, {
+              message: "Payment failed",
+            });
+          }
           setActivePlanId(null);
           setCheckoutMessage(STRING_DATA.PAYMENT_GATEWAY_ERROR);
         }
 
       } catch (error: any) {
         logError("Failed to initialize subscription checkout", error);
+        if (isInMobileApp()) {
+          sendToApp(NATIVE_APP_MESSAGE_TYPES.PAYMENT_FAILED, {
+            message: "Payment failed",
+          });
+        }
         setActivePlanId(null);
         const errorMessage = error?.message || "Failed to initialize checkout. Please try again.";
         setCheckoutMessage(errorMessage);

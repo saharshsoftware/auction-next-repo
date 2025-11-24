@@ -24,9 +24,8 @@ import {
   clearSubscriptionProcessing,
   subscribeToSubscriptionProcessing,
 } from "@/utils/subscription-storage";
-import { sendToApp } from "@/helpers/NativeHelper";
-import { authenticateFromMobileApp } from "@/helpers/NativeHelper";
-import { isInMobileApp } from "@/helpers/NativeHelper";
+import { useWebViewAuth } from "@/hooks/useWebViewAuth";
+import MobileAuthDebug from "../debug/MobileAuthDebug";
 
 interface PricingPlansProps {
   readonly showLegend?: boolean;
@@ -48,76 +47,18 @@ const PricingPlans: React.FC<PricingPlansProps> = ({
   initialUserProfile = null,
 }) => {
 
-  const [authError, setAuthError] = useState<string | null>(null);
   const [isMounted, setIsMounted] = useState(false);
   const [showLocalStorageProcessing, setShowLocalStorageProcessing] = useState(false);
   const queryClient = useQueryClient();
   const { isAuthenticated } = useIsAuthenticated();
-  const [mobileAppAuthentication, setMobileAppAuthentication] = useState(false);
   const router = useRouter();
   const { showModal, openModal, hideModal } = useModal();
   const { showModal: showInfoModal, openModal: openInfoModal, hideModal: hideInfoModal } = useModal();
   const { showModal: showContactSalesModal, openModal: openContactSalesModal, hideModal: hideContactSalesModal } = useModal();
   const { fullProfileData } = useUserProfile(isAuthenticated, initialUserProfile);
-  // Handle WebView authentication
-  const handleWebViewAuth = async () => {
-    if (!isInMobileApp()) {
-      console.log('Not in mobile app, skipping WebView auth');
-      return;
-    }
-
-    console.log('In mobile app, authenticating...');
-    setMobileAppAuthentication(true);
-
-    try {
-      // Authenticate using token from URL
-      const result = await authenticateFromMobileApp();
-
-      if (result.success) {
-        console.log('Authentication successful:', result.user);
-        
-        // Notify mobile app of success
-        sendToApp('AUTH_SUCCESS', {
-          userId: result.user.id,
-          email: result.user.email,
-          timestamp: Date.now(),
-        });
-
-        // Mark as ready
-        sendToApp('WEBVIEW_READY', {
-          authenticated: true,
-          user: {
-            id: result.user.id,
-            email: result.user.email,
-          },
-        });
-
-        setMobileAppAuthentication(false);
-      } else {
-        throw new Error(result.error);
-      }
-    } catch (error: any) {
-      console.error('WebView authentication failed:', error);
-      setAuthError(error.message);
-      setMobileAppAuthentication(false);
-
-      // Notify mobile app of failure
-      if (error.message === 'USER_MISMATCH') {
-        sendToApp('USER_MISMATCH', {
-          message: 'Account mismatch detected',
-        });
-      } else if (error.message.includes('expired')) {
-        sendToApp('TOKEN_EXPIRED', {
-          message: 'Session expired',
-        });
-      } else {
-        sendToApp('AUTH_FAILED', {
-          message: error.message || 'Authentication failed',
-        });
-      }
-    }
-  };
   
+  // Mobile app WebView authentication hook
+  useWebViewAuth();
   
   useEffect(() => {
     setIsMounted(true);
@@ -251,8 +192,15 @@ const PricingPlans: React.FC<PricingPlansProps> = ({
   }
 
   return (
-    <section className="px-4 lg:px-16 py-10 bg-gray-50">
-      <div className="mx-auto flex w-full flex-col gap-8 px-1">
+    <>
+      {/* Mobile Auth Debug Component */}
+      {/* <MobileAuthDebug 
+        authResult={authResult} 
+        isLoading={mobileAppAuthentication} 
+      /> */}
+      
+      <section className="px-4 lg:px-16 py-10 bg-gray-50">
+        <div className="mx-auto flex w-full flex-col gap-8 px-1">
         <header className="flex flex-col items-center gap-4 text-center">
           <h1 className="text-3xl font-bold text-gray-900 md:text-4xl">
             {STRING_DATA.MEMBERSHIP_PLANS}
@@ -362,7 +310,8 @@ const PricingPlans: React.FC<PricingPlansProps> = ({
           userData={fullProfileData as UserProfileApiResponse}
         />
       )}
-    </section>
+      </section>
+    </>
   );
 };
 
