@@ -11,7 +11,6 @@ import { Info } from "lucide-react";
 import { mapMembershipPlanLimits } from "@/shared/MembershipUtils";
 import { featureIcons, denormalizePlanName } from "@/shared/Utilies";
 import { useRouter } from "next/navigation";
-import { ROUTE_CONSTANTS } from "@/shared/Routes";
 import useModal from "@/hooks/useModal";
 import LoginModal from "../ modals/LoginModal";
 import InfoModal from "../ modals/InfoModal";
@@ -25,6 +24,7 @@ import {
   clearSubscriptionProcessing,
   subscribeToSubscriptionProcessing,
 } from "@/utils/subscription-storage";
+import { useWebViewAuth } from "@/hooks/useWebViewAuth";
 
 interface PricingPlansProps {
   readonly showLegend?: boolean;
@@ -45,6 +45,7 @@ const PricingPlans: React.FC<PricingPlansProps> = ({
   hasServerSubscriptionSnapshot = false,
   initialUserProfile = null,
 }) => {
+
   const [isMounted, setIsMounted] = useState(false);
   const [showLocalStorageProcessing, setShowLocalStorageProcessing] = useState(false);
   const queryClient = useQueryClient();
@@ -54,6 +55,9 @@ const PricingPlans: React.FC<PricingPlansProps> = ({
   const { showModal: showInfoModal, openModal: openInfoModal, hideModal: hideInfoModal } = useModal();
   const { showModal: showContactSalesModal, openModal: openContactSalesModal, hideModal: hideContactSalesModal } = useModal();
   const { fullProfileData } = useUserProfile(isAuthenticated, initialUserProfile);
+  
+  // Mobile app WebView authentication hook
+  useWebViewAuth();
   
   useEffect(() => {
     setIsMounted(true);
@@ -138,7 +142,7 @@ const PricingPlans: React.FC<PricingPlansProps> = ({
       return;
     }
     
-    const currentTier = subscriptionData?.subscriptionData?.tier?.toLowerCase();
+    const currentTier = subscriptionData?.subscriptionData?.tier?.toLowerCase() || STRING_DATA.FREE?.toLowerCase();
     const isFreePlan = currentTier === STRING_DATA.FREE?.toLowerCase();
     
     if (isFreePlan) {
@@ -187,8 +191,15 @@ const PricingPlans: React.FC<PricingPlansProps> = ({
   }
 
   return (
-    <section className="px-4 lg:px-16 py-10 bg-gray-50">
-      <div className="mx-auto flex w-full flex-col gap-8 px-1">
+    <>
+      {/* Mobile Auth Debug Component */}
+      {/* <MobileAuthDebug 
+        authResult={authResult} 
+        isLoading={mobileAppAuthentication} 
+      /> */}
+      
+      <section className="px-4 lg:px-16 py-10 bg-gray-50">
+        <div className="mx-auto flex w-full flex-col gap-8 px-1">
         <header className="flex flex-col items-center gap-4 text-center">
           <h1 className="text-3xl font-bold text-gray-900 md:text-4xl">
             {STRING_DATA.MEMBERSHIP_PLANS}
@@ -298,7 +309,8 @@ const PricingPlans: React.FC<PricingPlansProps> = ({
           userData={fullProfileData as UserProfileApiResponse}
         />
       )}
-    </section>
+      </section>
+    </>
   );
 };
 

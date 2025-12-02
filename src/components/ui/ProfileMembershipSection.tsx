@@ -183,10 +183,6 @@ const ProfileMembershipSection: React.FC<ProfileMembershipSectionProps> = (props
               <p className="text-sm-xs">{paymentInfo.method}</p>
             </div>
             <div className="space-y-1">
-              <p className="text-sm font-medium text-gray-900">{STRING_DATA.MEMBERSHIP_PAYMENT_AUTORENEW}</p>
-              <p className="text-sm-xs">{paymentInfo.autoRenewal ? STRING_DATA.YES : STRING_DATA.NO}</p>
-            </div>
-            <div className="space-y-1">
               <p className="text-sm font-medium text-gray-900">{STRING_DATA.MEMBERSHIP_PAYMENT_CURRENT_PERIOD_START}</p>
               <p className="text-sm-xs">{paymentInfo?.currentPeriodStart}</p>
             </div>

@@ -89,7 +89,6 @@ const mapSubscriptionToPaymentInfo = (
 
   return {
     method: razorpaySubscription?.payment_method || "Not specified",
-    autoRenewal: true, // Assume auto-renewal for active subscriptions
     currentPeriodStart: formatDateForDisplay(subscription.currentPeriodStart),
     currentPeriodEnd: formatDateForDisplay(subscription.currentPeriodEnd),
     billingEmail: STRING_DATA.EMPTY, // Not available in current data structure
@@ -116,7 +115,6 @@ export const useSubscription = (enabled = true, initialProfileData?: UserProfile
           startDate: fullProfileData.subscriptionDetails.subscription.startDate,
           endDate: fullProfileData.subscriptionDetails.subscription.endDate,
           renewalDate: fullProfileData.subscriptionDetails.subscription.endDate,
-          autoRenewal: true,
           paymentMethod: fullProfileData.subscriptionDetails.razorpaySubscription?.payment_method,
           currentPeriodStart: fullProfileData.subscriptionDetails.subscription.currentPeriodStart,
           currentPeriodEnd: fullProfileData.subscriptionDetails.subscription.currentPeriodEnd,
