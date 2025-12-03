@@ -45,7 +45,7 @@ const PricingPlans: React.FC<PricingPlansProps> = ({
   hasServerSubscriptionSnapshot = false,
   initialUserProfile = null,
 }) => {
-
+  
   const [isMounted, setIsMounted] = useState(false);
   const [showLocalStorageProcessing, setShowLocalStorageProcessing] = useState(false);
   const queryClient = useQueryClient();
@@ -199,7 +199,7 @@ const PricingPlans: React.FC<PricingPlansProps> = ({
       /> */}
       
       <section className="px-4 lg:px-16 py-10 bg-gray-50">
-        <div className="mx-auto flex w-full flex-col gap-8 px-1">
+        <div className="mx-auto flex w-full flex-col gap-8 px-1 items-center justify-center">
         <header className="flex flex-col items-center gap-4 text-center">
           <h1 className="text-3xl font-bold text-gray-900 md:text-4xl">
             {STRING_DATA.MEMBERSHIP_PLANS}
@@ -234,7 +234,7 @@ const PricingPlans: React.FC<PricingPlansProps> = ({
           </div>
         ) : (
           <>
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4 items-stretch">
+            <div className={`mx-auto grid grid-cols-1 gap-6 md:grid-cols-${membershipPlans.length > 2 ? 2 : membershipPlans.length} xl:grid-cols-${membershipPlans.length} items-stretch `}>
               {membershipPlans.map((plan: MembershipPlan) => {
                 const { isCurrentPlan } = getCurrentPlanInfo(plan);
                 const shouldHighlightPlan = isAuthenticated && isCurrentPlan;

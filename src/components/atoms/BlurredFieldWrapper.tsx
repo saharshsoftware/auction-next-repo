@@ -28,7 +28,7 @@ const BlurredFieldWrapper: React.FC<IBlurredFieldWrapperProps> = ({
   const { showModal, openModal, hideModal } = useModal();
   const router = useRouter();
 
-  const defaultBlurText = blurType === "upgrade" ? "Upgrade to Plan" : "Login to view";
+  const defaultBlurText = blurType === "upgrade" ? "Upgrade to premium plan" : "Login to view";
   const displayText = blurText || defaultBlurText;
 
   const handleClick = () => {
