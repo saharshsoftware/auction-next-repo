@@ -284,6 +284,12 @@ const parseInternalUserEmails = (): string[] => {
 export const INTERNAL_TEST_USER_EMAILS = parseInternalUserEmails();
 
 export const isInternalUserEmail = (email?: string | null): boolean => {
+  const bypassInternalCheck = process.env.NEXT_PUBLIC_BYPASS_INTERNAL_CHECK === 'true';
+  
+  if (bypassInternalCheck) {
+    return true;
+  }
+  
   if (!email) {
     return false;
   }
@@ -513,6 +519,7 @@ export const getEmptyAssetTypeObject = (): IAssetType => ({
   value: STRING_DATA.EMPTY,
 } as any);
 
+
 export const STORAGE_KEYS = {
   AUCTION_VIEW_KEY: "auctionViews",
   SURVEY_SHOWN_KEY: "surveyShown",
@@ -527,6 +534,9 @@ export const STORAGE_KEYS = {
   SURVEY_TRIGGER_TIME: "survey_trigger_time",
   SHOW_LOGIN_FLAG: "showLoginFlag",
   AUCTION_VISIT_IDS: "auctionVisitIds",
+  PREMIUM_AUCTION_VISIT_IDS: "premiumAuctionVisitIds",
+  PREMIUM_LAST_RESET_DATE: "premiumLastResetDate",
+  SHOW_UPGRADE_MODAL_FLAG: "showUpgradeModalFlag",
 };
 
 export const SESSIONS_STORAGE_KEYS = {

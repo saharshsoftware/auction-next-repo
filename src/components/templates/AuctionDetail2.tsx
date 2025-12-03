@@ -37,9 +37,11 @@ import { WhatsappShareWithIcon } from '../atoms/SocialIcons';
 import { ROUTE_CONSTANTS } from '@/shared/Routes';
 import { useScrollToTop } from '@/hooks/useScrollToTop';
 import { loginLogic } from '@/utilies/LoginHelper';
+import { updatePlanLogic } from '@/utilies/UpdatePlanHelper';
 import BlurredFieldWrapper from '../atoms/BlurredFieldWrapper';
 import { Eye } from 'lucide-react';
 import ImageJsonLd from '../atoms/ImageJsonLd';
+import { useUserProfile } from '@/hooks/useUserProfile';
 
 
 // add props type
@@ -59,7 +61,9 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
     ? JSON.parse(getCookie(COOKIES.AUCTION_USER_KEY) ?? "")
     : null;
   const { showModal, openModal, hideModal } = useModal();
+  const { fullProfileData } = useUserProfile(!!userData);
   const [loading, setLoading] = useState(false);
+  const [showUpgradePrompt, setShowUpgradePrompt] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isAdmin] = useState(true); // Default to true as requested
 
@@ -79,8 +83,21 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
   useEffect(() => {
     if (!token) {
       loginLogic.markAuctionDetailVisited(slug); // Pass unique ID
+    } else {
+      // For logged-in users, check if they have premium
+      const isPremiumUser = fullProfileData?.subscriptionDetails?.subscription?.status === 'active';
+      const shouldTrackViews = token && !isPremiumUser;
+      
+      if (shouldTrackViews) {
+        updatePlanLogic.markAuctionDetailVisited(slug);
+        
+        // Check if we should show the upgrade prompt
+        if (updatePlanLogic.getShouldShowUpgradeModal()) {
+          setShowUpgradePrompt(true);
+        }
+      }
     }
-  }, [slug, token]);
+  }, [slug, token, fullProfileData]);
 
   if (loading) {
     return (
@@ -156,7 +173,10 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
         <SectionHeader title="About Property" />
         <div className="text-sm text-gray-700 leading-relaxed">
           {hasDescription ? (
-            <BlurredFieldWrapper isBlurred={token === null && showLogin}>
+            <BlurredFieldWrapper 
+              isBlurred={(token === null && showLogin) || showUpgradePrompt}
+              blurType={showUpgradePrompt ? "upgrade" : "login"}
+            >
               <p className="mb-3 ">{auctionDetail?.description}</p>
             </BlurredFieldWrapper>
           ) : (
@@ -339,7 +359,10 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
 
                 {/* Property Address */}
                 {property.propertyAddress && (
-                  <BlurredFieldWrapper isBlurred={token === null && showLogin}>
+                  <BlurredFieldWrapper 
+                    isBlurred={(token === null && showLogin) || showUpgradePrompt}
+                    blurType={showUpgradePrompt ? "upgrade" : "login"}
+                  >
                     <div className="flex items-start text-sm-xs text-gray-600">
                       <MapPin className="h-4 w-4 mt-0.5 text-gray-400 flex-shrink-0 mr-2" />
                       <div className="flex-1">
@@ -451,8 +474,9 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
           {/* Image Carousel - Only show if we have real property images */}
           {hasValidImages && (
             <BlurredFieldWrapper
-              isBlurred={token === null && showLogin}
+              isBlurred={(token === null && showLogin) || showUpgradePrompt}
               hasImageCarousel={true}
+              blurType={showUpgradePrompt ? "upgrade" : "login"}
             >
               <div className="mb-6">
                 <ImageCarousel
@@ -576,7 +600,10 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
               {/* Contact Information */}
               <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
                 <SectionHeader title="Contact Information" />
-                <BlurredFieldWrapper isBlurred={token === null && showLogin}>
+                <BlurredFieldWrapper 
+                  isBlurred={(token === null && showLogin) || showUpgradePrompt}
+                  blurType={showUpgradePrompt ? "upgrade" : "login"}
+                >
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
                     {/* Branch */}
