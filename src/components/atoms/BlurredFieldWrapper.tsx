@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import AuthModal from "../ modals/AuthModal";
 import useModal from "@/hooks/useModal";
 import { Eye } from 'lucide-react';
@@ -25,8 +25,14 @@ const BlurredFieldWrapper: React.FC<IBlurredFieldWrapperProps> = ({
   icon,
   blurType = "login",
 }) => {
+  const [hasMounted, setHasMounted] = useState(false);
   const { showModal, openModal, hideModal } = useModal();
   const router = useRouter();
+
+  // Track when component has mounted to avoid hydration mismatch
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
 
   const defaultBlurText = blurType === "upgrade" ? "Upgrade to premium plan" : "Login to view";
   const displayText = blurText || defaultBlurText;
@@ -39,11 +45,12 @@ const BlurredFieldWrapper: React.FC<IBlurredFieldWrapperProps> = ({
     }
   };
 
-  if (!isBlurred) {
-    return <div className="relative">{children}</div>;
-  }
+  // Use consistent blur state: default to false before mount to match server
+  const shouldBlur = hasMounted ? isBlurred : false;
 
   const renderCTA = () => {
+    if (!shouldBlur) return null;
+
     if (hasImageCarousel) {
       return (
         <div className="absolute inset-0 bg-white/70 flex items-center justify-center">
@@ -75,8 +82,8 @@ const BlurredFieldWrapper: React.FC<IBlurredFieldWrapperProps> = ({
 
   return (
     <>
-      <div className="relative select-none">
-        <div className="blur-sm pointer-events-none select-none">
+      <div className={`relative ${shouldBlur ? 'select-none' : ''}`}>
+        <div className={shouldBlur ? 'blur-sm pointer-events-none select-none' : ''}>
           {children}
         </div>
         {renderCTA()}

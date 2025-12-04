@@ -872,7 +872,7 @@ export const SERVICE_PROVIDER_OPTIONS: IServiceProviders[] = [
 export const formatISTDateTime = (dateString: string | null | undefined): string => {
   if (!dateString) return 'Not specified';
   try {
-    const date = new Date(dateString.replace('Z', ''));
+    const date = new Date(dateString);
 
     return date.toLocaleString('en-IN', {
       day: '2-digit',
@@ -891,7 +891,7 @@ export const formatISTDateTime = (dateString: string | null | undefined): string
 export const formatISTTimeOnly = (dateString: string | null | undefined): string => {
   if (!dateString) return 'Not specified';
   try {
-    const date = new Date(dateString.replace('Z', ''));
+    const date = new Date(dateString);
 
     return date.toLocaleString('en-IN', {
       hour: '2-digit',
@@ -904,19 +904,53 @@ export const formatISTTimeOnly = (dateString: string | null | undefined): string
   }
 };
 
-export const getDateAndTimeFromISOString = (isoString: string): { date: string, timePart: string } => {
-  const [year, month, day] = isoString?.split("T")[0]?.split("-");
-  const formattedDate = `${day}-${month}-${year}`; // "09-04-2025"
-  const timePart = isoString?.split("T")[1]?.replace("Z", ""); // "10:30:00.000"
-  if (!timePart) return { date: formattedDate, timePart: 'Not specified' };
+// export const getDateAndTimeFromISOString = (isoString: string): { date: string, timePart: string } => {
+//   const [year, month, day] = isoString?.split("T")[0]?.split("-");
+//   const formattedDate = `${day}-${month}-${year}`; // "09-04-2025"
+//   const timePart = isoString?.split("T")[1]?.replace("Z", ""); // "10:30:00.000"
+//   if (!timePart) return { date: formattedDate, timePart: 'Not specified' };
 
-  const ampm = parseInt(timePart?.split(":")[0]) >= 12 ? "pm" : "am";
-  const h = parseInt(timePart?.split(":")[0]) % 12 || 12;
-  const minutes = timePart?.split(":")[1];
-  const formattedTime = `${h}:${minutes} ${ampm}`;
+//   const ampm = parseInt(timePart?.split(":")[0]) >= 12 ? "pm" : "am";
+//   const h = parseInt(timePart?.split(":")[0]) % 12 || 12;
+//   const minutes = timePart?.split(":")[1];
+//   const formattedTime = `${h}:${minutes} ${ampm}`;
 
-  return { date: formattedDate, timePart: formattedTime };
+//   return { date: formattedDate, timePart: formattedTime };
+// };
+
+export const getDateAndTimeFromISOString = (
+  isoString?: string
+): { date: string; timePart: string } => {
+  if (!isoString) {
+    return { date: "Not specified", timePart: "Not specified" };
+  }
+
+  try {
+    const date = new Date(isoString);
+    if (isNaN(date.getTime())) {
+      return { date: "Not specified", timePart: "Not specified" };
+    }
+
+    const formattedDate = date.toLocaleDateString('en-GB', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      timeZone: 'Asia/Kolkata'
+    }).split('/').join('-');
+
+    const formattedTime = date.toLocaleTimeString('en-IN', {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true,
+      timeZone: 'Asia/Kolkata'
+    }).toLowerCase();
+
+    return { date: formattedDate, timePart: formattedTime };
+  } catch {
+    return { date: "Not specified", timePart: "Not specified" };
+  }
 };
+
 
 export const getDateAndTimeFromISOStringForDisplay = (isoString: string): string => {
   return isoString ? `${getDateAndTimeFromISOString(isoString).date} ${getDateAndTimeFromISOString(isoString).timePart}` : 'Not specified';
@@ -926,7 +960,7 @@ export const getDateAndTimeFromISOStringForDisplay = (isoString: string): string
 export const formatDateForDisplay = (dateString: string | null | undefined) => {
   if (!dateString) return 'Not specified';
   try {
-    const date = new Date(dateString.replace('Z', ''));
+    const date = new Date(dateString);
     return date.toLocaleDateString('en-GB', {
       day: '2-digit',
       month: 'short',
@@ -941,7 +975,7 @@ export const formatDateForDisplay = (dateString: string | null | undefined) => {
 export const formatDateAndTimeForDisplay = (dateString: string | null | undefined) => {
   if (!dateString) return 'Not specified';
   try {
-    const date = new Date(dateString.replace('Z', ''));
+    const date = new Date(dateString);
     const formattedDate = date.toLocaleDateString('en-GB', {
       day: '2-digit',
       month: 'short',
