@@ -37,9 +37,11 @@ import { WhatsappShareWithIcon } from '../atoms/SocialIcons';
 import { ROUTE_CONSTANTS } from '@/shared/Routes';
 import { useScrollToTop } from '@/hooks/useScrollToTop';
 import { loginLogic } from '@/utilies/LoginHelper';
+import { updatePlanLogic } from '@/utilies/UpdatePlanHelper';
 import BlurredFieldWrapper from '../atoms/BlurredFieldWrapper';
 import { Eye } from 'lucide-react';
 import ImageJsonLd from '../atoms/ImageJsonLd';
+import { useUserProfile } from '@/hooks/useUserProfile';
 
 
 // add props type
@@ -59,9 +61,14 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
     ? JSON.parse(getCookie(COOKIES.AUCTION_USER_KEY) ?? "")
     : null;
   const { showModal, openModal, hideModal } = useModal();
+  const { fullProfileData } = useUserProfile(!!userData);
   const [loading, setLoading] = useState(false);
+  const [showUpgradePrompt, setShowUpgradePrompt] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isAdmin] = useState(true); // Default to true as requested
+  
+  // State for client-side only date comparison to avoid hydration mismatch
+  const [isAuctionExpired, setIsAuctionExpired] = useState<boolean>(false);
 
   const tokenFromCookie = getCookie(COOKIES.TOKEN_KEY);
   const [token, setToken] = useState<string | null>(null);
@@ -79,8 +86,30 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
   useEffect(() => {
     if (!token) {
       loginLogic.markAuctionDetailVisited(slug); // Pass unique ID
+    } else {
+      // For logged-in users, check if they have premium
+      const isPremiumUser = fullProfileData?.subscriptionDetails?.subscription?.status === 'active';
+      const shouldTrackViews = token && !isPremiumUser;
+      
+      if (shouldTrackViews) {
+        updatePlanLogic.markAuctionDetailVisited(slug);
+        
+        // Check if we should show the upgrade prompt
+        if (updatePlanLogic.getShouldShowUpgradeModal()) {
+          setShowUpgradePrompt(true);
+        }
+      }
     }
-  }, [slug, token]);
+  }, [slug, token, fullProfileData]);
+
+  useEffect(() => {
+    // Only run date comparison on client-side to avoid hydration mismatch
+    if (property?.auctionEndDate) {
+      const endDate = new Date(property.auctionEndDate);
+      const currentDate = new Date();
+      setIsAuctionExpired(endDate < currentDate);
+    }
+  }, [property?.auctionEndDate]);
 
   if (loading) {
     return (
@@ -156,7 +185,10 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
         <SectionHeader title="About Property" />
         <div className="text-sm text-gray-700 leading-relaxed">
           {hasDescription ? (
-            <BlurredFieldWrapper isBlurred={token === null && showLogin}>
+            <BlurredFieldWrapper 
+              isBlurred={(token === null && showLogin) || showUpgradePrompt}
+              blurType={showUpgradePrompt ? "upgrade" : "login"}
+            >
               <p className="mb-3 ">{auctionDetail?.description}</p>
             </BlurredFieldWrapper>
           ) : (
@@ -231,21 +263,15 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
 
   const sharedUrl = getSharedAuctionUrl(property);
   const PROPERTY_ID = `E${property.id}`; // Property ID
+  
   const renderAuctionExpiredNotice = () => {
-    if (!property?.auctionEndDate) return null;
-    const endDate = new Date(property.auctionEndDate);
-    const currentDate = new Date();
-    // Consider the auction ended if current time is past the end date
-    const isPastDate = endDate < currentDate;
+    if (!property?.auctionEndDate || !isAuctionExpired) return null;
 
-    if (isPastDate) {
-      return (
-        <div className="text-red-600 text-sm font-semibold flex items-center gap-1">
-          ⚠ Notice: This auction notice is from a past date. The information shown may be outdated or no longer valid. Please verify details with the official source if you intend to take action.
-        </div>
-      );
-    }
-    return null;
+    return (
+      <div className="text-red-600 text-sm font-semibold flex items-center gap-1">
+        ⚠ Notice: This auction notice is from a past date. The information shown may be outdated or no longer valid. Please verify details with the official source if you intend to take action.
+      </div>
+    );
   };
   return (
     <>
@@ -291,7 +317,6 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
               {renderInterestContainer()}
             </div>
           </div>
-
           {renderAuctionExpiredNotice()}
 
           {/* Property Header */}
@@ -339,7 +364,10 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
 
                 {/* Property Address */}
                 {property.propertyAddress && (
-                  <BlurredFieldWrapper isBlurred={token === null && showLogin}>
+                  <BlurredFieldWrapper 
+                    isBlurred={(token === null && showLogin) || showUpgradePrompt}
+                    blurType={showUpgradePrompt ? "upgrade" : "login"}
+                  >
                     <div className="flex items-start text-sm-xs text-gray-600">
                       <MapPin className="h-4 w-4 mt-0.5 text-gray-400 flex-shrink-0 mr-2" />
                       <div className="flex-1">
@@ -451,8 +479,9 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
           {/* Image Carousel - Only show if we have real property images */}
           {hasValidImages && (
             <BlurredFieldWrapper
-              isBlurred={token === null && showLogin}
+              isBlurred={(token === null && showLogin) || showUpgradePrompt}
               hasImageCarousel={true}
+              blurType={showUpgradePrompt ? "upgrade" : "login"}
             >
               <div className="mb-6">
                 <ImageCarousel
@@ -576,7 +605,10 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
               {/* Contact Information */}
               <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
                 <SectionHeader title="Contact Information" />
-                <BlurredFieldWrapper isBlurred={token === null && showLogin}>
+                <BlurredFieldWrapper 
+                  isBlurred={(token === null && showLogin) || showUpgradePrompt}
+                  blurType={showUpgradePrompt ? "upgrade" : "login"}
+                >
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
                     {/* Branch */}
@@ -620,6 +652,15 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
                       </div>
                     </div>
 
+                    {/* Borrower Name */}
+                    <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                      <div className="text-xs font-medium text-gray-600 uppercase tracking-wide mb-2">
+                        Borrower Name
+                      </div>
+                      <div className="text-sm font-semibold text-gray-900 break-words">
+                        {property.borrowerName || '-'}
+                      </div>
+                    </div>
 
                   </div>
                 </BlurredFieldWrapper>

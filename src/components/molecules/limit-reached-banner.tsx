@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { useLimitReached, LimitFeatureType } from '@/hooks/useLimitReached';
 import { ROUTE_CONSTANTS } from '@/shared/Routes';
-import { normalizePlanName } from '@/shared/Utilies';
+import { useIsAuthenticated } from '@/hooks/useAuthenticated';
 
 /**
  * Props for LimitReachedBanner components
@@ -17,14 +17,15 @@ interface LimitReachedBannerProps {
 }
 
 /**
- * Banner Design 4: A slim, single-line banner focusing on the Broker Plus upgrade.
+ * Banner Design 4: A slim, single-line banner focusing on dynamic plan-based messaging.
  */
 export const LimitReachedBanner: React.FC<LimitReachedBannerProps> = ({
   featureType,
   className = '',
   featureName = '',
 }) => {
-  const { planInfo } = useLimitReached(featureType);
+  const { isAuthenticated } = useIsAuthenticated();
+  const { description } = useLimitReached(featureType, isAuthenticated, featureName);
 
   return (
     <div
@@ -34,8 +35,7 @@ export const LimitReachedBanner: React.FC<LimitReachedBannerProps> = ({
         <FontAwesomeIcon icon={faInfoCircle} className="h-5 w-5 text-blue-600 flex-shrink-0" />
         <div>
           <p className="text-sm text-gray-800 text-left">
-            You&apos;ve used all {featureName} limit.  <br />
-            Upgrade to <span className="font-semibold">{planInfo.suggestedPlan}</span> to unlock unlimited {featureName} and never miss profitable auctions.
+            {description}
           </p>
         </div>
       </div>

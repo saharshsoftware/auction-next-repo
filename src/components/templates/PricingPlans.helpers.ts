@@ -23,7 +23,7 @@ export const getButtonText = (
  * Gets CSS classes for plan card container
  */
 export const getPlanCardClasses = (plan: MembershipPlan, isCurrentPlan: boolean): string => {
-  const baseClasses = "relative flex flex-col h-full rounded-xl border p-6 shadow-md transition-all duration-300";
+  const baseClasses = "relative flex flex-col h-full rounded-xl border p-6 shadow-md transition-all duration-300 max-w-sm";
   if (plan.isPopular && isCurrentPlan) {
     return `${baseClasses} scale-105 bg-green-50 border-green-400`;
   }

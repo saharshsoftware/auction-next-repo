@@ -63,12 +63,17 @@ export default function ProfileTemplate() {
 
   useEffect(() => {
     const hashValue = hash.toLowerCase();
-    if (hashValue === slugify("profile") || hashValue === "") {
+    if (!isInternalUser) {
+      setActiveTab("profile");
+      router.push(`${ROUTE_CONSTANTS.PROFILE}#${slugify("profile")}`);
+      return;
+    }
+    else if (hashValue === slugify("profile") || hashValue === "") {
       setActiveTab("profile");
     } else if (hashValue === slugify("membership")) {
       setActiveTab("membership");
     }
-  }, [hash]);
+  }, [hash, isInternalUser]);
 
   const handleTabClick = (tab: TabType) => {
     router.push(`${ROUTE_CONSTANTS.PROFILE}#${slugify(tab)}`);

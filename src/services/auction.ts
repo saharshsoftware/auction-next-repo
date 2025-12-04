@@ -95,7 +95,7 @@ export const getAuctionDataClient = async (payload: {
         )}&`;
       }
 
-      if (reservePrice) {
+      if (reservePrice && reservePrice[0] && reservePrice[1]) {
         filter += `filters[$and][${index++}][reservePrice][$gte]=${
           reservePrice[0]
         }&filters[$and][${index++}][reservePrice][$lte]=${reservePrice[1]}&`;

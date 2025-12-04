@@ -6,6 +6,7 @@ import { getUserDetails } from "@/services/auth";
 import { isSubscriptionProcessing, clearSubscriptionProcessing } from "@/utils/subscription-storage";
 import { useConfettiStore } from "@/zustandStore/confettiStore";
 import { isInMobileApp, sendToApp } from "@/helpers/NativeHelper";
+import { updatePlanLogic } from "@/utilies/UpdatePlanHelper";
 
 const POLLING_INTERVAL_MS = 4000;
 const MAX_POLLING_ATTEMPTS = 30;
@@ -27,6 +28,8 @@ export const handleSubscriptionSuccess = async (queryClient: QueryClient, freshD
     });
   }
   clearSubscriptionProcessing();
+  // Clear premium restriction counter when user successfully upgrades
+  updatePlanLogic.resetUpgradeFlag();
   useConfettiStore.getState().showConfetti();
   queryClient.setQueryData([REACT_QUERY.USER_PROFILE], freshData);
   await queryClient.invalidateQueries({ queryKey: [REACT_QUERY.USER_PROFILE] });

@@ -1,6 +1,7 @@
 'use client';
 import { useMemo } from 'react';
 import { useUserProfile } from '@/hooks/useUserProfile';
+import { useIsAuthenticated } from '@/hooks/useAuthenticated';
 
 interface CurrentCounts {
   readonly collections?: number;
@@ -23,7 +24,8 @@ interface SubscriptionAccess {
  * @param currentCounts - Optional object with current usage counts for collections, alerts, and saved searches
  */
 export const useSubscriptionAccess = (currentCounts?: CurrentCounts): SubscriptionAccess => {
-  const { fullProfileData, isLoading: profileLoading, userProfileData } = useUserProfile();
+  const { isAuthenticated } = useIsAuthenticated();
+  const { fullProfileData, isLoading: profileLoading } = useUserProfile(isAuthenticated);
   const limits = fullProfileData?.subscriptionDetails?.limits;
 
   return useMemo(() => {

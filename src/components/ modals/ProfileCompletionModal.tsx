@@ -17,6 +17,7 @@ import { getCategoryBoxCollectionClient } from "@/services/auction";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { useMemo } from "react";
 import BudgetRangesSelect from "../atoms/BudgetRangesSelect";
+import { useIsAuthenticated } from "@/hooks/useAuthenticated";
 
 interface IProfileCompletionModal {
   openModal: boolean;
@@ -36,8 +37,9 @@ const ProfileCompletionModal: React.FC<IProfileCompletionModal> = (props) => {
   const [respError, setRespError] = useState<string>("");
   const [citiesList, setCitiesList] = useState<ILocations[]>([]);
 
+  const { isAuthenticated } = useIsAuthenticated();
   // Get current user profile data to pre-fill the form
-  const { userProfileData: userProfile, refetch: refetchUserProfile } = useUserProfile();
+  const { userProfileData: userProfile, refetch: refetchUserProfile } = useUserProfile(isAuthenticated);
   
   // Fetch location options
   const { data: locationOptions, isLoading: isLoadingLocation } = useQuery({
