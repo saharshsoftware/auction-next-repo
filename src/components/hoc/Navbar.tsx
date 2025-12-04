@@ -1,11 +1,10 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { COOKIES, isInternalUserEmail, STRING_DATA } from "../../shared/Constants";
+import { isInternalUserEmail, STRING_DATA } from "../../shared/Constants";
 import ActionButton from "../atoms/ActionButton";
 import { ROUTE_CONSTANTS } from "../../shared/Routes";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { getCookie } from "cookies-next";
 import logo from "@/assets/images/logo.png";
 import { Popover, PopoverTrigger, PopoverContent } from "@nextui-org/popover";
 import TooltipContent from "../atoms/TooltipContent";
@@ -14,6 +13,7 @@ import CustomDrawer from "./CustomDrawer";
 import SearchKeywordComp from "../atoms/SearchKeywordComp";
 import Image from "next/image";
 import { isInMobileApp } from "@/helpers/NativeHelper";
+import { useUserData } from "@/hooks/useAuthenticated";
 
 const getWaveSvg = () => {
   return (
@@ -58,17 +58,22 @@ const upSvg = () => {
 const Navbar: React.FC = () => {
   const router = useRouter();
   const pathname = usePathname();
-  const token = getCookie(COOKIES.TOKEN_KEY) ?? "";
-  const userData = getCookie(COOKIES.AUCTION_USER_KEY)
-  ? JSON.parse(getCookie(COOKIES.AUCTION_USER_KEY) ?? "")
-    : null;
-  const isInternal = isInternalUserEmail(userData?.email ?? null);
-  const [myToken, setMyToken] = useState("");
+  
+  // Use hydration-safe hook for auth data
+  const { userData, token } = useUserData();
+  const [isInternal, setIsInternal] = useState(false);
   const [isOpen, setIsOpen] = React.useState(false);
-  // console.log(getCookie(COOKIES.TOKEN_KEY), "getCookie(COOKIES.TOKEN_KEY)");
+  const [isMobileApp, setIsMobileApp] = useState(false);
+  
+  // Compute isInternal after mount to avoid hydration mismatch
   useEffect(() => {
-    setMyToken(token);
-  }, [token]);
+    setIsInternal(isInternalUserEmail(userData?.email ?? null));
+  }, [userData]);
+  
+  // Check if in mobile app after mount
+  useEffect(() => {
+    setIsMobileApp(isInMobileApp());
+  }, []);
 
   const [isMobileView, setIsMobileView] = useState({
     mobileView: false,
@@ -107,8 +112,7 @@ const Navbar: React.FC = () => {
   };
 
   const renderAuthComponent = () => {
-    // console.log(myToken, "myTokenmyToken");
-    if (myToken) {
+    if (token) {
       return (
         <>
           <div className="relative">
@@ -160,8 +164,9 @@ const Navbar: React.FC = () => {
     }
   };
 
-  if (isInMobileApp()) {
-    return null
+  // Hide navbar in mobile app (checked after mount to avoid hydration mismatch)
+  if (isMobileApp) {
+    return null;
   }
 
   return (
