@@ -2,6 +2,7 @@
 import { useMemo } from 'react';
 import { useUserProfile } from '@/hooks/useUserProfile';
 import { STRING_DATA, BROKER_PLUS_FEATURES } from '@/shared/Constants';
+import { normalizePlanName, denormalizePlanName } from '@/shared/Utilies';
 
 /**
  * Feature types that can have limits
@@ -93,11 +94,33 @@ const getCurrentLimit = (
 };
 
 /**
+ * Generates dynamic description based on current plan and limit
+ */
+const getDynamicDescription = (
+  currentPlan: string,
+  currentLimit: number | string,
+  featureName: string
+): string => {
+  const isFreePlan = normalizePlanName(currentPlan) === 'free';
+  const displayPlanName = denormalizePlanName(currentPlan);
+  if (isFreePlan) {
+    return `Please upgrade to a paid plan to create more ${featureName} and receive timely notifications.`;
+  }
+  return `You have already created ${currentLimit} ${featureName} which is the limit for ${displayPlanName} Plan. Please upgrade your plan to create more.`;
+};
+
+/**
  * Hook to get limit reached messaging and plan comparison data
  * @param featureType - The type of feature that has reached its limit
+ * @param isAuthenticated - Whether the user is authenticated
+ * @param featureName - Display name for the feature (e.g., "collections", "alerts")
  * @returns Formatted messaging, plan info, and Broker Plus feature highlights
  */
-export const useLimitReached = (featureType: LimitFeatureType, isAuthenticated = false): LimitReachedData => {
+export const useLimitReached = (
+  featureType: LimitFeatureType,
+  isAuthenticated = false,
+  featureName = ''
+): LimitReachedData => {
   const { fullProfileData } = useUserProfile(isAuthenticated);
   const subscriptionDetails = fullProfileData?.subscriptionDetails;
   const limits = subscriptionDetails?.limits;
@@ -105,6 +128,9 @@ export const useLimitReached = (featureType: LimitFeatureType, isAuthenticated =
   return useMemo(() => {
     const currentPlan = subscriptionDetails?.tier || STRING_DATA.FREE;
     const currentLimit = getCurrentLimit(featureType, limits);
+    const dynamicDescription = featureName
+      ? getDynamicDescription(currentPlan, currentLimit, featureName)
+      : getDescription(featureType);
 
     const planInfo: PlanInfo = {
       currentPlan,
@@ -115,11 +141,11 @@ export const useLimitReached = (featureType: LimitFeatureType, isAuthenticated =
 
     return {
       title: getTitle(featureType),
-      description: getDescription(featureType),
+      description: dynamicDescription,
       ctaText: STRING_DATA.UPGRADE_YOUR_PLAN,
       planInfo,
       brokerPlusFeatures: BROKER_PLUS_FEATURES,
     };
-  }, [featureType, subscriptionDetails, limits]);
+  }, [featureType, subscriptionDetails, limits, featureName]);
 };
 
