@@ -66,6 +66,9 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
   const [showUpgradePrompt, setShowUpgradePrompt] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isAdmin] = useState(true); // Default to true as requested
+  
+  // State for client-side only date comparison to avoid hydration mismatch
+  const [isAuctionExpired, setIsAuctionExpired] = useState<boolean>(false);
 
   const tokenFromCookie = getCookie(COOKIES.TOKEN_KEY);
   const [token, setToken] = useState<string | null>(null);
@@ -98,6 +101,15 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
       }
     }
   }, [slug, token, fullProfileData]);
+
+  useEffect(() => {
+    // Only run date comparison on client-side to avoid hydration mismatch
+    if (property?.auctionEndDate) {
+      const endDate = new Date(property.auctionEndDate);
+      const currentDate = new Date();
+      setIsAuctionExpired(endDate < currentDate);
+    }
+  }, [property?.auctionEndDate]);
 
   if (loading) {
     return (
@@ -251,21 +263,15 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
 
   const sharedUrl = getSharedAuctionUrl(property);
   const PROPERTY_ID = `E${property.id}`; // Property ID
+  
   const renderAuctionExpiredNotice = () => {
-    if (!property?.auctionEndDate) return null;
-    const endDate = new Date(property.auctionEndDate);
-    const currentDate = new Date();
-    // Consider the auction ended if current time is past the end date
-    const isPastDate = endDate < currentDate;
+    if (!property?.auctionEndDate || !isAuctionExpired) return null;
 
-    if (isPastDate) {
-      return (
-        <div className="text-red-600 text-sm font-semibold flex items-center gap-1">
-          ⚠ Notice: This auction notice is from a past date. The information shown may be outdated or no longer valid. Please verify details with the official source if you intend to take action.
-        </div>
-      );
-    }
-    return null;
+    return (
+      <div className="text-red-600 text-sm font-semibold flex items-center gap-1">
+        ⚠ Notice: This auction notice is from a past date. The information shown may be outdated or no longer valid. Please verify details with the official source if you intend to take action.
+      </div>
+    );
   };
   return (
     <>

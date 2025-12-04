@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   getSharedAuctionUrl,
   getDateAndTimeFromISOStringForDisplay,
@@ -49,13 +49,21 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
   const sharedUrl = getSharedAuctionUrl(property);
   const isViewNoticeVisible = property?.noticeLink && isAdmin;
 
+  // State for client-side only date comparison to avoid hydration mismatch
+  const [isAuctionEndedState, setIsAuctionEndedState] = useState<boolean>(false);
+  
+  useEffect(() => {
+    // Only run date comparison on client-side to avoid hydration mismatch
+    if (property?.auctionEndDate) {
+      const endDate = new Date(property.auctionEndDate);
+      const currentDate = new Date();
+      setIsAuctionEndedState(endDate < currentDate);
+    }
+  }, [property?.auctionEndDate]);
+
   // Function to check if auction end date is in the past
   const isAuctionEnded = (): boolean => {
-    if (!property?.auctionEndDate) return false;
-    const endDate = new Date(property.auctionEndDate);
-    const currentDate = new Date();
-    const isEnded = endDate < currentDate;
-    return isEnded;
+    return isAuctionEndedState;
   };
 
   const formatPrice = (price: string | null | undefined) => {

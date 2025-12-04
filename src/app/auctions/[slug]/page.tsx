@@ -7,11 +7,9 @@ import {
   ICategoryCollection,
   ILocations,
 } from "@/types";
-import AuctionDetail from "@/components/templates/AuctionDetail";
 import { fetchAssetType, fetchCategories, fetchIsInterestedNotice } from "@/server/actions/auction";
 import { sanitizeReactSelectOptionsPage } from "@/shared/Utilies";
 import FindAuctionServer from "@/components/molecules/FindAuctionServer";
-import RecentData from "@/components/molecules/RecentData";
 import AuctionDetailRelatedBubbles from "@/components/templates/AuctionDetailRelatedBubbles";
 import AddToWishlist from "@/components/templates/AddToWishlist";
 import { cookies } from "next/headers";
