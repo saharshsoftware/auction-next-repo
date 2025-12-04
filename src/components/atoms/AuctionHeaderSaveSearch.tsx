@@ -16,6 +16,7 @@ import { useQuery } from "@tanstack/react-query";
 import { REACT_QUERY } from "@/shared/Constants";
 import { ISavedSearch } from "@/types";
 import { LimitReachedBanner } from "../molecules/limit-reached-banner";
+import { useIsAuthenticated } from "@/hooks/useAuthenticated";
 
 interface IAuctionHeaderSaveSearchProps {
   searchParams?: { [key: string]: string | string[] | undefined };
@@ -24,8 +25,9 @@ interface IAuctionHeaderSaveSearchProps {
 const AuctionHeaderSaveSearch = ({ searchParams }: IAuctionHeaderSaveSearchProps) => {
   const [showSavedSearchModal, setShowSavedSearchModal] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const { isAuthenticated } = useIsAuthenticated();
   const token = getCookie(COOKIES.TOKEN_KEY) ?? "";
-  const { isInternalUser } = useUserProfile(Boolean(token));
+  const { isInternalUser } = useUserProfile(isAuthenticated);
   const {
     data: savedSearchData
   } = useQuery({
@@ -34,6 +36,7 @@ const AuctionHeaderSaveSearch = ({ searchParams }: IAuctionHeaderSaveSearchProps
       const res = (await fetchSavedSearch()) as unknown as ISavedSearch[];
       return res ?? [];
     },
+    enabled: isAuthenticated,
     staleTime: 0,
   });
   const { canAddSavedSearch, isLoading: isLoadingAccess } = useSubscriptionAccess(
@@ -117,7 +120,9 @@ const AuctionHeaderSaveSearch = ({ searchParams }: IAuctionHeaderSaveSearchProps
           <SortByDropdown />
         </div>
         {shouldShowUpgradePrompt && (
+          <div className="mb-4">
           <LimitReachedBanner featureType="savedSearches" />
+          </div>
         )}
       </div>
       <LoginModal openModal={showLoginModal} hideModal={() => setShowLoginModal(false)} />

@@ -97,8 +97,8 @@ const getCurrentLimit = (
  * @param featureType - The type of feature that has reached its limit
  * @returns Formatted messaging, plan info, and Broker Plus feature highlights
  */
-export const useLimitReached = (featureType: LimitFeatureType): LimitReachedData => {
-  const { fullProfileData } = useUserProfile();
+export const useLimitReached = (featureType: LimitFeatureType, isAuthenticated = false): LimitReachedData => {
+  const { fullProfileData } = useUserProfile(isAuthenticated);
   const subscriptionDetails = fullProfileData?.subscriptionDetails;
   const limits = subscriptionDetails?.limits;
 

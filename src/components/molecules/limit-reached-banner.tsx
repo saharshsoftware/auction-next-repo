@@ -6,6 +6,7 @@ import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { useLimitReached, LimitFeatureType } from '@/hooks/useLimitReached';
 import { ROUTE_CONSTANTS } from '@/shared/Routes';
 import { normalizePlanName } from '@/shared/Utilies';
+import { useIsAuthenticated } from '@/hooks/useAuthenticated';
 
 /**
  * Props for LimitReachedBanner components
@@ -24,7 +25,9 @@ export const LimitReachedBanner: React.FC<LimitReachedBannerProps> = ({
   className = '',
   featureName = '',
 }) => {
-  const { planInfo } = useLimitReached(featureType);
+
+  const { isAuthenticated } = useIsAuthenticated();
+  const { planInfo } = useLimitReached(featureType, isAuthenticated);
 
   return (
     <div

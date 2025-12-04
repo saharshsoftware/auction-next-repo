@@ -317,7 +317,6 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
               {renderInterestContainer()}
             </div>
           </div>
-
           {renderAuctionExpiredNotice()}
 
           {/* Property Header */}
@@ -653,6 +652,15 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
                       </div>
                     </div>
 
+                    {/* Borrower Name */}
+                    <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                      <div className="text-xs font-medium text-gray-600 uppercase tracking-wide mb-2">
+                        Borrower Name
+                      </div>
+                      <div className="text-sm font-semibold text-gray-900 break-words">
+                        {property.borrowerName || '-'}
+                      </div>
+                    </div>
 
                   </div>
                 </BlurredFieldWrapper>
