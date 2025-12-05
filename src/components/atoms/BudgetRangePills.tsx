@@ -31,10 +31,14 @@ const BudgetRangePills: React.FC<BudgetRangePillsProps> = ({
 
   return (
     <div className={containerClassName}>
-      {normalized.map((r, idx) => {
-        const isInfinity = r.max.toLowerCase() === "infinity";
-        const formattedMin = formatPriceCompact(r.min);
-        const formattedMax = formatPriceCompact(r.max);
+      {normalized.map((item, idx) => {
+        const r = {
+          min: String(item?.min),
+          max: String(item?.max),
+        }
+        const isInfinity = r?.max.toLowerCase() === "infinity";
+        const formattedMin = formatPriceCompact(r?.min);
+        const formattedMax = formatPriceCompact(r?.max);
         const displayText = isInfinity ? `₹${formattedMin}+` : `₹${formattedMin} - ₹${formattedMax}`;
         
         return (
