@@ -15,6 +15,7 @@ import { faX } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ActionButton from "./ActionButton";
 import FullScreenImageModal from "../ modals/FullScreenImageModal";
+import { PhotoCountBadge } from "./PhotoCountBadge";
 import useModal from "@/hooks/useModal";
 import { useRouter } from "next/navigation";
 
@@ -259,6 +260,7 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
             {/* Title */}
             <div className="mb-3">
               {renderEnhancedTitle(true)}
+              {hasRealImages && <PhotoCountBadge count={propertyImages.length} className="mt-1" />}
             </div>
 
             {/* Seller Info */}

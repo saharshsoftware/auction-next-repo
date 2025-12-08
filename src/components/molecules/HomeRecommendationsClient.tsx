@@ -97,38 +97,54 @@ const HomeRecommendationsClient: React.FC = () => {
     return null;
   }
 
+  const renderContainer = () => {
+    if (isLoading) {
+      return (
+        <div className="mb-6">
+          <SkeltonRecommendationCard count={3} />
+        </div>
+      )
+    }
+    if (hasError && !isLoading) {
+      return (
+        <div className="mb-4 text-sm text-red-600">{errorMessage || 'Failed to load recommendations. Please try again'}.</div>
+      )
+    }
+    if (items.length > 0) {
+      return (
+        <Slider {...settings} lazyLoad="ondemand">
+          {items.map((item, idx) => (
+            <div key={idx} className="h-full">
+              <div className="h-full">
+                <AuctionCard2 property={item as any} forceMobileNoImage={true} />
+              </div>
+            </div>
+          ))}
+        </Slider>
+      )
+    }
+    return (
+      <div key={"Not-found-recommendations"} className="h-full">
+        <div className="h-full text-center">
+          No recommendations found.
+        </div>
+      </div>);
+  }
+
   return (
     <section className="py-20 bg-even-color section-class">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
         <h2 className="text-xl font-bold">{STRING_DATA.RECOMMENDATIONS}</h2>
 
-        <Link
+        {items.length > 0 && <Link
           href={ROUTE_CONSTANTS.USER_RECOMMENDATIONS}
           className="text-sm text-blue-600 hover:underline mt-2 md:mt-0"
         >
           {STRING_DATA.VIEW_ALL_RECOMMENDATIONS}
-        </Link>
+        </Link>}
       </div>
       <div className="slides-container">
-        {isLoading && (
-          <div className="mb-6">
-            <SkeltonRecommendationCard count={3} />
-          </div>
-        )}
-        {hasError && !isLoading && (
-          <div className="mb-4 text-sm text-red-600">{errorMessage || 'Failed to load recommendations. Please try again'}.</div>
-        )}
-        {items.length > 0 && (
-          <Slider {...settings} lazyLoad="ondemand">
-            {items.map((item, idx) => (
-              <div key={idx} className="h-full">
-                <div className="h-full">
-                  <AuctionCard2 property={item as any} forceMobileNoImage={true} />
-                </div>
-              </div>
-            ))}
-          </Slider>
-        )}
+        {renderContainer()}
       </div>
     </section>
   );
