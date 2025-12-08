@@ -115,31 +115,6 @@ export const SubscriptionSuccessScreen: React.FC<SubscriptionSuccessScreenProps>
             </div>
           )}
 
-          {/* Mobile App Source Message - shown when user came from mobile app (e.g., opened in external browser) */}
-          {isFromMobileApp && !isMobileApp && (
-            <div className="bg-blue-50 border border-blue-200 rounded-lg sm:rounded-xl p-3 sm:p-4 mb-6 sm:mb-8">
-              <div className="flex items-center justify-center gap-2 text-blue-700 mb-2">
-                <svg
-                  className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"
-                  />
-                </svg>
-                <span className="font-semibold text-sm sm:text-base">Get the Best Experience</span>
-              </div>
-              <p className="text-blue-600 text-xs sm:text-sm">
-                Update or install the Auction app from your app store to enjoy all your subscription benefits.
-              </p>
-            </div>
-          )}
-
           {/* Mobile App Promotion - shown to all web users not already in the mobile app */}
           {!isMobileApp && (
             <div className="bg-gradient-to-br from-indigo-50 via-purple-50 to-blue-50 border border-indigo-200 rounded-lg sm:rounded-xl p-4 sm:p-6 mb-6 sm:mb-8">
