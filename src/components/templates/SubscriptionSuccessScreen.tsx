@@ -1,11 +1,15 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { isInMobileApp, sendToApp } from "@/helpers/NativeHelper";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
 import { useConfettiStore } from "@/zustandStore/confettiStore";
 import { NATIVE_APP_MESSAGE_TYPES, URL_PARAMS } from "@/shared/Constants";
+import { CONFIG } from "@/utilies/Config";
+import googleplaystore from "@/assets/images/googleplaystore.png";
+import appstore from "@/assets/images/appstore.png";
 
 interface SubscriptionSuccessScreenProps {
   readonly planName?: string;
@@ -13,7 +17,7 @@ interface SubscriptionSuccessScreenProps {
 
 /**
  * Component to display a success screen after subscription is activated
- * Shows action buttons and a special message for mobile app users
+ * Shows action buttons, mobile app promotion, and a special message for mobile app users
  */
 export const SubscriptionSuccessScreen: React.FC<SubscriptionSuccessScreenProps> = ({
   planName,
@@ -38,18 +42,23 @@ export const SubscriptionSuccessScreen: React.FC<SubscriptionSuccessScreenProps>
         timestamp: Date.now(),
       });
     }
+
+    // Cleanup: hide confetti when component unmounts (user navigates away)
+    return () => {
+      useConfettiStore.getState().hideConfetti();
+    };
   }, []);
 
   return (
-    <section className="px-4 lg:px-16 py-10 min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-emerald-50">
+    <section className="px-4 lg:px-16 py-10 min-h-screen flex items-center justify-center ">
       <div className="mx-auto flex w-full max-w-2xl flex-col items-center">
-        <div className="bg-white rounded-2xl shadow-xl p-8 md:p-12 text-center w-full border border-emerald-100">
+        <div className="bg-white rounded-2xl shadow-xl p-8 md:p-12 text-center w-full ">
           {/* Success Icon */}
           <div className="flex justify-center mb-8">
             <div className="relative">
               <div
                 className="w-24 h-24 rounded-full flex items-center justify-center animate-bounce-once"
-                style={{ background: 'linear-gradient(to bottom right, #10B981, #059669)' }}
+                style={{ background: 'linear-gradient(to bottom right, #5356FF, #3d40cc)' }}
               >
                 <svg
                   className="w-12 h-12 text-white"
@@ -66,7 +75,7 @@ export const SubscriptionSuccessScreen: React.FC<SubscriptionSuccessScreenProps>
                 </svg>
               </div>
               {/* Decorative rings */}
-              <div className="absolute inset-0 rounded-full border-4 border-emerald-200 animate-ping opacity-20"></div>
+              <div className="absolute inset-0 rounded-full border-4 border-blue-200 animate-ping opacity-20"></div>
             </div>
           </div>
 
@@ -131,12 +140,58 @@ export const SubscriptionSuccessScreen: React.FC<SubscriptionSuccessScreenProps>
             </div>
           )}
 
+          {/* Mobile App Promotion - shown to all web users not already in the mobile app */}
+          {!isMobileApp && (
+            <div className="bg-gradient-to-br from-indigo-50 via-purple-50 to-blue-50 border border-indigo-200 rounded-xl p-6 mb-8">
+              <div className="flex items-center justify-center gap-2 mb-3">
+                <svg
+                  className="w-6 h-6 text-indigo-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"
+                  />
+                </svg>
+                <h3 className="text-lg font-bold text-indigo-800">
+                  Get the Best Experience on Our App
+                </h3>
+              </div>
+              <p className="text-indigo-600 text-sm mb-5">
+                Download e-auctiondekho app for instant alerts, faster browsing, and exclusive features. 
+                Never miss a great auction deal!
+              </p>
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <a
+                  href={CONFIG.PLAYSTORE_URL}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="w-[151px] h-[45px] relative cursor-pointer hover:opacity-80 transition-opacity"
+                >
+                  <Image src={googleplaystore.src} fill={true} alt="Download on Google Play" />
+                </a>
+                <a
+                  href={CONFIG.APPSTORE_URL}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="w-[151px] h-[45px] relative cursor-pointer hover:opacity-80 transition-opacity"
+                >
+                  <Image src={appstore.src} fill={true} alt="Download on App Store" />
+                </a>
+              </div>
+            </div>
+          )}
+
           {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
 
             <Link
               href={ROUTE_CONSTANTS.AUCTION}
-              className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white text-emerald-600 font-semibold rounded-xl border-2 border-emerald-500 hover:bg-emerald-50 transition-all duration-200"
+              className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white text-brand-color font-semibold rounded-xl border-2 border-brand-color hover:bg-brand transition-all duration-200"
             >
               <svg
                 className="w-5 h-5"
@@ -174,4 +229,3 @@ export const SubscriptionSuccessScreen: React.FC<SubscriptionSuccessScreenProps>
     </section>
   );
 };
-
