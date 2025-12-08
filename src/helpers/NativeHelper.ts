@@ -66,7 +66,60 @@ export const sendToApp = (type: string, payload: Record<string, any>): void => {
 export const isInMobileApp = (): boolean => {
   if (typeof window === 'undefined') return false;
   return typeof window.ReactNativeWebView !== 'undefined';
-  // return true
+};
+
+/**
+ * Check if auth token exists in URL parameters
+ * 
+ * Used to detect if page was opened from mobile app with authentication intent
+ * This is a reliable indicator that doesn't depend on WebView bridge timing
+ * 
+ * @returns boolean - true if auth_token param exists in URL
+ */
+export const hasAuthTokenInUrl = (): boolean => {
+  if (typeof window === 'undefined') return false;
+  const urlParams = new URLSearchParams(window.location.search);
+  return urlParams.has('auth_token');
+};
+
+/**
+ * Wait for ReactNativeWebView bridge to be available
+ * 
+ * React Native WebView injects the bridge object after page load.
+ * Due to timing variations, it may not be immediately available when
+ * React hydrates. This function polls for the bridge with a timeout.
+ * 
+ * @param timeoutMs - Maximum time to wait in milliseconds (default: 3000ms)
+ * @param intervalMs - Polling interval in milliseconds (default: 100ms)
+ * @returns Promise<boolean> - resolves to true if bridge found, false if timeout
+ */
+export const waitForWebViewBridge = (
+  timeoutMs: number = 3000,
+  intervalMs: number = 100
+): Promise<boolean> => {
+  return new Promise((resolve) => {
+    if (typeof window === 'undefined') {
+      resolve(false);
+      return;
+    }
+    if (window.ReactNativeWebView) {
+      resolve(true);
+      return;
+    }
+    const startTime = Date.now();
+    const checkInterval = setInterval(() => {
+      if (window.ReactNativeWebView) {
+        clearInterval(checkInterval);
+        resolve(true);
+        return;
+      }
+      if (Date.now() - startTime >= timeoutMs) {
+        clearInterval(checkInterval);
+        console.log('WebView bridge not found after timeout');
+        resolve(false);
+      }
+    }, intervalMs);
+  });
 };
 
 /**

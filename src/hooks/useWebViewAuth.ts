@@ -5,12 +5,13 @@
  * Handles authentication when user navigates to web app from mobile app WebView.
  * 
  * Features:
- * - Detects mobile app WebView context
+ * - Detects mobile app WebView context via auth_token URL param (reliable)
  * - Auto-login with token from URL parameters
  * - Automatic logout of existing user before new login
  * - Token verification with backend
  * - WebView messaging (success/failure notifications)
  * - URL cleanup to prevent infinite reload loop
+ * - Waits for WebView bridge to be available for messaging
  * 
  * Usage:
  * ```tsx
@@ -18,8 +19,8 @@
  * ```
  * 
  * The hook automatically triggers authentication on mount if:
- * - Page is opened in mobile app WebView
- * - URL contains auth_token parameter
+ * - URL contains auth_token parameter (primary trigger - always available)
+ * - Waits for ReactNativeWebView bridge for sending messages back to app
  * 
  * @returns {Object} Authentication state
  * - authResult: Result object from authentication attempt
@@ -28,12 +29,14 @@
  */
 
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   isInMobileApp,
   authenticateFromMobileApp,
-  sendToApp
+  sendToApp,
+  hasAuthTokenInUrl,
+  waitForWebViewBridge
 } from '@/helpers/NativeHelper';
 import { NATIVE_APP_MESSAGE_TYPES } from '@/shared/Constants';
 
@@ -87,27 +90,44 @@ export const useWebViewAuth = (): UseWebViewAuthReturn => {
   const [authResult, setAuthResult] = useState<AuthResult | null>(null);
   const [isAuthenticating, setIsAuthenticating] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
+  const hasAttemptedAuth = useRef(false);
 
-
+  /**
+   * Send message to native app, waiting for bridge if necessary
+   * 
+   * @param type - Message type
+   * @param payload - Message payload
+   */
+  const sendMessageToApp = async (type: string, payload: Record<string, any>) => {
+    if (isInMobileApp()) {
+      sendToApp(type, payload);
+      return;
+    }
+    const bridgeAvailable = await waitForWebViewBridge(2000, 50);
+    if (bridgeAvailable) {
+      sendToApp(type, payload);
+    } else {
+      console.log('WebView bridge not available, skipping message:', type);
+    }
+  };
 
   const handleWebViewAuth = async () => {
-    // Guard: Only run in mobile app WebView
-    if (!isInMobileApp()) {
-      console.log('Not in mobile app, skipping WebView auth');
+    // Prevent duplicate authentication attempts
+    if (hasAttemptedAuth.current) {
+      console.log('Auth already attempted, skipping');
       return;
     }
 
     // Guard: Only run if auth token exists in URL
-    // This prevents re-authentication after page reload
-    const urlParams = new URLSearchParams(window.location.search);
-    const hasAuthToken = urlParams.has('auth_token');
-
-    if (!hasAuthToken) {
+    // This is the PRIMARY trigger - URL params are always available immediately
+    // This prevents re-authentication after page reload (params are removed after success)
+    if (!hasAuthTokenInUrl()) {
       console.log('No auth token in URL, skipping WebView auth');
       return;
     }
 
-    console.log('In mobile app, starting auto-login...');
+    hasAttemptedAuth.current = true;
+    console.log('Auth token found in URL, starting auto-login...');
     setIsAuthenticating(true);
     setAuthResult(null);
     setAuthError(null);
@@ -125,8 +145,8 @@ export const useWebViewAuth = (): UseWebViewAuthReturn => {
           console.log('Previous user:', result.previousUser.email);
         }
 
-        // Notify mobile app of successful authentication
-        sendToApp(NATIVE_APP_MESSAGE_TYPES.AUTH_SUCCESS, {
+        // Notify mobile app of successful authentication (async, non-blocking)
+        sendMessageToApp(NATIVE_APP_MESSAGE_TYPES.AUTH_SUCCESS, {
           userId: result.user.id,
           email: result.user.email,
           wasLoggedIn: result.wasLoggedIn,
@@ -135,7 +155,7 @@ export const useWebViewAuth = (): UseWebViewAuthReturn => {
         });
 
         // Mark WebView as ready for mobile app
-        sendToApp(NATIVE_APP_MESSAGE_TYPES.WEBVIEW_READY, {
+        sendMessageToApp(NATIVE_APP_MESSAGE_TYPES.WEBVIEW_READY, {
           authenticated: true,
           user: {
             id: result.user.id,
@@ -167,15 +187,15 @@ export const useWebViewAuth = (): UseWebViewAuthReturn => {
 
       // Notify mobile app of authentication failure with specific error types
       if (error.message === 'USER_EMAIL_MISMATCH') {
-        sendToApp(NATIVE_APP_MESSAGE_TYPES.USER_MISMATCH, {
+        sendMessageToApp(NATIVE_APP_MESSAGE_TYPES.USER_MISMATCH, {
           message: 'Account mismatch detected',
         });
       } else if (error.message.includes('expired')) {
-        sendToApp(NATIVE_APP_MESSAGE_TYPES.TOKEN_EXPIRED, {
+        sendMessageToApp(NATIVE_APP_MESSAGE_TYPES.TOKEN_EXPIRED, {
           message: 'Session expired',
         });
       } else {
-        sendToApp(NATIVE_APP_MESSAGE_TYPES.AUTH_FAILED, {
+        sendMessageToApp(NATIVE_APP_MESSAGE_TYPES.AUTH_FAILED, {
           message: error.message || 'Authentication failed',
         });
       }
@@ -185,10 +205,10 @@ export const useWebViewAuth = (): UseWebViewAuthReturn => {
   };
 
   useEffect(() => {
-    // Trigger authentication on mount if in mobile app
-    if (isInMobileApp()) {
-      handleWebViewAuth();
-    }
+    // Trigger authentication on mount if auth_token exists in URL
+    // This is more reliable than checking for ReactNativeWebView which may not be
+    // injected immediately due to bridge initialization timing
+    handleWebViewAuth();
   }, []);
 
   return {
