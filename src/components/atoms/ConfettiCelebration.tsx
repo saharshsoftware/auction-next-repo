@@ -44,19 +44,38 @@ const ConfettiCelebration: React.FC = () => {
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    if (isConfettiVisible) {
-      // Fire immediately on start
-      fireConfettiFromBothSides();
-      // Continue firing at intervals indefinitely
-      intervalRef.current = setInterval(fireConfettiFromBothSides, CONFETTI_INTERVAL_MS);
-    }
-    return () => {
+    const startConfetti = () => {
+      if (!intervalRef.current && isConfettiVisible) {
+        fireConfettiFromBothSides();
+        intervalRef.current = setInterval(fireConfettiFromBothSides, CONFETTI_INTERVAL_MS);
+      }
+    };
+
+    const stopConfetti = () => {
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
         intervalRef.current = null;
       }
-      // Clear any remaining confetti particles
       confetti.reset();
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        stopConfetti();
+      } else if (isConfettiVisible) {
+        startConfetti();
+      }
+    };
+
+    if (isConfettiVisible && !document.hidden) {
+      startConfetti();
+    }
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      stopConfetti();
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
   }, [isConfettiVisible]);
 
