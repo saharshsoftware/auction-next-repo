@@ -111,7 +111,9 @@ export default async function Home() {
             locationOptions={sanitizeReactSelectOptions(locationOptions)}
           />
         </section>
-
+        {/* User Recommendations (Authenticated) */}
+        <HomeRecommendationsClient />
+        
         <DownloadBanner />
         <ServicesSection />    
         <LandingPageSectionClient
@@ -121,8 +123,7 @@ export default async function Home() {
           bankOptions={bankOptions}
         />   
 
-        {/* User Recommendations (Authenticated) */}
-        <HomeRecommendationsClient />
+
         
         {/* Home Collection Sections */}
         <HomeCollectionsServer />

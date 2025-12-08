@@ -33,7 +33,7 @@ const mapApiPlanToMembershipPlan = (apiPlan: ApiMembershipPlan): MembershipPlan 
     priceSubtext: "per month",
     description,
     discountedPriceText,
-    ctaLabel: price === 0 ? "Stay on Free" : `Upgrade to ${name}`,
+    ctaLabel: `Switch to ${name}`,
     isPopular: isRecommended,
     badgeLabel: isRecommended ? "Popular" : undefined,
     amountInPaise,

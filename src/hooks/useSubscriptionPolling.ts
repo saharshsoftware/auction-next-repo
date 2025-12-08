@@ -1,11 +1,9 @@
 import { useCallback, useEffect, useRef } from "react";
 import { QueryClient } from "@tanstack/react-query";
-import { NATIVE_APP_MESSAGE_TYPES, REACT_QUERY } from "@/shared/Constants";
+import { REACT_QUERY } from "@/shared/Constants";
 import { logInfo, logError, getPlanTypeForBackend } from "@/shared/Utilies";
 import { getUserDetails } from "@/services/auth";
 import { isSubscriptionProcessing, clearSubscriptionProcessing } from "@/utils/subscription-storage";
-import { useConfettiStore } from "@/zustandStore/confettiStore";
-import { isInMobileApp, sendToApp } from "@/helpers/NativeHelper";
 import { updatePlanLogic } from "@/utilies/UpdatePlanHelper";
 
 const POLLING_INTERVAL_MS = 4000;
@@ -18,19 +16,10 @@ interface PollingParams {
   readonly expectedRazorpaySubscriptionId: string;
 }
 
-const isMobileApp = isInMobileApp();
-
 export const handleSubscriptionSuccess = async (queryClient: QueryClient, freshData: unknown): Promise<void> => { 
-  if (isMobileApp) {
-    sendToApp(NATIVE_APP_MESSAGE_TYPES.SUBSCRIPTION_ACTIVATED, {
-      subscriptionId: (freshData as any)?.subscriptionDetails?.subscription?.id,
-      subscriptionType: (freshData as any)?.subscriptionDetails?.subscription?.subscriptionType,
-    });
-  }
   clearSubscriptionProcessing();
   // Clear premium restriction counter when user successfully upgrades
   updatePlanLogic.resetUpgradeFlag();
-  useConfettiStore.getState().showConfetti();
   queryClient.setQueryData([REACT_QUERY.USER_PROFILE], freshData);
   await queryClient.invalidateQueries({ queryKey: [REACT_QUERY.USER_PROFILE] });
 };

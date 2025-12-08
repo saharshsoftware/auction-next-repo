@@ -10,6 +10,9 @@ import { useRazorpayCheckout } from "./useRazorpayCheckout";
 import { useCurrentPlanInfo } from "./useCurrentPlanInfo";
 import { useSubscriptionPendingStatus } from "./useSubscriptionPendingStatus";
 import { clearSubscriptionProcessing } from "@/utils/subscription-storage";
+import { ROUTE_CONSTANTS } from "@/shared/Routes";
+import { URL_PARAMS } from "@/shared/Constants";
+import { isInMobileApp } from "@/helpers/NativeHelper";
 import toast from "react-simple-toasts";
 
 interface UseSubscriptionFlowParams {
@@ -73,7 +76,10 @@ export const useSubscriptionFlow = ({
         position: 'top-center',
         theme: 'success',
       });
-      // setTimeout(() => window.location.reload(), 1000);
+      const successUrl = isInMobileApp()
+        ? `${ROUTE_CONSTANTS.PAYMENT_SUCCESS}?${URL_PARAMS.SOURCE}=${URL_PARAMS.MOBILE_APP}`
+        : ROUTE_CONSTANTS.PAYMENT_SUCCESS;
+      window.location.href = successUrl;
     } else {
       toast("Subscription is being processed. Please refresh the page in a few moments.", {
         duration: 5000,

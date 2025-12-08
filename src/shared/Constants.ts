@@ -808,3 +808,8 @@ export const enum NATIVE_APP_MESSAGE_TYPES {
   PAYMENT_FAILED = 'PAYMENT_FAILED',
   PAYMENT_CANCELLED = 'PAYMENT_CANCELLED',
 }
+
+export const URL_PARAMS = {
+  SOURCE: 'source',
+  MOBILE_APP: 'mobile_app',
+} as const;
