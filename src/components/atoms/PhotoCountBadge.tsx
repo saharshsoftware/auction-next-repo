@@ -12,7 +12,7 @@ export const PhotoCountBadge: React.FC<PhotoCountBadgeProps> = ({ count, classNa
   return (
     <div className={`flex items-center gap-1 text-xs text-gray-500 ${className}`}>
       <Camera className="h-3 w-3" />
-      <span>{count} photo{count > 1 ? "s" : ""} 2qweqw</span>
+      <span>{count} photo{count > 1 ? "s" : ""}</span>
     </div>
   );
 };
