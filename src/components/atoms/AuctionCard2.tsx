@@ -301,9 +301,9 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
                   {property?.auctionStartTime ? getDateAndTimeFromISOString(property?.auctionStartTime?.toString())?.date : 'Not specified'}
                 </div>
                 <div className="mt-4 flex justify-end">
-                  <button className="flex items-center px-3 py-1.5 text-green-600 border border-green-300 rounded-lg hover:bg-green-50 transition-colors text-sm-xs font-medium ml-6">
+                  <div className="flex items-center px-3 py-1.5 text-green-600 border border-green-300 rounded-lg hover:bg-green-50 transition-colors text-sm-xs font-medium ml-6">
                     {WhatsappShareWithIcon({ url: sharedUrl })}
-                  </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -464,9 +464,9 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
                   </div> */}
 
                 <div className="mt-4 flex justify-end">
-                  <button type="button" className="flex items-center px-3 py-1.5 text-green-600 border border-green-300 rounded-lg hover:bg-green-50 transition-colors text-sm-xs font-medium ml-6">
+                  <div className="flex items-center px-3 py-1.5 text-green-600 border border-green-300 rounded-lg hover:bg-green-50 transition-colors text-sm-xs font-medium ml-6">
                     {WhatsappShareWithIcon({ url: sharedUrl })}
-                  </button>
+                  </div>
                 </div>
               </div>
             </div>

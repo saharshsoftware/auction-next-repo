@@ -25,11 +25,11 @@ import { WishlistSvg } from '../svgIcons/WishlistSvg';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faCheck } from '@fortawesome/free-solid-svg-icons';
 import ActionButton from '../atoms/ActionButton';
-import { COOKIES, STRING_DATA } from '@/shared/Constants';
+import { STRING_DATA } from '@/shared/Constants';
 import { useRouter } from 'next/navigation';
 import InterestModal from '../ modals/InterestModal';
 import useModal from '@/hooks/useModal';
-import { getCookie } from 'cookies-next';
+import { useUserData } from '@/hooks/useAuthenticated';
 import SurveyCard from "../atoms/SurveySection";
 import { InfoTooltip } from '../atoms/InfoTooltip';
 import { extractPhoneNumbers, getDateAndTimeFromISOString, getDateAndTimeFromISOStringForDisplay, getSharedAuctionUrl } from '@/shared/Utilies';
@@ -55,27 +55,27 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
   const property = auctionDetail;
   const id = property?.id;
   const router = useRouter();
-  const showLogin = loginLogic.getShouldShowLogin()
-  const [noticeImageUrl, setNoticeImageUrl] = useState('');
-  const userData = getCookie(COOKIES.AUCTION_USER_KEY)
-    ? JSON.parse(getCookie(COOKIES.AUCTION_USER_KEY) ?? "")
-    : null;
+  
+  // Use hydration-safe hook for auth data
+  const { userData, token } = useUserData();
   const { showModal, openModal, hideModal } = useModal();
   const { fullProfileData } = useUserProfile(!!userData);
+  
+  // State for hydration-safe values - start with false to match server render
+  const [showLogin, setShowLogin] = useState(false);
+  const [noticeImageUrl, setNoticeImageUrl] = useState('');
   const [loading, setLoading] = useState(false);
   const [showUpgradePrompt, setShowUpgradePrompt] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isAdmin] = useState(true); // Default to true as requested
-  
+
   // State for client-side only date comparison to avoid hydration mismatch
   const [isAuctionExpired, setIsAuctionExpired] = useState<boolean>(false);
-
-  const tokenFromCookie = getCookie(COOKIES.TOKEN_KEY);
-  const [token, setToken] = useState<string | null>(null);
-
+  
+  // Read localStorage value only after mount to avoid hydration mismatch
   useEffect(() => {
-    setToken(tokenFromCookie ? String(tokenFromCookie) : null);
-  }, [tokenFromCookie]);
+    setShowLogin(loginLogic.getShouldShowLogin());
+  }, []);
 
   // Use scroll to top hook for property detail pages
   useScrollToTop({
@@ -105,7 +105,7 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
   useEffect(() => {
     // Only run date comparison on client-side to avoid hydration mismatch
     if (property?.auctionEndDate) {
-      const endDate = new Date(property.auctionEndDate);
+      const endDate = new Date(property.auctionEndDate );
       const currentDate = new Date();
       setIsAuctionExpired(endDate < currentDate);
     }
@@ -186,7 +186,7 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
         <div className="text-sm text-gray-700 leading-relaxed">
           {hasDescription ? (
             <BlurredFieldWrapper 
-              isBlurred={(token === null && showLogin) || showUpgradePrompt}
+              isBlurred={(!token && showLogin) || showUpgradePrompt}
               blurType={showUpgradePrompt ? "upgrade" : "login"}
             >
               <p className="mb-3 ">{auctionDetail?.description}</p>
@@ -365,7 +365,7 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
                 {/* Property Address */}
                 {property.propertyAddress && (
                   <BlurredFieldWrapper 
-                    isBlurred={(token === null && showLogin) || showUpgradePrompt}
+                    isBlurred={(!token && showLogin) || showUpgradePrompt}
                     blurType={showUpgradePrompt ? "upgrade" : "login"}
                   >
                     <div className="flex items-start text-sm-xs text-gray-600">
@@ -479,7 +479,7 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
           {/* Image Carousel - Only show if we have real property images */}
           {hasValidImages && (
             <BlurredFieldWrapper
-              isBlurred={(token === null && showLogin) || showUpgradePrompt}
+              isBlurred={(!token && showLogin) || showUpgradePrompt}
               hasImageCarousel={true}
               blurType={showUpgradePrompt ? "upgrade" : "login"}
             >
@@ -606,7 +606,7 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
               <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
                 <SectionHeader title="Contact Information" />
                 <BlurredFieldWrapper 
-                  isBlurred={(token === null && showLogin) || showUpgradePrompt}
+                  isBlurred={(!token && showLogin) || showUpgradePrompt}
                   blurType={showUpgradePrompt ? "upgrade" : "login"}
                 >
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

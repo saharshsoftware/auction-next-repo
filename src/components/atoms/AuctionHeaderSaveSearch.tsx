@@ -1,7 +1,6 @@
 "use client";
-import { COOKIES, RANGE_PRICE, STRING_DATA } from "@/shared/Constants";
-import { getCookie } from "cookies-next";
-import { useState } from "react";
+import { RANGE_PRICE, STRING_DATA } from "@/shared/Constants";
+import { useState, useEffect } from "react";
 import SavedSearchModal from "../ modals/SavedSearchModal";
 import LoginModal from "../ modals/LoginModal";
 import SortByDropdown from "./SortByDropdown";
@@ -16,7 +15,7 @@ import { useQuery } from "@tanstack/react-query";
 import { REACT_QUERY } from "@/shared/Constants";
 import { ISavedSearch } from "@/types";
 import { LimitReachedBanner } from "../molecules/limit-reached-banner";
-import { useIsAuthenticated } from "@/hooks/useAuthenticated";
+import { useIsAuthenticated, useUserData } from "@/hooks/useAuthenticated";
 
 interface IAuctionHeaderSaveSearchProps {
   searchParams?: { [key: string]: string | string[] | undefined };
@@ -25,8 +24,15 @@ interface IAuctionHeaderSaveSearchProps {
 const AuctionHeaderSaveSearch = ({ searchParams }: IAuctionHeaderSaveSearchProps) => {
   const [showSavedSearchModal, setShowSavedSearchModal] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [hasMounted, setHasMounted] = useState(false);
   const { isAuthenticated } = useIsAuthenticated();
-  const token = getCookie(COOKIES.TOKEN_KEY) ?? "";
+  // Use hydration-safe hook for token
+  const { token } = useUserData();
+
+  // Track when component has mounted to avoid hydration mismatch
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
   const { isInternalUser } = useUserProfile(isAuthenticated);
   const {
     data: savedSearchData
@@ -78,6 +84,8 @@ const AuctionHeaderSaveSearch = ({ searchParams }: IAuctionHeaderSaveSearchProps
   };
 
   const getButtonText = () => {
+    // Before mount, always return default text to avoid hydration mismatch
+    if (!hasMounted) return "Save this search";
     if (!token) return "Save this search";
     if (isLoadingAccess) return "Loading...";
     if (!canAddSavedSearch) return "Limit reached";
@@ -85,6 +93,8 @@ const AuctionHeaderSaveSearch = ({ searchParams }: IAuctionHeaderSaveSearchProps
   };
 
   const getSubText = () => {
+    // Before mount, always return default text to avoid hydration mismatch
+    if (!hasMounted) return "Resume your journey later with saved filters";
     if (!token) return "Resume your journey later with saved filters";
     if (isLoadingAccess) return "Checking availability...";
     if (!canAddSavedSearch) {
@@ -93,8 +103,9 @@ const AuctionHeaderSaveSearch = ({ searchParams }: IAuctionHeaderSaveSearchProps
     return "Resume your journey later with saved filters";
   };
 
-  const shouldDisableButton = token && (!canAddSavedSearch || isLoadingAccess);
-  const shouldShowUpgradePrompt = shouldDisableButton && !isLoadingAccess && isInternalUser;
+  // Only apply disabled state after mount to avoid hydration mismatch
+  const shouldDisableButton = hasMounted && token && (!canAddSavedSearch || isLoadingAccess);
+  const shouldShowUpgradePrompt = hasMounted && shouldDisableButton && !isLoadingAccess && isInternalUser;
 
   return (
     <>
