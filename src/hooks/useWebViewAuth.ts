@@ -30,7 +30,6 @@
 
 'use client';
 import { useState, useEffect, useRef } from 'react';
-import { useRouter } from 'next/navigation';
 import {
   isInMobileApp,
   authenticateFromMobileApp,
@@ -39,6 +38,26 @@ import {
   waitForWebViewBridge
 } from '@/helpers/NativeHelper';
 import { NATIVE_APP_MESSAGE_TYPES } from '@/shared/Constants';
+
+// ============================================================================
+// DEBUG CONFIGURATION
+// Set to true to enable detailed logging for troubleshooting auto-login issues
+// ============================================================================
+const DEBUG_WEBVIEW_AUTH = true;
+
+/**
+ * Debug logger for useWebViewAuth hook
+ * Prefixes all logs with [useWebViewAuth] for easy filtering in console
+ */
+const debugLog = (message: string, data?: Record<string, unknown>): void => {
+  if (!DEBUG_WEBVIEW_AUTH) return;
+  const prefix = '[useWebViewAuth]';
+  if (data) {
+    console.log(`${prefix} ${message}`, data);
+  } else {
+    console.log(`${prefix} ${message}`);
+  }
+};
 
 interface AuthResult {
   success: boolean;
@@ -55,38 +74,36 @@ interface UseWebViewAuthReturn {
 }
 
 /**
-     * Handle WebView authentication with auto-login
-     * 
-     * Main authentication handler for mobile app WebView integration.
-     * 
-     * Flow:
-     * 1. Check if running in mobile app WebView (early exit if not)
-     * 2. Check if auth token exists in URL (early exit if not)
-     *    - This prevents infinite reload loop after successful auth
-     * 3. Authenticate using token from URL
-     *    - Automatically logs out existing user if any
-     *    - Verifies token with backend
-     *    - Sets new authentication cookies
-     * 4. Send success/failure messages to mobile app
-     * 5. Remove auth params from URL (prevents re-authentication)
-     * 6. Refresh page to show authenticated state
-     * 
-     * Why URL param check is critical:
-     * - Without it, page would re-authenticate on every load
-     * - Causes infinite reload loop
-     * - URL params are removed after first successful auth
-     * - Subsequent loads skip authentication
-     * 
-     * Messages sent to mobile app:
-     * - AUTH_SUCCESS: Authentication succeeded
-     * - WEBVIEW_READY: WebView is ready and user is logged in
-     * - USER_MISMATCH: Email doesn't match token
-     * - TOKEN_EXPIRED: Token has expired
-     * - AUTH_FAILED: General authentication failure
-     */
-
+ * Handle WebView authentication with auto-login
+ * 
+ * Main authentication handler for mobile app WebView integration.
+ * 
+ * Flow:
+ * 1. Check if running in mobile app WebView (early exit if not)
+ * 2. Check if auth token exists in URL (early exit if not)
+ *    - This prevents infinite reload loop after successful auth
+ * 3. Authenticate using token from URL
+ *    - Automatically logs out existing user if any
+ *    - Verifies token with backend
+ *    - Sets new authentication cookies
+ * 4. Send success/failure messages to mobile app
+ * 5. Remove auth params from URL (prevents re-authentication)
+ * 6. Refresh page to show authenticated state
+ * 
+ * Why URL param check is critical:
+ * - Without it, page would re-authenticate on every load
+ * - Causes infinite reload loop
+ * - URL params are removed after first successful auth
+ * - Subsequent loads skip authentication
+ * 
+ * Messages sent to mobile app:
+ * - AUTH_SUCCESS: Authentication succeeded
+ * - WEBVIEW_READY: WebView is ready and user is logged in
+ * - USER_MISMATCH: Email doesn't match token
+ * - TOKEN_EXPIRED: Token has expired
+ * - AUTH_FAILED: General authentication failure
+ */
 export const useWebViewAuth = (): UseWebViewAuthReturn => {
-  const router = useRouter();
   const [authResult, setAuthResult] = useState<AuthResult | null>(null);
   const [isAuthenticating, setIsAuthenticating] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
@@ -112,9 +129,15 @@ export const useWebViewAuth = (): UseWebViewAuthReturn => {
   };
 
   const handleWebViewAuth = async () => {
+    debugLog('========== useWebViewAuth HOOK TRIGGERED ==========');
+    debugLog('Initial state check', {
+      hasAttemptedAuth: hasAttemptedAuth.current,
+      currentUrl: typeof window !== 'undefined' ? window.location.href : 'SSR',
+    });
+
     // Prevent duplicate authentication attempts
     if (hasAttemptedAuth.current) {
-      console.log('Auth already attempted, skipping');
+      debugLog('Auth already attempted in this session, skipping to prevent duplicate');
       return;
     }
 
@@ -122,12 +145,12 @@ export const useWebViewAuth = (): UseWebViewAuthReturn => {
     // This is the PRIMARY trigger - URL params are always available immediately
     // This prevents re-authentication after page reload (params are removed after success)
     if (!hasAuthTokenInUrl()) {
-      console.log('No auth token in URL, skipping WebView auth');
+      debugLog('No auth_token in URL, skipping WebView auth (this is normal for regular page visits)');
       return;
     }
 
     hasAttemptedAuth.current = true;
-    console.log('Auth token found in URL, starting auto-login...');
+    debugLog('Auth token detected in URL, initiating auto-login flow...');
     setIsAuthenticating(true);
     setAuthResult(null);
     setAuthError(null);
@@ -135,15 +158,17 @@ export const useWebViewAuth = (): UseWebViewAuthReturn => {
     try {
       // Authenticate using token from URL
       // This function handles logout + login automatically
+      debugLog('Calling authenticateFromMobileApp()...');
       const result = await authenticateFromMobileApp();
       setAuthResult(result);
 
       if (result.success) {
-        console.log('Auto-login successful:', result.user);
-        console.log('Was previously logged in:', result.wasLoggedIn);
-        if (result.previousUser) {
-          console.log('Previous user:', result.previousUser.email);
-        }
+        debugLog('Auto-login completed successfully', {
+          userEmail: result.user?.email,
+          userId: result.user?.id,
+          wasLoggedIn: result.wasLoggedIn,
+          previousUserEmail: result.previousUser?.email,
+        });
 
         // Notify mobile app of successful authentication (async, non-blocking)
         sendMessageToApp(NATIVE_APP_MESSAGE_TYPES.AUTH_SUCCESS, {
@@ -169,19 +194,30 @@ export const useWebViewAuth = (): UseWebViewAuthReturn => {
         const url = new URL(window.location.href);
         url.searchParams.delete('auth_token');
         url.searchParams.delete('userEmail');
-
-        console.log('Clearing URL params and refreshing...');
+        const cleanUrl = url.toString();
+        debugLog('Cleaning URL params to prevent re-auth loop', {
+          originalUrl: window.location.href,
+          cleanUrl,
+        });
 
         // Update URL in browser without triggering navigation
-        window.history.replaceState({}, '', url.toString());
+        window.history.replaceState({}, '', cleanUrl);
 
-        // Refresh page to update authentication state
-        router.refresh();
+        // Reload page to update authentication state
+        // Using window.location.reload() instead of router.refresh() because
+        // router.refresh() only refetches Server Components while Client Components
+        // retain their state, causing the UI to not reflect the new auth state
+        debugLog('Triggering page reload to update UI with authenticated state');
+        window.location.reload();
+        debugLog('========== AUTO-LOGIN FLOW COMPLETED SUCCESSFULLY ==========');
       } else {
         throw new Error(result.error);
       }
     } catch (error: any) {
-      console.error('WebView auto-login failed:', error);
+      console.error('[useWebViewAuth ERROR] Auto-login failed:', error);
+      debugLog('========== AUTO-LOGIN FAILED ==========', {
+        errorMessage: error.message,
+      });
       setAuthError(error.message);
       setAuthResult({ success: false, error: error.message });
 
@@ -208,6 +244,7 @@ export const useWebViewAuth = (): UseWebViewAuthReturn => {
     // Trigger authentication on mount if auth_token exists in URL
     // This is more reliable than checking for ReactNativeWebView which may not be
     // injected immediately due to bridge initialization timing
+    debugLog('useEffect mounted - checking for auto-login');
     handleWebViewAuth();
   }, []);
 
