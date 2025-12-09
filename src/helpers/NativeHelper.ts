@@ -22,6 +22,37 @@ import { COOKIES } from '@/shared/Constants';
 import { API_BASE_URL, API_ENPOINTS } from '@/services/api';
 import axios from 'axios';
 
+// ============================================================================
+// DEBUG CONFIGURATION
+// Set to true to enable detailed logging for troubleshooting auto-login issues
+// Toggle this flag to debug issues on different environments (production, staging, etc.)
+// ============================================================================
+const DEBUG_WEBVIEW_AUTH = true;
+
+/**
+ * Debug logger for WebView authentication
+ * Only logs when DEBUG_WEBVIEW_AUTH is enabled
+ * Prefixes all logs with [WebViewAuth] for easy filtering in console
+ */
+const debugLog = (message: string, data?: Record<string, unknown>): void => {
+  if (!DEBUG_WEBVIEW_AUTH) return;
+  const prefix = '[WebViewAuth]';
+  if (data) {
+    console.log(`${prefix} ${message}`, data);
+  } else {
+    console.log(`${prefix} ${message}`);
+  }
+};
+
+/**
+ * Debug error logger for WebView authentication
+ * Always logs errors regardless of DEBUG_WEBVIEW_AUTH flag
+ */
+const debugError = (message: string, error?: unknown): void => {
+  const prefix = '[WebViewAuth ERROR]';
+  console.error(`${prefix} ${message}`, error);
+};
+
 /**
  * Extends the Window interface to include React Native WebView
  * This allows TypeScript to recognize the WebView bridge object
@@ -79,7 +110,14 @@ export const isInMobileApp = (): boolean => {
 export const hasAuthTokenInUrl = (): boolean => {
   if (typeof window === 'undefined') return false;
   const urlParams = new URLSearchParams(window.location.search);
-  return urlParams.has('auth_token');
+  const hasToken = urlParams.has('auth_token');
+  debugLog('Checking auth_token in URL', {
+    hasToken,
+    fullUrl: window.location.href,
+    hostname: window.location.hostname,
+    search: window.location.search,
+  });
+  return hasToken;
 };
 
 /**
@@ -159,18 +197,30 @@ export const getUserEmailFromUrl = (): string | null => {
  * @returns Object with success status and user data or error message
  */
 export const verifyTokenAndGetUser = async (token: string) => {
+  const apiUrl = `${API_BASE_URL}${API_ENPOINTS.USER_ME}`;
+  debugLog('Verifying token with backend API', {
+    apiUrl,
+    tokenLength: token?.length,
+    tokenPreview: token ? `${token.substring(0, 20)}...` : 'null',
+  });
   try {
-    const response = await axios.get(
-      `${API_BASE_URL}${API_ENPOINTS.USER_ME}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const response = await axios.get(apiUrl, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    debugLog('Token verification successful', {
+      userEmail: response.data?.email,
+      userId: response.data?.id,
+    });
     return { success: true, user: response.data };
   } catch (error: any) {
-    console.error('Token verification failed:', error);
+    debugError('Token verification failed', {
+      status: error.response?.status,
+      statusText: error.response?.statusText,
+      errorData: error.response?.data,
+      message: error.message,
+    });
     return {
       success: false,
       error: error.response?.data?.error || 'Authentication failed',
@@ -225,6 +275,84 @@ export const logoutUser = (): void => {
 };
 
 /**
+ * Extract root domain from hostname for cookie domain setting
+ * 
+ * Examples:
+ * - 'www.eauctiondekho.com' → '.eauctiondekho.com'
+ * - 'api.eauctiondekho.com' → '.eauctiondekho.com'
+ * - 'eauctiondekho.com' → '.eauctiondekho.com'
+ * - 'staging.app.example.com' → '.example.com'
+ * - 'localhost' → undefined (skip domain setting)
+ * - '192.168.1.1' → undefined (skip for IP addresses)
+ * - 'xxx.ngrok-free.app' → undefined (skip for development domains)
+ * - 'xxx.vercel.app' → undefined (skip for preview deployments)
+ * 
+ * @param hostname - The current window.location.hostname
+ * @returns Root domain with leading dot, or undefined if should skip
+ */
+const extractRootDomain = (hostname: string): string | undefined => {
+  // Skip for localhost
+  if (hostname === 'localhost' || hostname === '127.0.0.1') {
+    return undefined;
+  }
+  // Skip for IP addresses (e.g., 192.168.1.1)
+  if (/^(\d{1,3}\.){3}\d{1,3}$/.test(hostname)) {
+    return undefined;
+  }
+  // Skip for development/preview domains where we don't control subdomains
+  const skipDomains = [
+    'ngrok-free.app',
+    'ngrok.io',
+    'vercel.app',
+    'netlify.app',
+    'herokuapp.com',
+    'github.io',
+    'pages.dev',
+  ];
+  if (skipDomains.some(domain => hostname.endsWith(domain))) {
+    return undefined;
+  }
+  // Extract root domain (last two parts for standard TLDs)
+  // e.g., 'www.eauctiondekho.com' → 'eauctiondekho.com'
+  const parts = hostname.split('.');
+  if (parts.length < 2) {
+    return undefined;
+  }
+  // Handle standard TLDs (e.g., .com, .org, .in)
+  // For two-part TLDs like .co.in, .com.au, this simple logic still works
+  // because we want at least the domain + TLD
+  const rootDomain = parts.slice(-2).join('.');
+  // Return with leading dot to enable subdomain access
+  return `.${rootDomain}`;
+};
+
+/**
+ * Determine the cookie domain based on current hostname
+ * 
+ * Cookie Domain Strategy:
+ * - For production domains: Use root domain with leading dot (e.g., '.eauctiondekho.com')
+ *   This allows cookies to work across all subdomains (www, api, etc.)
+ * - For development/staging domains: Don't set domain
+ *   Let browser use the exact hostname automatically
+ * 
+ * Why leading dot matters:
+ * - '.eauctiondekho.com' → Cookie works on: www.eauctiondekho.com, eauctiondekho.com, api.eauctiondekho.com
+ * - 'www.eauctiondekho.com' → Cookie ONLY works on: www.eauctiondekho.com
+ * 
+ * @returns Cookie domain string or undefined
+ */
+const getCookieDomain = (): string | undefined => {
+  if (typeof window === 'undefined') return undefined;
+  const hostname = window.location.hostname;
+  const rootDomain = extractRootDomain(hostname);
+  debugLog('Cookie domain calculation', {
+    hostname,
+    calculatedRootDomain: rootDomain || '(using browser default)',
+  });
+  return rootDomain;
+};
+
+/**
  * Authenticate user from mobile app with auto-login
  * 
  * Main authentication flow for mobile app WebView:
@@ -249,11 +377,22 @@ export const logoutUser = (): void => {
  *   - error: error message (if failed)
  */
 export const authenticateFromMobileApp = async () => {
+  debugLog('========== STARTING MOBILE APP AUTHENTICATION ==========');
+  debugLog('Environment info', {
+    hostname: typeof window !== 'undefined' ? window.location.hostname : 'SSR',
+    href: typeof window !== 'undefined' ? window.location.href : 'SSR',
+    nodeEnv: process.env.NODE_ENV,
+  });
+
   try {
     // Step 1: Extract authentication parameters from URL
     const mobileToken = getAuthTokenFromUrl();
     const expectedUserEmail = getUserEmailFromUrl();
-    console.log({ mobileToken, expectedUserEmail });
+    debugLog('Step 1: Extracted URL parameters', {
+      hasToken: !!mobileToken,
+      tokenLength: mobileToken?.length,
+      expectedUserEmail,
+    });
     
     if (!mobileToken) {
       throw new Error('No auth token provided');
@@ -262,55 +401,83 @@ export const authenticateFromMobileApp = async () => {
     // Step 2 & 3: Check for existing session and logout if found
     const isLoggedIn = isUserLoggedIn();
     const currentUser = getCurrentUser();
+    debugLog('Step 2: Checked existing session', {
+      isLoggedIn,
+      currentUserEmail: currentUser?.email,
+    });
     
     if (isLoggedIn && currentUser) {
-      console.log('User already logged in:', currentUser.email);
-      console.log('Logging out existing user before new authentication');
-      // logoutUser(); // Clear existing session
-    } else {
-      console.log('No existing user session found');
+      debugLog('Existing user found, will be replaced with new user', {
+        existingEmail: currentUser.email,
+      });
     }
 
     // Step 4: Verify token with backend API
+    debugLog('Step 3: Verifying token with backend...');
     const { success, user, error } = await verifyTokenAndGetUser(mobileToken);
 
     if (!success || !user) {
       throw new Error(error || 'Invalid token');
     }
+    debugLog('Step 3: Token verified successfully', {
+      userEmail: user.email,
+      userId: user.id,
+    });
 
     // Step 5: Validate email matches (security check to prevent user switching)
     if (expectedUserEmail && user.email !== expectedUserEmail) {
+      debugError('Email mismatch detected', {
+        expected: expectedUserEmail,
+        actual: user.email,
+      });
       throw new Error('USER_EMAIL_MISMATCH');
     }
+    debugLog('Step 4: Email validation passed');
 
     // Step 6: Set authentication cookies for new user
-    // Token cookie - used for API authentication
-    setCookie(COOKIES.TOKEN_KEY, mobileToken, {
+    const cookieDomain = getCookieDomain();
+    const isSecure = process.env.NODE_ENV === 'production';
+    const cookieOptions = {
       maxAge: 60 * 60 * 24 * 7, // 7 days
       path: '/',
+      sameSite: 'lax' as const,
+      secure: isSecure,
+      ...(cookieDomain && { domain: cookieDomain }),
+    };
+    debugLog('Step 5: Setting cookies with options', {
+      domain: cookieDomain || '(browser default - exact hostname)',
+      secure: isSecure,
       sameSite: 'lax',
-      secure: process.env.NODE_ENV === 'production',
+      maxAgeDays: 7,
     });
+
+    // Token cookie - used for API authentication
+    setCookie(COOKIES.TOKEN_KEY, mobileToken, cookieOptions);
+    debugLog('Token cookie set successfully');
 
     // User data cookie - stores user information
-    setCookie(COOKIES.AUCTION_USER_KEY, JSON.stringify(user), {
-      maxAge: 60 * 60 * 24 * 7, // 7 days
-      path: '/',
-      sameSite: 'lax',
-      secure: process.env.NODE_ENV === 'production',
-    });
+    setCookie(COOKIES.AUCTION_USER_KEY, JSON.stringify(user), cookieOptions);
+    debugLog('User data cookie set successfully');
 
-    console.log('Authentication successful for user:', user.email);
+    debugLog('========== AUTHENTICATION COMPLETED SUCCESSFULLY ==========', {
+      userEmail: user.email,
+      wasLoggedIn: isLoggedIn,
+      previousUserEmail: currentUser?.email,
+      cookieDomain: cookieDomain || 'default',
+    });
     
     // Step 7: Return success with metadata about the operation
     return { 
       success: true, 
       user,
-      wasLoggedIn: isLoggedIn, // Was someone logged in before?
-      previousUser: currentUser, // Who was logged in before?
+      wasLoggedIn: isLoggedIn,
+      previousUser: currentUser,
     };
   } catch (error: any) {
-    console.error('WebView authentication failed:', error);
+    debugError('========== AUTHENTICATION FAILED ==========', {
+      errorMessage: error.message,
+      errorStack: error.stack,
+    });
     return {
       success: false,
       error: error.message || 'Authentication failed',
