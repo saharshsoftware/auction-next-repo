@@ -7,16 +7,12 @@ import TextField from "../atoms/TextField";
 import ActionButton from "../atoms/ActionButton";
 import { useMutation } from "@tanstack/react-query";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
-import { redirect, useParams, useRouter } from "next/navigation";
-import { handleOnSettled } from "@/shared/Utilies";
+import { useRouter } from "next/navigation";
 import { FormikValues } from "formik";
-import { login } from "@/server/actions/auth";
 import ActionCheckbox from "../atoms/ActionCheckbox";
 import Link from "next/link";
-// import { authenticate } from "@/app/lib/actions";
-// import { signIn } from "@/auth";
-import { signIn } from "next-auth/react";
 import { loginClient } from "@/services/auth";
+import { useAuthStore } from "@/zustandStore/authStore";
 
 const validationSchema = Yup.object({
   email: Yup.string().trim().required(ERROR_MESSAGE.EMAIL_REQUIRED),
@@ -41,21 +37,21 @@ export default function LoginComp(props: {
     setShowOtpForm = () => { },
   } = props;
   const router = useRouter();
-  const params = useParams();
+  const triggerAuthRefresh = useAuthStore((state) => state.triggerAuthRefresh);
   const [showPassword, setShowPassword] = useState(false);
   const [respError, setRespError] = useState<string>("");
 
   // Mutations
   const { mutate, isPending } = useMutation({
     mutationFn: loginClient,
-    onSuccess(data, variables, context) {
+    onSuccess() {
+      // Trigger auth refresh to update navbar and other auth-dependent components
+      triggerAuthRefresh();
       if (isAuthModal) {
-        router.refresh();
         closeModal?.();
         return;
       }
       router.push(ROUTE_CONSTANTS.DASHBOARD);
-      router.refresh();
     },
     onError(error: { message: string }) {
       const { message } = error;
