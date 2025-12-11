@@ -19,6 +19,8 @@ export const COOKIES = {
   SORT_KEY: "auction-sort",
 };
 
+export const CONTACT_NUMBER = "+91 99286 18166";
+
 export const RANGE_PRICE = {
   MIN: "0",
   MAX: "100000000",
@@ -206,6 +208,7 @@ export const STRING_DATA = {
   PAYMENT_GATEWAY_LOADING: "Payment gateway is getting ready.",
   PAYMENT_GATEWAY_ERROR: "Unable to load payment gateway. Please retry later.",
   PAYMENT_CONFIGURATION_MISSING: "Payment gateway configuration missing. Please contact support.",
+  PAYMENT_SUPPORT_MESSAGE: "Facing payment issues? Contact us at 1234567890",
   MEMBERSHIP_PLAN_DETAILS: "Plan details",
   MEMBERSHIP_PAYMENT_INFO: "Payment info",
   MEMBERSHIP_PAYMENT_HISTORY: "Payment history",
