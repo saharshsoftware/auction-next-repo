@@ -15,6 +15,7 @@ import useModal from "@/hooks/useModal";
 import LoginModal from "../ modals/LoginModal";
 import InfoModal from "../ modals/InfoModal";
 import ContactSalesModal from "../ modals/ContactSalesModal";
+import PaymentTroubleModal from "../ modals/PaymentTroubleModal";
 import { PersonaPlanCard } from "./PersonaPlanCard";
 import { SubscriptionPendingScreen } from "./SubscriptionPendingScreen";
 import { useUserProfile } from "@/hooks/useUserProfile";
@@ -128,6 +129,8 @@ const PricingPlans: React.FC<PricingPlansProps> = ({
     activePlanId,
     checkoutMessage,
     getCurrentPlanInfo,
+    showPaymentTroubleModal,
+    hidePaymentTroubleModal,
   } = useSubscriptionFlow({
     isAuthenticated,
     queryClient,
@@ -327,6 +330,12 @@ const PricingPlans: React.FC<PricingPlansProps> = ({
           hideModal={hideContactSalesModal}
           initialPhoneNumber={fullProfileData?.username || ""}
           userData={fullProfileData as UserProfileApiResponse}
+        />
+      )}
+      {showPaymentTroubleModal && (
+        <PaymentTroubleModal
+          openModal={showPaymentTroubleModal}
+          hideModal={hidePaymentTroubleModal}
         />
       )}
       </section>

@@ -62,6 +62,11 @@ export const useRazorpayCheckout = ({
   const router = useRouter();
   const [activePlanId, setActivePlanId] = useState<string | null>(null);
   const [checkoutMessage, setCheckoutMessage] = useState<string>(STRING_DATA.EMPTY);
+  const [showPaymentTroubleModal, setShowPaymentTroubleModal] = useState<boolean>(false);
+
+  const hidePaymentTroubleModal = useCallback(() => {
+    setShowPaymentTroubleModal(false);
+  }, []);
 
   const initiateCheckout = useCallback(
     async (plan: MembershipPlan) => {
@@ -156,11 +161,7 @@ export const useRazorpayCheckout = ({
                 subscriptionId,
               });
               setActivePlanId(null);
-              toast("Payment cancelled. You can try again anytime.", {
-                duration: 3000,
-                position: "top-center",
-                theme: "warning",
-              });
+              setShowPaymentTroubleModal(true);
 
               if (isInMobileApp()) {
                 sendToApp(NATIVE_APP_MESSAGE_TYPES.PAYMENT_CANCELLED, {
@@ -182,11 +183,12 @@ export const useRazorpayCheckout = ({
               razorpaySubscriptionId: checkoutConfig.subscription_id
             });
 
-            toast("Payment failed. Please try again.", {
-              duration: 4000,
+            toast(`Payment failed. ${STRING_DATA.PAYMENT_SUPPORT_MESSAGE}`, {
+              duration: 6000,
               position: 'top-center',
               theme: 'failure',
             });
+            setShowPaymentTroubleModal(true);
           });
         } catch (error) {
           logError("Failed to open Razorpay checkout", error);
@@ -223,6 +225,8 @@ export const useRazorpayCheckout = ({
     initiateCheckout,
     activePlanId,
     checkoutMessage,
+    showPaymentTroubleModal,
+    hidePaymentTroubleModal,
   };
 };
 
