@@ -36,6 +36,26 @@ interface PricingPlansProps {
   readonly initialUserProfile?: UserProfileApiResponse | null;
 }
 
+/**
+ * Returns responsive grid classes based on the number of plans.
+ * Desktop (lg/xl): single row with all plans centered.
+ * Tablet (md): 2-3 columns.
+ * Mobile: 1 column.
+ */
+const getPlansGridClasses = (planCount: number): string => {
+  const gridColumnClasses: Record<number, string> = {
+    1: "grid-cols-1 max-w-sm",
+    2: "grid-cols-1 md:grid-cols-2",
+    3: "grid-cols-1 md:grid-cols-2 lg:grid-cols-3 ",
+    4: "grid-cols-1 md:grid-cols-2 lg:grid-cols-4 ",
+    5: "grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 ",
+  };
+
+  const columnClasses = gridColumnClasses[planCount] || gridColumnClasses[3];
+
+  return `mx-auto grid gap-6 ${columnClasses}`;
+};
+
 const PricingPlans: React.FC<PricingPlansProps> = ({
   showLegend = false,
   showTooltips = true,
@@ -234,7 +254,7 @@ const PricingPlans: React.FC<PricingPlansProps> = ({
           </div>
         ) : (
           <>
-            <div className={`mx-auto grid grid-cols-1 gap-6 md:grid-cols-${membershipPlans.length > 2 ? 2 : membershipPlans.length} xl:grid-cols-${membershipPlans.length} items-stretch `}>
+            <div className={getPlansGridClasses(membershipPlans.length)}>
               {membershipPlans.map((plan: MembershipPlan) => {
                 const { isCurrentPlan } = getCurrentPlanInfo(plan);
                 const shouldHighlightPlan = isAuthenticated && isCurrentPlan;

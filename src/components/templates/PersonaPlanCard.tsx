@@ -56,14 +56,9 @@ export const PersonaPlanCard: React.FC<PersonaPlanCardProps> = ({
 
         <PriceDisplay plan={plan} isBrokerPlus={isBrokerPlus} />
 
-        {persona.audience && (
-          <p className="mt-2 text-xs font-semibold text-gray-800 leading-snug">
-            {persona.audience}
-          </p>
-        )}
-        {persona.description && (
-          <p className="mt-3 text-xs text-gray-600 leading-relaxed">
-            {persona.description}
+        {plan.description && (
+          <p className="mt-3 text-xs text-gray-600 leading-relaxed whitespace-pre-line">
+            {plan.description}
           </p>
         )}
 

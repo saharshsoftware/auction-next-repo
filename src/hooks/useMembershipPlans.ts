@@ -12,7 +12,7 @@ const UNLIMITED_LIMIT_VALUE = Number.POSITIVE_INFINITY;
  */
 const mapApiPlanToMembershipPlan = (apiPlan: ApiMembershipPlan): MembershipPlan => {
   const { id, attributes } = apiPlan;
-  const { name, description, price, planLimits, razorpayPlanId, isRecommended, discountedPrice } = attributes;
+  const { name, description, price, planLimits, razorpayPlanId, isRecommended, discountedPrice, frequency } = attributes;
 
   // Create plan ID based on name (lowercase, no spaces)
   const planId = name.toLowerCase().replace(/\s+/g, "");
@@ -30,7 +30,7 @@ const mapApiPlanToMembershipPlan = (apiPlan: ApiMembershipPlan): MembershipPlan 
     id: planId,
     label: name,
     priceText: price === 0 ? "₹0" : `₹${price.toLocaleString()}`,
-    priceSubtext: "per month",
+    priceSubtext: frequency || "per month",
     description,
     discountedPriceText,
     ctaLabel: `Switch to ${name}`,
@@ -62,11 +62,15 @@ const fetchMembershipPlans = async (): Promise<MembershipPlan[]> => {
   
   const apiResponse: ApiMembershipPlansResponse = await response.json();
   
-  // Convert API plans to MembershipPlan interface
-  const plans = apiResponse.data.map(mapApiPlanToMembershipPlan);
+  // Sort API plans by discountedPrice (actual price user pays) to establish proper hierarchy
+  const sortedApiPlans = [...apiResponse.data].sort((a, b) => {
+    const priceA = a.attributes.discountedPrice ?? a.attributes.price;
+    const priceB = b.attributes.discountedPrice ?? b.attributes.price;
+    return priceA - priceB;
+  });
   
-  // Sort plans by price to establish proper hierarchy
-  const sortedPlans = plans.sort((a, b) => a.amountInPaise - b.amountInPaise);
+  // Convert API plans to MembershipPlan interface
+  const sortedPlans = sortedApiPlans.map(mapApiPlanToMembershipPlan);
   
   // Set up previousPlanId relationships based on sorted order
   const plansWithHierarchy = sortedPlans.map((plan, index) => {
