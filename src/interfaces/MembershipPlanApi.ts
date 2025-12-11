@@ -10,6 +10,7 @@ export interface ApiMembershipPlanAttributes {
   readonly discountedPrice: number;
   readonly name: string;
   readonly description: string;
+  readonly frequency: string | null;
   readonly createdAt: string;
   readonly updatedAt: string;
   readonly publishedAt: string;
