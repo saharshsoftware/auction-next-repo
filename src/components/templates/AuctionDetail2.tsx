@@ -188,6 +188,7 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
             <BlurredFieldWrapper 
               isBlurred={(!token && showLogin) || showUpgradePrompt}
               blurType={showUpgradePrompt ? "upgrade" : "login"}
+              upgradeSource="about_property"
             >
               <p className="mb-3 ">{auctionDetail?.description}</p>
             </BlurredFieldWrapper>
@@ -367,6 +368,7 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
                   <BlurredFieldWrapper 
                     isBlurred={(!token && showLogin) || showUpgradePrompt}
                     blurType={showUpgradePrompt ? "upgrade" : "login"}
+                    upgradeSource="about_property"
                   >
                     <div className="flex items-start text-sm-xs text-gray-600">
                       <MapPin className="h-4 w-4 mt-0.5 text-gray-400 flex-shrink-0 mr-2" />
@@ -482,6 +484,7 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
               isBlurred={(!token && showLogin) || showUpgradePrompt}
               hasImageCarousel={true}
               blurType={showUpgradePrompt ? "upgrade" : "login"}
+              upgradeSource="about_property"
             >
               <div className="mb-6">
                 <ImageCarousel
@@ -608,6 +611,7 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
                 <BlurredFieldWrapper 
                   isBlurred={(!token && showLogin) || showUpgradePrompt}
                   blurType={showUpgradePrompt ? "upgrade" : "login"}
+                  upgradeSource="contact_info"
                 >
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
