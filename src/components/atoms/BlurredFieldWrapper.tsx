@@ -5,8 +5,11 @@ import useModal from "@/hooks/useModal";
 import { Eye } from 'lucide-react';
 import { useRouter } from "next/navigation";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
+import { UPGRADE_TO_PREMIUM_EVENTS } from "@/shared/Constants";
+import { trackUpgradeToPremiumEvent } from "@/helpers/WindowHelper";
 
 type BlurType = "login" | "upgrade";
+type UpgradeSource = keyof typeof UPGRADE_TO_PREMIUM_EVENTS;
 
 interface IBlurredFieldWrapperProps {
   children: React.ReactNode;
@@ -15,6 +18,7 @@ interface IBlurredFieldWrapperProps {
   hasImageCarousel?: boolean;
   icon?: React.ReactNode;
   blurType?: BlurType;
+  upgradeSource?: UpgradeSource;
 }
 
 const BlurredFieldWrapper: React.FC<IBlurredFieldWrapperProps> = ({
@@ -24,6 +28,7 @@ const BlurredFieldWrapper: React.FC<IBlurredFieldWrapperProps> = ({
   hasImageCarousel = false,
   icon,
   blurType = "login",
+  upgradeSource,
 }) => {
   const [hasMounted, setHasMounted] = useState(false);
   const { showModal, openModal, hideModal } = useModal();
@@ -38,7 +43,9 @@ const BlurredFieldWrapper: React.FC<IBlurredFieldWrapperProps> = ({
   const displayText = blurText || defaultBlurText;
 
   const handleClick = () => {
-    if (blurType === "upgrade") {
+    if (blurType === "upgrade" && upgradeSource) {
+      const eventName = UPGRADE_TO_PREMIUM_EVENTS[upgradeSource];
+      trackUpgradeToPremiumEvent(eventName);
       router.push(ROUTE_CONSTANTS.PRICING);
     } else {
       showModal();
