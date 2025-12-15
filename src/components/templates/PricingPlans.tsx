@@ -257,7 +257,7 @@ const PricingPlans: React.FC<PricingPlansProps> = ({
           )}
         </header>
         
-        {filteredPlans.length === 0 ? (
+        {membershipPlans.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-gray-600 mb-2">No membership plans available</p>
             <p className="text-gray-500 text-sm">Please try again later</p>
