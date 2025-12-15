@@ -5,7 +5,7 @@ import { MembershipPlan } from "@/interfaces/MembershipPlan";
 import { getUserData } from "@/shared/Utilies";
 
 const AB_TEST_STORAGE_KEY = "pricing_ab_group";
-const GROUP_A_PLAN_LABELS = ["Free Plan", "Trial"];
+const GROUP_A_PLAN_ID = ["free", "trial"];
 
 type ABGroup = "A" | "B";
 
@@ -66,7 +66,7 @@ const filterPlansByGroup = (plans: MembershipPlan[], group: ABGroup | null): Mem
   if (group !== "A") {
     return plans;
   }
-  return plans.filter((plan) => GROUP_A_PLAN_LABELS.includes(plan.label));
+  return plans.filter((plan) => GROUP_A_PLAN_ID.includes(plan.id));
 };
 
 /**
@@ -126,13 +126,8 @@ export const usePricingABTest = ({
       return;
     }
 
-    // For free tier users, apply A/B test based on user ID
-    const storedGroup = getStoredABGroup();
-    if (storedGroup) {
-      setAbGroup(storedGroup);
-      return;
-    }
-
+    // For free tier users, always calculate A/B group from user ID (deterministic)
+    // This ensures even/odd user ID rules are respected regardless of prior localStorage values
     const userData = getUserData();
     const userId = userData?.id;
 
