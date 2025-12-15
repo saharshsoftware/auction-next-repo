@@ -11,6 +11,7 @@ import { useMutation } from "@tanstack/react-query";
 import { sendSignInOtpClient, siginUsingOtpClient } from "@/services/auth";
 import OTPInput from "../atoms/OTPInput";
 import toast from "react-simple-toasts";
+import { useAuthStore } from "@/zustandStore/authStore";
 
 const getValidationSchema = (isOtpSent: boolean) => {
   return Yup.object({
@@ -45,6 +46,7 @@ const OtpVerificationForm: React.FC<OtpVerificationFormProps> = ({
   setShowOtpForm = () => { },
 }) => {
   const router = useRouter();
+  const triggerAuthRefresh = useAuthStore((state) => state.triggerAuthRefresh);
   const [isOtpSent, setIsOtpSent] = useState(false);
   const [timer, setTimer] = useState(300); // 5 minutes
   const [otpValue, setOtpValue] = useState("");
@@ -92,14 +94,14 @@ const OtpVerificationForm: React.FC<OtpVerificationFormProps> = ({
     isPending: isPendingSiginUsingOtpClient,
   } = useMutation({
     mutationFn: siginUsingOtpClient,
-    onSuccess: (data, variables) => {
+    onSuccess: () => {
+      // Trigger auth refresh to update navbar and other auth-dependent components
+      triggerAuthRefresh();
+      setRespError("");
       if (isAuthModal) {
-        router.refresh();
         loginApiCallback?.();
         return;
       }
-      setRespError("");
-      console.log("OTP sent successfully", data);
       router.push(ROUTE_CONSTANTS.DASHBOARD);
     },
     onError: (error) => {
