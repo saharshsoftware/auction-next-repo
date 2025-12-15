@@ -49,3 +49,19 @@ export const getCheckoutConfig = async (subscriptionId: string): Promise<Checkou
 
   return response.data as CheckoutApiResponse;
 };
+
+/**
+ * Reports a payment failure when user dismisses the Razorpay modal
+ */
+export const reportPaymentFailure = async (userId: number): Promise<void> => {
+  await postRequest({
+    API: API_ENPOINTS.PAYMENT_FAILURES,
+    DATA: {
+      data: {
+        user: userId,
+        isResolved: false,
+        failedAt: new Date().toISOString(),
+      },
+    },
+  });
+};

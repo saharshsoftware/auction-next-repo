@@ -35,6 +35,8 @@ interface UseSubscriptionFlowReturn {
   readonly checkoutMessage: string;
   readonly getCurrentPlanInfo: ReturnType<typeof useCurrentPlanInfo>;
   readonly handlePaymentSuccess: (subscriptionId: string, planType: string, razorpaySubscriptionId: string) => Promise<void>;
+  readonly showPaymentTroubleModal: boolean;
+  readonly hidePaymentTroubleModal: () => void;
 }
 
 /**
@@ -92,7 +94,9 @@ export const useSubscriptionFlow = ({
   const {
     initiateCheckout,
     activePlanId,
-    checkoutMessage
+    checkoutMessage,
+    showPaymentTroubleModal,
+    hidePaymentTroubleModal,
   } = useRazorpayCheckout({
     isCheckoutReady: isCheckoutReady && !isActionsDisabled,
     onPaymentSuccess: handlePaymentSuccess,
@@ -114,5 +118,7 @@ export const useSubscriptionFlow = ({
     checkoutMessage,
     getCurrentPlanInfo,
     handlePaymentSuccess,
+    showPaymentTroubleModal,
+    hidePaymentTroubleModal,
   };
 };

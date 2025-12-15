@@ -1,6 +1,6 @@
-export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+// export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 // export const API_BASE_URL = 'https://api2.eauctiondekho.com';
-// export const API_BASE_URL = 'http://localhost:1009';
+export const API_BASE_URL = 'http://localhost:1337';
 
 export const API_ENPOINTS = {
   NOTICES: "/api/notices",
@@ -53,4 +53,5 @@ export const API_ENPOINTS = {
   SUBSCRIPTIONS_CHECKOUT: "/api/subscriptions/checkout",
   SUBSCRIPTIONS_CANCEL: "/api/subscriptions",
   SUBSCRIPTIONS_ME: "/api/subscriptions/me",
+  PAYMENT_FAILURES: "/api/payment-failures",
 };
