@@ -19,6 +19,7 @@ import { PersonaPlanCard } from "./PersonaPlanCard";
 import { SubscriptionPendingScreen } from "./SubscriptionPendingScreen";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { UserProfileApiResponse } from "@/interfaces/UserProfileApi";
+import { usePricingABTest } from "@/hooks/usePricingABTest";
 import { 
   isSubscriptionProcessing, 
   clearSubscriptionProcessing,
@@ -134,6 +135,15 @@ const PricingPlans: React.FC<PricingPlansProps> = ({
     initialProfileData: initialUserProfile,
   });
 
+  // A/B test: Filter plans based on user ID (even = Free+Trial, odd = all plans)
+  // Paid users (non-free tier) always see all plans
+  const currentTier = subscriptionData?.subscriptionData?.tier || null;
+  const { filteredPlans } = usePricingABTest({
+    membershipPlans,
+    isAuthenticated,
+    currentTier,
+  });
+
   // Clear localStorage flag when subscription becomes active
   useEffect(() => {
     const subscriptionStatus = subscriptionData?.subscriptionData?.subscription?.status?.toLowerCase();
@@ -178,8 +188,8 @@ const PricingPlans: React.FC<PricingPlansProps> = ({
   }, [isActionsDisabled, initiateCheckout, isAuthenticated, getCurrentPlanInfo, router, showModal, showInfoModal, subscriptionData, showContactSalesModal]);
   
   const allFeatureDescriptions = useMemo(() => {
-    if (!membershipPlans.length) return [];
-    const firstPlan = membershipPlans[0];
+    if (!filteredPlans.length) return [];
+    const firstPlan = filteredPlans[0];
     const features = mapMembershipPlanLimits(firstPlan);
     const uniqueFeatures = new Map<string, string>();
     features.forEach(feature => {
@@ -191,7 +201,7 @@ const PricingPlans: React.FC<PricingPlansProps> = ({
       label,
       description,
     }));
-  }, [membershipPlans]);
+  }, [filteredPlans]);
   
   if (shouldShowInitialPending) {
     return <SubscriptionPendingScreen pendingMessage={STRING_DATA.SUBSCRIPTION_PENDING_MESSAGE} />;
@@ -247,15 +257,15 @@ const PricingPlans: React.FC<PricingPlansProps> = ({
           )}
         </header>
         
-        {membershipPlans.length === 0 ? (
+        {filteredPlans.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-gray-600 mb-2">No membership plans available</p>
             <p className="text-gray-500 text-sm">Please try again later</p>
           </div>
         ) : (
           <>
-            <div className={getPlansGridClasses(membershipPlans.length)}>
-              {membershipPlans.map((plan: MembershipPlan) => {
+            <div className={getPlansGridClasses(filteredPlans.length)}>
+              {filteredPlans.map((plan: MembershipPlan) => {
                 const { isCurrentPlan } = getCurrentPlanInfo(plan);
                 const shouldHighlightPlan = isAuthenticated && isCurrentPlan;
                 const isThisPlanProcessing = activePlanId === plan.id;
