@@ -6,7 +6,6 @@ import { Eye } from 'lucide-react';
 import { useRouter } from "next/navigation";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
 import { UPGRADE_TO_PREMIUM_EVENTS } from "@/shared/Constants";
-import { trackUpgradeToPremiumEvent } from "@/helpers/WindowHelper";
 
 type BlurType = "login" | "upgrade";
 type UpgradeSource = keyof typeof UPGRADE_TO_PREMIUM_EVENTS;
@@ -44,13 +43,12 @@ const BlurredFieldWrapper: React.FC<IBlurredFieldWrapperProps> = ({
 
   const handleClick = () => {
     if (blurType === "upgrade" && upgradeSource) {
-      const eventName = UPGRADE_TO_PREMIUM_EVENTS[upgradeSource];
-      trackUpgradeToPremiumEvent(eventName);
       router.push(ROUTE_CONSTANTS.PRICING);
     } else {
       showModal();
     }
   };
+  const buttonId = blurType === "upgrade" && upgradeSource ? UPGRADE_TO_PREMIUM_EVENTS[upgradeSource] : undefined;
 
   // Use consistent blur state: default to false before mount to match server
   const shouldBlur = hasMounted ? isBlurred : false;
@@ -62,6 +60,7 @@ const BlurredFieldWrapper: React.FC<IBlurredFieldWrapperProps> = ({
       return (
         <div className="absolute inset-0 bg-white/70 flex items-center justify-center">
           <button
+            id={buttonId}
             onClick={handleClick}
             className="bg-white/90 hover:bg-white text-gray-900 px-6 py-3 rounded-lg shadow-lg flex items-center gap-3 font-semibold"
           >
@@ -75,6 +74,7 @@ const BlurredFieldWrapper: React.FC<IBlurredFieldWrapperProps> = ({
     return (
       <div className="bg-white/70">
         <button
+          id={buttonId}
           onClick={handleClick}
           className="absolute inset-0 flex items-center justify-center cursor-pointer link link-primary font-semibold underline rounded w-fit h-fit m-auto"
         >
