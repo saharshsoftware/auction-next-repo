@@ -2,9 +2,9 @@ import PricingPlans from "@/components/templates/PricingPlans";
 import { fetchMembershipPlans } from "@/server/actions/membershipPlans";
 import { fetchUserProfile } from "@/server/actions/userProfile";
 
-// Add 5 minutes to the revalidate time
+// Keep static for better performance
 export const revalidate = 5 * 60; // 5 minutes
-export const dynamic = 'force-static'; 
+export const dynamic = "force-static";
 
 export default async function Page(): Promise<JSX.Element> {
   const [membershipPlans, userProfile] = await Promise.all([

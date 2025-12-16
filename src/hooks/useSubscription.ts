@@ -48,7 +48,7 @@ const mapSubscriptionToPlanDetails = (
       name: denormalizePlanName(subscription.subscriptionType),
       status: subscription.status.charAt(0).toUpperCase() + subscription.status.slice(1),
       renewalDate: formatDateForDisplay(subscription.endDate),
-      planId: subscription.razorpaySubscriptionId,
+      planId: subscription.razorpaySubscriptionId || '',
       benefits,
     };
   } else {
@@ -81,14 +81,14 @@ const mapSubscriptionToPlanDetails = (
 const mapSubscriptionToPaymentInfo = (
   subscriptionDetails: UserSubscriptionDetails
 ): PaymentInfo | undefined => {
-  const { subscription, razorpaySubscription } = subscriptionDetails;
+  const { subscription, razorpaySubscription, razorpayPayment } = subscriptionDetails;
 
   if (!subscription) {
     return undefined; // No payment info for free tier
   }
 
   return {
-    method: razorpaySubscription?.payment_method || "Not specified",
+    method: razorpaySubscription?.payment_method || razorpayPayment?.method || "Not specified",
     currentPeriodStart: formatDateForDisplay(subscription.currentPeriodStart),
     currentPeriodEnd: formatDateForDisplay(subscription.currentPeriodEnd),
     billingEmail: STRING_DATA.EMPTY, // Not available in current data structure
@@ -123,6 +123,8 @@ export const useSubscription = (enabled = true, initialProfileData?: UserProfile
           amount: 0,
           currency: 'INR',
           cancelAtCycleEnd: fullProfileData.subscriptionDetails.subscription.cancelAtCycleEnd,
+          paymentType: fullProfileData.subscriptionDetails.subscription.paymentType,
+          oneTimeOptionData: fullProfileData.subscriptionDetails.subscription.oneTimeOptionData,
         } : null,
         tier: fullProfileData.subscriptionDetails.tier,
         limits: fullProfileData.subscriptionDetails.limits,

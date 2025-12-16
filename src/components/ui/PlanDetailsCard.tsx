@@ -10,7 +10,7 @@ const PlanDetailsCard: React.FC<PlanDetailsCardProps> = (props) => {
         <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
         {statusLabel ? (
           <span className="rounded-full bg-brand-color/10 px-4 py-1 text-xs font-semibold text-brand-color">
-            {statusLabel}
+            {statusLabel === 'Pending_cancellation' ? 'Active' : statusLabel}
           </span>
         ) : null}
       </header>

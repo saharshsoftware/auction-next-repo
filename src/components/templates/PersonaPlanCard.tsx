@@ -4,11 +4,12 @@ import { MembershipPlan } from "@/interfaces/MembershipPlan";
 import { personaData } from "@/shared/Utilies";
 import { mapMembershipPlanLimits } from "@/shared/MembershipUtils";
 import { getButtonText, getPlanCardClasses } from "./PricingPlans.helpers";
-import { Badge, PriceDisplay, FeatureItem, PlanActionButton } from "./PricingPlans.components";
+import { Badge, PriceDisplay, FeatureItem, PlanActionButton, OneTimePriceDisplay } from "./PricingPlans.components";
+import { PaymentType } from "../atoms/PaymentTypeTab";
 
 interface PersonaPlanCardProps {
   readonly plan: MembershipPlan;
-  readonly onSelectPlan: (plan: MembershipPlan) => void;
+  readonly onSelectPlan: (plan: MembershipPlan, selectedOptionIndex?: number) => void;
   readonly isCheckoutReady: boolean;
   readonly isProcessing: boolean;
   readonly isThisPlanProcessing: boolean;
@@ -17,6 +18,9 @@ interface PersonaPlanCardProps {
   readonly showTooltips?: boolean;
   readonly showDescriptions?: boolean;
   readonly isMounted?: boolean;
+  readonly paymentType?: PaymentType;
+  readonly selectedOptionIndex?: number;
+  readonly onOptionChange?: (index: number) => void;
 }
 
 export const PersonaPlanCard: React.FC<PersonaPlanCardProps> = ({
@@ -30,8 +34,12 @@ export const PersonaPlanCard: React.FC<PersonaPlanCardProps> = ({
   showTooltips = false,
   showDescriptions = false,
   isMounted = false,
+  paymentType = "subscription",
+  selectedOptionIndex = 0,
+  onOptionChange,
 }) => {
   const isBrokerPlus = plan.label === "Broker Plus";
+  const isOneTimePayment = paymentType === "one-time";
   const isButtonDisabled = !isCheckoutReady || isProcessing || isCurrentPlan;
   const persona = personaData[plan.label] || {};
   const featureEntries = useMemo(() => mapMembershipPlanLimits(plan), [plan]);
@@ -43,6 +51,9 @@ export const PersonaPlanCard: React.FC<PersonaPlanCardProps> = ({
     isMounted,
     isAuthenticated
   );
+  const handleSelectPlan = () => {
+    onSelectPlan(plan, isOneTimePayment ? selectedOptionIndex : undefined);
+  };
 
   return (
     <div className={getPlanCardClasses(plan, isCurrentPlan)}>
@@ -54,7 +65,15 @@ export const PersonaPlanCard: React.FC<PersonaPlanCardProps> = ({
           {persona.persona || plan.label}
         </h3>
 
-        <PriceDisplay plan={plan} isBrokerPlus={isBrokerPlus} />
+        {isOneTimePayment ? (
+          <OneTimePriceDisplay
+            plan={plan}
+            selectedOptionIndex={selectedOptionIndex}
+            onOptionChange={onOptionChange}
+          />
+        ) : (
+          <PriceDisplay plan={plan} isBrokerPlus={isBrokerPlus} />
+        )}
 
         {plan.description && (
           <p className="mt-3 text-xs text-gray-600 leading-relaxed whitespace-pre-line">
@@ -76,7 +95,7 @@ export const PersonaPlanCard: React.FC<PersonaPlanCardProps> = ({
 
       <PlanActionButton
         plan={plan}
-        onClick={() => onSelectPlan(plan)}
+        onClick={handleSelectPlan}
         disabled={isButtonDisabled}
         isBrokerPlus={isBrokerPlus}
         isCurrentPlan={isCurrentPlan}

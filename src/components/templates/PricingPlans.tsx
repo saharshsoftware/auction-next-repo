@@ -26,6 +26,8 @@ import {
   subscribeToSubscriptionProcessing,
 } from "@/utils/subscription-storage";
 import { useWebViewAuth } from "@/hooks/useWebViewAuth";
+import { PaymentTypeTab, PaymentType } from "../atoms/PaymentTypeTab";
+import { useOneTimePaymentCheckout } from "@/hooks/useOneTimePaymentCheckout";
 
 interface PricingPlansProps {
   readonly showLegend?: boolean;
@@ -69,6 +71,8 @@ const PricingPlans: React.FC<PricingPlansProps> = ({
   
   const [isMounted, setIsMounted] = useState(false);
   const [showLocalStorageProcessing, setShowLocalStorageProcessing] = useState(false);
+  const [paymentType, setPaymentType] = useState<PaymentType>("subscription");
+  const [selectedOneTimeOptions, setSelectedOneTimeOptions] = useState<Record<string, number>>({});
   const queryClient = useQueryClient();
   const { isAuthenticated } = useIsAuthenticated();
   const router = useRouter();
@@ -80,8 +84,36 @@ const PricingPlans: React.FC<PricingPlansProps> = ({
   // Mobile app WebView authentication hook
   useWebViewAuth();
   
+  // Initialize payment type from URL params on mount (client-side only)
   useEffect(() => {
     setIsMounted(true);
+    // Read initial value from window.location on mount
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const urlType = params.get("type");
+      if (urlType === "one-time") {
+        setPaymentType("one-time");
+      }
+    }
+  }, []);
+  
+  const handleTabChange = useCallback((newTab: PaymentType) => {
+    setPaymentType(newTab);
+    // Update URL without full page navigation
+    const params = new URLSearchParams(window.location.search);
+    if (newTab === "subscription") {
+      params.delete("type");
+    } else {
+      params.set("type", newTab);
+    }
+    const newUrl = params.toString() 
+      ? `${window.location.pathname}?${params.toString()}` 
+      : window.location.pathname;
+    window.history.replaceState({}, "", newUrl);
+  }, []);
+  
+  const handleOneTimeOptionChange = useCallback((planId: string, optionIndex: number) => {
+    setSelectedOneTimeOptions(prev => ({ ...prev, [planId]: optionIndex }));
   }, []);
 
   // Start immediate polling if localStorage flag is set (right after checkout)
@@ -134,15 +166,32 @@ const PricingPlans: React.FC<PricingPlansProps> = ({
     queryClient,
     initialProfileData: initialUserProfile,
   });
+  
+  const {
+    initiateOneTimeCheckout,
+    activePlanId: activeOneTimePlanId,
+    checkoutMessage: oneTimeCheckoutMessage,
+  } = useOneTimePaymentCheckout({
+    isCheckoutReady: isCheckoutReady && !isActionsDisabled,
+  });
 
   // A/B test: Filter plans based on user ID (even = Free+Trial, odd = all plans)
   // Paid users (non-free tier) always see all plans
   const currentTier = subscriptionData?.subscriptionData?.tier || null;
-  const { filteredPlans } = usePricingABTest({
+  const { filteredPlans: abTestFilteredPlans } = usePricingABTest({
     membershipPlans,
     isAuthenticated,
     currentTier,
   });
+  
+  // Further filter plans based on payment type
+  // When one-time is selected, hide plans without oneTimeOptions
+  const filteredPlans = useMemo(() => {
+    if (paymentType === "one-time") {
+      return abTestFilteredPlans.filter(plan => plan.oneTimeOptions && plan.oneTimeOptions.length > 0);
+    }
+    return abTestFilteredPlans;
+  }, [abTestFilteredPlans, paymentType]);
 
   // Clear localStorage flag when subscription becomes active
   useEffect(() => {
@@ -156,10 +205,11 @@ const PricingPlans: React.FC<PricingPlansProps> = ({
   const subscriptionStatus = subscriptionData?.subscriptionData?.subscription?.status?.toLowerCase();
   const hasActiveSubscription = isAuthenticated && subscriptionStatus === "active";
   const shouldShowLoading = isLoadingSubscription && !hasActiveSubscription;
-  const displayMessage = checkoutMessage || loaderMessage;
+  const displayMessage = oneTimeCheckoutMessage || checkoutMessage || loaderMessage;
   const shouldShowInitialPending = isAuthenticated && hasServerSubscriptionSnapshot && isLoadingSubscription;
+  const currentActivePlanId = activeOneTimePlanId || activePlanId;
   
-  const handlePlanSelection = useCallback((plan: MembershipPlan) => {
+  const handlePlanSelection = useCallback((plan: MembershipPlan, selectedOptionIndex?: number) => {
     if (plan.label === STRING_DATA.BROKER_PLUS) {
       showContactSalesModal();
       return;
@@ -175,6 +225,14 @@ const PricingPlans: React.FC<PricingPlansProps> = ({
     const currentTier = subscriptionData?.subscriptionData?.tier?.toLowerCase() || STRING_DATA.FREE?.toLowerCase();
     const isFreePlan = currentTier === STRING_DATA.FREE?.toLowerCase();
     
+    // Handle one-time payment checkout
+    if (paymentType === "one-time") {
+      const optionIndex = selectedOptionIndex ?? selectedOneTimeOptions[plan.id] ?? 0;
+      initiateOneTimeCheckout(plan, optionIndex);
+      return;
+    }
+    
+    // Handle subscription checkout
     if (isFreePlan) {
       initiateCheckout(plan);
       return;
@@ -185,7 +243,7 @@ const PricingPlans: React.FC<PricingPlansProps> = ({
       showInfoModal();
       return;
     }
-  }, [isActionsDisabled, initiateCheckout, isAuthenticated, getCurrentPlanInfo, router, showModal, showInfoModal, subscriptionData, showContactSalesModal]);
+  }, [isActionsDisabled, initiateCheckout, initiateOneTimeCheckout, isAuthenticated, getCurrentPlanInfo, router, showModal, showInfoModal, subscriptionData, showContactSalesModal, paymentType, selectedOneTimeOptions]);
   
   const allFeatureDescriptions = useMemo(() => {
     if (!filteredPlans.length) return [];
@@ -257,19 +315,28 @@ const PricingPlans: React.FC<PricingPlansProps> = ({
           )}
         </header>
         
+        <PaymentTypeTab activeTab={paymentType} onTabChange={handleTabChange} />
+        
         {membershipPlans.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-gray-600 mb-2">No membership plans available</p>
             <p className="text-gray-500 text-sm">Please try again later</p>
+          </div>
+        ) : filteredPlans.length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-gray-600 mb-2">No one-time payment options available</p>
+            <p className="text-gray-500 text-sm">Try switching to subscription plans</p>
           </div>
         ) : (
           <>
             <div className={getPlansGridClasses(filteredPlans.length)}>
               {filteredPlans.map((plan: MembershipPlan) => {
                 const { isCurrentPlan } = getCurrentPlanInfo(plan);
+                // Show current plan as highlighted/disabled in BOTH tabs based on subscriptionType
+                // Users cannot re-purchase the same plan regardless of payment type
                 const shouldHighlightPlan = isAuthenticated && isCurrentPlan;
-                const isThisPlanProcessing = activePlanId === plan.id;
-                const isAnyPlanProcessing = activePlanId !== null;
+                const isThisPlanProcessing = currentActivePlanId === plan.id;
+                const isAnyPlanProcessing = currentActivePlanId !== null;
                 return (
                   <PersonaPlanCard
                     key={plan.id}
@@ -283,6 +350,9 @@ const PricingPlans: React.FC<PricingPlansProps> = ({
                     showTooltips={showTooltips}
                     showDescriptions={showDescriptions}
                     isMounted={isMounted}
+                    paymentType={paymentType}
+                    selectedOptionIndex={selectedOneTimeOptions[plan.id] ?? 0}
+                    onOptionChange={(index) => handleOneTimeOptionChange(plan.id, index)}
                   />
                 );
               })}

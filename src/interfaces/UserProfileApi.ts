@@ -2,6 +2,14 @@ import { UserSubscriptionLimits } from "./PlanLimits";
 
 export type { UserSubscriptionLimits };
 
+export interface OneTimeOptionData {
+  readonly price: number;
+  readonly discountedPrice: number;
+  readonly duration: number;
+  readonly durationUnit: string;
+  readonly displayName: string;
+}
+
 export interface UserSubscription {
   readonly createdAt: string;
   readonly id: number;
@@ -11,13 +19,17 @@ export interface UserSubscription {
   readonly updatedAt: string;
   readonly sitemap_exclude: boolean;
   readonly subscriptionType: string;
-  readonly razorpaySubscriptionId: string;
+  readonly razorpaySubscriptionId: string | null;
   readonly razorpayCustomerId: string;
   readonly currentPeriodStart: string;
   readonly currentPeriodEnd: string;
   readonly cancelAt: string | null;
   readonly canceledAt: string | null;
   readonly cancelAtCycleEnd: boolean;
+  readonly paymentType?: string;
+  readonly oneTimeOptionData?: OneTimeOptionData | null;
+  readonly razorpayOrderId?: string | null;
+  readonly razorpayPaymentId?: string | null;
 }
 
 export interface UserRazorpaySubscription {
@@ -57,6 +69,7 @@ export interface UserSubscriptionDetails {
   readonly razorpaySubscription: UserRazorpaySubscription | null;
   readonly tier: string;
   readonly limits: UserSubscriptionLimits;
+  readonly razorpayPayment: { method: string } | null;
 }
 
 export interface UserProfileApiResponse {

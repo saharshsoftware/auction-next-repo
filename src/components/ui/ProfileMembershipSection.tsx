@@ -151,13 +151,36 @@ const ProfileMembershipSection: React.FC<ProfileMembershipSectionProps> = (props
           <div className="space-y-3">
             <div className="flex items-center gap-2 flex-wrap">
               <span className="text-sm font-medium text-gray-700">Plan Type:</span>
-              <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold
-            
-              bg-blue-500 text-white 
-            `}>
+              <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-blue-500 text-white`}>
                 {planDetails?.name}
               </span>
+              {subscriptionData?.subscriptionData?.subscription?.paymentType === "one_time" && (
+                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                  One-time
+                </span>
+              )}
             </div>
+            {/* Show one-time option details if present */}
+            {subscriptionData?.subscriptionData?.subscription?.oneTimeOptionData && (
+              <div className="bg-purple-50 rounded-lg p-3 space-y-1">
+                <p className="text-sm font-medium text-purple-900">
+                  {subscriptionData.subscriptionData.subscription.oneTimeOptionData.displayName}
+                </p>
+                <p className="text-xs text-purple-700">
+                  Duration: {subscriptionData.subscriptionData.subscription.oneTimeOptionData.duration} {subscriptionData.subscriptionData.subscription.oneTimeOptionData.durationUnit}
+                </p>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-semibold text-purple-900">
+                    ₹{subscriptionData.subscriptionData.subscription.oneTimeOptionData.discountedPrice?.toLocaleString()}
+                  </span>
+                  {subscriptionData.subscriptionData.subscription.oneTimeOptionData.price > subscriptionData.subscriptionData.subscription.oneTimeOptionData.discountedPrice && (
+                    <span className="text-xs text-purple-600 line-through">
+                      ₹{subscriptionData.subscriptionData.subscription.oneTimeOptionData.price?.toLocaleString()}
+                    </span>
+                  )}
+                </div>
+              </div>
+            )}
             {planDetails?.renewalDate && (
               <p className="text-sm-xs">
                 {STRING_DATA.MEMBERSHIP_PLAN_RENEWAL}: {planDetails?.renewalDate}
