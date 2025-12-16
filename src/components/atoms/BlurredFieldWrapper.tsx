@@ -5,8 +5,10 @@ import useModal from "@/hooks/useModal";
 import { Eye } from 'lucide-react';
 import { useRouter } from "next/navigation";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
+import { UPGRADE_TO_PREMIUM_EVENTS } from "@/shared/Constants";
 
 type BlurType = "login" | "upgrade";
+type UpgradeSource = keyof typeof UPGRADE_TO_PREMIUM_EVENTS;
 
 interface IBlurredFieldWrapperProps {
   children: React.ReactNode;
@@ -15,6 +17,7 @@ interface IBlurredFieldWrapperProps {
   hasImageCarousel?: boolean;
   icon?: React.ReactNode;
   blurType?: BlurType;
+  upgradeSource?: UpgradeSource;
 }
 
 const BlurredFieldWrapper: React.FC<IBlurredFieldWrapperProps> = ({
@@ -24,6 +27,7 @@ const BlurredFieldWrapper: React.FC<IBlurredFieldWrapperProps> = ({
   hasImageCarousel = false,
   icon,
   blurType = "login",
+  upgradeSource,
 }) => {
   const [hasMounted, setHasMounted] = useState(false);
   const { showModal, openModal, hideModal } = useModal();
@@ -38,12 +42,13 @@ const BlurredFieldWrapper: React.FC<IBlurredFieldWrapperProps> = ({
   const displayText = blurText || defaultBlurText;
 
   const handleClick = () => {
-    if (blurType === "upgrade") {
+    if (blurType === "upgrade" && upgradeSource) {
       router.push(ROUTE_CONSTANTS.PRICING);
     } else {
       showModal();
     }
   };
+  const buttonId = blurType === "upgrade" && upgradeSource ? UPGRADE_TO_PREMIUM_EVENTS[upgradeSource] : undefined;
 
   // Use consistent blur state: default to false before mount to match server
   const shouldBlur = hasMounted ? isBlurred : false;
@@ -55,6 +60,7 @@ const BlurredFieldWrapper: React.FC<IBlurredFieldWrapperProps> = ({
       return (
         <div className="absolute inset-0 bg-white/70 flex items-center justify-center">
           <button
+            id={buttonId}
             onClick={handleClick}
             className="bg-white/90 hover:bg-white text-gray-900 px-6 py-3 rounded-lg shadow-lg flex items-center gap-3 font-semibold"
           >
@@ -68,6 +74,7 @@ const BlurredFieldWrapper: React.FC<IBlurredFieldWrapperProps> = ({
     return (
       <div className="bg-white/70">
         <button
+          id={buttonId}
           onClick={handleClick}
           className="absolute inset-0 flex items-center justify-center cursor-pointer link link-primary font-semibold underline rounded w-fit h-fit m-auto"
         >

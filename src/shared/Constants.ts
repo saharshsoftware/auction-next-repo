@@ -813,3 +813,10 @@ export const URL_PARAMS = {
   SOURCE: 'source',
   MOBILE_APP: 'mobile_app',
 } as const;
+
+export const UPGRADE_TO_PREMIUM_EVENTS: Record<string, string> = {
+  contact_info: 'upgrade_to_premium_from_contact_info',
+  about_property: 'upgrade_to_premium_from_about_property',
+  auction_notice: 'upgrade_to_premium_from_auction_notice',
+  membership_page: 'upgrade_to_premium_from_membership_page',
+};

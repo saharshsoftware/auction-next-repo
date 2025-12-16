@@ -8,5 +8,4 @@ export const setUserIdInDataLayer = (userId: string | null) => {
     userId: userId,
   });
   (window as Window & { userId?: string | null }).userId = userId;
-}
-
+};
