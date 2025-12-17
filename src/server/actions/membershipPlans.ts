@@ -58,7 +58,7 @@ const mapApiPlanToMembershipPlan = (apiPlan: ApiMembershipPlan): MembershipPlan 
 export const fetchMembershipPlans = async (): Promise<MembershipPlan[] | null> => {
   "use server";
   try {
-    const URL = API_BASE_URL +  API_ENPOINTS.MEMBERSHIP_PLANS + "?populate=*";
+    const URL = API_BASE_URL +  API_ENPOINTS.MEMBERSHIP_PLANS + "?populate[oneTimeOptions][filters][isActive][$eq]=true";
 
     const response = await fetch(URL, {
       next: { revalidate: FILTER_API_REVALIDATE_TIME },

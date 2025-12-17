@@ -268,7 +268,7 @@ const ProfileMembershipSection: React.FC<ProfileMembershipSectionProps> = (props
       )}
 
       {/* Cancel Subscription Section - Only show for paid subscriptions */}
-      {subscriptionData?.subscriptionData?.subscription && (() => {
+      {subscriptionData?.subscriptionData?.subscription && subscriptionData?.subscriptionData?.subscription?.paymentType !== "one_time" && (() => {
         const subscription = subscriptionData.subscriptionData.subscription;
         const isCancelScheduled = (subscription as any).cancelAtCycleEnd === true;
 
