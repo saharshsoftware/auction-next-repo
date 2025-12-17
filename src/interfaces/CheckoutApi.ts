@@ -1,6 +1,5 @@
 export interface CheckoutApiRequest {
   readonly subscriptionId: string;
-  readonly notes?: Record<string, string>;
 }
 
 export interface CheckoutApiPrefill {
