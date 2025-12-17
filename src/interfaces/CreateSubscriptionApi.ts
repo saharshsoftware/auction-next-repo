@@ -2,6 +2,7 @@ export interface CreateSubscriptionApiRequest {
   readonly planId: string;
   readonly startAt: string;
   readonly planType: string;
+  readonly notes?: Record<string, string>;
 }
 
 export interface CreateSubscriptionDetails {

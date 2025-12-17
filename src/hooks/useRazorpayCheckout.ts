@@ -89,7 +89,10 @@ export const useRazorpayCheckout = ({
           planType: plan.planType
         });
 
-        const subscriptionResponse = await createSubscription(plan);
+        const showedPlan = formatShowedPlanPrices(filteredPlans);
+        const notes = showedPlan ? { showedPlan } : undefined;
+
+        const subscriptionResponse = await createSubscription(plan, notes);
 
         if (!subscriptionResponse.success) {
           throw new Error("Subscription creation failed");
@@ -104,10 +107,7 @@ export const useRazorpayCheckout = ({
           customerId: subscriptionData.customerId
         });
 
-        const showedPlan = formatShowedPlanPrices(filteredPlans);
-        const notes = showedPlan ? { showedPlan } : undefined;
-
-        const checkoutResponse = await getCheckoutConfig(subscriptionId, notes);
+        const checkoutResponse = await getCheckoutConfig(subscriptionId);
 
         if (!checkoutResponse.success) {
           throw new Error("Checkout configuration failed");

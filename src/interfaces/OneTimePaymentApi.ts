@@ -1,6 +1,7 @@
 export interface CreateOneTimeOrderRequest {
   readonly membershipPlanId: number;
   readonly optionIndex: number;
+  readonly notes?: Record<string, string>;
 }
 
 export interface CreateOneTimeOrderData {
@@ -25,7 +26,6 @@ export interface CreateOneTimeOrderResponse {
 
 export interface OneTimeCheckoutRequest {
   readonly orderId: string;
-  readonly notes?: Record<string, string>;
 }
 
 export interface OneTimeCheckoutPrefill {

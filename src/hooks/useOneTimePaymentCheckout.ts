@@ -81,7 +81,10 @@ export const useOneTimePaymentCheckout = ({
           optionIndex,
         });
 
-        const orderResponse = await createOneTimeOrder(plan.apiId, optionIndex);
+        const showedPlan = formatShowedPlanPrices(filteredPlans);
+        const notes = showedPlan ? { showedPlan } : undefined;
+
+        const orderResponse = await createOneTimeOrder(plan.apiId, optionIndex, notes);
 
         if (!orderResponse.success) {
           throw new Error("Order creation failed");
@@ -95,10 +98,7 @@ export const useOneTimePaymentCheckout = ({
           orderId,
         });
 
-        const showedPlan = formatShowedPlanPrices(filteredPlans);
-        const notes = showedPlan ? { showedPlan } : undefined;
-
-        const checkoutResponse = await getOneTimeCheckoutConfig(orderId, notes);
+        const checkoutResponse = await getOneTimeCheckoutConfig(orderId);
 
         if (!checkoutResponse.success) {
           throw new Error("Checkout configuration failed");
