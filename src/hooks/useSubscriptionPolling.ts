@@ -86,6 +86,7 @@ export const useSubscriptionPolling = (queryClient: QueryClient): ((params: Poll
           
           if (attempts >= MAX_POLLING_ATTEMPTS) {
             clearInterval(interval);
+            clearSubscriptionProcessing();
             logInfo("Polling timeout reached", { attempts });
             resolve(false);
             return;
@@ -95,6 +96,7 @@ export const useSubscriptionPolling = (queryClient: QueryClient): ((params: Poll
           
           if (attempts >= MAX_POLLING_ATTEMPTS) {
             clearInterval(interval);
+            clearSubscriptionProcessing();
             resolve(false);
             return;
           }
@@ -178,6 +180,8 @@ export const useAutoPollPendingSubscription = (
           subscriptionId,
           subscriptionType,
         });
+        // Clear localStorage processing flag on timeout/failure
+        clearSubscriptionProcessing();
       }
     };
 
@@ -269,6 +273,7 @@ export const useImmediatePollingOnCheckout = (
               pollInterval = null;
             }
             pollingRef.current = false;
+            clearSubscriptionProcessing();
             logInfo("Immediate polling - max attempts reached");
             return;
           }
@@ -281,6 +286,7 @@ export const useImmediatePollingOnCheckout = (
               pollInterval = null;
             }
             pollingRef.current = false;
+            clearSubscriptionProcessing();
             return;
           }
         }

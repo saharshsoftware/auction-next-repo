@@ -17,6 +17,7 @@ import { USER_TYPE } from "@/types.d";
 import { safeArray, safeNumber, safeString } from "@/utilies/imageUtils";
 import { getCookie } from "cookies-next";
 import { MessagesSquare, Search, BellRing, Folder, Users, Bell } from "lucide-react";
+import { MembershipPlan } from "@/interfaces/MembershipPlan";
 
 export const setDataInQueryParams = (values: any) => {
   const data = btoa(JSON.stringify(values));
@@ -1187,3 +1188,33 @@ export const featureIcons: { [key: string]: any } = {
 export const hasValue = (value?: string | null): boolean => typeof value === "string" && value.trim().length > 0;
 
 export const hasBudgetRanges = (ranges?: BudgetRangeObject[] | null): boolean => Array.isArray(ranges) && ranges.length > 0;
+
+/**
+ * Formats filtered plan prices for A/B testing tracking
+ * Converts plan prices from paise to rupees and joins them with underscores
+ * Example: Plans with prices [10000, 20000, 30000] paise -> "100_200_300"
+ * 
+ * Edge cases handled:
+ * - Empty array: returns empty string
+ * - Free plans (0 amount): included as "0"
+ * - Null/undefined amounts: filtered out
+ * - Duplicate prices: kept as-is for accurate tracking
+ */
+
+// let use MembershipPlan type instead of any
+export const formatShowedPlanPrices = (plans: readonly MembershipPlan[]): string => {
+  if (!plans || plans.length === 0) {
+    return STRING_DATA.EMPTY;
+  }
+
+  const prices = plans
+    .filter((plan) => plan && typeof plan.discountedPriceText === 'string')
+    .map((plan) => plan.discountedPriceText)
+    .join('_');
+
+  if (prices.length > 255) {
+    logInfo('A/B testing showedPlan string exceeds 255 characters', { length: prices.length }, '[formatShowedPlanPrices]');
+  }
+
+  return prices;
+};

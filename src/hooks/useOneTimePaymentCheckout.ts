@@ -4,7 +4,7 @@ import { MembershipPlan } from "@/interfaces/MembershipPlan";
 import { STRING_DATA, NATIVE_APP_MESSAGE_TYPES, URL_PARAMS } from "@/shared/Constants";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
 import { createOneTimeOrder, getOneTimeCheckoutConfig } from "@/services/subscription";
-import { logInfo, logError } from "@/shared/Utilies";
+import { logInfo, logError, formatShowedPlanPrices } from "@/shared/Utilies";
 import toast from "react-simple-toasts";
 import { setSubscriptionProcessing } from "@/utils/subscription-storage";
 import { isInMobileApp, sendToApp } from "@/helpers/NativeHelper";
@@ -43,6 +43,7 @@ interface RazorpayInstance {
 
 interface UseOneTimePaymentCheckoutParams {
   readonly isCheckoutReady: boolean;
+  readonly filteredPlans: readonly MembershipPlan[];
 }
 
 interface UseOneTimePaymentCheckoutReturn {
@@ -56,6 +57,7 @@ interface UseOneTimePaymentCheckoutReturn {
  */
 export const useOneTimePaymentCheckout = ({
   isCheckoutReady,
+  filteredPlans
 }: UseOneTimePaymentCheckoutParams): UseOneTimePaymentCheckoutReturn => {
   const router = useRouter();
   const [activePlanId, setActivePlanId] = useState<string | null>(null);
@@ -93,7 +95,10 @@ export const useOneTimePaymentCheckout = ({
           orderId,
         });
 
-        const checkoutResponse = await getOneTimeCheckoutConfig(orderId);
+        const showedPlan = formatShowedPlanPrices(filteredPlans);
+        const notes = showedPlan ? { showedPlan } : undefined;
+
+        const checkoutResponse = await getOneTimeCheckoutConfig(orderId, notes);
 
         if (!checkoutResponse.success) {
           throw new Error("Checkout configuration failed");
@@ -211,7 +216,7 @@ export const useOneTimePaymentCheckout = ({
         });
       }
     },
-    [isCheckoutReady, router]
+    [isCheckoutReady, router, filteredPlans]
   );
 
   return {

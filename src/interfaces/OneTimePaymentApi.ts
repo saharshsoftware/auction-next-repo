@@ -25,6 +25,7 @@ export interface CreateOneTimeOrderResponse {
 
 export interface OneTimeCheckoutRequest {
   readonly orderId: string;
+  readonly notes?: Record<string, string>;
 }
 
 export interface OneTimeCheckoutPrefill {

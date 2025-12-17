@@ -4,7 +4,7 @@ import { MembershipPlan } from "@/interfaces/MembershipPlan";
 import { STRING_DATA, REACT_QUERY, NATIVE_APP_MESSAGE_TYPES } from "@/shared/Constants";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
 import { createSubscription, getCheckoutConfig } from "@/services/subscription";
-import { logInfo, logError } from "@/shared/Utilies";
+import { logInfo, logError, formatShowedPlanPrices } from "@/shared/Utilies";
 import toast from "react-simple-toasts";
 import { setSubscriptionProcessing } from "@/utils/subscription-storage";
 import { isInMobileApp, sendToApp } from "@/helpers/NativeHelper";
@@ -50,6 +50,7 @@ declare global {
 interface UseRazorpayCheckoutParams {
   readonly isCheckoutReady: boolean;
   readonly onPaymentSuccess: (subscriptionId: string, planType: string, razorpaySubscriptionId: string) => Promise<void>;
+  readonly filteredPlans: readonly MembershipPlan[];
 }
 
 /**
@@ -57,7 +58,8 @@ interface UseRazorpayCheckoutParams {
  */
 export const useRazorpayCheckout = ({
   isCheckoutReady,
-  onPaymentSuccess
+  onPaymentSuccess,
+  filteredPlans
 }: UseRazorpayCheckoutParams) => {
   const router = useRouter();
   const [activePlanId, setActivePlanId] = useState<string | null>(null);
@@ -102,7 +104,10 @@ export const useRazorpayCheckout = ({
           customerId: subscriptionData.customerId
         });
 
-        const checkoutResponse = await getCheckoutConfig(subscriptionId);
+        const showedPlan = formatShowedPlanPrices(filteredPlans);
+        const notes = showedPlan ? { showedPlan } : undefined;
+
+        const checkoutResponse = await getCheckoutConfig(subscriptionId, notes);
 
         if (!checkoutResponse.success) {
           throw new Error("Checkout configuration failed");
@@ -216,7 +221,7 @@ export const useRazorpayCheckout = ({
         });
       }
     },
-    [isCheckoutReady, router, onPaymentSuccess],
+    [isCheckoutReady, router, onPaymentSuccess, filteredPlans],
   );
 
   return {

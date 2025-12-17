@@ -4,6 +4,7 @@ import Link from "next/link";
 import { STRING_DATA } from "@/shared/Constants";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
 import PlanDetailsCard from "@/components/ui/PlanDetailsCard";
+import OneTimePaymentDetails from "@/components/ui/OneTimePaymentDetails";
 import {
   ProfileMembershipSectionProps,
 } from "@/interfaces/Payment";
@@ -162,24 +163,9 @@ const ProfileMembershipSection: React.FC<ProfileMembershipSectionProps> = (props
             </div>
             {/* Show one-time option details if present */}
             {subscriptionData?.subscriptionData?.subscription?.oneTimeOptionData && (
-              <div className="bg-purple-50 rounded-lg p-3 space-y-1">
-                <p className="text-sm font-medium text-purple-900">
-                  {subscriptionData.subscriptionData.subscription.oneTimeOptionData.displayName}
-                </p>
-                <p className="text-xs text-purple-700">
-                  Duration: {subscriptionData.subscriptionData.subscription.oneTimeOptionData.duration} {subscriptionData.subscriptionData.subscription.oneTimeOptionData.durationUnit}
-                </p>
-                <div className="flex items-center gap-2">
-                  <span className="text-sm font-semibold text-purple-900">
-                    ₹{subscriptionData.subscriptionData.subscription.oneTimeOptionData.discountedPrice?.toLocaleString()}
-                  </span>
-                  {subscriptionData.subscriptionData.subscription.oneTimeOptionData.price > subscriptionData.subscriptionData.subscription.oneTimeOptionData.discountedPrice && (
-                    <span className="text-xs text-purple-600 line-through">
-                      ₹{subscriptionData.subscriptionData.subscription.oneTimeOptionData.price?.toLocaleString()}
-                    </span>
-                  )}
-                </div>
-              </div>
+              <OneTimePaymentDetails
+                oneTimeOptionData={subscriptionData.subscriptionData.subscription.oneTimeOptionData}
+              />
             )}
             {planDetails?.renewalDate && (
               <p className="text-sm-xs">

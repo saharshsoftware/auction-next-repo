@@ -96,6 +96,14 @@ const PricingPlans: React.FC<PricingPlansProps> = ({
       }
     }
   }, []);
+
+  // Early A/B test computation using initial profile data for proper hook initialization
+  const initialTier = initialUserProfile?.subscriptionDetails?.tier || null;
+  const { filteredPlans: earlyAbTestFilteredPlans } = usePricingABTest({
+    membershipPlans,
+    isAuthenticated,
+    currentTier: initialTier,
+  });
   
   const handleTabChange = useCallback((newTab: PaymentType) => {
     setPaymentType(newTab);
@@ -165,16 +173,9 @@ const PricingPlans: React.FC<PricingPlansProps> = ({
     isAuthenticated,
     queryClient,
     initialProfileData: initialUserProfile,
+    filteredPlans: earlyAbTestFilteredPlans,
   });
   
-  const {
-    initiateOneTimeCheckout,
-    activePlanId: activeOneTimePlanId,
-    checkoutMessage: oneTimeCheckoutMessage,
-  } = useOneTimePaymentCheckout({
-    isCheckoutReady: isCheckoutReady && !isActionsDisabled,
-  });
-
   // A/B test: Filter plans based on user ID (even = Free+Trial, odd = all plans)
   // Paid users (non-free tier) always see all plans
   const currentTier = subscriptionData?.subscriptionData?.tier || null;
@@ -192,6 +193,15 @@ const PricingPlans: React.FC<PricingPlansProps> = ({
     }
     return abTestFilteredPlans;
   }, [abTestFilteredPlans, paymentType]);
+
+  const {
+    initiateOneTimeCheckout,
+    activePlanId: activeOneTimePlanId,
+    checkoutMessage: oneTimeCheckoutMessage,
+  } = useOneTimePaymentCheckout({
+    isCheckoutReady: isCheckoutReady && !isActionsDisabled,
+    filteredPlans,
+  });
 
   // Clear localStorage flag when subscription becomes active
   useEffect(() => {

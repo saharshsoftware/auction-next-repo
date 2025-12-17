@@ -43,9 +43,13 @@ export const createSubscription = async (plan: MembershipPlan): Promise<CreateSu
 /**
  * Calls the checkout API to get Razorpay configuration for a subscription
  */
-export const getCheckoutConfig = async (subscriptionId: string): Promise<CheckoutApiResponse> => {
+export const getCheckoutConfig = async (
+  subscriptionId: string,
+  notes?: Record<string, string>
+): Promise<CheckoutApiResponse> => {
   const requestData: CheckoutApiRequest = {
     subscriptionId,
+    ...(notes && { notes }),
   };
 
   const response = await postRequest({
@@ -81,9 +85,13 @@ export const createOneTimeOrder = async (
 /**
  * Gets Razorpay configuration for a one-time payment order
  */
-export const getOneTimeCheckoutConfig = async (orderId: string): Promise<OneTimeCheckoutResponse> => {
+export const getOneTimeCheckoutConfig = async (
+  orderId: string,
+  notes?: Record<string, string>
+): Promise<OneTimeCheckoutResponse> => {
   const requestData: OneTimeCheckoutRequest = {
     orderId,
+    ...(notes && { notes }),
   };
   const response = await postRequest({
     API: API_ENPOINTS.ONE_TIME_CHECKOUT,
