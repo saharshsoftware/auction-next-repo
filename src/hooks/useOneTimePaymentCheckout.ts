@@ -1,22 +1,22 @@
 import { useCallback, useState } from "react";
 import { useRouter } from "next/navigation";
 import { MembershipPlan } from "@/interfaces/MembershipPlan";
-import { STRING_DATA, REACT_QUERY, NATIVE_APP_MESSAGE_TYPES } from "@/shared/Constants";
+import { STRING_DATA, NATIVE_APP_MESSAGE_TYPES, URL_PARAMS } from "@/shared/Constants";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
-import { createSubscription, getCheckoutConfig } from "@/services/subscription";
+import { createOneTimeOrder, getOneTimeCheckoutConfig } from "@/services/subscription";
 import { logInfo, logError, formatShowedPlanPrices } from "@/shared/Utilies";
 import toast from "react-simple-toasts";
 import { setSubscriptionProcessing } from "@/utils/subscription-storage";
 import { isInMobileApp, sendToApp } from "@/helpers/NativeHelper";
 
-interface RazorpayOptions {
+interface OneTimeRazorpayOptions {
   readonly key: string;
   readonly name: string;
   readonly description: string;
+  readonly order_id: string;
+  readonly amount: number;
+  readonly currency: string;
   readonly handler: (response: RazorpaySuccessResponse) => void;
-  readonly notes?: Record<string, string>;
-  readonly redirect?: boolean;
-  readonly callback_url?: string;
   readonly prefill?: {
     readonly name?: string;
     readonly email?: string;
@@ -41,38 +41,30 @@ interface RazorpayInstance {
   on: (event: string, callback: (...args: unknown[]) => void) => void;
 }
 
-declare global {
-  interface Window {
-    Razorpay?: new (options: any) => RazorpayInstance;
-  }
-}
-
-interface UseRazorpayCheckoutParams {
+interface UseOneTimePaymentCheckoutParams {
   readonly isCheckoutReady: boolean;
-  readonly onPaymentSuccess: (subscriptionId: string, planType: string, razorpaySubscriptionId: string) => Promise<void>;
   readonly filteredPlans: readonly MembershipPlan[];
 }
 
+interface UseOneTimePaymentCheckoutReturn {
+  readonly initiateOneTimeCheckout: (plan: MembershipPlan, optionIndex: number) => Promise<void>;
+  readonly activePlanId: string | null;
+  readonly checkoutMessage: string;
+}
+
 /**
- * Custom hook to handle Razorpay checkout flow
+ * Custom hook to handle one-time payment checkout flow
  */
-export const useRazorpayCheckout = ({
+export const useOneTimePaymentCheckout = ({
   isCheckoutReady,
-  onPaymentSuccess,
   filteredPlans
-}: UseRazorpayCheckoutParams) => {
+}: UseOneTimePaymentCheckoutParams): UseOneTimePaymentCheckoutReturn => {
   const router = useRouter();
   const [activePlanId, setActivePlanId] = useState<string | null>(null);
   const [checkoutMessage, setCheckoutMessage] = useState<string>(STRING_DATA.EMPTY);
 
-  const initiateCheckout = useCallback(
-    async (plan: MembershipPlan) => {
-      if (plan.amountInPaise === 0) {
-        logInfo("Free plan selected. Redirecting to signup", { planId: plan.id });
-        router.push(ROUTE_CONSTANTS.REGISTER);
-        return;
-      }
-
+  const initiateOneTimeCheckout = useCallback(
+    async (plan: MembershipPlan, optionIndex: number) => {
       if (!isCheckoutReady || typeof window === "undefined" || !window.Razorpay) {
         setCheckoutMessage(STRING_DATA.PAYMENT_GATEWAY_LOADING);
         logInfo("Checkout attempted before Razorpay was ready", { planId: plan.id });
@@ -83,31 +75,30 @@ export const useRazorpayCheckout = ({
       setActivePlanId(plan.id);
 
       try {
-        logInfo("Creating subscription", {
+        logInfo("Creating one-time payment order", {
           planId: plan.id,
-          razorpayPlanId: plan.razorpayPlanId,
-          planType: plan.planType
+          apiPlanId: plan.apiId,
+          optionIndex,
         });
 
-        const subscriptionResponse = await createSubscription(plan);
+        const orderResponse = await createOneTimeOrder(plan.apiId, optionIndex);
 
-        if (!subscriptionResponse.success) {
-          throw new Error("Subscription creation failed");
+        if (!orderResponse.success) {
+          throw new Error("Order creation failed");
         }
 
-        const { data: subscriptionData } = subscriptionResponse;
-        const { subscriptionId } = subscriptionData;
+        const { data: orderData } = orderResponse;
+        const { orderId } = orderData;
 
-        logInfo("Subscription created, fetching checkout configuration", {
+        logInfo("Order created, fetching checkout configuration", {
           planId: plan.id,
-          subscriptionId,
-          customerId: subscriptionData.customerId
+          orderId,
         });
 
         const showedPlan = formatShowedPlanPrices(filteredPlans);
         const notes = showedPlan ? { showedPlan } : undefined;
 
-        const checkoutResponse = await getCheckoutConfig(subscriptionId, notes);
+        const checkoutResponse = await getOneTimeCheckoutConfig(orderId, notes);
 
         if (!checkoutResponse.success) {
           throw new Error("Checkout configuration failed");
@@ -115,41 +106,41 @@ export const useRazorpayCheckout = ({
 
         const { data: checkoutConfig } = checkoutResponse;
 
-        logInfo("Opening Razorpay checkout with API config", {
+        logInfo("Opening Razorpay checkout for one-time payment", {
           planId: plan.id,
-          createdSubscriptionId: subscriptionId,
-          razorpaySubscriptionId: checkoutConfig.subscription_id
+          orderId,
         });
 
-        const options: RazorpayOptions = {
-          ...checkoutConfig,
-          handler: async () => {
-            logInfo("Razorpay payment completed", {
+        const options: OneTimeRazorpayOptions = {
+          key: checkoutConfig.key,
+          name: checkoutConfig.name,
+          description: checkoutConfig.description,
+          order_id: checkoutConfig.order_id,
+          amount: checkoutConfig.amount,
+          currency: checkoutConfig.currency,
+          prefill: checkoutConfig.prefill,
+          handler: async (response: RazorpaySuccessResponse) => {
+            logInfo("Razorpay one-time payment completed", {
               planId: plan.id,
-              createdSubscriptionId: subscriptionId,
-              razorpaySubscriptionId: checkoutConfig.subscription_id
+              orderId,
+              paymentId: response.razorpay_payment_id,
             });
 
-            toast("Payment successful! Your subscription is being activated...", {
+            toast("Payment successful! Your plan is being activated...", {
               duration: 4000,
-              position: 'top-center',
-              theme: 'success',
+              position: "top-center",
+              theme: "success",
             });
 
             // Set localStorage flag to track processing state
             setSubscriptionProcessing(true);
 
-            try {
-              await onPaymentSuccess(subscriptionId, plan.planType, checkoutConfig.subscription_id.toString());
-            } catch (error) {
-              setActivePlanId(null);
-              logError("Error in payment success handler", error);
-              toast("Payment successful! Please refresh the page to see your updated subscription.", {
-                duration: 5000,
-                position: 'top-center',
-                theme: 'success',
-              });
-            }
+            // Redirect to payment success page
+            const successUrl = isInMobileApp()
+              ? `${ROUTE_CONSTANTS.PAYMENT_SUCCESS}?${URL_PARAMS.SOURCE}=${URL_PARAMS.MOBILE_APP}`
+              : ROUTE_CONSTANTS.PAYMENT_SUCCESS;
+            
+            router.push(successUrl);
           },
           theme: {
             color: checkoutConfig.theme.color,
@@ -158,7 +149,7 @@ export const useRazorpayCheckout = ({
             ondismiss: () => {
               logInfo("Razorpay checkout closed by user", {
                 planId: plan.id,
-                subscriptionId,
+                orderId,
               });
               setActivePlanId(null);
               toast("Payment cancelled. You can try again anytime.", {
@@ -181,17 +172,22 @@ export const useRazorpayCheckout = ({
           razorpayInstance.open();
           razorpayInstance.on("payment.failed", () => {
             setActivePlanId(null);
-            logError("Razorpay payment failed", {
+            logError("Razorpay one-time payment failed", {
               planId: plan.id,
-              createdSubscriptionId: subscriptionId,
-              razorpaySubscriptionId: checkoutConfig.subscription_id
+              orderId,
             });
 
             toast("Payment failed. Please try again.", {
               duration: 4000,
-              position: 'top-center',
-              theme: 'failure',
+              position: "top-center",
+              theme: "failure",
             });
+
+            if (isInMobileApp()) {
+              sendToApp(NATIVE_APP_MESSAGE_TYPES.PAYMENT_FAILED, {
+                message: "Payment failed",
+              });
+            }
           });
         } catch (error) {
           logError("Failed to open Razorpay checkout", error);
@@ -203,29 +199,28 @@ export const useRazorpayCheckout = ({
           setActivePlanId(null);
           setCheckoutMessage(STRING_DATA.PAYMENT_GATEWAY_ERROR);
         }
-
-      } catch (error: any) {
-        logError("Failed to initialize subscription checkout", error);
+      } catch (error: unknown) {
+        logError("Failed to initialize one-time payment checkout", error);
         if (isInMobileApp()) {
           sendToApp(NATIVE_APP_MESSAGE_TYPES.PAYMENT_FAILED, {
             message: "Payment failed",
           });
         }
         setActivePlanId(null);
-        const errorMessage = error?.message || "Failed to initialize checkout. Please try again.";
+        const errorMessage = error instanceof Error ? error.message : "Failed to initialize checkout. Please try again.";
         setCheckoutMessage(errorMessage);
         toast(errorMessage, {
           duration: 4000,
-          position: 'top-center',
-          theme: 'failure',
+          position: "top-center",
+          theme: "failure",
         });
       }
     },
-    [isCheckoutReady, router, onPaymentSuccess, filteredPlans],
+    [isCheckoutReady, router, filteredPlans]
   );
 
   return {
-    initiateCheckout,
+    initiateOneTimeCheckout,
     activePlanId,
     checkoutMessage,
   };

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { STRING_DATA } from "@/shared/Constants";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
 import PlanDetailsCard from "@/components/ui/PlanDetailsCard";
+import OneTimePaymentDetails from "@/components/ui/OneTimePaymentDetails";
 import {
   ProfileMembershipSectionProps,
 } from "@/interfaces/Payment";
@@ -151,13 +152,21 @@ const ProfileMembershipSection: React.FC<ProfileMembershipSectionProps> = (props
           <div className="space-y-3">
             <div className="flex items-center gap-2 flex-wrap">
               <span className="text-sm font-medium text-gray-700">Plan Type:</span>
-              <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold
-            
-              bg-blue-500 text-white 
-            `}>
+              <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-blue-500 text-white`}>
                 {planDetails?.name}
               </span>
+              {subscriptionData?.subscriptionData?.subscription?.paymentType === "one_time" && (
+                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                  One-time
+                </span>
+              )}
             </div>
+            {/* Show one-time option details if present */}
+            {subscriptionData?.subscriptionData?.subscription?.oneTimeOptionData && (
+              <OneTimePaymentDetails
+                oneTimeOptionData={subscriptionData.subscriptionData.subscription.oneTimeOptionData}
+              />
+            )}
             {planDetails?.renewalDate && (
               <p className="text-sm-xs">
                 {STRING_DATA.MEMBERSHIP_PLAN_RENEWAL}: {planDetails?.renewalDate}
@@ -245,7 +254,7 @@ const ProfileMembershipSection: React.FC<ProfileMembershipSectionProps> = (props
       )}
 
       {/* Cancel Subscription Section - Only show for paid subscriptions */}
-      {subscriptionData?.subscriptionData?.subscription && (() => {
+      {subscriptionData?.subscriptionData?.subscription && subscriptionData?.subscriptionData?.subscription?.paymentType !== "one_time" && (() => {
         const subscription = subscriptionData.subscriptionData.subscription;
         const isCancelScheduled = (subscription as any).cancelAtCycleEnd === true;
 

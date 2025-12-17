@@ -19,6 +19,7 @@ interface UseSubscriptionFlowParams {
   readonly isAuthenticated: boolean;
   readonly queryClient: ReturnType<typeof useQueryClient>;
   readonly initialProfileData?: UserProfileApiResponse | null;
+  readonly filteredPlans: readonly MembershipPlan[];
 }
 
 interface UseSubscriptionFlowReturn {
@@ -45,6 +46,7 @@ export const useSubscriptionFlow = ({
   isAuthenticated,
   queryClient,
   initialProfileData = null,
+  filteredPlans,
 }: UseSubscriptionFlowParams): UseSubscriptionFlowReturn => {
   const {
     data: subscriptionData,
@@ -96,6 +98,7 @@ export const useSubscriptionFlow = ({
   } = useRazorpayCheckout({
     isCheckoutReady: isCheckoutReady && !isActionsDisabled,
     onPaymentSuccess: handlePaymentSuccess,
+    filteredPlans,
   });
   
   const getCurrentPlanInfo = useCurrentPlanInfo(subscriptionData);

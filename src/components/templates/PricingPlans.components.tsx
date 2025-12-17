@@ -2,12 +2,13 @@
 import React from "react";
 import { MembershipPlan } from "@/interfaces/MembershipPlan";
 import { STRING_DATA } from "@/shared/Constants";
-import { Check, X } from "lucide-react";
+import { Check, X, ChevronDown } from "lucide-react";
 import { mapMembershipPlanLimits } from "@/shared/MembershipUtils";
 import { isFeatureUnavailable, featureIcons } from "@/shared/Utilies";
 import { InfoTooltip } from "@/components/atoms/InfoTooltip";
 import ActionButton from "@/components/atoms/ActionButton";
 import { getActionButtonClasses } from "./PricingPlans.helpers";
+import { OneTimeOption } from "@/interfaces/MembershipPlanApi";
 
 // ============================================================================
 // Badge Component
@@ -65,6 +66,81 @@ export const PriceDisplay: React.FC<PriceDisplayProps> = ({ plan, isBrokerPlus }
           / {plan.priceSubtext}
         </span>
       </div>
+    </div>
+  );
+};
+
+// ============================================================================
+// OneTimePriceDisplay Component
+// ============================================================================
+
+interface OneTimePriceDisplayProps {
+  readonly plan: MembershipPlan;
+  readonly selectedOptionIndex: number;
+  readonly onOptionChange?: (index: number) => void;
+}
+
+const formatDuration = (duration: number, unit: string): string => {
+  const unitLabel = duration === 1 ? unit.replace(/s$/, "") : unit;
+  return `${duration} ${unitLabel}`;
+};
+
+export const OneTimePriceDisplay: React.FC<OneTimePriceDisplayProps> = ({
+  plan,
+  selectedOptionIndex,
+  onOptionChange,
+}) => {
+  const options = plan.oneTimeOptions || [];
+  const hasMultipleOptions = options.length > 1;
+  const selectedOption = options[selectedOptionIndex] || options[0];
+  if (!selectedOption) {
+    return null;
+  }
+  const hasDiscount = selectedOption.discountedPrice && selectedOption.discountedPrice > 0 && selectedOption.discountedPrice < selectedOption.price;
+  const displayPrice = hasDiscount ? selectedOption.discountedPrice : selectedOption.price;
+  const originalPrice = selectedOption.price;
+  const durationText = formatDuration(selectedOption.duration, selectedOption.durationUnit);
+  const handleOptionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const newIndex = parseInt(event.target.value, 10);
+    onOptionChange?.(newIndex);
+  };
+
+  return (
+    <div className="mb-3 pb-5 border-b border-gray-200">
+      {hasMultipleOptions && (
+        <div className="relative mb-3">
+          <select
+            value={selectedOptionIndex}
+            onChange={handleOptionChange}
+            className="w-full appearance-none rounded-lg border border-gray-300 bg-white px-4 py-2.5 pr-10 text-sm font-medium text-gray-700 shadow-sm transition-colors hover:border-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+          >
+            {options.map((option, index) => (
+              <option key={option.id} value={index}>
+                {option.displayName} - {formatDuration(option.duration, option.durationUnit)}
+              </option>
+            ))}
+          </select>
+          <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
+        </div>
+      )}
+      <div className="flex items-center gap-2 flex-wrap">
+        <span className="text-3xl font-extrabold tracking-tight text-gray-900">
+          ₹{displayPrice.toLocaleString()}
+        </span>
+        {hasDiscount && (
+          <span className="text-lg font-medium text-gray-500 line-through">
+            ₹{originalPrice.toLocaleString()}
+          </span>
+        )}
+        <span className="text-sm font-medium text-gray-500">
+          / {durationText}
+        </span>
+      </div>
+      {selectedOption.displayName && !hasMultipleOptions && (
+        <p className="mt-1 text-xs text-gray-600">
+          {selectedOption.displayName}
+        </p>
+      )}
     </div>
   );
 };

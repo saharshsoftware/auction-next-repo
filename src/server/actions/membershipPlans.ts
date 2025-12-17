@@ -12,7 +12,7 @@ const UNLIMITED_LIMIT_VALUE = Number.POSITIVE_INFINITY;
  */
 const mapApiPlanToMembershipPlan = (apiPlan: ApiMembershipPlan): MembershipPlan => {
   const { id, attributes } = apiPlan;
-  const { name, description, price, planLimits, razorpayPlanId, isRecommended, discountedPrice, frequency } = attributes;
+  const { name, description, price, planLimits, razorpayPlanId, isRecommended, discountedPrice, frequency, oneTimeOptions } = attributes;
 
   // Create plan ID based on name (lowercase, no spaces)
   const planId = name.toLowerCase().replace(/\s+/g, "");
@@ -28,6 +28,7 @@ const mapApiPlanToMembershipPlan = (apiPlan: ApiMembershipPlan): MembershipPlan 
 
   return {
     id: planId,
+    apiId: id,
     label: name,
     priceText: price === 0 ? "₹0" : `₹${price?.toLocaleString()}`,
     priceSubtext: frequency || "per month",
@@ -47,6 +48,7 @@ const mapApiPlanToMembershipPlan = (apiPlan: ApiMembershipPlan): MembershipPlan 
       emailAlerts: planLimits.emailAlerts,
       notificationAlerts: planLimits.notificationAlerts,
     },
+    oneTimeOptions: oneTimeOptions || [],
   };
 };
 
@@ -56,7 +58,7 @@ const mapApiPlanToMembershipPlan = (apiPlan: ApiMembershipPlan): MembershipPlan 
 export const fetchMembershipPlans = async (): Promise<MembershipPlan[] | null> => {
   "use server";
   try {
-    const URL = API_BASE_URL +  API_ENPOINTS.MEMBERSHIP_PLANS;
+    const URL = API_BASE_URL +  API_ENPOINTS.MEMBERSHIP_PLANS + "?populate[oneTimeOptions][filters][isActive][$eq]=true";
 
     const response = await fetch(URL, {
       next: { revalidate: FILTER_API_REVALIDATE_TIME },

@@ -2,6 +2,18 @@ import { ApiPlanLimits } from "./PlanLimits";
 
 export type { ApiPlanLimits };
 
+export interface OneTimeOption {
+  readonly id: number;
+  readonly duration: number;
+  readonly durationUnit: string;
+  readonly price: number;
+  readonly discountedPrice: number;
+  readonly displayName: string;
+  readonly description: string | null;
+  readonly isActive: boolean;
+  readonly sortOrder: number;
+}
+
 export interface ApiMembershipPlanAttributes {
   readonly planLimits: ApiPlanLimits;
   readonly razorpayPlanId: string;
@@ -14,6 +26,8 @@ export interface ApiMembershipPlanAttributes {
   readonly createdAt: string;
   readonly updatedAt: string;
   readonly publishedAt: string;
+  readonly slug: string;
+  readonly oneTimeOptions: readonly OneTimeOption[];
 }
 
 export interface ApiMembershipPlan {
