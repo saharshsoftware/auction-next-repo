@@ -1,8 +1,8 @@
 import AuctionLayoutClient from "@/components/layouts/AuctionLayoutClient";
-import { PAGE_REVALIDATE_TIME_FOR_AUCTION_LIST } from "@/shared/Constants";
+import { CACHE_TIMES } from "@/shared/Constants";
 import { Suspense } from "react";
 
-export const revalidate = PAGE_REVALIDATE_TIME_FOR_AUCTION_LIST;
+export const revalidate = CACHE_TIMES.AUCTION_LIST;
 
 export default function AuctionLayout({
   children,

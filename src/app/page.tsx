@@ -22,8 +22,9 @@ import FaqSection from "@/components/atoms/FaqSection";
 import { IMAGES } from "@/shared/Images";
 import ServicesSection from "@/components/atoms/ServicesSection";
 import HomeRecommendationsClient from "@/components/molecules/HomeRecommendationsClient";
+import { CACHE_TIMES } from "@/shared/Constants";
 
-export const revalidate = 3600; // 1 hour
+export const revalidate = CACHE_TIMES.HOUR_24  
 export const dynamic = 'force-static';
 
 export const metadata: Metadata = {

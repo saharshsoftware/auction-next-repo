@@ -1,7 +1,7 @@
 "use server";
 
 import { API_BASE_URL, API_ENPOINTS } from "@/services/api";
-import { FILTER_API_REVALIDATE_TIME } from "@/shared/Constants";
+import { CACHE_TIMES } from "@/shared/Constants";
 import { sanitizeStrapiData } from "@/shared/Utilies";
 
 export const fetchAssetTypeBySlug = async (props: { slug: string }) => {
@@ -10,7 +10,7 @@ export const fetchAssetTypeBySlug = async (props: { slug: string }) => {
     const filter = `?sort[0]=name:asc&pagination[page]=1&pagination[pageSize]=1000&filters[slug][$eq]=${slug}`;
     const URL = API_BASE_URL + API_ENPOINTS.ASSET_TYPES + filter;
     const response = await fetch(URL, {
-      next: { revalidate: FILTER_API_REVALIDATE_TIME },
+      next: { revalidate: CACHE_TIMES.STATIC_FILTERS },
       method: "GET",
       headers: { "Content-Type": "application/json" },
     });
@@ -31,7 +31,7 @@ export const fetchAssetTypes = async () => {
       API_ENPOINTS.ASSET_TYPES +
       `?pagination[page]=1&pagination[pageSize]=50&fields[0]=name&fields[1]=slug&populate=category`;
     const response = await fetch(URL, {
-      next: { revalidate: FILTER_API_REVALIDATE_TIME },
+      next: { revalidate: CACHE_TIMES.STATIC_FILTERS },
       method: "GET",
       headers: { "Content-Type": "application/json" },
     });
@@ -52,7 +52,7 @@ export const fetchPopularAssetTypes = async () => {
       API_ENPOINTS.POPULER_ASSET_TYPES +
       `?pagination[page]=1&pagination[pageSize]=50&fields[0]=name&fields[1]=slug&populate=category`;
     const response = await fetch(URL, {
-      next: { revalidate: FILTER_API_REVALIDATE_TIME },
+      next: { revalidate: CACHE_TIMES.STATIC_FILTERS },
       method: "GET",
       headers: { "Content-Type": "application/json" },
     });

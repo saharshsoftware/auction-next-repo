@@ -1,9 +1,10 @@
 import PricingPlans from "@/components/templates/PricingPlans";
 import { fetchMembershipPlans } from "@/server/actions/membershipPlans";
 import { fetchUserProfile } from "@/server/actions/userProfile";
+import { CACHE_TIMES } from "@/shared/Constants";
 
 // Add 5 minutes to the revalidate time
-export const revalidate = 5 * 60; // 5 minutes
+export const revalidate = CACHE_TIMES.MEMBERSHIP_PLANS;
 export const dynamic = 'force-static'; 
 
 export default async function Page(): Promise<JSX.Element> {

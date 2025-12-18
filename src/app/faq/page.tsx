@@ -1,10 +1,10 @@
 import FaqPage  from '@/components/templates/FaqPage';
 import FaqJsonLd from '@/components/atoms/FaqJsonLd';
 import { getFaqData } from '@/server/actions/footer';
-import { DEFAULT_FAQ_DATA } from '@/shared/Constants';
+import { CACHE_TIMES, DEFAULT_FAQ_DATA } from '@/shared/Constants';
 import { Metadata } from 'next';
 
-export const revalidate = 3600; // 1 hour
+export const revalidate = CACHE_TIMES.HOUR_24
 export const dynamic = 'force-static';
 
 export const metadata: Metadata = {

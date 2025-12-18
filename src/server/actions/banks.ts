@@ -2,7 +2,7 @@
 
 import { API_BASE_URL, API_ENPOINTS } from "@/services/api";
 import { getRequest } from "@/shared/Axios";
-import { FILTER_API_REVALIDATE_TIME } from "@/shared/Constants";
+import { CACHE_TIMES } from "@/shared/Constants";
 import { generateQueryParamString, sanitizeStrapiData } from "@/shared/Utilies";
 
 export const fetchBanks = async () => {
@@ -13,7 +13,7 @@ export const fetchBanks = async () => {
     const URL = API_BASE_URL + API_ENPOINTS.BANKS + filter;
 
     const response = await fetch(URL, {
-      next: { revalidate: FILTER_API_REVALIDATE_TIME },
+      next: { revalidate: CACHE_TIMES.STATIC_FILTERS },
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -51,7 +51,7 @@ export const fetchPopularBanks = async () => {
     const URL = API_BASE_URL + API_ENPOINTS.POPULAR_BANKS + filter;
 
     const response = await fetch(URL, {
-      next: { revalidate: FILTER_API_REVALIDATE_TIME },
+      next: { revalidate: CACHE_TIMES.STATIC_FILTERS },
       method: "GET",
       headers: {
         "Content-Type": "application/json",

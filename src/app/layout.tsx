@@ -8,7 +8,7 @@ import NextTopLoader from "nextjs-toploader";
 import GoogleScriptComponent from "@/components/atoms/GoogleScriptComponent";
 import dynamic from "next/dynamic";
 import HeadScripts from "@/components/atoms/HeadScripts";
-import { PAGE_REVALIDATE_TIME_FOR_AUCTION_LIST } from "@/shared/Constants";
+import { CACHE_TIMES } from "@/shared/Constants";
 import ConfettiCelebration from "@/components/atoms/ConfettiCelebration";
 const Footer = dynamic(() => import("@/components/hoc/Footer"), {
   ssr: false,
@@ -19,7 +19,7 @@ const inter = Inter({
   display: "swap", // Reduces layout shift
 });
 
-export const revalidate = PAGE_REVALIDATE_TIME_FOR_AUCTION_LIST;
+export const revalidate = CACHE_TIMES.AUCTION_LIST;
 
 export const metadata: Metadata = {
   // Ensures all relative URLs in metadata resolve to the primary domain
