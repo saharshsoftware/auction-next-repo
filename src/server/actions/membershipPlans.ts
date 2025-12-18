@@ -1,7 +1,7 @@
 "use server";
 
 import { API_BASE_URL, API_ENPOINTS } from "@/services/api";
-import { FILTER_API_REVALIDATE_TIME } from "@/shared/Constants";
+import { CACHE_TIMES } from "@/shared/Constants";
 import { ApiMembershipPlansResponse, ApiMembershipPlan } from "@/interfaces/MembershipPlanApi";
 import { MembershipPlan } from "@/interfaces/MembershipPlan";
 
@@ -61,7 +61,7 @@ export const fetchMembershipPlans = async (): Promise<MembershipPlan[] | null> =
     const URL = API_BASE_URL +  API_ENPOINTS.MEMBERSHIP_PLANS + "?populate[oneTimeOptions][filters][isActive][$eq]=true";
 
     const response = await fetch(URL, {
-      next: { revalidate: FILTER_API_REVALIDATE_TIME },
+      next: { revalidate: CACHE_TIMES.MEMBERSHIP_PLANS },
       method: "GET",
       headers: {
         "Content-Type": "application/json",

@@ -1,7 +1,7 @@
 "use server";
 
 import { API_BASE_URL, API_ENPOINTS } from "@/services/api";
-import { FILTER_API_REVALIDATE_TIME } from "@/shared/Constants";
+import { CACHE_TIMES } from "@/shared/Constants";
 import { sanitizeStrapiData } from "@/shared/Utilies";
 
 export const fetchBlogs = async () => {
@@ -11,7 +11,7 @@ export const fetchBlogs = async () => {
     // const URL = "http://localhost:3000" + API_ENPOINTS.BLOGS + `?populate=*`;
 
     const response = await fetch(URL, {
-      cache: "no-cache",
+      next: { revalidate: CACHE_TIMES.BLOGS },
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -41,7 +41,7 @@ export const fetchBlogBySlug = async (slug: string) => {
     //   `?populate=*&filters[slug]=${slug}`;
 
     const response = await fetch(URL, {
-      cache: "no-cache",
+      next: { revalidate: CACHE_TIMES.BLOGS },
       method: "GET",
       headers: {
         "Content-Type": "application/json",

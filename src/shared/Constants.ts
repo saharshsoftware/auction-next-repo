@@ -36,10 +36,39 @@ export const FILTER_EMPTY = {
 
 export const NAVICON_COLOR = "#a6a6a6";
 
-export const PAGE_REVALIDATE_TIME_FOR_AUCTION_DETAIL = 86400; // 24 hr
-export const PAGE_REVALIDATE_TIME_FOR_AUCTION_LIST = 3600; // 1 hr
+/**
+ * Cache revalidation times for different data types
+ * Optimized to reduce Vercel function costs while maintaining data freshness
+ */
+export const CACHE_TIMES = {
 
-export const FILTER_API_REVALIDATE_TIME = 21600; // 6 hours (was 300)
+  HOUR_24: 86400, // 24 hours
+  HOUR_1: 3600, // 1 hour
+  MINUTE_5: 300, // 5 minutes
+
+  // Static filter data - rarely changes (banks, locations, categories, asset types)
+  STATIC_FILTERS: 86400,      // 24 hours
+  
+  // Auction data - time-sensitive
+  AUCTION_LIST: 14400,        // 4 hours - for auction listings
+  AUCTION_DETAIL: 86400,      // 24 hours - for individual auction details
+  
+  // Content
+  BLOGS: 86400,               // 24 hours - daily refresh
+  FAQ: 86400,               // 24 hours - daily refresh
+  
+  // Other
+  MEMBERSHIP_PLANS: 300,    // 5 minutes 
+  PUBLIC_COLLECTION_DETAIL: 300,      // 5 minutes - user-generated content
+
+} as const;
+
+// Backward compatibility - these reference CACHE_TIMES
+export const PAGE_REVALIDATE_TIME_FOR_AUCTION_DETAIL = CACHE_TIMES.AUCTION_DETAIL;
+export const PAGE_REVALIDATE_TIME_FOR_AUCTION_LIST = CACHE_TIMES.AUCTION_LIST;
+
+// Deprecated - use CACHE_TIMES.STATIC_FILTERS instead
+export const FILTER_API_REVALIDATE_TIME = CACHE_TIMES.STATIC_FILTERS;
 
 export const STRING_DATA = {
   ADD_COLLECTION: "Add collection",

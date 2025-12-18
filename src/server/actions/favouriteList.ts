@@ -1,6 +1,7 @@
 "use server";
 
 import { API_BASE_URL, API_ENPOINTS } from "@/services/api";
+import { CACHE_TIMES } from "@/shared/Constants";
 import {
   deleteRequest,
   getRequest,
@@ -133,7 +134,7 @@ export const fetchPublicCollectionById = async (params: { slug: string }) => {
       headers: {
         "Content-Type": "application/json",
       },
-      next: { revalidate: 3600 }, // Revalidate every hour
+      next: { revalidate: CACHE_TIMES.PUBLIC_COLLECTION_DETAIL }, // Revalidate every hour
     });
 
     if (!response.ok) {

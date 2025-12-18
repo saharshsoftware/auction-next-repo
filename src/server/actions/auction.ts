@@ -12,7 +12,7 @@ import {
   transformProperty,
 } from "@/shared/Utilies";
 import { IAssetType, IAuction, ICategoryCollection } from "@/types";
-import { COOKIES, FILTER_API_REVALIDATE_TIME } from "@/shared/Constants";
+import { COOKIES, CACHE_TIMES } from "@/shared/Constants";
 
 export const getAuctionData = async (payload: {
   page?: string;
@@ -125,7 +125,7 @@ export const fetchCategories = async () => {
     const URL = API_BASE_URL + API_ENPOINTS.CATEGORY_BOX_COLLETIONS;
 
     const response = await fetch(URL, {
-      next: { revalidate: FILTER_API_REVALIDATE_TIME },
+      next: { revalidate: CACHE_TIMES.STATIC_FILTERS },
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -151,7 +151,7 @@ export const fetchPopularCategories = async () => {
     const URL = API_BASE_URL + API_ENPOINTS.POPULAR_CATEGORIES + filter;
 
     const response = await fetch(URL, {
-      next: { revalidate: FILTER_API_REVALIDATE_TIME },
+      next: { revalidate: CACHE_TIMES.STATIC_FILTERS },
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -180,7 +180,7 @@ export const getCategoryBoxCollectionBySlug = async (props: {
     const URL = API_BASE_URL + API_ENPOINTS.CATEGORY_BOX_COLLETIONS + filter;
     // console.log(URL, "category-url-slug");
     const response = await fetch(URL, {
-      next: { revalidate: FILTER_API_REVALIDATE_TIME },
+      next: { revalidate: CACHE_TIMES.STATIC_FILTERS },
       headers: { "Content-Type": "application/json" },
     });
     if (!response.ok) throw new Error("Failed to fetch category by slug");
@@ -280,7 +280,7 @@ export const fetchAssetType = async () => {
     const URL = API_BASE_URL + API_ENPOINTS.ASSET_TYPES + `${filter}`;
     console.log(URL, "assetstype-detail");
     const response = await fetch(URL, {
-      next: { revalidate: FILTER_API_REVALIDATE_TIME },
+      next: { revalidate: CACHE_TIMES.STATIC_FILTERS },
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -308,7 +308,7 @@ export const fetchPopularAssets = async () => {
       API_ENPOINTS.ASSET_TYPES +
       `?pagination[page]=1&pagination[pageSize]=50&fields[0]=name&fields[1]=slug&populate=category`;
     const response = await fetch(URL, {
-      next: { revalidate: FILTER_API_REVALIDATE_TIME },
+      next: { revalidate: CACHE_TIMES.STATIC_FILTERS },
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -423,7 +423,7 @@ export const getAuctionsServer = async (payload: {
     const UPDATE_URL = API_BASE_URL + URL;
     console.log(UPDATE_URL, "UPDATE_URL");
     const response = await fetch(UPDATE_URL, {
-      next: { revalidate: FILTER_API_REVALIDATE_TIME },
+      next: { revalidate: CACHE_TIMES.AUCTION_LIST },
       method: "GET",
       headers: { "Content-Type": "application/json" },
     });
