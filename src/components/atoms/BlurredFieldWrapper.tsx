@@ -5,6 +5,9 @@ import useModal from "@/hooks/useModal";
 import { Eye } from 'lucide-react';
 import { useRouter } from "next/navigation";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
+import { useUserProfile } from "@/hooks/useUserProfile";
+import { useIsAuthenticated } from "@/hooks/useAuthenticated";
+import { normalizePlanName } from "@/shared/Utilies";
 
 type BlurType = "login" | "upgrade";
 
@@ -28,6 +31,17 @@ const BlurredFieldWrapper: React.FC<IBlurredFieldWrapperProps> = ({
   const [hasMounted, setHasMounted] = useState(false);
   const { showModal, openModal, hideModal } = useModal();
   const router = useRouter();
+  const { isAuthenticated } = useIsAuthenticated();
+  const { fullProfileData } = useUserProfile(isAuthenticated);
+
+  // Check if user has a paid subscription
+  const subscriptionDetails = fullProfileData?.subscriptionDetails;
+  const hasPaidSubscription = Boolean(
+    subscriptionDetails && (
+      subscriptionDetails.subscription !== null || 
+      (subscriptionDetails.tier && normalizePlanName(subscriptionDetails.tier) !== 'free')
+    )
+  );
 
   // Track when component has mounted to avoid hydration mismatch
   useEffect(() => {
@@ -46,10 +60,15 @@ const BlurredFieldWrapper: React.FC<IBlurredFieldWrapperProps> = ({
   };
 
   // Use consistent blur state: default to false before mount to match server
-  const shouldBlur = hasMounted ? isBlurred : false;
+  // Don't blur content for upgrade type if user has already paid
+  const isUpgradeWithPaidUser = blurType === "upgrade" && hasPaidSubscription;
+  const shouldBlur = hasMounted ? (isBlurred && !isUpgradeWithPaidUser) : false;
+
+  // Show CTA only when content is blurred
+  const shouldShowCTA = shouldBlur;
 
   const renderCTA = () => {
-    if (!shouldBlur) return null;
+    if (!shouldShowCTA) return null;
 
     if (hasImageCarousel) {
       return (
