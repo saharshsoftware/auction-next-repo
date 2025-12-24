@@ -42,6 +42,7 @@ import BlurredFieldWrapper from '../atoms/BlurredFieldWrapper';
 import { Eye } from 'lucide-react';
 import ImageJsonLd from '../atoms/ImageJsonLd';
 import { useUserProfile } from '@/hooks/useUserProfile';
+import FloatingInterestButton from '../atoms/FloatingInterestButton';
 
 
 // add props type
@@ -240,25 +241,22 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
     router.back();
   };
 
-  const renderInterestContainer = () => {
-    if (isInterested) {
-      return (
-        <div className="flex items-center gap-2 bg-green-50 p-3 rounded-md shadow-sm">
-          <FontAwesomeIcon
-            icon={faCheck}
-            className="text-green-700 text"
-          />
-          <span className="text-sm text-green-700 font-bold uppercase">
-            {STRING_DATA.ALREADY_INTERESTED}
-          </span>
-        </div>
-      )
-    }
-    return <ActionButton
-      text={STRING_DATA.SHOW_INTEREST.toUpperCase()}
-      onclick={showModal}
-      icon={<WishlistSvg />}
-    />
+  /**
+   * Renders the "Already Interested" badge when user has shown interest.
+   * This is only shown in the header when the user has already expressed interest.
+   */
+  const renderAlreadyInterestedBadge = () => {
+    return (
+      <div className="flex items-center gap-2 bg-green-50 p-3 rounded-md shadow-sm">
+        <FontAwesomeIcon
+          icon={faCheck}
+          className="text-green-700 text"
+        />
+        <span className="text-sm text-green-700 font-bold uppercase">
+          {STRING_DATA.ALREADY_INTERESTED}
+        </span>
+      </div>
+    );
   }
 
   const sharedUrl = getSharedAuctionUrl(property);
@@ -313,8 +311,8 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
               <div className="flex items-center px-4 py-2 text-green-600 border border-green-300 rounded-lg hover:bg-green-50 transition-colors text-sm font-medium">
                 <WhatsappShareWithIcon url={sharedUrl} />
               </div>
-              {/* Interest Button */}
-              {renderInterestContainer()}
+              {/* Interest status indicator - only shown when already interested */}
+              {isInterested && renderAlreadyInterestedBadge()}
             </div>
           </div>
           {renderAuctionExpiredNotice()}
@@ -717,6 +715,13 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
           </div>
         </div>
       </div>
+
+      {/* Floating Interest Button - Visible on both mobile and desktop */}
+      <FloatingInterestButton
+        isInterested={isInterested}
+        isModalOpen={openModal}
+        onShowInterest={showModal}
+      />
     </>
   );
 };

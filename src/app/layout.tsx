@@ -10,6 +10,7 @@ import dynamic from "next/dynamic";
 import HeadScripts from "@/components/atoms/HeadScripts";
 import { CACHE_TIMES } from "@/shared/Constants";
 import ConfettiCelebration from "@/components/atoms/ConfettiCelebration";
+import BrokerPartnerPrompt from "@/components/atoms/BrokerPartnerPrompt";
 const Footer = dynamic(() => import("@/components/hoc/Footer"), {
   ssr: false,
 });
@@ -44,6 +45,7 @@ export default function RootLayout({
             <>
               <div className="flex flex-col h-screen">
                 <ConfettiCelebration />
+                <BrokerPartnerPrompt />
                 <NextTopLoader
                   color="#5356FF"
                   initialPosition={0.08}

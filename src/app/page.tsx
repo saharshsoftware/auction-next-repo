@@ -22,6 +22,7 @@ import FaqSection from "@/components/atoms/FaqSection";
 import { IMAGES } from "@/shared/Images";
 import ServicesSection from "@/components/atoms/ServicesSection";
 import HomeRecommendationsClient from "@/components/molecules/HomeRecommendationsClient";
+import PartnerAchievementsSection from "@/components/atoms/PartnerAchievementsSection";
 import { CACHE_TIMES } from "@/shared/Constants";
 
 export const revalidate = CACHE_TIMES.HOUR_24  
@@ -112,6 +113,10 @@ export default async function Home() {
             locationOptions={sanitizeReactSelectOptions(locationOptions)}
           />
         </section>
+
+        {/* Partner & Achievements Section */}
+        <PartnerAchievementsSection />
+
         {/* User Recommendations (Authenticated) */}
         <HomeRecommendationsClient />
         
