@@ -411,3 +411,9 @@ export interface LeadRecommendationsResponse {
     sort?: { field: string; order: "asc" | "desc" };
   };
 }
+
+export interface AchievementStat {
+  readonly icon: IconDefinition;
+  readonly value: string;
+  readonly label: string;
+}

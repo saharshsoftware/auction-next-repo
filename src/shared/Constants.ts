@@ -6,11 +6,16 @@ import {
   faHeart,
   faList,
   faUser,
+  faUsers,
+  faCity,
+  faBuilding,
+  faDownload,
+  faEye,
 } from "@fortawesome/free-solid-svg-icons";
 import { ROUTE_CONSTANTS } from "./Routes";
 import { CONFIG } from "@/utilies/Config";
 import { FAQItem } from "@/components/templates/FaqPage";
-import { BudgetRange, IAssetType, SortOption } from "@/types";
+import { AchievementStat, BudgetRange, IAssetType, SortOption } from "@/types";
 
 export const COOKIES = {
   TOKEN_KEY: "auction-token",
@@ -567,6 +572,7 @@ export const STORAGE_KEYS = {
   PREMIUM_AUCTION_VISIT_IDS: "premiumAuctionVisitIds",
   PREMIUM_LAST_RESET_DATE: "premiumLastResetDate",
   SHOW_UPGRADE_MODAL_FLAG: "showUpgradeModalFlag",
+  BROKER_PARTNER_PROMPT: "brokerPartnerPrompt",
 };
 
 export const SESSIONS_STORAGE_KEYS = {
@@ -843,3 +849,12 @@ export const URL_PARAMS = {
   SOURCE: 'source',
   MOBILE_APP: 'mobile_app',
 } as const;
+
+
+export const ACHIEVEMENT_STATS: AchievementStat[] = [
+  { icon: faUsers, value: "50K+", label: "Active Users" },
+  { icon: faDownload, value: "100K+", label: "App Downloads" },
+  { icon: faEye, value: "2M+", label: "Page Views" },
+  { icon: faBuilding, value: "100K+", label: "Properties Listed" },
+  { icon: faCity, value: "500+", label: "Cities Covered" },
+];

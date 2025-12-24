@@ -11,11 +11,12 @@ import SignupComp from "../templates/SignupComp";
 import { getCookie } from "cookies-next";
 import { Field, Form } from "formik";
 import { showInterest } from "@/services/auction";
-import toast from "react-simple-toasts";
 import { IAuction } from "@/types";
 import WhatsappSvg from "../svgIcons/WhatsappSvg";
 import { useRouter } from "next/navigation";
 import OtpVerificationForm from "../templates/OtpVerificationForm";
+import InterestSuccessScreen from "../atoms/InterestSuccessScreen";
+import { ROUTE_CONSTANTS } from "@/shared/Routes";
 
 interface IInterestModal {
   openModal: boolean;
@@ -28,8 +29,8 @@ const InterestModal = (props: IInterestModal) => {
   const router = useRouter();
   const { openModal, hideModal = () => { }, userData, auctionDetail } = props;
   const [show, setShow] = useState({ login: false, signup: true });
-  // const token = getCookie(COOKIES.TOKEN_KEY) ?? "";
   const [showOtpForm, setShowOtpForm] = useState(false);
+  const [showSuccessScreen, setShowSuccessScreen] = useState(false);
 
   const [myToken, setMyToken] = useState(getCookie(COOKIES.TOKEN_KEY) ?? "");
 
@@ -41,12 +42,8 @@ const InterestModal = (props: IInterestModal) => {
       const response = {
         data,
         success: () => {
-          toast("Success", {
-            theme: "success",
-            position: "top-center",
-          });
-          hideModal?.();
-          router.refresh();
+          // Show the success screen instead of just a toast
+          setShowSuccessScreen(true);
         },
         fail: (error: any) => {
           const { message } = error;
@@ -56,6 +53,24 @@ const InterestModal = (props: IInterestModal) => {
       handleOnSettled(response);
     },
   });
+
+  /**
+   * Handles closing the success screen and the modal
+   */
+  const handleSuccessClose = (): void => {
+    setShowSuccessScreen(false);
+    hideModal?.();
+    router.refresh();
+  };
+
+  /**
+   * Handles the "Browse More Properties" action from success screen
+   */
+  const handleBrowseMore = (): void => {
+    setShowSuccessScreen(false);
+    hideModal?.();
+    router.push(ROUTE_CONSTANTS.AUCTION);
+  };
 
   const handleShowLogin = () => {
     setShow({ login: true, signup: false });
@@ -251,6 +266,20 @@ const InterestModal = (props: IInterestModal) => {
       return renderAuthComponent();
     }
   };
+
+  // If success screen is showing, render it instead of the modal
+  if (showSuccessScreen) {
+    return (
+      <InterestSuccessScreen
+        propertyTitle={auctionDetail?.title}
+        propertyLocation={auctionDetail?.city && auctionDetail?.state 
+          ? `${auctionDetail.city}, ${auctionDetail.state}` 
+          : auctionDetail?.city || undefined}
+        onClose={handleSuccessClose}
+        onBrowseMore={handleBrowseMore}
+      />
+    );
+  }
 
   return (
     <>
