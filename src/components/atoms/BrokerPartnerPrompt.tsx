@@ -11,6 +11,8 @@
  * - Shows maximum 2 times per day (controlled via localStorage)
  * - Appears after a 5-second delay to avoid interrupting initial page load
  * - Responsive design: centered on mobile, right-aligned on desktop
+ * - Dynamic positioning: higher when FloatingInterestButton is visible (via global store),
+ *   lower when not visible
  * - Animated slide-up entrance for better UX
  * 
  * @module BrokerPartnerPrompt
@@ -21,7 +23,6 @@ import { useRouter } from "next/navigation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHandshake, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
-import { STRING_DATA } from "@/shared/Constants";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { useUserData } from "@/hooks/useAuthenticated";
 import {
@@ -30,6 +31,7 @@ import {
   SHOW_DELAY_MS,
 } from "@/helpers/BrokerPartnerPromptHelper";
 import { USER_TYPE } from "@/types.d";
+import { useFloatingButtonStore } from "@/zustandStore/floatingButtonStore";
 
 /**
  * BrokerPartnerPrompt displays a slide-up card prompting broker users
@@ -48,8 +50,14 @@ const BrokerPartnerPrompt: React.FC = () => {
   const { fullProfileData } = useUserProfile(!!userData);
   const [isVisible, setIsVisible] = useState(false);
 
+  // Check if FloatingInterestButton is currently visible (from global store)
+  const { isVisible: isFloatingButtonVisible } = useFloatingButtonStore();
+
   // Check if the current user is a broker
   const isBroker = fullProfileData?.userType === USER_TYPE.BROKER;
+
+  // Dynamic positioning: higher when FloatingInterestButton is visible, lower otherwise
+  const positionClass = isFloatingButtonVisible ? "bottom-20" : "bottom-2";
   
   /**
    * Effect to handle the delayed display of the prompt.
@@ -88,9 +96,9 @@ const BrokerPartnerPrompt: React.FC = () => {
   if (!isVisible) return null;
 
   return (
-    <div className="fixed bottom-24 md:bottom-6 left-4 right-4 md:left-auto md:right-4 z-40 animate-slide-up">
+    <div className={`fixed ${positionClass} left-2 right-2 md:left-auto md:right-4 z-40 animate-slide-up`}>
       {/* Prompt Card Container */}
-      <div className="bg-gradient-to-br from-blue-600 to-indigo-700 text-white rounded-2xl shadow-2xl p-4 md:p-5 max-w-sm mx-auto md:mx-0 relative">
+      <div className="bg-brand-color text-white rounded-2xl shadow-2xl p-4 md:p-5 max-w-sm mx-auto md:mx-0 relative">
         
         {/* Close/Dismiss Button */}
         <button
