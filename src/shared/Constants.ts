@@ -265,6 +265,7 @@ export const STRING_DATA = {
   MEMBERSHIP_COMPARE_HEADING: "Compare plan benefits",
   MEMBERSHIP_FEATURES_HEADER: "Features",
   PREFERENCES_MESSAGE: "Set your preferences for smarter results.",
+  
 };
 
 export const FEATURE_FLAGS = {
@@ -386,6 +387,7 @@ export const ERROR_MESSAGE = {
   VALID_EMAIL: "Please enter a valid email address",
   INTERESTED_CITIES_REQUIRED: "Interested cities are required",
   INTERESTED_CATEGORIES_REQUIRED: "Interested categories are required",
+  USER_TYPE_REQUIRED: "Please select a user type",
 };
 
 export const NAV_LINKS = [

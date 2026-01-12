@@ -15,6 +15,9 @@ import Link from "next/link";
 import { signupCustomClient } from "@/services/auth";
 import OtpVerificationForm from "./OtpVerificationForm";
 import { useAuthStore } from "@/zustandStore/authStore";
+import { userTypeOptions } from "@/shared/Utilies";
+import ReactSelectDropdown from "../atoms/ReactSelectDropdown";
+import { USER_TYPE } from "@/types.d";
 
 const validationSchema = Yup.object({
   name: Yup.string().trim().required(ERROR_MESSAGE.NAME_REQUIRED),
@@ -34,6 +37,7 @@ const validationSchema = Yup.object({
     .trim()
     .required(ERROR_MESSAGE.CONFIRM_PASSWORD)
     .oneOf([Yup.ref("password")], ERROR_MESSAGE.PASSWORDS_MUST_MATCH),
+  userType: Yup.object().nullable().required(ERROR_MESSAGE.USER_TYPE_REQUIRED)
 });
 
 const initialValues = {
@@ -41,6 +45,8 @@ const initialValues = {
   email: STRING_DATA.EMPTY,
   password: STRING_DATA.EMPTY,
   phoneNumber: STRING_DATA.EMPTY,
+  userType: null
+
 };
 
 export default function SignupComp(props: {
@@ -82,12 +88,13 @@ export default function SignupComp(props: {
 
   const handleRegister = async (values: FormikValues) => {
     setFormValues(values); // Save the form values
-    
+
     const formData = {
       username: values.phoneNumber,
       email: values.email,
       password: values.password,
       name: values.name,
+      userType: values?.userType?.value,
     };
     console.log(formData, "formdata");
     mutate({ formData });
@@ -144,7 +151,7 @@ export default function SignupComp(props: {
                     <Field name="phoneNumber">
                       {() => (
                         <div className="relative w-full">
-                           <div className="absolute inset-y-0 start-0 top-0 flex items-center ps-3.5 pointer-events-none text-sm-xs">
+                          <div className="absolute inset-y-0 start-0 top-0 flex items-center ps-3.5 pointer-events-none text-sm-xs">
                             + 91
                           </div>
                           <input
@@ -160,6 +167,31 @@ export default function SignupComp(props: {
                             }}
                           />
                         </div>
+                      )}
+                    </Field>
+                  </TextField>
+
+                  <TextField
+                    label={"User Type"}
+                    name="user-type"
+                    hasChildren={true}
+                    value={values?.userType}
+                  >
+                    <Field name="user-type">
+                      {() => (
+                        <ReactSelectDropdown
+                          defaultValue={values?.userType}
+                          options={userTypeOptions}
+                          placeholder="Select user type"
+                          name="user-type"
+                          customClass="w-full"
+                          isMulti={false}
+                          hidePlaceholder={true}
+                          isSearchable={false}
+                          onChange={(e) => {
+                            setFieldValue("userType", e);
+                          }}
+                        />
                       )}
                     </Field>
                   </TextField>
