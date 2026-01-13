@@ -3,6 +3,7 @@ export interface IData {
   email: string;
   password: string;
   name: string;
+  userType?: string;
 }
 
 
