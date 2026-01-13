@@ -37,7 +37,7 @@ const validationSchema = Yup.object({
     .trim()
     .required(ERROR_MESSAGE.CONFIRM_PASSWORD)
     .oneOf([Yup.ref("password")], ERROR_MESSAGE.PASSWORDS_MUST_MATCH),
-  userType: Yup.object().nullable().required(ERROR_MESSAGE.USER_TYPE_REQUIRED)
+  userType: Yup.object().required(ERROR_MESSAGE.USER_TYPE_REQUIRED)
 });
 
 const initialValues = {
@@ -173,11 +173,11 @@ export default function SignupComp(props: {
 
                   <TextField
                     label={"User Type"}
-                    name="user-type"
+                    name="userType"
                     hasChildren={true}
                     value={values?.userType}
                   >
-                    <Field name="user-type">
+                    <Field name="userType">
                       {() => (
                         <ReactSelectDropdown
                           defaultValue={values?.userType}
