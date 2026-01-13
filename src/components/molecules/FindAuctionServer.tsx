@@ -290,7 +290,7 @@ const FindAuction: React.FC<FindAuctionProps> = ({
               </div>
               <div className={gridElementClass()}>
                 <TextField
-                  label="Location (City & State)"
+                  label="Location"
                   name="location"
                   hasChildren
                 >

@@ -143,7 +143,7 @@ const Navbar: React.FC = () => {
       );
     }
     return (
-      <div className="md:flex hidden items-center gap-8">
+      <div className="md:flex hidden items-center gap-8 whitespace-nowrap">
         <Link href={ROUTE_CONSTANTS.LOGIN}>{STRING_DATA.LOGIN}</Link>
         <ActionButton
           id={`signup-btn`}
@@ -178,7 +178,7 @@ const Navbar: React.FC = () => {
       >
         <em className="sticky top-0 left-0 right-0">{getWaveSvg()}</em>
         <div className="flex flex-row items-center justify-between lg:px-4 w-full gap-4">
-          <div className="flex items-center gap-12">
+          <div className="flex items-center gap-12 ">
             <Link
               href={ROUTE_CONSTANTS.DASHBOARD}
               className="lg:text-xl text-lg font-bold cursor-pointer "
@@ -196,7 +196,7 @@ const Navbar: React.FC = () => {
                 />
               </span>
             </Link>
-            <div className="hidden lg:flex items-center gap-12">
+            <div className="hidden lg:flex items-center lg:gap-6 xl:gap-12 flex-nowrap whitespace-nowrap">
               <Link
                 href={ROUTE_CONSTANTS.BANKS}
                 className="cursor-pointer text-xs lg:text-sm"
