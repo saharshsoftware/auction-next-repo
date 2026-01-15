@@ -220,7 +220,7 @@ const FindAuction: React.FC<FindAuctionProps> = ({
   }, [assets]);
 
   useEffect(() => {
-    if ("slug" in currentFilterValues.category && currentFilterValues.category?.slug) {
+    if (currentFilterValues.category && typeof currentFilterValues.category === 'object' && "slug" in currentFilterValues.category && currentFilterValues.category?.slug) {
       handleCategoryChange(currentFilterValues.category?.slug);
     } else if (currentFilterValues.category?.value === STRING_DATA.EMPTY || currentFilterValues.category?.label === STRING_DATA.ALL) {
       // Handle case where category is reset to "All" (assets already contain "All" option)
