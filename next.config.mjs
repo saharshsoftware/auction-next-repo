@@ -120,14 +120,49 @@ const nextConfig = {
       },
     ];
   },
+  /**
+   * HTTP Headers configuration
+   * 
+   * CHANGE: Added X-Robots-Tag header to prevent staging indexing.
+   * This header applies to ALL routes/pages in the application.
+   * 
+   * What changed:
+   * - Changed source from "/" to "/:path*" to cover ALL routes (not just homepage)
+   * - Added environment-based detection to set "noindex, nofollow" on staging
+   * - Production behavior unchanged: "index, follow" header
+   * 
+   * How it works:
+   * - ALL pages/routes receive the X-Robots-Tag HTTP header
+   * - Staging: Header is "noindex, nofollow" (prevents indexing)
+   * - Production: Header is "index, follow" (allows indexing)
+   * 
+   * This works together with robots.txt and meta robots tag for
+   * comprehensive protection. HTTP headers are the strongest signal.
+   */
   async headers() {
+    // CHANGE: Added X-Robots-Tag header to prevent staging indexing
+    // Uses same logic as shouldPreventIndexing() in src/shared/SeoUtils.ts
+    // Check explicit environment variable first (most reliable)
+    const environment = process.env.NEXT_PUBLIC_ENVIRONMENT?.toLowerCase();
+    let preventIndexing = environment === "staging";
+    
+    // Fallback: Check if domain URL contains "staging" (backward compatibility)
+    if (!preventIndexing) {
+      const domainBaseUrl = process.env.NEXT_PUBLIC_DOMAIN_BASE_URL || "";
+      preventIndexing = domainBaseUrl.toLowerCase().includes("staging");
+    }
+    
+    const robotsTag = preventIndexing ? "noindex, nofollow" : "index, follow";
+    
+    // CHANGE: Changed from "/" to "/:path*" to apply to ALL routes
+    // This ensures every page gets the X-Robots-Tag header
     return [
       {
-        source: "/",
+        source: "/:path*", // Matches all routes (/, /about, /auctions/123, etc.)
         headers: [
           {
             key: "X-Robots-Tag",
-            value: "index, follow",
+            value: robotsTag,
           },
         ],
       },

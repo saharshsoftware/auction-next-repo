@@ -9,6 +9,7 @@ import GoogleScriptComponent from "@/components/atoms/GoogleScriptComponent";
 import dynamic from "next/dynamic";
 import HeadScripts from "@/components/atoms/HeadScripts";
 import { CACHE_TIMES } from "@/shared/Constants";
+import { shouldPreventIndexing } from "@/shared/SeoUtils";
 import ConfettiCelebration from "@/components/atoms/ConfettiCelebration";
 import BrokerPartnerPrompt from "@/components/atoms/BrokerPartnerPrompt";
 const Footer = dynamic(() => import("@/components/hoc/Footer"), {
@@ -21,7 +22,6 @@ const inter = Inter({
 });
 
 export const revalidate = CACHE_TIMES.AUCTION_LIST;
-
 export const metadata: Metadata = {
   // Ensures all relative URLs in metadata resolve to the primary domain
   metadataBase: new URL(
