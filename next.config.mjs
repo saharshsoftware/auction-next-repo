@@ -120,14 +120,54 @@ const nextConfig = {
       },
     ];
   },
+  /**
+   * HTTP Headers configuration
+   * 
+   * CHANGE: Added X-Robots-Tag header to prevent staging indexing.
+   * This header applies to ALL routes/pages in the application.
+   * 
+   * What changed:
+   * - Changed source from "/" to "/:path*" to cover ALL routes (not just homepage)
+   * - Added environment-based detection to set "noindex, nofollow" on staging
+   * - Production behavior unchanged: "index, follow" header
+   * 
+   * How it works:
+   * - ALL pages/routes receive the X-Robots-Tag HTTP header
+   * - Staging: Header is "noindex, nofollow" (prevents indexing)
+   * - Production: Header is "index, follow" (allows indexing)
+   * 
+   * This works together with robots.txt and meta robots tag for
+   * comprehensive protection. HTTP headers are the strongest signal.
+   */
   async headers() {
+    // Check explicit environment variable first (most reliable)
+    // Set NEXT_PUBLIC_ENVIRONMENT=staging in your staging environment
+    const environment = process.env.NEXT_PUBLIC_ENVIRONMENT?.toLowerCase();
+    let preventIndexing = false;
+    
+    if (environment === "staging") {
+      preventIndexing = true;
+    } else {
+      // Fallback: Check if domain URL contains "staging" (backward compatibility)
+      // This allows detection even if NEXT_PUBLIC_ENVIRONMENT is not set
+      const domainBaseUrl = process.env.NEXT_PUBLIC_DOMAIN_BASE_URL || "";
+      if (domainBaseUrl.toLowerCase().includes("staging")) {
+        preventIndexing = true;
+      }
+      // Default: Allow indexing (production)
+    }
+    
+    const robotsTag = preventIndexing ? "noindex, nofollow" : "index, follow";
+    
+    // CHANGE: Changed from "/" to "/:path*" to apply to ALL routes
+    // This ensures every page gets the X-Robots-Tag header
     return [
       {
-        source: "/",
+        source: "/:path*", // Matches all routes (/, /about, /auctions/123, etc.)
         headers: [
           {
             key: "X-Robots-Tag",
-            value: "index, follow",
+            value: robotsTag,
           },
         ],
       },
