@@ -22,31 +22,11 @@ const inter = Inter({
 });
 
 export const revalidate = CACHE_TIMES.AUCTION_LIST;
-
-/**
- * Root layout metadata - applies to ALL pages in the application
- * 
- * CHANGE: Added conditional robots metadata to prevent staging indexing.
- * This metadata is inherited by all pages unless they explicitly override it.
- * 
- * How it works:
- * - All pages inherit this robots directive from the root layout
- * - Individual pages can still override with their own robots metadata if needed
- * - Staging: Sets "noindex, nofollow" for all pages
- * - Production: Sets "index, follow" (allows indexing)
- * 
- * Note: This works together with robots.txt and X-Robots-Tag headers for
- * comprehensive protection. Even if a page overrides this, the HTTP headers
- * and robots.txt will still prevent indexing on staging.
- */
 export const metadata: Metadata = {
   // Ensures all relative URLs in metadata resolve to the primary domain
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_DOMAIN_BASE_URL || "https://www.eauctiondekho.com"
   ),
-  // CHANGE: Prevent indexing on staging environment
-  // This applies to ALL pages unless they explicitly override it
-  robots: shouldPreventIndexing() ? "noindex, nofollow" : "index, follow",
 };
 
 export default function RootLayout({
