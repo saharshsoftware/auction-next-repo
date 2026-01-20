@@ -9,6 +9,7 @@ import GoogleScriptComponent from "@/components/atoms/GoogleScriptComponent";
 import dynamic from "next/dynamic";
 import HeadScripts from "@/components/atoms/HeadScripts";
 import { CACHE_TIMES } from "@/shared/Constants";
+import { shouldPreventIndexing } from "@/shared/SeoUtils";
 import ConfettiCelebration from "@/components/atoms/ConfettiCelebration";
 import BrokerPartnerPrompt from "@/components/atoms/BrokerPartnerPrompt";
 const Footer = dynamic(() => import("@/components/hoc/Footer"), {
@@ -21,37 +22,6 @@ const inter = Inter({
 });
 
 export const revalidate = CACHE_TIMES.AUCTION_LIST;
-
-/**
- * Check if the current environment should prevent indexing
- * 
- * CHANGE: Added environment-based detection to prevent staging from being indexed.
- * 
- * Detection priority:
- * 1. NEXT_PUBLIC_ENVIRONMENT=staging (most reliable - set in staging env)
- * 2. Domain URL contains "staging" (fallback for backward compatibility)
- * 3. Default: Allow indexing (production)
- * 
- * @returns true if staging environment is detected (prevents indexing)
- */
-function shouldPreventIndexing(): boolean {
-  // Check explicit environment variable first (most reliable)
-  // Set NEXT_PUBLIC_ENVIRONMENT=staging in your staging environment
-  const environment = process.env.NEXT_PUBLIC_ENVIRONMENT?.toLowerCase();
-  if (environment === "staging") {
-    return true;
-  }
-  
-  // Fallback: Check if domain URL contains "staging" (backward compatibility)
-  // This allows detection even if NEXT_PUBLIC_ENVIRONMENT is not set
-  const domainBaseUrl = process.env.NEXT_PUBLIC_DOMAIN_BASE_URL || "";
-  if (domainBaseUrl.toLowerCase().includes("staging")) {
-    return true;
-  }
-  
-  // Default: Allow indexing (production)
-  return false;
-}
 
 /**
  * Root layout metadata - applies to ALL pages in the application

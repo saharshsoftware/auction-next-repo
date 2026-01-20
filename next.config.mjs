@@ -140,21 +140,16 @@ const nextConfig = {
    * comprehensive protection. HTTP headers are the strongest signal.
    */
   async headers() {
+    // CHANGE: Added X-Robots-Tag header to prevent staging indexing
+    // Uses same logic as shouldPreventIndexing() in src/shared/SeoUtils.ts
     // Check explicit environment variable first (most reliable)
-    // Set NEXT_PUBLIC_ENVIRONMENT=staging in your staging environment
     const environment = process.env.NEXT_PUBLIC_ENVIRONMENT?.toLowerCase();
-    let preventIndexing = false;
+    let preventIndexing = environment === "staging";
     
-    if (environment === "staging") {
-      preventIndexing = true;
-    } else {
-      // Fallback: Check if domain URL contains "staging" (backward compatibility)
-      // This allows detection even if NEXT_PUBLIC_ENVIRONMENT is not set
+    // Fallback: Check if domain URL contains "staging" (backward compatibility)
+    if (!preventIndexing) {
       const domainBaseUrl = process.env.NEXT_PUBLIC_DOMAIN_BASE_URL || "";
-      if (domainBaseUrl.toLowerCase().includes("staging")) {
-        preventIndexing = true;
-      }
-      // Default: Allow indexing (production)
+      preventIndexing = domainBaseUrl.toLowerCase().includes("staging");
     }
     
     const robotsTag = preventIndexing ? "noindex, nofollow" : "index, follow";
