@@ -88,6 +88,7 @@ export const STRING_DATA = {
   FREE: "Free",
   BANK_AUCTION_SUPPORT: "Bank Auction Support",
   PROPERTY_TYPES: "Property Types",
+  PARTNER_DASHBOARD: "Partner Dashboard",
   INDIVIDUAL: "Individual",
   BROKER: "Broker",
   HELPS_US_PERSONALIZE_RECOMMENDATIONS_FOR_YOU: "Helps us personalize recommendations for you",
@@ -315,6 +316,7 @@ const parseInternalUserEmails = (): string[] => {
     .split(",")
     .map((email) => email.trim().toLowerCase())
     .filter((email) => email.length > 0);
+    //console.log();
 };
 
 export const INTERNAL_TEST_USER_EMAILS = parseInternalUserEmails();
