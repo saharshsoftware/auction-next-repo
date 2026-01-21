@@ -10,6 +10,7 @@ import {
 import { getInitials } from "@/shared/Utilies";
 import LogoutButton from "../ui/LogoutButton";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
+import { CONFIG } from "@/utilies/Config";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import SearchKeywordComp from "../atoms/SearchKeywordComp";
 import NextLink from "../ui/NextLink";
@@ -22,6 +23,7 @@ import {
   faPhone,
   faRightToBracket,
   faUserPlus,
+  faUsers,
 } from "@fortawesome/free-solid-svg-icons";
 
 interface ICustomDrawer {
@@ -71,6 +73,12 @@ const CustomDrawer = (props: ICustomDrawer) => {
   };
 
   const internalNavLinks = getNavbarLinksForUser(userData?.email ?? null);
+
+  const handlePartnerDashboardClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    toggleTopBar();
+    window.open(CONFIG.PARTNER_DASHBOARD_URL, "_blank", "noopener,noreferrer");
+  };
 
   const renderLinks = () => {
     if (myToken) {
@@ -173,6 +181,14 @@ const CustomDrawer = (props: ICustomDrawer) => {
             <span>{STRING_DATA.CONTACT_US}</span>
             <FontAwesomeIcon color={NAVICON_COLOR} icon={faPhone} />
           </NextLink>
+          <a
+            href={CONFIG.PARTNER_DASHBOARD_URL}
+            onClick={handlePartnerDashboardClick}
+            className="flex justify-between gap-2 cursor-pointer text-sm-xs"
+          >
+            <span>{STRING_DATA.PARTNER_DASHBOARD}</span>
+            <FontAwesomeIcon color={NAVICON_COLOR} icon={faUsers} />
+          </a>
         </div>
         {renderAuthComponent()}
       </div>

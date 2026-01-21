@@ -9,8 +9,14 @@ import { getCurrentYear } from "@/shared/Utilies";
 import Image from "next/image";
 import { IMAGES } from "@/shared/Images";
 import { isInMobileApp } from "@/helpers/NativeHelper";
+import { CONFIG } from "@/utilies/Config";
 
 const Footer: React.FC = () => {
+  const handlePartnerDashboardClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    window.open(CONFIG.PARTNER_DASHBOARD_URL, "_blank", "noopener,noreferrer");
+  };
+
   if (isInMobileApp()) {
     return null
   }
@@ -71,6 +77,15 @@ const Footer: React.FC = () => {
                   <Link href={ROUTE_CONSTANTS.OUR_SERVICES} className="text-sm-xs text-gray-300 hover:text-white transition-colors min-w-fit">
                     {STRING_DATA.BANK_AUCTION_SUPPORT}
                   </Link>
+                </li>
+                <li>
+                  <a 
+                    href={CONFIG.PARTNER_DASHBOARD_URL}
+                    onClick={handlePartnerDashboardClick}
+                    className="text-sm-xs text-gray-300 hover:text-white transition-colors min-w-fit"
+                  >
+                    {STRING_DATA.PARTNER_DASHBOARD}
+                  </a>
                 </li>
               </ul>
             </div>

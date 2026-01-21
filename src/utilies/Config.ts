@@ -5,5 +5,6 @@ export const CONFIG = {
     "https://play.google.com/store/apps/details?id=com.eauctiondekho",
   APPSTORE_URL: "https://apps.apple.com/us/app/e-auctiondekho/id6742924249",
   AUCTION_DEKHO_S3: "https://auction-dekho.s3.ap-south-1.amazonaws.com",
-  GOOGLE_REVIEW_URL: 'https://share.google/JHWw4ixblKbEJ2H9o'
+  GOOGLE_REVIEW_URL: 'https://share.google/JHWw4ixblKbEJ2H9o',
+  PARTNER_DASHBOARD_URL: "https://partner.eauctiondekho.com/"
 };

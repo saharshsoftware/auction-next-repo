@@ -4,6 +4,7 @@ import { isInternalUserEmail, STRING_DATA } from "../../shared/Constants";
 import ActionButton from "../atoms/ActionButton";
 import { ROUTE_CONSTANTS } from "../../shared/Routes";
 import Link from "next/link";
+import { CONFIG } from "@/utilies/Config";
 import { usePathname, useRouter } from "next/navigation";
 import logo from "@/assets/images/logo.png";
 import { Popover, PopoverTrigger, PopoverContent } from "@nextui-org/popover";
@@ -164,6 +165,11 @@ const Navbar: React.FC = () => {
     }
   };
 
+  const handlePartnerDashboardClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    window.open(CONFIG.PARTNER_DASHBOARD_URL, "_blank", "noopener,noreferrer");
+  };
+
   // Hide navbar in mobile app (checked after mount to avoid hydration mismatch)
   if (isMobileApp) {
     return null;
@@ -227,6 +233,14 @@ const Navbar: React.FC = () => {
               >
                 {STRING_DATA.PRICING}{" "}
               </Link>}
+              <a
+                href={CONFIG.PARTNER_DASHBOARD_URL}
+                onClick={handlePartnerDashboardClick}
+                className="cursor-pointer text-xs lg:text-sm"
+              >
+                {STRING_DATA.PARTNER_DASHBOARD}{" "}
+              </a>
+               
             </div>
           </div>
           <div className="hidden lg:flex items-center gap-12">
