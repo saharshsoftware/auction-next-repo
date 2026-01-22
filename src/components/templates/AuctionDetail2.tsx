@@ -28,6 +28,7 @@ import ActionButton from '../atoms/ActionButton';
 import { STRING_DATA } from '@/shared/Constants';
 import { useRouter } from 'next/navigation';
 import InterestModal from '../ modals/InterestModal';
+import PhoneNumberModal from '../ modals/PhoneNumberModal';
 import useModal from '@/hooks/useModal';
 import { useUserData } from '@/hooks/useAuthenticated';
 import SurveyCard from "../atoms/SurveySection";
@@ -72,6 +73,9 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
 
   // State for client-side only date comparison to avoid hydration mismatch
   const [isAuctionExpired, setIsAuctionExpired] = useState<boolean>(false);
+  
+  // State for phone number modal visibility
+  const [isPhoneModalVisible, setIsPhoneModalVisible] = useState(false);
   
   // Read localStorage value only after mount to avoid hydration mismatch
   useEffect(() => {
@@ -262,6 +266,26 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
   const sharedUrl = getSharedAuctionUrl(property);
   const PROPERTY_ID = `E${property.id}`; // Property ID
   
+  // Extract all phone numbers from contact string
+  const phoneNumbers = extractPhoneNumbers(property.contact ?? '');
+  
+  // Handle phone call - opens tel: link for web
+  const handleCall = (phoneNumber: string) => {
+    window.location.href = `tel:${phoneNumber}`;
+  };
+  
+  // Handle call button press - shows modal if multiple numbers, calls directly if single
+  const handleCallPress = () => {
+    if (phoneNumbers.length === 0) {
+      return;
+    }
+    if (phoneNumbers.length === 1) {
+      handleCall(phoneNumbers[0]);
+    } else if (phoneNumbers.length > 1) {
+      setIsPhoneModalVisible(true);
+    }
+  };
+  
   const renderAuctionExpiredNotice = () => {
     if (!property?.auctionEndDate || !isAuctionExpired) return null;
 
@@ -296,6 +320,12 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
         />
       ) : null}
 
+      <PhoneNumberModal
+        visible={isPhoneModalVisible}
+        onClose={() => setIsPhoneModalVisible(false)}
+        phoneNumbers={phoneNumbers}
+        onSelectNumber={handleCall}
+      />
 
       <div className="min-h-screen">
         <div className="">
@@ -634,19 +664,10 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
                     <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
                       <div className="text-xs font-medium text-gray-600 uppercase tracking-wide mb-2 flex items-center">
                         <Phone className="h-3 w-3 mr-1" />
-                        Contact Number
+                        Contact
                       </div>
                       <div className="text-sm font-semibold text-gray-900">
-                        {property.contact ? (
-                          <a
-                            href={`tel:${extractPhoneNumbers(property.contact)[0]}`}
-                            className="hover:text-gray-700 transition-colors"
-                          >
-                            {extractPhoneNumbers(property.contact)[0]}
-                          </a>
-                        ) : (
-                          '-'
-                        )}
+                        {property.contact}
                       </div>
                     </div>
 
@@ -659,8 +680,19 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
                         {property.borrowerName || '-'}
                       </div>
                     </div>
-
                   </div>
+                  
+                  {/* Call Now Button - Only show if phone numbers exist */}
+                  {phoneNumbers.length > 0 && (
+                    <button
+                      onClick={handleCallPress}
+                      className="flex items-center justify-center gap-2 mt-4 w-full bg-brand-color hover:opacity-90 text-white font-semibold py-3 px-6 rounded-lg transition-opacity"
+                      aria-label="Call Now"
+                    >
+                      <Phone className="h-5 w-5" />
+                      <span>Call Now</span>
+                    </button>
+                  )}
                 </BlurredFieldWrapper>
               </div>
             </div>
