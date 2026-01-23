@@ -55,4 +55,5 @@ export const API_ENPOINTS = {
   SUBSCRIPTIONS_ME: "/api/subscriptions/me",
   ONE_TIME_CREATE_ORDER: "/api/one-time-payments/create-order",
   ONE_TIME_CHECKOUT: "/api/one-time-payments/checkout",
+  PARTNER_SIGNUP: "/api/partner-signup",
 };
