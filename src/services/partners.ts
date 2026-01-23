@@ -1,4 +1,4 @@
-import { API_BASE_URL } from '@/services/api';
+import { API_BASE_URL, API_ENPOINTS } from '@/services/api';
 import { postRequest } from '@/shared/Axios';
 
 interface ICreatePartnerProps {
@@ -8,7 +8,7 @@ interface ICreatePartnerProps {
 export const createPartnerClient = async (payload: ICreatePartnerProps) => {
   const { formData } = payload;
   try {
-    const URL = API_BASE_URL + '/api/partner-signup';
+    const URL = API_BASE_URL + API_ENPOINTS.PARTNER_SIGNUP;
     const { data } = await postRequest({ API: URL, DATA: formData });
     return data;
   } catch (error: any) {
