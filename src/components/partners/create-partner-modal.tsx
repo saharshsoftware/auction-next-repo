@@ -141,11 +141,11 @@ const CreatePartnerModal: React.FC<{ handleClose?: () => void }> = ({
 
   const mapPartnerFormToApi = (values: any) => {
     return {
-      ...(values.name && {name: values.name}),
-      ...(values.email && { email: values.email}),
-      ...(values.phone && {phone: values.phone}),
-      ...(values.contactPerson && {contactPerson: values.contactPerson}),
-      ...(values.GSTInfo && {GSTInfo: values.GSTInfo}),
+      name: values.name || "",
+      email: values.email || "",
+      phone: values.phone || "",
+      contactPerson: values.contactPerson || "",
+      GSTInfo: values.GSTInfo || "",
       ...(values.addressLine1 && {addressLine1: values.addressLine1}),
       ...(values.addressLine2 && {addressLine2: values.addressLine2}),
       ...(values.city && {city: values.city}),
