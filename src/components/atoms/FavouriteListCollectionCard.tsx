@@ -26,7 +26,7 @@ const FavouriteListCollectionCard = ({ item }: IFavouriteListCollectionCardProps
     });
   };
 
-  const imageUrl = sanitizeStrapiImageUrl({ imageURL: item?.imageUrl }) ?? "";
+  const imageUrl = sanitizeStrapiImageUrl({ imageURL: item?.imageUrl }) || "/images/logo.png";
 
   return (
     <div className="w-full h-full flex flex-col rounded-lg overflow-hidden shadow-sm hover:shadow-md active:shadow-lg transition-shadow duration-200 bg-white border border-gray-200">
