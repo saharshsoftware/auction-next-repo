@@ -10,7 +10,7 @@
  */
 
 import React from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHandshake } from "@fortawesome/free-solid-svg-icons";
 import { ROUTE_CONSTANTS } from "@/shared/Routes";
@@ -20,10 +20,18 @@ import AchievementStats from "./AchievementStats";
  * PartnerAchievementsSection displays platform statistics and a prominent
  * "Partner with Us" CTA. Uses the AchievementStats component for the stats grid.
  * 
- * @returns The section component with stats and partner CTA
+ * Prevents rendering on the partner-signup page to avoid confusion.
+ * 
+ * @returns The section component with stats and partner CTA, or null if on partner-signup page
  */
 const PartnerAchievementsSection: React.FC = () => {
   const router = useRouter();
+  const pathname = usePathname();
+
+  // Never render this component on the partner-signup page
+  if (pathname === "/partner-signup") {
+    return null;
+  }
 
   /**
    * Handles navigation to the partner page

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import CustomModal from "../atoms/CustomModal";
 import { STRING_DATA } from "@/shared/Constants";
 import LoginComp from "../templates/LoginComp";
@@ -10,13 +10,28 @@ import OtpVerificationForm from "../templates/OtpVerificationForm";
 interface ILoginModal {
   openModal: boolean;
   hideModal?: () => void;
+  initialView?: "login" | "signup";
 }
 
 const LoginModal = (props: ILoginModal) => {
-  const { openModal, hideModal = () => { } } = props;
+  const { openModal, hideModal = () => { }, initialView = "signup" } = props;
   const router = useRouter();
-  const [show, setShow] = useState({ login: false, signup: true });
+  const [show, setShow] = useState({ 
+    login: initialView === "login", 
+    signup: initialView === "signup" 
+  });
   const [showOtpForm, setShowOtpForm] = useState(false);
+
+  // Reset to initial view when modal opens
+  useEffect(() => {
+    if (openModal) {
+      setShow({ 
+        login: initialView === "login", 
+        signup: initialView === "signup" 
+      });
+      setShowOtpForm(false);
+    }
+  }, [openModal, initialView]);
 
   const handleShowRegister = () => {
     setShow({ login: false, signup: true });

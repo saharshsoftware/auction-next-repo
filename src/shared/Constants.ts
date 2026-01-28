@@ -862,3 +862,10 @@ export const ACHIEVEMENT_STATS: AchievementStat[] = [
   { icon: faBuilding, value: "100K+", label: "Properties Listed" },
   { icon: faCity, value: "500+", label: "Cities Covered" },
 ];
+
+export const AVAILABLE_SERVICES = [
+  { id: 'property_interest', label: 'Property Interest' },
+  { id: 'auction_support', label: 'Auction Support' },
+  { id: 'documentation', label: 'Documentation' },
+  { id: 'due_diligence', label: 'Due Diligence' },
+];
