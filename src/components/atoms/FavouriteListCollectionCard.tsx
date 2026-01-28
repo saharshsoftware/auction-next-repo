@@ -57,7 +57,7 @@ const FavouriteListCollectionCard = ({ item }: IFavouriteListCollectionCardProps
 </div>
         
         {/* Explore Link */}
-        <div className="pt-2 sm:pt-3 border-t border-gray-100">
+        <div className="pt-2 sm:pt-3">
           <Link
             href={`${ROUTE_CONSTANTS.COLLECTION_PUBLIC}/${item?.slug}`}
             prefetch={false}
