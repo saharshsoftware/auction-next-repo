@@ -16,7 +16,7 @@ export const fetchLocationTopClient = async () => {
 
 export const fetchLocationClient = async () => {
   try {
-    const requiredkeys = generateQueryParamString(["name", "slug", "type"]);
+    const requiredkeys = generateQueryParamString(["name", "slug", "type", "state"]);
     const filter = `?sort[0]=name:asc&pagination[page]=1&pagination[pageSize]=1000&${requiredkeys}`;
     const URL = API_BASE_URL + API_ENPOINTS.LOCATIONS + filter;
     const { data } = await getRequest({ API: URL });
