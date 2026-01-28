@@ -215,7 +215,7 @@ const CreatePartnerModal: React.FC<{ handleClose?: () => void }> = ({
   const handlePartnerSubmit = (values: any, helpers: FormikHelpers<FormikValues>) => {
     const payload = mapPartnerFormToApi(values);
     console.log("payload", payload);
-    // mutate({ formData: payload });
+    mutate({ formData: payload });
   };
 
   const handleCityChange = (e: any, setFieldValue: any) => {
