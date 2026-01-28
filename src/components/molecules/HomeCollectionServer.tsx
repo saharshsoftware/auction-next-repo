@@ -9,6 +9,7 @@ const AssetsCollection = dynamic(() => import("@/components/molecules/AssetsColl
 const LocationCollection = dynamic(() => import("@/components/molecules/LocationCollection"), { ssr: false });
 const CommonCollectionComp = dynamic(() => import("@/components/molecules/CommonCollectionComp"), { ssr: false });
 const FavouriteListCollection = dynamic(() => import("@/components/molecules/FavouriteListCollection"), { ssr: false });
+const FavouriteListCarousel = dynamic(() => import("@/components/atoms/FavouriteListCarousel"), { ssr: false });
 
 const getComponent = (name: string) => {
   switch (name) {
@@ -27,6 +28,27 @@ export default async function HomeCollectionsServer() {
   return (
     <section className="md:my-auto mt-12">
       {carouselResponse.map((item: any, index: number) => {
+        // Conditionally render FavouriteListCarousel for FavouriteListCollection component
+        // Check both componentName and title to handle different naming conventions
+        const isFavouriteList = 
+          item?.componentName === "FavouriteListCollection" || 
+          item?.title?.toLowerCase() === "favourite list" ||
+          item?.title?.toLowerCase().includes("favourite list");
+        
+        if (isFavouriteList) {
+          return (
+            <div key={index} className={`${index % 2 !== 0 ? "bg-even-color" : "bg-odd-color"}`}>
+              <FavouriteListCarousel
+                title={item?.title ?? ""}
+                desc={item?.description ?? ""}
+                subTitle={item?.subTitle ?? ""}
+                items={item?.collectionData ?? []}
+              />
+            </div>
+          );
+        }
+
+        // Default rendering for other collection types
         const ItemComponent: any = getComponent(item?.componentName);
         return (
           <div key={index} className={`${index % 2 !== 0 ? "bg-even-color" : "bg-odd-color"}`}>
