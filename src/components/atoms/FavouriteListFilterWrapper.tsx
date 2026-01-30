@@ -1,8 +1,31 @@
 "use client";
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useIsAuthenticated } from "@/hooks/useAuthenticated";
 import { useUserProfile } from "@/hooks/useUserProfile";
+import { getLocationFromIP } from "@/shared/ipLocation";
 import FavouriteListCarousel from "./FavouriteListCarousel";
+
+// Shared promise so all instances get the same IP-based city (single fetch)
+let ipCityPromise: Promise<string | null> | null = null;
+const getIpCityOnce = (): Promise<string | null> => {
+  if (!ipCityPromise) ipCityPromise = getLocationFromIP();
+  return ipCityPromise;
+};
+
+/** Hook that returns user's city from IP (cached, single fetch across all instances). */
+function useLocationFromIP(): string | null | undefined {
+  const [city, setCity] = useState<string | null | undefined>(undefined);
+  const resolved = useRef(false);
+  useEffect(() => {
+    if (resolved.current) return;
+    resolved.current = true;
+    getIpCityOnce().then((c) => {
+      console.log("[useLocationFromIP] User location (IP):", c ?? null);
+      setCity(c ?? null);
+    });
+  }, []);
+  return city;
+}
 
 interface FavouriteListItem {
   id?: number;
@@ -49,38 +72,46 @@ const hasAnyMatchingCity = (
 };
 
 /**
+ * Normalizes city string for comparison (lowercase, trimmed).
+ */
+const normalizeCity = (city: string | null | undefined): string | null => {
+  const s = city?.trim?.();
+  return typeof s === "string" && s.length > 0 ? s.toLowerCase() : null;
+};
+
+/**
  * Determines if a favourite list item should be shown based on user's city preference.
- * 
+ *
  * Use cases:
- * 1. User not logged in → show all items
- * 2. User logged in, no interested city → show all items
- * 3. User logged in with interested city, matches exist → show ONLY matching city items
- * 4. User logged in with interested city, NO matches exist → show all items (fallback)
+ * 1. User not logged in / no interested cities → show favourite list of nearest location (from IP)
+ * 2. User logged in with interested city, matches exist → show ONLY matching city items
+ * 3. User logged in with interested city, NO matches exist → show all items (fallback)
  */
 const shouldShowFavouriteList = (
   itemCity: string | null | undefined,
   isAuthenticated: boolean,
   userCities: string[],
-  hasMatches: boolean
+  hasMatches: boolean,
+  ipCity: string | null | undefined
 ): boolean => {
-  // Case 1 & 2: Not authenticated OR no city preference → show all items
+  const normalizedItemCity = normalizeCity(itemCity);
+
+  // Use IP-based nearest location when not logged in OR no interested cities
   if (!isAuthenticated || userCities.length === 0) {
-    return true;
+    if (ipCity === undefined) return false; // Still loading: show nothing until we have IP city
+    if (ipCity === null) return true; // Fetch failed: show all as fallback
+    return normalizedItemCity !== null && normalizeCity(ipCity) === normalizedItemCity;
   }
 
-  // Case 4: User has city preference but no items match → fallback to show all
+  // User has city preference but no items match → fallback to show all
   if (!hasMatches) {
     return true;
   }
 
-  const normalizedItemCity = itemCity?.toLowerCase().trim() ?? null;
-  
-  // Case 3: User has interested cities and matches exist → show ONLY matching items
-  // Hide generic items (city: null) when matching city items are available
+  // User has interested cities and matches exist → show ONLY matching items
   if (normalizedItemCity === null) {
     return false;
   }
-  
   return userCities.includes(normalizedItemCity);
 };
 
@@ -91,6 +122,7 @@ const shouldShowFavouriteList = (
 const FavouriteListFilterWrapper = ({ item, index, allItems }: FavouriteListFilterWrapperProps) => {
   const { isAuthenticated } = useIsAuthenticated();
   const { userProfileData } = useUserProfile(isAuthenticated);
+  const ipCity = useLocationFromIP();
 
   const userInterestedCities = useMemo(
     () => parseInterestedCities(userProfileData?.interestedCities),
@@ -104,8 +136,15 @@ const FavouriteListFilterWrapper = ({ item, index, allItems }: FavouriteListFilt
   );
 
   const shouldShow = useMemo(
-    () => shouldShowFavouriteList(item.city, isAuthenticated, userInterestedCities, hasMatches),
-    [item.city, isAuthenticated, userInterestedCities, hasMatches]
+    () =>
+      shouldShowFavouriteList(
+        item.city,
+        isAuthenticated,
+        userInterestedCities,
+        hasMatches,
+        ipCity
+      ),
+    [item.city, isAuthenticated, userInterestedCities, hasMatches, ipCity]
   );
 
   // Hide items with no collection data (empty carousel would be pointless)
