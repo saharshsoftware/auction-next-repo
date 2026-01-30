@@ -1,5 +1,5 @@
 "use client";
-import React, { useMemo } from "react";
+import React, { useMemo, useEffect, useState } from "react";
 import { useIsAuthenticated } from "@/hooks/useAuthenticated";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import FavouriteListCarousel from "./FavouriteListCarousel";
@@ -21,6 +21,121 @@ interface FavouriteListFilterWrapperProps {
   index: number;
   allItems: FavouriteListItem[];
 }
+
+
+
+/* =========================================================
+   🆕 GEO LOCATION HELPERS (CLIENT ONLY, NO CORS)
+========================================================= */
+
+const USER_CITY_CACHE_KEY = "detected_user_city";
+
+/**
+ * Normalize city names like:
+ * "Jaipur Municipal Corporation" → "jaipur"
+ */
+const normalizeCityName = (city: string): string => {
+  return city
+    .replace(/municipal corporation/i, "")
+    .replace(/municipality/i, "")
+    .replace(/district/i, "")
+    .replace(/city/i, "")
+    .trim()
+    .toLowerCase();
+};
+
+const getUserCoordinates = (): Promise<{ lat: number; lon: number } | null> => {
+  return new Promise((resolve) => {
+    try {
+      if (typeof navigator === "undefined" || !navigator.geolocation) {
+        resolve(null);
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          try {
+            resolve({
+              lat: position.coords.latitude,
+              lon: position.coords.longitude,
+            });
+          } catch {
+            resolve(null);
+          }
+        },
+        () => resolve(null),
+        { timeout: 8000 }
+      );
+    } catch {
+      resolve(null);
+    }
+  });
+};
+
+const getCityFromCoordinates = async (
+  lat: number,
+  lon: number
+): Promise<string | null> => {
+  try {
+    const res = await fetch(
+      `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`
+    );
+
+    if (!res.ok) return null;
+   
+    const data = await res.json();
+   
+    const address = data.address || {};
+   
+
+    const rawCity =
+      address.city ||
+      address.town ||
+      address.village ||
+      address.municipality ||
+      address.county ||
+      null;
+
+    if (!rawCity) return null;
+    return normalizeCityName(rawCity);
+  } catch {
+    return null;
+  }
+};
+
+const detectAndCacheUserCity = async (): Promise<string | null> => {
+  try {
+    let cached: string | null = null;
+    try {
+      cached = localStorage.getItem(USER_CITY_CACHE_KEY);
+    } catch {
+      // localStorage unavailable (e.g. private browsing)
+    }
+    if (cached) return cached;
+
+    const coords = await getUserCoordinates();
+    if (!coords) return null;
+
+    const city = await getCityFromCoordinates(coords.lat, coords.lon);
+    if (city) {
+      try {
+        localStorage.setItem(USER_CITY_CACHE_KEY, city);
+      } catch {
+        // Ignore cache write failure
+      }
+    }
+
+    return city;
+  } catch {
+    return null;
+  }
+};
+
+
+
+
+
+
 
 /**
  * Extracts user's interested cities from profile data as a normalized array.
@@ -49,39 +164,43 @@ const hasAnyMatchingCity = (
 };
 
 /**
- * Determines if a favourite list item should be shown based on user's city preference.
- * 
- * Use cases:
- * 1. User not logged in → show all items
- * 2. User logged in, no interested city → show all items
- * 3. User logged in with interested city, matches exist → show ONLY matching city items
- * 4. User logged in with interested city, NO matches exist → show all items (fallback)
+ * Determines if a favourite list item should be shown when user has interested cities and at least one item matches.
+ * When user has interested cities but NO matches, visibility uses geo fallback (shouldShowByGeoCity), not this function.
  */
 const shouldShowFavouriteList = (
   itemCity: string | null | undefined,
-  isAuthenticated: boolean,
   userCities: string[],
   hasMatches: boolean
 ): boolean => {
-  // Case 1 & 2: Not authenticated OR no city preference → show all items
-  if (!isAuthenticated || userCities.length === 0) {
-    return true;
-  }
-
-  // Case 4: User has city preference but no items match → fallback to show all
+  // Defensive: when no matches, caller uses geo fallback; if this is still called, show all for safety.
   if (!hasMatches) {
     return true;
   }
 
   const normalizedItemCity = itemCity?.toLowerCase().trim() ?? null;
-  
-  // Case 3: User has interested cities and matches exist → show ONLY matching items
+
   // Hide generic items (city: null) when matching city items are available
   if (normalizedItemCity === null) {
     return false;
   }
-  
+
   return userCities.includes(normalizedItemCity);
+};
+
+/**
+ * For guest or logged-in user with no interested city: show only if item's city
+ * matches the detected geolocation city. If detection failed or no match, don't show.
+ */
+const shouldShowByGeoCity = (
+  itemCity: string | null | undefined,
+  detectedCity: string | null,
+  geoCityResolved: boolean
+): boolean => {
+  if (!geoCityResolved || detectedCity === null) {
+    return false;
+  }
+  const normalizedItemCity = itemCity?.toLowerCase().trim() ?? null;
+  return normalizedItemCity !== null && normalizedItemCity === detectedCity;
 };
 
 /**
@@ -91,22 +210,64 @@ const shouldShowFavouriteList = (
 const FavouriteListFilterWrapper = ({ item, index, allItems }: FavouriteListFilterWrapperProps) => {
   const { isAuthenticated } = useIsAuthenticated();
   const { userProfileData } = useUserProfile(isAuthenticated);
+  const [detectedCity, setDetectedCity] = useState<string | null>(null);
+  const [geoCityResolved, setGeoCityResolved] = useState(false);
 
   const userInterestedCities = useMemo(
     () => parseInterestedCities(userProfileData?.interestedCities),
     [userProfileData?.interestedCities]
   );
 
-  // Check if any favourite list item matches the user's interested cities
+
+
+  const isGeoCityMode =
+    !isAuthenticated || userInterestedCities.length === 0;
+
+  // Check if any favourite list item matches the user's interested cities (needed before useGeoFallback).
   const hasMatches = useMemo(
     () => hasAnyMatchingCity(allItems, userInterestedCities),
     [allItems, userInterestedCities]
   );
 
-  const shouldShow = useMemo(
-    () => shouldShowFavouriteList(item.city, isAuthenticated, userInterestedCities, hasMatches),
-    [item.city, isAuthenticated, userInterestedCities, hasMatches]
-  );
+  // Logged-in with interested cities but no matching items: fall back to geolocation city (same logic as guest).
+  const useGeoFallback =
+    isAuthenticated &&
+    userInterestedCities.length > 0 &&
+    !hasMatches;
+
+  const runGeoDetection = isGeoCityMode || useGeoFallback;
+
+  // Run geolocation when we filter by detected city: guest/no interested city, or profile no-matches fallback.
+  useEffect(() => {
+    if (!runGeoDetection) return;
+    setGeoCityResolved(false);
+    detectAndCacheUserCity()
+      .then((city) => {
+        setDetectedCity(city);
+        setGeoCityResolved(true);
+      })
+      .catch(() => {
+        // Geolocation failed (denied, timeout, or unexpected error) – treat as no city, don't break UI
+        setDetectedCity(null);
+        setGeoCityResolved(true);
+      });
+  }, [runGeoDetection]);
+
+  const useGeoCityForFilter = isGeoCityMode || useGeoFallback;
+
+  const shouldShow = useMemo(() => {
+    if (useGeoCityForFilter) {
+      return shouldShowByGeoCity(item.city, detectedCity, geoCityResolved);
+    }
+    return shouldShowFavouriteList(item.city, userInterestedCities, hasMatches);
+  }, [
+    useGeoCityForFilter,
+    item.city,
+    detectedCity,
+    geoCityResolved,
+    userInterestedCities,
+    hasMatches,
+  ]);
 
   // Hide items with no collection data (empty carousel would be pointless)
   const hasValidData = item.collectionData && item.collectionData.length > 0;
