@@ -15,6 +15,7 @@ import {
 import { Metadata } from "next";
 
 import DownloadBanner from "@/components/molecules/DownloadSection";
+import FavouriteListSectionClient from "@/components/molecules/FavouriteListSectionClient";
 import HomeCollectionsServer from "@/components/molecules/HomeCollectionServer";
 import LandingPageSectionClient from "@/components/molecules/LandingPageSectionClient";
 import { getFaqData } from "@/server/actions/footer";
@@ -132,6 +133,7 @@ export default async function Home() {
 
         
         {/* Home Collection Sections */}
+        <FavouriteListSectionClient />
         <HomeCollectionsServer />
 
         {/* FAQ Section */}
