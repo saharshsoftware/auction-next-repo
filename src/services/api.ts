@@ -23,6 +23,10 @@ export const API_ENPOINTS = {
   CATEGORY_BOX_COLLETIONS: "/api/all-categories",
   ASSET_TYPES: "/api/all-asset-types",
   HOME_BOX_COLLECTIONS: "/api/home-box-collections",
+  HOME_BOX_COLLECTIONS_FILTER:
+    "?filters[componentName][$ne]=FavouriteListCollection",
+  HOME_BOX_COLLECTIONS_FAVOURITE_LIST_ONLY:
+    "?filters[componentName][$eq]=FavouriteListCollection",
   FAVOURITE_LIST: "/api/favorite-list",
   FAVOURITE_LIST_PROPERTY: "/api/property-in-favorite-list",
   FAVOURITE_LISTS: "/api/favorite-lists",
