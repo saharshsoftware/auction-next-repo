@@ -25,79 +25,24 @@ interface FavouriteListFilterWrapperProps {
 
 
 /* =========================================================
-   🆕 GEO LOCATION HELPERS (CLIENT ONLY, NO CORS)
+   USER CITY VIA /api/user-city (SERVER PROXY → ip-api.com)
+   Avoids CORS and mixed content by calling our API route.
 ========================================================= */
 
 const USER_CITY_CACHE_KEY = "detected_user_city";
+const USER_CITY_API = "/api/user-city";
 
 /**
- * Normalize city names like:
- * "Jaipur Municipal Corporation" → "jaipur"
+ * Fetches user's city from our server proxy (which calls ip-api.com).
+ * Response: { city: string | null } (normalized on server).
  */
-const normalizeCityName = (city: string): string => {
-  return city
-    .replace(/municipal corporation/i, "")
-    .replace(/municipality/i, "")
-    .replace(/district/i, "")
-    .replace(/city/i, "")
-    .trim()
-    .toLowerCase();
-};
-
-const getUserCoordinates = (): Promise<{ lat: number; lon: number } | null> => {
-  return new Promise((resolve) => {
-    try {
-      if (typeof navigator === "undefined" || !navigator.geolocation) {
-        resolve(null);
-        return;
-      }
-
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          try {
-            resolve({
-              lat: position.coords.latitude,
-              lon: position.coords.longitude,
-            });
-          } catch {
-            resolve(null);
-          }
-        },
-        () => resolve(null),
-        { timeout: 8000 }
-      );
-    } catch {
-      resolve(null);
-    }
-  });
-};
-
-const getCityFromCoordinates = async (
-  lat: number,
-  lon: number
-): Promise<string | null> => {
+const getCityFromUserCityApi = async (): Promise<string | null> => {
   try {
-    const res = await fetch(
-      `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`
-    );
-
+    const res = await fetch(USER_CITY_API);
     if (!res.ok) return null;
-   
+
     const data = await res.json();
-   
-    const address = data.address || {};
-   
-
-    const rawCity =
-      address.city ||
-      address.town ||
-      address.village ||
-      address.municipality ||
-      address.county ||
-      null;
-
-    if (!rawCity) return null;
-    return normalizeCityName(rawCity);
+    return data.city ?? null;
   } catch {
     return null;
   }
@@ -113,10 +58,7 @@ const detectAndCacheUserCity = async (): Promise<string | null> => {
     }
     if (cached) return cached;
 
-    const coords = await getUserCoordinates();
-    if (!coords) return null;
-
-    const city = await getCityFromCoordinates(coords.lat, coords.lon);
+    const city = await getCityFromUserCityApi();
     if (city) {
       try {
         localStorage.setItem(USER_CITY_CACHE_KEY, city);
@@ -237,7 +179,7 @@ const FavouriteListFilterWrapper = ({ item, index, allItems }: FavouriteListFilt
 
   const runGeoDetection = isGeoCityMode || useGeoFallback;
 
-  // Run geolocation when we filter by detected city: guest/no interested city, or profile no-matches fallback.
+  // Run IP-based city detection when we filter by detected city: guest/no interested city, or profile no-matches fallback.
   useEffect(() => {
     if (!runGeoDetection) return;
     setGeoCityResolved(false);
@@ -247,7 +189,7 @@ const FavouriteListFilterWrapper = ({ item, index, allItems }: FavouriteListFilt
         setGeoCityResolved(true);
       })
       .catch(() => {
-        // Geolocation failed (denied, timeout, or unexpected error) – treat as no city, don't break UI
+        // IP-API failed (network, CORS, or unexpected error) – treat as no city, don't break UI
         setDetectedCity(null);
         setGeoCityResolved(true);
       });
