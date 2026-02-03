@@ -144,15 +144,17 @@ const FavouriteListFilterWrapper = ({ item, index, allItems, injectedGeo }: Favo
   useEffect(() => {
     if (injectedGeo !== undefined || !runGeoDetection) return;
     setLocalGeoCityResolved(false);
-    detectAndCacheUserCity()
-      .then((city) => {
+    const run = async () => {
+      try {
+        const city = await detectAndCacheUserCity();
         setLocalDetectedCity(city);
         setLocalGeoCityResolved(true);
-      })
-      .catch(() => {
+      } catch {
         setLocalDetectedCity(null);
         setLocalGeoCityResolved(true);
-      });
+      }
+    };
+    run();
   }, [runGeoDetection, injectedGeo]);
 
   const useGeoCityForFilter = isGeoCityMode || useGeoFallback;

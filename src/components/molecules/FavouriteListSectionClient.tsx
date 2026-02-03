@@ -44,15 +44,17 @@ const FavouriteListSectionClient = () => {
     if (!hasFavouriteListItems || geoDetectionStarted.current) return;
     geoDetectionStarted.current = true;
     setGeoCityResolved(false);
-    detectAndCacheUserCity()
-      .then((city) => {
+    const run = async () => {
+      try {
+        const city = await detectAndCacheUserCity();
         setDetectedCity(city);
-        setGeoCityResolved(true);
-      })
-      .catch(() => {
+      } catch {
         setDetectedCity(null);
+      } finally {
         setGeoCityResolved(true);
-      });
+      }
+    };
+    run();
   }, [hasFavouriteListItems]);
 
   if (isLoading) {
