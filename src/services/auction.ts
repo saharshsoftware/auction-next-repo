@@ -1,4 +1,5 @@
 "use client";
+import { getCollectionData } from "@/server/actions/auction";
 import { API_BASE_URL, API_ENPOINTS } from "@/services/api";
 import {
   deleteRequest,
@@ -443,5 +444,42 @@ export const fetchAlertMatchingNotices = async (params: {
   } catch (e: any) {
     console.log(e, "Error fetching alert matching notices");
     throw e;
+  }
+};
+
+/**
+ * Fetches only FavouriteListCollection home-box items (excluded from getCarouselData).
+ * Used by the client favourite list section so it can refetch when backend data changes.
+ */
+export const getFavouriteListCarouselData = async () => {
+  //"use server";
+  try {
+    const URL =
+      API_BASE_URL +
+      API_ENPOINTS.HOME_BOX_COLLECTIONS +
+      API_ENPOINTS.HOME_BOX_COLLECTIONS_FAVOURITE_LIST_ONLY;
+    const { data } = await getRequest({ API: URL });
+    const categories = sanitizeStrapiData(
+      data?.data,
+      true
+    ) as ICategoryCollection;
+
+    if (!categories || !Array.isArray(categories) || categories.length === 0) {
+      return [];
+    }
+
+    const categorizedData = await Promise.all(
+      categories.map(async (category: any) => {
+        const collectionData = await getCollectionData({
+          endpoints: category.strapiAPIQuery,
+        });
+        return { ...category, collectionData };
+      })
+    );
+
+    return categorizedData ?? [];
+  } catch (e) {
+    console.log(e, "auctionDetail error getFavouriteListCarouselData");
+    return [];
   }
 };

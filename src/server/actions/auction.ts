@@ -225,7 +225,10 @@ export const getCookietoken = () => cookies()?.get("auction-token")?.value;
 export const getCarouselData = async () => {
   "use server";
   try {
-    const URL = API_BASE_URL + API_ENPOINTS.HOME_BOX_COLLECTIONS;
+    const URL =
+      API_BASE_URL +
+      API_ENPOINTS.HOME_BOX_COLLECTIONS +
+      API_ENPOINTS.HOME_BOX_COLLECTIONS_FILTER;
     const { data } = await getRequest({ API: URL });
     const categories = sanitizeStrapiData(
       data.data,
@@ -241,13 +244,12 @@ export const getCarouselData = async () => {
       })
     );
 
-    // console.log(categorizedData, "categorizedData");
+    console.log(categorizedData, "categorizedData");
     return categorizedData;
   } catch (e) {
     console.log(e, "auctionDetail error Home-box");
   }
 };
-
 export const getAssetType = async () => {
   "use server";
   try {
