@@ -250,44 +250,6 @@ export const getCarouselData = async () => {
     console.log(e, "auctionDetail error Home-box");
   }
 };
-
-/**
- * Fetches only FavouriteListCollection home-box items (excluded from getCarouselData).
- * Used by the client favourite list section so it can refetch when backend data changes.
- */
-export const getFavouriteListCarouselData = async () => {
-  "use server";
-  try {
-    const URL =
-      API_BASE_URL +
-      API_ENPOINTS.HOME_BOX_COLLECTIONS +
-      API_ENPOINTS.HOME_BOX_COLLECTIONS_FAVOURITE_LIST_ONLY;
-    const { data } = await getRequest({ API: URL });
-    const categories = sanitizeStrapiData(
-      data?.data,
-      true
-    ) as ICategoryCollection;
-
-    if (!categories || !Array.isArray(categories) || categories.length === 0) {
-      return [];
-    }
-
-    const categorizedData = await Promise.all(
-      categories.map(async (category: any) => {
-        const collectionData = await getCollectionData({
-          endpoints: category.strapiAPIQuery,
-        });
-        return { ...category, collectionData };
-      })
-    );
-
-    return categorizedData ?? [];
-  } catch (e) {
-    console.log(e, "auctionDetail error getFavouriteListCarouselData");
-    return [];
-  }
-};
-
 export const getAssetType = async () => {
   "use server";
   try {

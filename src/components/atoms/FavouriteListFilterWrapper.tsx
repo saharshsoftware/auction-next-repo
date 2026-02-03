@@ -2,6 +2,7 @@
 import React, { useMemo, useEffect, useState } from "react";
 import { useIsAuthenticated } from "@/hooks/useAuthenticated";
 import { useUserProfile } from "@/hooks/useUserProfile";
+import { detectAndCacheUserCity } from "@/utils/userCity";
 import FavouriteListCarousel from "./FavouriteListCarousel";
 
 interface FavouriteListItem {
@@ -16,62 +17,19 @@ interface FavouriteListItem {
   [key: string]: any;
 }
 
+export interface InjectedGeo {
+  city: string | null;
+  resolved: boolean;
+}
+
 interface FavouriteListFilterWrapperProps {
   item: FavouriteListItem;
   index: number;
   allItems: FavouriteListItem[];
+  /** When provided, geo is detected once by parent; wrapper does not call the API. */
+  injectedGeo?: InjectedGeo;
 }
 
-
-
-/* =========================================================
-   USER CITY VIA /api/user-city (SERVER PROXY → ip-api.com)
-   Avoids CORS and mixed content by calling our API route.
-========================================================= */
-
-const USER_CITY_CACHE_KEY = "detected_user_city";
-const USER_CITY_API = "/api/user-city";
-
-/**
- * Fetches user's city from our server proxy (which calls ip-api.com).
- * Response: { city: string | null } (normalized on server).
- */
-const getCityFromUserCityApi = async (): Promise<string | null> => {
-  try {
-    const res = await fetch(USER_CITY_API);
-    if (!res.ok) return null;
-
-    const data = await res.json();
-    return data.city ?? null;
-  } catch {
-    return null;
-  }
-};
-
-const detectAndCacheUserCity = async (): Promise<string | null> => {
-  try {
-    let cached: string | null = null;
-    try {
-      cached = localStorage.getItem(USER_CITY_CACHE_KEY);
-    } catch {
-      // localStorage unavailable (e.g. private browsing)
-    }
-    if (cached) return cached;
-
-    const city = await getCityFromUserCityApi();
-    if (city) {
-      try {
-        localStorage.setItem(USER_CITY_CACHE_KEY, city);
-      } catch {
-        // Ignore cache write failure
-      }
-    }
-
-    return city;
-  } catch {
-    return null;
-  }
-};
 
 
 
@@ -149,11 +107,14 @@ const shouldShowByGeoCity = (
  * Client wrapper that filters favourite list items based on user's interested city.
  * Renders FavouriteListCarousel only if the item passes the city filter.
  */
-const FavouriteListFilterWrapper = ({ item, index, allItems }: FavouriteListFilterWrapperProps) => {
+const FavouriteListFilterWrapper = ({ item, index, allItems, injectedGeo }: FavouriteListFilterWrapperProps) => {
   const { isAuthenticated } = useIsAuthenticated();
   const { userProfileData } = useUserProfile(isAuthenticated);
-  const [detectedCity, setDetectedCity] = useState<string | null>(null);
-  const [geoCityResolved, setGeoCityResolved] = useState(false);
+  const [localDetectedCity, setLocalDetectedCity] = useState<string | null>(null);
+  const [localGeoCityResolved, setLocalGeoCityResolved] = useState(false);
+
+  const detectedCity = injectedGeo ? injectedGeo.city : localDetectedCity;
+  const geoCityResolved = injectedGeo ? injectedGeo.resolved : localGeoCityResolved;
 
   const userInterestedCities = useMemo(
     () => parseInterestedCities(userProfileData?.interestedCities),
@@ -179,21 +140,23 @@ const FavouriteListFilterWrapper = ({ item, index, allItems }: FavouriteListFilt
 
   const runGeoDetection = isGeoCityMode || useGeoFallback;
 
-  // Run IP-based city detection when we filter by detected city: guest/no interested city, or profile no-matches fallback.
+  const runLocalGeoDetection = async () => {
+    try {
+      const city = await detectAndCacheUserCity();
+      setLocalDetectedCity(city);
+      setLocalGeoCityResolved(true);
+    } catch {
+      setLocalDetectedCity(null);
+      setLocalGeoCityResolved(true);
+    }
+  };
+
+  // Run IP-based city detection only when parent did not pass injectedGeo (e.g. wrapper used elsewhere).
   useEffect(() => {
-    if (!runGeoDetection) return;
-    setGeoCityResolved(false);
-    detectAndCacheUserCity()
-      .then((city) => {
-        setDetectedCity(city);
-        setGeoCityResolved(true);
-      })
-      .catch(() => {
-        // IP-API failed (network, CORS, or unexpected error) – treat as no city, don't break UI
-        setDetectedCity(null);
-        setGeoCityResolved(true);
-      });
-  }, [runGeoDetection]);
+    if (injectedGeo !== undefined || !runGeoDetection) return;
+    setLocalGeoCityResolved(false);
+    runLocalGeoDetection();
+  }, [runGeoDetection, injectedGeo]);
 
   const useGeoCityForFilter = isGeoCityMode || useGeoFallback;
 
