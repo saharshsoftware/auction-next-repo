@@ -38,23 +38,24 @@ const FavouriteListSectionClient = () => {
     Array.isArray(favouriteListCarouselData) &&
     favouriteListCarouselData.length > 0;
 
+  const runGeoDetection = async () => {
+    try {
+      const city = await detectAndCacheUserCity();
+      setDetectedCity(city);
+    } catch {
+      setDetectedCity(null);
+    } finally {
+      setGeoCityResolved(true);
+    }
+  };
+
   // Run user-city API once when we first have favourite list data; pass result to all wrappers.
   // Must be called before any conditional return to satisfy Rules of Hooks.
   useEffect(() => {
     if (!hasFavouriteListItems || geoDetectionStarted.current) return;
     geoDetectionStarted.current = true;
     setGeoCityResolved(false);
-    const run = async () => {
-      try {
-        const city = await detectAndCacheUserCity();
-        setDetectedCity(city);
-      } catch {
-        setDetectedCity(null);
-      } finally {
-        setGeoCityResolved(true);
-      }
-    };
-    run();
+    runGeoDetection();
   }, [hasFavouriteListItems]);
 
   if (isLoading) {

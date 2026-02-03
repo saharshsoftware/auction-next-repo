@@ -140,21 +140,22 @@ const FavouriteListFilterWrapper = ({ item, index, allItems, injectedGeo }: Favo
 
   const runGeoDetection = isGeoCityMode || useGeoFallback;
 
+  const runLocalGeoDetection = async () => {
+    try {
+      const city = await detectAndCacheUserCity();
+      setLocalDetectedCity(city);
+      setLocalGeoCityResolved(true);
+    } catch {
+      setLocalDetectedCity(null);
+      setLocalGeoCityResolved(true);
+    }
+  };
+
   // Run IP-based city detection only when parent did not pass injectedGeo (e.g. wrapper used elsewhere).
   useEffect(() => {
     if (injectedGeo !== undefined || !runGeoDetection) return;
     setLocalGeoCityResolved(false);
-    const run = async () => {
-      try {
-        const city = await detectAndCacheUserCity();
-        setLocalDetectedCity(city);
-        setLocalGeoCityResolved(true);
-      } catch {
-        setLocalDetectedCity(null);
-        setLocalGeoCityResolved(true);
-      }
-    };
-    run();
+    runLocalGeoDetection();
   }, [runGeoDetection, injectedGeo]);
 
   const useGeoCityForFilter = isGeoCityMode || useGeoFallback;
