@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 
 import FavouriteListFilterWrapper from "@/components/atoms/FavouriteListFilterWrapper";
+import SkeletonFavouriteList from "@/components/skeltons/SkeletonFavouriteList";
 import { getFavouriteListCarouselData } from "@/services/auction";
 import { detectAndCacheUserCity } from "@/utils/userCity";
 
@@ -59,13 +60,7 @@ const FavouriteListSectionClient = () => {
   }, [hasFavouriteListItems]);
 
   if (isLoading) {
-    return (
-      <section className="md:my-auto mt-12" aria-busy="true" aria-label="Loading favourite list">
-        <div className="bg-odd-color py-8 text-center text-muted-foreground">
-          Loading favourite list…
-        </div>
-      </section>
-    );
+    return <SkeletonFavouriteList />;
   }
 
   if (isError) {
