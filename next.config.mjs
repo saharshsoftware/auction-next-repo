@@ -104,7 +104,7 @@ const nextConfig = {
         destination: `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/types/sitemap/index.xml`,
       },
       {
-        source: "/types/sitemap.xml",
+        source: "/types/:slug*/sitemap.xml",
         destination: `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/types/:slug*/sitemap.xml`,
       },
       {
