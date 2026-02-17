@@ -116,6 +116,5 @@
     },
     "registeredAt": "2026-02-16T13:31:21.759Z",
     "registeredBy": "arn:aws:iam::512934070677:user/sibashis",
-    "enableFaultInjection": false,
     "tags": []
 }
