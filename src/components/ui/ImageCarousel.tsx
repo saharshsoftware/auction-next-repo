@@ -89,7 +89,7 @@ export const ImageCarousel: React.FC<ImageCarouselProps> = ({ images, title = 'P
     <>
       <div className={`relative bg-white rounded-lg shadow-sm overflow-hidden ${className}`}>
         <div className="relative w-full h-[500px] overflow-hidden rounded-t-lg">
-          <Slider ref={instance => (mainSliderRef.current = instance)} {...mainSettings}>
+          <Slider ref={instance => { mainSliderRef.current = instance; }} {...mainSettings}>
             {validImages.map((src, index) => (
               <div key={index} className="w-full h-[500px] bg-gray-100 flex items-center justify-center" onClick={() => setIsModalOpen(true)}>
                 <img 
@@ -129,7 +129,7 @@ export const ImageCarousel: React.FC<ImageCarouselProps> = ({ images, title = 'P
            </button>
            <div className="relative w-screen h-screen" onClick={(e) => e.stopPropagation()}>
              {validImages.length > 0 ? (
-               <Slider ref={instance => (modalSliderRef.current = instance)} {...modalSettings}>
+               <Slider ref={instance => { modalSliderRef.current = instance; }} {...modalSettings}>
                  {validImages.map((src, index) => (
                    <div key={index} className="w-screen h-screen flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
                      <img 

@@ -25,10 +25,10 @@ export const COOKIES = {
 };
 
 export const RANGE_PRICE = {
-  MIN: "0",
-  MAX: "100000000",
-  STEPS: "100000",
-};
+  MIN: 0,
+  MAX: 100000000,
+  STEPS: 100000,
+} as const;
 
 export const FILTER_EMPTY = {
   // name: "",

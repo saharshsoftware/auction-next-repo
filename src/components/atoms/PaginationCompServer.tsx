@@ -12,7 +12,7 @@ export interface ILocalFilter {
   bank?: IBanks;
   location?: ILocations;
   category?: ICategoryCollection;
-  price?: string[];
+  price?: number[];
   propertyType?: IAssetType;
   page: number | string;
 }

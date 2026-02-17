@@ -17,7 +17,7 @@ interface ICustomFilters {
   bankName?: string;
   location?: string;
   propertyType?: string;
-  reservePrice?: string[];
+  reservePrice?: number[];
   locationType?: string;
   page?: string;
   serviceProvider?: string;
@@ -30,7 +30,7 @@ interface IFilterQueryData {
   bank?: { name?: string };
   location?: { name?: string; type?: string };
   propertyType?: { name?: string };
-  price?: string[];
+  price?: number[];
   page?: number | string;
   serviceProvider?: { value?: string };
 }

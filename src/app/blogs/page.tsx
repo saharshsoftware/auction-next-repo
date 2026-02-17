@@ -2,8 +2,10 @@ import { BlogCard } from "@/components/atoms/BlogCard";
 import { fetchBlogs } from "@/server/actions/blogs";
 import { BlogPost } from "@/types";
 
+export const dynamic = "force-dynamic";
+
 export default async function BlogsPage() {
-  const blogPosts = (await fetchBlogs()) as BlogPost[];
+  const blogPosts = ((await fetchBlogs()) as BlogPost[]) ?? [];
 
   return (
     <div className="min-h-screen bg-gray-50 common-section">

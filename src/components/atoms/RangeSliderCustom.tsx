@@ -9,7 +9,6 @@ export default function RangeSliderCustom(props: { value: any; onInput: any; cus
   const { value, onInput, customClass } = props;
   return (
     <RangeSlider
-      placeholder="Enter price"
       value={value ?? [RANGE_PRICE.MIN, RANGE_PRICE.MAX]}
       min={RANGE_PRICE.MIN}
       max={RANGE_PRICE.MAX}
