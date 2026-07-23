@@ -6,6 +6,7 @@ import { getCategoryBoxCollection } from "@/server/actions";
 import { ICategoryCollection } from "@/types";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/categories" },
   title:
     "Explore Auctions for Vehicles, Properties, Machinery & More | eauctiondekho",
   description:

@@ -25,11 +25,13 @@ import ServicesSection from "@/components/atoms/ServicesSection";
 import HomeRecommendationsClient from "@/components/molecules/HomeRecommendationsClient";
 import PartnerAchievementsSection from "@/components/atoms/PartnerAchievementsSection";
 import { CACHE_TIMES } from "@/shared/Constants";
+import ZapcashBanner from "@/components/molecules/ZapcashBanner";
 
 export const revalidate = CACHE_TIMES.HOUR_24  
 export const dynamic = 'force-static';
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/" },
   title:
     "Find Bank Auction Properties in India | Search Residential, Commercial, Vehicles, Gold auctions & More",
   description:
@@ -114,13 +116,15 @@ export default async function Home() {
             locationOptions={sanitizeReactSelectOptions(locationOptions)}
           />
         </section>
+        <ZapcashBanner />
 
         {/* Partner & Achievements Section */}
         <PartnerAchievementsSection />
 
         {/* User Recommendations (Authenticated) */}
         <HomeRecommendationsClient />
-        
+
+
         <DownloadBanner />
         <ServicesSection />    
         <LandingPageSectionClient

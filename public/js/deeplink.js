@@ -5,7 +5,7 @@
     ANDROID_PACKAGE: "com.eauctiondekho",
     PLAYSTORE_URL: "https://play.google.com/store/apps/details?id=com.eauctiondekho",
     APPSTORE_URL:
-      "https://apps.apple.com/us/app/e-auctiondekho/id6742924249",
+      "https://apps.apple.com/in/app/e-auctiondekho/id6742924249",
     IOS_APP_STORE_ID: "6742924249", // Add your iOS app store ID
     MODAL_TIMEOUT: 1000, // Reduced timeout for better UX
     STORAGE_KEYS: {

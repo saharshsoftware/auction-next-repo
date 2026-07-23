@@ -7,6 +7,7 @@ import { Metadata } from "next";
 export const dynamic = 'force-static';
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/bank-auction-support" },
   title:
     "Bank Auction Support Services | e-auctiondekho",
   description:

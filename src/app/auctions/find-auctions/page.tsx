@@ -34,6 +34,7 @@ import TopBanks from "@/components/atoms/TopBanks";
 import ProfilePreferencesToast from "@/components/atoms/ProfilePreferencesToast";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/auctions/find-auctions" },
   title: "Search Results | eauctiondekho",
   description:
     "Explore tailored auction listings based on your search criteria. Find the best properties, vehicles, and more across India. Update your search to refine results and discover ideal auction deals on eauctiondekho.",
