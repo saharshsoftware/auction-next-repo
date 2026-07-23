@@ -6,6 +6,30 @@
  * competing with the production site.
  */
 
+export const PRIMARY_CANONICAL_ORIGIN = "https://www.eauctiondekho.com";
+
+/**
+ * Keep production canonicals on the preferred HTTPS + www origin while still
+ * allowing localhost and non-production environments to use their own host.
+ */
+export function getCanonicalBaseUrl(baseUrl = process.env.NEXT_PUBLIC_DOMAIN_BASE_URL): string {
+  if (!baseUrl) return PRIMARY_CANONICAL_ORIGIN;
+
+  try {
+    const url = new URL(baseUrl);
+    if (
+      url.hostname === "eauctiondekho.com" ||
+      url.hostname === "www.eauctiondekho.com"
+    ) {
+      return PRIMARY_CANONICAL_ORIGIN;
+    }
+
+    return url.origin;
+  } catch {
+    return PRIMARY_CANONICAL_ORIGIN;
+  }
+}
+
 
 /**
  * Check if the current environment should prevent indexing

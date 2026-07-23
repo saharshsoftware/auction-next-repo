@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-const ZAPCASH_APPLY_URL = "https://zapcash.in/personal-loan";
+const ZAPCASH_APPLY_URL = "https://zapcash.in?source=DSA_MRXHZWWI_9Q06OJ";
 
 export default function ZapcashBanner() {
   return (
