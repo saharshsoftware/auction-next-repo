@@ -8,6 +8,7 @@ export const revalidate = CACHE_TIMES.HOUR_24
 export const dynamic = 'force-static';
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/faq" },
   title:
     "Property Auction FAQs | Expert Tips by e-auctiondekho",
   description:

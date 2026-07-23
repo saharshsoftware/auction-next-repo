@@ -3,6 +3,7 @@ import PartnerSignup from "@/components/molecules/PartnerSignup";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
+	alternates: { canonical: "/partner-signup" },
 	robots: "noindex, follow",
 };
 

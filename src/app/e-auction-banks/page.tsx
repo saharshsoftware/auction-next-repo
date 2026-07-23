@@ -6,6 +6,7 @@ import { groupAndSortBanks } from "@/shared/Utilies";
 import { IBanks } from "@/types";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/banks" },
   title: "All Indian Banks | Auction Listings - eauctiondekho",
   description:
     "Explore auction listings from all major Indian banks at eauctiondekho. Access comprehensive auction details from banks across India to find the best investment opportunities.",

@@ -42,6 +42,7 @@ export async function generateMetadata(
     const blogData = (await getAuctionDetailData(slug)) as IAuction;
 
     if (!blogData || !slug) return {
+      alternates: { canonical: `/auctions/${slug}` },
       robots: "noindex, follow",
     };
     // Check if the data is available before destructuring
@@ -58,6 +59,7 @@ export async function generateMetadata(
     const socialImages = metaImages.length > 0 ? metaImages : [fallbackImage];
 
     return {
+      alternates: { canonical: `/auctions/${slug}` },
       title,
       description,
       openGraph: {
@@ -77,7 +79,7 @@ export async function generateMetadata(
     };
   } catch (error) {
     console.log("Error fetching metadata:", error);
-    return {};
+    return { alternates: { canonical: `/auctions/${slug}` } };
   }
 }
 

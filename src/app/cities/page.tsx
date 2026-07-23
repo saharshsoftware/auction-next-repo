@@ -6,6 +6,7 @@ import { ILocations } from "@/types";
 import { groupByState } from "@/shared/Utilies";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/cities" },
   title: "All Cities and States | Find Auctions Across India - eauctiondekho",
   description:
     "Browse auctions in all cities and states across India with eauctiondekho. Whether you are looking for property, vehicles, or machinery, find auctions near you or across the country.",

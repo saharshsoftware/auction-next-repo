@@ -30,6 +30,7 @@ export const revalidate = CACHE_TIMES.HOUR_24
 export const dynamic = 'force-static';
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/" },
   title:
     "Find Bank Auction Properties in India | Search Residential, Commercial, Vehicles, Gold auctions & More",
   description:

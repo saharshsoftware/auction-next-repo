@@ -14,11 +14,20 @@ import BlogShare from "@/components/atoms/BlogShare";
 import { formattedDate, stripHtmlTags } from "@/shared/Utilies";
 import TextToSpeech from "@/components/atoms/TextToSpeech";
 import BlogHeart from "@/components/atoms/BlogHeart";
+import type { Metadata } from "next";
 
 // Generate static params for all blog posts at build time
 async function fetchBlogBySlugData(slug: string) {
   const res = await fetchBlogBySlug(slug);
   return res;
+}
+
+export function generateMetadata({
+  params,
+}: {
+  params: { slug: string };
+}): Metadata {
+  return { alternates: { canonical: `/blogs/${params.slug}` } };
 }
 
 export default async function BlogPostPage({

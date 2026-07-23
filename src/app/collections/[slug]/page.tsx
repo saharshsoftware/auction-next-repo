@@ -24,6 +24,7 @@ export async function generateMetadata({
 
     if (!collectionData || !collectionData.attributes) {
       return {
+        alternates: { canonical: `/collections/${slug}` },
         robots: "noindex, follow",
       };
     }
@@ -39,6 +40,7 @@ export async function generateMetadata({
     const ogImage = await handleOgImageUrl(imageUrl || "");
 
     return {
+      alternates: { canonical: `/collections/${slug}` },
       title: metaTitle,
       description: metaDescription,
       openGraph: {
@@ -56,7 +58,7 @@ export async function generateMetadata({
     };
   } catch (error) {
     console.error("Error generating metadata:", error);
-    return {};
+    return { alternates: { canonical: `/collections/${slug}` } };
   }
 }
 
