@@ -18,6 +18,7 @@ import { safeArray, safeNumber, safeString } from "@/utilies/imageUtils";
 import { getCookie } from "cookies-next";
 import { MessagesSquare, Search, BellRing, Folder, Users, Bell } from "lucide-react";
 import { MembershipPlan } from "@/interfaces/MembershipPlan";
+import { getCanonicalBaseUrl } from "./SeoUtils";
 
 export const setDataInQueryParams = (values: any) => {
   const data = btoa(JSON.stringify(values));
@@ -675,7 +676,7 @@ export function buildCanonicalUrl(params: {
   page?: string | string[] | undefined;
 }): string {
   const { baseUrl, pathname, page } = params;
-  const normalizedBase = baseUrl?.replace(/\/$/, "");
+  const normalizedBase = getCanonicalBaseUrl(baseUrl);
   const path = pathname.startsWith("/") ? pathname : `/${pathname}`;
   const pageVal = Array.isArray(page) ? page[0] : page;
   const isDefaultPage = !pageVal || pageVal === "1";

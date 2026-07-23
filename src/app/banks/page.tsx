@@ -22,7 +22,7 @@ export const metadata: Metadata = {
   ],
   robots: "index, follow",
   alternates: {
-    canonical: `${process.env.NEXT_PUBLIC_DOMAIN_BASE_URL}/banks`,
+    canonical: "/banks",
   },
   openGraph: {
     type: "website",
