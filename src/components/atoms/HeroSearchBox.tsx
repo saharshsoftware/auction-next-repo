@@ -17,6 +17,7 @@ import { trackSearch } from "@/helpers/SurveyHelper";
 import { IAssetType, BudgetRangeObject } from "@/types";
 import { SERVICE_PROVIDER_OPTIONS } from "@/shared/Utilies";
 import ProfilePreferencesToast from "./ProfilePreferencesToast";
+import ZapcashPromo from "./ZapcashPromo";
 
 const initialValues = {
   propertyType: getEmptyAllObject(),
@@ -259,6 +260,8 @@ const HeroSearchBox = (props: {
                     </Field>
                   </TextField>
                 </div>
+
+                <ZapcashPromo context="search" className="col-span-full" />
 
                 <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2">
                   <Link

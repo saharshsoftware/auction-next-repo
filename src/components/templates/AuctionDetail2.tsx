@@ -44,6 +44,7 @@ import { Eye } from 'lucide-react';
 import ImageJsonLd from '../atoms/ImageJsonLd';
 import { useUserProfile } from '@/hooks/useUserProfile';
 import FloatingInterestButton from '../atoms/FloatingInterestButton';
+import ZapcashPromo from '../atoms/ZapcashPromo';
 
 
 // add props type
@@ -346,6 +347,8 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
             </div>
           </div>
           {renderAuctionExpiredNotice()}
+
+          <ZapcashPromo context="detail" className="mb-6 mt-2" />
 
           {/* Property Header */}
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6 mt-2">

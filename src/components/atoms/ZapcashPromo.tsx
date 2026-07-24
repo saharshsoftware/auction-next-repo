@@ -1,0 +1,51 @@
+const ZAPCASH_APPLY_URL = "https://zapcash.in?source=DSA_MRXHZWWI_9Q06OJ";
+
+type ZapcashPromoProps = {
+  context?: "search" | "list" | "detail";
+  className?: string;
+};
+
+const promoCopy = {
+  search: {
+    title: "Need extra funds for your auction purchase?",
+    description: "Explore a quick personal loan of up to ₹1,00,000 with ZapCash.",
+  },
+  list: {
+    title: "Need extra funds for an auction opportunity?",
+    description: "Explore a quick personal loan of up to ₹1,00,000 with ZapCash.",
+  },
+  detail: {
+    title: "Interested in this auction? Plan your funds early.",
+    description: "Explore a quick personal loan of up to ₹1,00,000 with ZapCash.",
+  },
+};
+
+export default function ZapcashPromo({
+  context = "search",
+  className = "",
+}: ZapcashPromoProps) {
+  const copy = promoCopy[context];
+
+  return (
+    <aside
+      aria-label="ZapCash personal loan"
+      className={`flex flex-col gap-3 rounded-xl border border-indigo-100 bg-indigo-50 px-4 py-3 text-left shadow-sm sm:flex-row sm:items-center sm:justify-between ${className}`}
+    >
+      <div className="min-w-0">
+        <p className="text-sm font-semibold text-gray-900">{copy.title}</p>
+        <p className="mt-0.5 text-xs leading-5 text-gray-600 sm:text-sm">
+          {copy.description}
+        </p>
+      </div>
+      <a
+        href={ZAPCASH_APPLY_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="inline-flex min-h-10 w-full shrink-0 items-center justify-center rounded-lg bg-brand-color px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-indigo-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-color sm:w-auto"
+        aria-label="Explore a personal loan with ZapCash (opens in a new tab)"
+      >
+        Explore ZapCash
+      </a>
+    </aside>
+  );
+}
