@@ -7,6 +7,7 @@ import PaginationCompServer, {
 } from "@/components/atoms/PaginationCompServer";
 import { IAuction } from "@/types";
 import { useMemo } from "react";
+import ZapcashPromo from "@/components/atoms/ZapcashPromo";
 
 const SurveyCard = dynamic(() => import("@/components/atoms/SurveySection"), { ssr: false });
 
@@ -36,7 +37,7 @@ const ShowAuctionListServer = ({
       result.push(
         <AuctionCard2 key={`auction-${i}`} property={auctions[i]} />
       );
-      
+
       // Insert SurveyCard at the determined position
       if (i === surveyPosition - 1) {
         result.push(
@@ -53,13 +54,14 @@ const ShowAuctionListServer = ({
   }, [auctions, surveyPosition, activePage]);
 
   return (
-    <div className="flex flex-col gap-4 w-full">
+    <div className="flex flex-col gap-4 w-full mt-4">
       {auctions.length === 0 ? (
         <div className="flex items-center justify-center flex-col h-[70vh]">
           No data found
         </div>
       ) : (
         <>
+          <ZapcashPromo context="list" />
           {auctionListWithSurvey}
           <PaginationCompServer
             totalPage={totalPages}

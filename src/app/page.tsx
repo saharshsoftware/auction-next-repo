@@ -116,15 +116,13 @@ export default async function Home() {
             locationOptions={sanitizeReactSelectOptions(locationOptions)}
           />
         </section>
-        <ZapcashBanner />
-
         {/* Partner & Achievements Section */}
         <PartnerAchievementsSection />
 
         {/* User Recommendations (Authenticated) */}
         <HomeRecommendationsClient />
 
-
+        <ZapcashBanner />
         <DownloadBanner />
         <ServicesSection />    
         <LandingPageSectionClient
