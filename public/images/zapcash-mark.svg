@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-labelledby="title">
+  <title id="title">ZapCash</title>
+  <circle cx="60" cy="60" r="58" fill="#004b2b"/>
+  <circle cx="60" cy="60" r="49" fill="#007a3d"/>
+  <path d="M31 30 82 46 59 62l29 29-56-18 23-17z" fill="#003b25" opacity=".55"/>
+  <path d="M31 29 82 45 59 61l29 29-56-18 23-17z" fill="#fff"/>
+</svg>
