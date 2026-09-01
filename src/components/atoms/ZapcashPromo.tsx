@@ -1,7 +1,7 @@
 import Image from "next/image";
 
 const ZAPCASH_APPLY_URL = "https://zapcash.in?source=DSA_MRXHZWWI_9Q06OJ";
-const LOAN_AMOUNT = "₹1,00,000";
+const ZAPCASH_LOAN_AMOUNT = "₹5,00,000";
 
 type ZapcashPromoProps = {
   context?: "search" | "list" | "detail";
@@ -11,15 +11,15 @@ type ZapcashPromoProps = {
 const promoCopy = {
   search: {
     title: "Need extra funds for your auction purchase?",
-    description: "Explore a quick personal loan of up to ₹1,00,000 with ZapCash.",
+    description: `Explore a quick personal loan of up to ${ZAPCASH_LOAN_AMOUNT} with ZapCash.`,
   },
   list: {
     title: "Need extra funds for an auction opportunity?",
-    description: "Explore a quick personal loan of up to ₹1,00,000 with ZapCash.",
+    description: `Explore a quick personal loan of up to ${ZAPCASH_LOAN_AMOUNT} with ZapCash.`,
   },
   detail: {
     title: "Interested in this auction? Plan your funds early.",
-    description: "Explore a quick personal loan of up to ₹1,00,000 with ZapCash.",
+    description: `Explore a quick personal loan of up to ${ZAPCASH_LOAN_AMOUNT} with ZapCash.`,
   },
 };
 
@@ -29,7 +29,7 @@ export default function ZapcashPromo({
 }: ZapcashPromoProps) {
   const copy = promoCopy[context];
   const [descriptionBeforeAmount, descriptionAfterAmount] =
-    copy.description.split(LOAN_AMOUNT);
+    copy.description.split(ZAPCASH_LOAN_AMOUNT);
 
   return (
     <aside
@@ -48,7 +48,7 @@ export default function ZapcashPromo({
           <p className="text-sm font-semibold text-[#005b32]">{copy.title}</p>
           <p className="mt-0.5 text-xs leading-5 text-gray-600 sm:text-sm">
             {descriptionBeforeAmount}
-            <strong className="font-bold text-[#005b32]">{LOAN_AMOUNT}</strong>
+            <strong className="font-bold text-[#005b32]">{ZAPCASH_LOAN_AMOUNT}</strong>
             {descriptionAfterAmount}
           </p>
         </div>
