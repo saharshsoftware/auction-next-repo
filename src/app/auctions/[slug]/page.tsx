@@ -100,8 +100,6 @@ export default async function Page({
 
   const auctionDetail = (await getAuctionDetail({ slug })) as IAuction;
 
-  console.log("auctionDetail", auctionDetail);
-
   // Redirect expired auctions to their category listing
   if (isAuctionExpired(auctionDetail?.auctionEndDate) && auctionDetail.assetCategory) {
     const categories = (await fetchCategories()) as ICategoryCollection[];
