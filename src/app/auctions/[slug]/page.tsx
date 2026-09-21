@@ -1,5 +1,6 @@
 import { fetchBanks, fetchLocation, getAuctionDetail } from "@/server/actions";
 import { Metadata, ResolvingMetadata } from "next";
+import { redirect } from "next/navigation";
 import {
   IAssetType,
   IAuction,
@@ -8,7 +9,7 @@ import {
   ILocations,
 } from "@/types";
 import { fetchAssetType, fetchCategories, fetchIsInterestedNotice } from "@/server/actions/auction";
-import { sanitizeReactSelectOptionsPage } from "@/shared/Utilies";
+import { isAuctionExpired, sanitizeReactSelectOptionsPage } from "@/shared/Utilies";
 import FindAuctionServer from "@/components/molecules/FindAuctionServer";
 import AuctionDetailRelatedBubbles from "@/components/templates/AuctionDetailRelatedBubbles";
 import AddToWishlist from "@/components/templates/AddToWishlist";
@@ -98,6 +99,18 @@ export default async function Page({
     : null;
 
   const auctionDetail = (await getAuctionDetail({ slug })) as IAuction;
+
+  // Redirect expired auctions to their category listing
+  if (isAuctionExpired(auctionDetail?.auctionEndDate) && auctionDetail.assetCategory) {
+    const categories = (await fetchCategories()) as ICategoryCollection[];
+    const matchedCategory = categories?.find(
+      (category) => category.name === auctionDetail.assetCategory
+    );
+    if (matchedCategory?.slug) {
+      redirect(`${ROUTE_CONSTANTS.CATEGORY}/${matchedCategory.slug}`);
+    }
+  }
+
   // Fetch data in parallel
   const [rawAssetTypes, rawBanks, rawCategories, rawLocations,]: any =
     await Promise.all([

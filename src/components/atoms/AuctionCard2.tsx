@@ -5,6 +5,7 @@ import {
   getSharedAuctionUrl,
   getDateAndTimeFromISOStringForDisplay,
   getDateAndTimeFromISOString,
+  isAuctionExpired,
 } from "../../shared/Utilies";
 import { IAuction } from "@/types";
 import Link from "next/link";
@@ -55,11 +56,7 @@ export const AuctionCard2: React.FC<PropertyCardProps> = (props) => {
   
   useEffect(() => {
     // Only run date comparison on client-side to avoid hydration mismatch
-    if (property?.auctionEndDate) {
-      const endDate = new Date(property.auctionEndDate);
-      const currentDate = new Date();
-      setIsAuctionEndedState(endDate < currentDate);
-    }
+    setIsAuctionEndedState(isAuctionExpired(property?.auctionEndDate));
   }, [property?.auctionEndDate]);
 
   // Function to check if auction end date is in the past
