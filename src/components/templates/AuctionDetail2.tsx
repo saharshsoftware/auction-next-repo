@@ -33,7 +33,7 @@ import useModal from '@/hooks/useModal';
 import { useUserData } from '@/hooks/useAuthenticated';
 import SurveyCard from "../atoms/SurveySection";
 import { InfoTooltip } from '../atoms/InfoTooltip';
-import { extractPhoneNumbers, getDateAndTimeFromISOString, getDateAndTimeFromISOStringForDisplay, getSharedAuctionUrl } from '@/shared/Utilies';
+import { extractPhoneNumbers, getDateAndTimeFromISOString, getDateAndTimeFromISOStringForDisplay, getSharedAuctionUrl, isAuctionExpired as checkIsAuctionExpired } from '@/shared/Utilies';
 import { WhatsappShareWithIcon } from '../atoms/SocialIcons';
 import { ROUTE_CONSTANTS } from '@/shared/Routes';
 import { useScrollToTop } from '@/hooks/useScrollToTop';
@@ -110,11 +110,7 @@ export const AuctionDetailPage: React.FC<AuctionDetailPageProps> = ({ auctionDet
 
   useEffect(() => {
     // Only run date comparison on client-side to avoid hydration mismatch
-    if (property?.auctionEndDate) {
-      const endDate = new Date(property.auctionEndDate );
-      const currentDate = new Date();
-      setIsAuctionExpired(endDate < currentDate);
-    }
+    setIsAuctionExpired(checkIsAuctionExpired(property?.auctionEndDate));
   }, [property?.auctionEndDate]);
 
   if (loading) {

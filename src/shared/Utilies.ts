@@ -924,6 +924,13 @@ export const getDateAndTimeFromISOStringForDisplay = (isoString: string): string
   return isoString ? `${getDateAndTimeFromISOString(isoString).date} ${getDateAndTimeFromISOString(isoString).timePart}` : 'Not specified';
 }
 
+/**
+ * Returns true when the auction end date is in the past.
+ */
+export const isAuctionExpired = (auctionEndDate?: string | Date | null): boolean => {
+  if (!auctionEndDate) return false;
+  return new Date(auctionEndDate) < new Date();
+};
 
 export const formatDateForDisplay = (dateString: string | null | undefined) => {
   if (!dateString) return 'Not specified';

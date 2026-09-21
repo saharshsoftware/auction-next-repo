@@ -9,7 +9,7 @@ import {
   ILocations,
 } from "@/types";
 import { fetchAssetType, fetchCategories, fetchIsInterestedNotice } from "@/server/actions/auction";
-import { sanitizeReactSelectOptionsPage } from "@/shared/Utilies";
+import { isAuctionExpired, sanitizeReactSelectOptionsPage } from "@/shared/Utilies";
 import FindAuctionServer from "@/components/molecules/FindAuctionServer";
 import AuctionDetailRelatedBubbles from "@/components/templates/AuctionDetailRelatedBubbles";
 import AddToWishlist from "@/components/templates/AddToWishlist";
@@ -103,11 +103,7 @@ export default async function Page({
   console.log("auctionDetail", auctionDetail);
 
   // Redirect expired auctions to their category listing
-  if (
-    auctionDetail?.auctionEndDate &&
-    new Date(auctionDetail.auctionEndDate) < new Date() &&
-    auctionDetail.assetCategory
-  ) {
+  if (isAuctionExpired(auctionDetail?.auctionEndDate) && auctionDetail.assetCategory) {
     const categories = (await fetchCategories()) as ICategoryCollection[];
     const matchedCategory = categories?.find(
       (category) => category.name === auctionDetail.assetCategory
